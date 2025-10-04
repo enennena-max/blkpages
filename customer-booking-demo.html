@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Booking - BlkPages (Demo)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .booking-card {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid #333;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .business-info {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #333;
+        }
+
+        .business-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .business-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-item {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+
+        .detail-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .confirmation-form {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success {
+            background: #25D366;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .success h2 {
+            margin-bottom: 10px;
+        }
+
+        .success p {
+            opacity: 0.9;
+        }
+
+        .whatsapp-confirmation {
+            background: #25D366;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .whatsapp-confirmation h3 {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .demo-notice {
+            background: #ffa500;
+            color: #000;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .booking-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .booking-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calendar-check"></i> Confirm Your Booking</h1>
+            <p>Please review and confirm your appointment details</p>
+        </div>
+
+        <div class="demo-notice">
+            <i class="fas fa-info-circle"></i> DEMO MODE - This is a simulation of the booking confirmation system
+        </div>
+
+        <div class="booking-card">
+            <div class="business-info">
+                <div class="business-logo">
+                    <i class="fas fa-cut"></i>
+                </div>
+                <div class="business-name">Royal Hair Studio</div>
+            </div>
+
+            <div class="booking-details">
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="detail-label">Customer</div>
+                    <div class="detail-value" id="customerName">Test Customer</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="detail-label">Phone</div>
+                    <div class="detail-value" id="customerPhone">+447712345678</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-scissors"></i>
+                    </div>
+                    <div class="detail-label">Service</div>
+                    <div class="detail-value" id="serviceName">Haircut & Style</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="detail-label">Date & Time</div>
+                    <div class="detail-value" id="slotDateTime">Monday, December 23, 2024 at 02:00 PM</div>
+                </div>
+            </div>
+
+            <div class="confirmation-form" id="confirmationForm">
+                <h3><i class="fas fa-edit"></i> Additional Information</h3>
+                <p style="margin-bottom: 20px; opacity: 0.8;">Please provide any additional details for your appointment:</p>
+                
+                <form id="confirmForm">
+                    <div class="form-group">
+                        <label for="customerEmail">Email Address (Optional)</label>
+                        <input type="email" id="customerEmail" name="customerEmail" placeholder="your.email@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="specialRequests">Special Requests or Notes</label>
+                        <textarea id="specialRequests" name="specialRequests" placeholder="Any special requests, allergies, or notes for your stylist..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn" id="confirmBtn">
+                        <i class="fas fa-check"></i> Confirm Booking
+                    </button>
+                </form>
+            </div>
+
+            <div class="success" id="successMessage">
+                <h2><i class="fas fa-check-circle"></i> Booking Confirmed!</h2>
+                <p>Your appointment has been successfully confirmed. You will receive a WhatsApp confirmation shortly.</p>
+            </div>
+
+            <div class="whatsapp-confirmation" id="whatsappConfirmation" style="display: none;">
+                <h3><i class="fab fa-whatsapp"></i> WhatsApp Confirmation Sent</h3>
+                <p>Check your WhatsApp for booking confirmation and details!</p>
+                <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; font-family: monospace; text-align: left; white-space: pre-line;" id="whatsappMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo data - in real system this would come from URL parameters
+        const demoData = {
+            businessName: 'Royal Hair Studio',
+            customerName: 'Test Customer',
+            customerPhone: '+447712345678',
+            serviceName: 'Haircut & Style',
+            slotDateTime: 'Monday, December 23, 2024 at 02:00 PM'
+        };
+
+        // Load demo data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('customerName').textContent = demoData.customerName;
+            document.getElementById('customerPhone').textContent = demoData.customerPhone;
+            document.getElementById('serviceName').textContent = demoData.serviceName;
+            document.getElementById('slotDateTime').textContent = demoData.slotDateTime;
+        });
+
+        document.getElementById('confirmForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Simulate booking confirmation
+            document.getElementById('confirmBtn').disabled = true;
+            document.getElementById('confirmBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Confirming...';
+            
+            setTimeout(() => {
+                showConfirmedState();
+            }, 2000);
+        });
+
+        function showConfirmedState() {
+            document.getElementById('confirmationForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('whatsappConfirmation').style.display = 'block';
+            
+            // Generate WhatsApp confirmation message
+            const whatsappMessage = `✅ *Booking Confirmed!*
+
+Thank you for confirming your appointment with ${demoData.businessName}.
+
+📅 *Service:* ${demoData.serviceName}
+🕐 *Date & Time:* ${demoData.slotDateTime}
+
+We look forward to seeing you! If you need to reschedule, please contact us directly.
+
+${demoData.businessName} 💫`;
+            
+            document.getElementById('whatsappMessage').textContent = whatsappMessage;
+        }
+    </script>
+</body>
+</html>

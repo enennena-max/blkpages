@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend API Test - BlkPages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .neon-pink { color: #ff6b9d; }
+        .neon-purple { color: #c44569; }
+        .neon-green { color: #00d4aa; }
+        .neon-blue { color: #00a8ff; }
+        .bg-neon-pink { background-color: #ff6b9d; }
+        .bg-neon-purple { background-color: #c44569; }
+        .bg-neon-green { background-color: #00d4aa; }
+        .bg-neon-blue { background-color: #00a8ff; }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-black border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold neon-pink">BlkPages</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-white hover:neon-pink transition-colors">Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-4">
+                <span class="neon-pink">Backend</span> 
+                <span class="neon-purple">API</span> 
+                <span class="neon-green">Test</span>
+            </h1>
+            <p class="text-gray-300 text-lg">Test the BlkPages booking API endpoints</p>
+        </div>
+
+        <!-- API Status -->
+        <div class="bg-gray-900 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 neon-blue">API Status</h2>
+            <div class="flex items-center space-x-4">
+                <button id="checkStatus" class="bg-neon-blue text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                    <i class="fas fa-heartbeat mr-2"></i>Check API Status
+                </button>
+                <div id="statusResult" class="text-lg"></div>
+            </div>
+        </div>
+
+        <!-- Test Forms -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Generate Booking Link Test -->
+            <div class="bg-gray-900 rounded-lg p-6">
+                <h2 class="text-2xl font-bold mb-4 neon-pink">Generate Booking Link</h2>
+                <form id="bookingLinkForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Business ID</label>
+                        <input type="text" id="businessId" value="123" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Service ID</label>
+                        <input type="text" id="serviceId" value="haircut" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Slot Date & Time</label>
+                        <input type="datetime-local" id="slotDateTime" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Customer Phone</label>
+                        <input type="tel" id="customerPhone" value="+447712345678" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Customer Name</label>
+                        <input type="text" id="customerName" value="Test Customer" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="sendWhatsApp" class="mr-2">
+                        <label for="sendWhatsApp" class="text-sm">Send WhatsApp Message</label>
+                    </div>
+                    <button type="submit" class="w-full bg-neon-pink text-white py-2 px-4 rounded-lg hover:bg-pink-600 transition-colors">
+                        <i class="fas fa-link mr-2"></i>Generate Booking Link
+                    </button>
+                </form>
+                <div id="bookingLinkResult" class="mt-4 p-4 bg-gray-800 rounded-lg hidden">
+                    <h3 class="font-bold mb-2">Result:</h3>
+                    <pre id="bookingLinkOutput" class="text-sm text-gray-300"></pre>
+                </div>
+            </div>
+
+            <!-- Test Booking Confirmation -->
+            <div class="bg-gray-900 rounded-lg p-6">
+                <h2 class="text-2xl font-bold mb-4 neon-green">Test Booking Confirmation</h2>
+                <form id="confirmBookingForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Booking Token</label>
+                        <input type="text" id="bookingToken" placeholder="Enter booking token from above" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Customer Email</label>
+                        <input type="email" id="customerEmail" value="test@example.com" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Special Requests</label>
+                        <textarea id="specialRequests" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" rows="3">Please use organic products</textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-neon-green text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors">
+                        <i class="fas fa-check mr-2"></i>Confirm Booking
+                    </button>
+                </form>
+                <div id="confirmResult" class="mt-4 p-4 bg-gray-800 rounded-lg hidden">
+                    <h3 class="font-bold mb-2">Result:</h3>
+                    <pre id="confirmOutput" class="text-sm text-gray-300"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Endpoints Info -->
+        <div class="bg-gray-900 rounded-lg p-6 mt-8">
+            <h2 class="text-2xl font-bold mb-4 neon-purple">Available API Endpoints</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-green-600 text-white px-2 py-1 rounded text-sm">POST</span>
+                        <code class="text-sm">/api/generate-booking-link</code>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-sm">GET</span>
+                        <code class="text-sm">/api/booking/:token</code>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-green-600 text-white px-2 py-1 rounded text-sm">POST</span>
+                        <code class="text-sm">/api/booking/:token/confirm</code>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-red-600 text-white px-2 py-1 rounded text-sm">POST</span>
+                        <code class="text-sm">/api/booking/:token/cancel</code>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-sm">GET</span>
+                        <code class="text-sm">/api/business/:id/bookings</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deployment Instructions -->
+        <div class="bg-gray-900 rounded-lg p-6 mt-8">
+            <h2 class="text-2xl font-bold mb-4 neon-blue">Deployment Options</h2>
+            <div class="space-y-4">
+                <div class="border-l-4 border-neon-blue pl-4">
+                    <h3 class="font-bold text-lg">Option 1: Netlify Functions</h3>
+                    <p class="text-gray-300">Deploy as serverless functions with automatic scaling</p>
+                    <a href="https://netlify.com" target="_blank" class="text-neon-blue hover:underline">Deploy to Netlify →</a>
+                </div>
+                <div class="border-l-4 border-neon-green pl-4">
+                    <h3 class="font-bold text-lg">Option 2: Vercel</h3>
+                    <p class="text-gray-300">Deploy with zero configuration and global CDN</p>
+                    <a href="https://vercel.com" target="_blank" class="text-neon-green hover:underline">Deploy to Vercel →</a>
+                </div>
+                <div class="border-l-4 border-neon-purple pl-4">
+                    <h3 class="font-bold text-lg">Option 3: Railway</h3>
+                    <p class="text-gray-300">Deploy with database and environment management</p>
+                    <a href="https://railway.app" target="_blank" class="text-neon-purple hover:underline">Deploy to Railway →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set default date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('slotDateTime').value = tomorrow.toISOString().slice(0, 16);
+
+        // API Base URL - Change this to your deployed backend URL
+        const API_BASE_URL = 'http://localhost:3001'; // Change to your deployed URL
+
+        // Check API Status
+        document.getElementById('checkStatus').addEventListener('click', async () => {
+            const statusResult = document.getElementById('statusResult');
+            statusResult.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Checking...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health`);
+                if (response.ok) {
+                    statusResult.innerHTML = '<i class="fas fa-check-circle text-green-500 mr-2"></i>API is running!';
+                } else {
+                    statusResult.innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>API responded with error';
+                }
+            } catch (error) {
+                statusResult.innerHTML = '<i class="fas fa-times-circle text-red-500 mr-2"></i>API is not accessible';
+                console.error('API Status Error:', error);
+            }
+        });
+
+        // Generate Booking Link
+        document.getElementById('bookingLinkForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                businessId: document.getElementById('businessId').value,
+                serviceId: document.getElementById('serviceId').value,
+                slotDateTime: document.getElementById('slotDateTime').value,
+                customerPhone: document.getElementById('customerPhone').value,
+                customerName: document.getElementById('customerName').value,
+                sendWhatsApp: document.getElementById('sendWhatsApp').checked
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/generate-booking-link`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                document.getElementById('bookingLinkResult').classList.remove('hidden');
+                document.getElementById('bookingLinkOutput').textContent = JSON.stringify(result, null, 2);
+                
+                // Auto-fill the booking token for confirmation test
+                if (result.bookingLink) {
+                    const token = result.bookingLink.split('token=')[1]?.split('&')[0];
+                    if (token) {
+                        document.getElementById('bookingToken').value = token;
+                    }
+                }
+            } catch (error) {
+                document.getElementById('bookingLinkResult').classList.remove('hidden');
+                document.getElementById('bookingLinkOutput').textContent = `Error: ${error.message}`;
+            }
+        });
+
+        // Confirm Booking
+        document.getElementById('confirmBookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                customerName: document.getElementById('customerName').value,
+                customerEmail: document.getElementById('customerEmail').value,
+                specialRequests: document.getElementById('specialRequests').value
+            };
+
+            const token = document.getElementById('bookingToken').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/booking/${token}/confirm`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                document.getElementById('confirmResult').classList.remove('hidden');
+                document.getElementById('confirmOutput').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('confirmResult').classList.remove('hidden');
+                document.getElementById('confirmOutput').textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
+

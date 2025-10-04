@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Booking Confirmation - BlkPages</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .test-card {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .success {
+            background: #25D366;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .whatsapp-demo {
+            background: #25D366;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-line;
+        }
+
+        .step {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-vial"></i> Test Booking Confirmation System</h1>
+        
+        <div class="test-card">
+            <h2>🧪 Testing Steps</h2>
+            
+            <div class="step">
+                <h3>Step 1: Simulate Booking</h3>
+                <p>Click the button below to simulate a customer booking an appointment.</p>
+                <button class="btn" onclick="simulateBooking()">
+                    <i class="fas fa-calendar-plus"></i> Simulate Customer Booking
+                </button>
+            </div>
+
+            <div class="step">
+                <h3>Step 2: Check Confirmation</h3>
+                <p>After clicking above, you'll see what the customer receives.</p>
+            </div>
+
+            <div class="step">
+                <h3>Step 3: Test WhatsApp Integration</h3>
+                <p>Click to test the WhatsApp confirmation message (opens WhatsApp Web).</p>
+                <button class="btn" onclick="testWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Test WhatsApp Message
+                </button>
+            </div>
+        </div>
+
+        <div class="success" id="successMessage">
+            <h2><i class="fas fa-check-circle"></i> Booking Confirmed!</h2>
+            <p>Your appointment has been successfully confirmed. You will receive a WhatsApp confirmation shortly.</p>
+        </div>
+
+        <div class="whatsapp-demo" id="whatsappDemo" style="display: none;">
+            <h3><i class="fab fa-whatsapp"></i> WhatsApp Confirmation Message:</h3>
+            <div id="whatsappMessage"></div>
+        </div>
+
+        <div class="test-card">
+            <h2>📱 Real WhatsApp Test</h2>
+            <p>To test with real WhatsApp:</p>
+            <ol>
+                <li>Start the backend server: <code>cd backend && node booking-api.js</code></li>
+                <li>Go to <a href="business-booking-manager.html" style="color: #667eea;">Business Booking Manager</a></li>
+                <li>Generate a booking link with your real phone number</li>
+                <li>Click the link and confirm the booking</li>
+                <li>Check your WhatsApp for the confirmation message</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function simulateBooking() {
+            // Show success message
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Show WhatsApp demo
+            document.getElementById('whatsappDemo').style.display = 'block';
+            
+            // Generate demo WhatsApp message
+            const whatsappMessage = `✅ *Booking Confirmed!*
+
+Thank you for confirming your appointment with Royal Hair Studio.
+
+📅 *Service:* Haircut & Style
+🕐 *Date & Time:* Monday, December 23, 2024 at 02:00 PM
+
+We look forward to seeing you! If you need to reschedule, please contact us directly.
+
+Royal Hair Studio 💫`;
+            
+            document.getElementById('whatsappMessage').textContent = whatsappMessage;
+            
+            // Scroll to show results
+            document.getElementById('whatsappDemo').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function testWhatsApp() {
+            // Create a test WhatsApp message
+            const message = `✅ *Booking Confirmed!*
+
+Thank you for confirming your appointment with Royal Hair Studio.
+
+📅 *Service:* Haircut & Style
+🕐 *Date & Time:* Monday, December 23, 2024 at 02:00 PM
+
+We look forward to seeing you! If you need to reschedule, please contact us directly.
+
+Royal Hair Studio 💫`;
+            
+            // Encode message for WhatsApp
+            const encodedMessage = encodeURIComponent(message);
+            
+            // Open WhatsApp Web with the message
+            const whatsappUrl = `https://web.whatsapp.com/send?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Booking Link - BlkPages</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .test-card {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+        }
+
+        .whatsapp-demo {
+            background: #25D366;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-line;
+        }
+
+        .booking-link {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            word-break: break-all;
+            border: 1px solid #333;
+        }
+
+        .step {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-link"></i> Test Booking Link System</h1>
+        
+        <div class="test-card">
+            <h2>🏪 Business Booking Manager (Demo)</h2>
+            
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label>Business Name</label>
+                    <input type="text" id="businessName" value="Royal Hair Studio" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Service</label>
+                    <input type="text" id="serviceName" value="Haircut & Style" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Date & Time</label>
+                    <input type="datetime-local" id="slotDateTime" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Customer Phone (with country code)</label>
+                    <input type="tel" id="customerPhone" pattern="(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}" placeholder="+44 7123 456789 or 07123 456789" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Customer Name</label>
+                    <input type="text" id="customerName" value="Test Customer" required>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-link"></i> Generate Booking Link
+                </button>
+            </form>
+        </div>
+
+        <div class="test-card" id="results" style="display: none;">
+            <h2>📱 Generated Booking Link & WhatsApp Message</h2>
+            
+            <div class="step">
+                <h3>🔗 Booking Link</h3>
+                <div class="booking-link" id="bookingLink"></div>
+                <a href="#" id="testLink" class="btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Test Booking Link
+                </a>
+            </div>
+
+            <div class="step">
+                <h3>📱 WhatsApp Message Preview</h3>
+                <div class="whatsapp-demo" id="whatsappMessage"></div>
+                <button class="btn btn-whatsapp" onclick="openWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Open in WhatsApp
+                </button>
+            </div>
+
+            <div class="step">
+                <h3>✅ Customer Confirmation Message</h3>
+                <div class="whatsapp-demo" id="confirmationMessage"></div>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <h2>🧪 How to Test</h2>
+            <ol>
+                <li><strong>Fill out the form above</strong> with your real phone number</li>
+                <li><strong>Click "Generate Booking Link"</strong></li>
+                <li><strong>Click "Test Booking Link"</strong> to see the customer experience</li>
+                <li><strong>Click "Open in WhatsApp"</strong> to see the WhatsApp message</li>
+                <li><strong>Fill out the customer form</strong> and confirm the booking</li>
+                <li><strong>Check your WhatsApp</strong> for the confirmation message!</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Set default date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(14, 0, 0, 0);
+        document.getElementById('slotDateTime').value = tomorrow.toISOString().slice(0, 16);
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const businessName = document.getElementById('businessName').value;
+            const serviceName = document.getElementById('serviceName').value;
+            const slotDateTime = document.getElementById('slotDateTime').value;
+            const customerPhone = document.getElementById('customerPhone').value;
+            const customerName = document.getElementById('customerName').value;
+            
+            // Generate mock booking link
+            const token = 'demo_' + Math.random().toString(36).substr(2, 9);
+            const bookingLink = `customer-booking-demo.html?token=${token}&biz=royal-hair&slot=${slotDateTime}&service=haircut`;
+            
+            // Generate WhatsApp message
+            const formattedDate = new Date(slotDateTime).toLocaleString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const whatsappMessage = `🏪 *${businessName}* has sent you a booking link!
+
+📅 *Service:* ${serviceName}
+🕐 *Date:* ${formattedDate}
+
+Click the link below to confirm your appointment:
+${window.location.origin}/${bookingLink}
+
+This link expires in 24 hours.`;
+            
+            const confirmationMessage = `✅ *Booking Confirmed!*
+
+Thank you for confirming your appointment with ${businessName}.
+
+📅 *Service:* ${serviceName}
+🕐 *Date & Time:* ${formattedDate}
+
+We look forward to seeing you! If you need to reschedule, please contact us directly.
+
+${businessName} 💫`;
+            
+            // Display results
+            document.getElementById('bookingLink').textContent = bookingLink;
+            document.getElementById('testLink').href = bookingLink;
+            document.getElementById('whatsappMessage').textContent = whatsappMessage;
+            document.getElementById('confirmationMessage').textContent = confirmationMessage;
+            document.getElementById('results').style.display = 'block';
+            
+            // Store data for WhatsApp
+            window.whatsappData = {
+                phone: customerPhone,
+                message: whatsappMessage
+            };
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function openWhatsApp() {
+            if (window.whatsappData) {
+                const encodedMessage = encodeURIComponent(window.whatsappData.message);
+                const whatsappUrl = `https://web.whatsapp.com/send?phone=${window.whatsappData.phone}&text=${encodedMessage}`;
+                window.open(whatsappUrl, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>

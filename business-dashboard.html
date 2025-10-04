@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Dashboard - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            line-height: 1.6; 
+            color: #ffffff; 
+            background: #000000; 
+        }
+        
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Navigation */
+        .navbar { 
+            background: rgba(0, 0, 0, 0.95); 
+            box-shadow: 0 2px 10px rgba(255,255,255,0.1); 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000; 
+        }
+        
+        .nav-wrapper { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 1.5rem 0; 
+        }
+        
+        .logo { 
+            font-size: 1.8rem; 
+            font-weight: 700; 
+            color: #ffffff; 
+            text-decoration: none; 
+        }
+        
+        .nav-links { 
+            display: flex; 
+            list-style: none; 
+            gap: 2rem; 
+        }
+        
+        .nav-links a { 
+            text-decoration: none; 
+            color: #ffffff; 
+            font-weight: 500; 
+            transition: color 0.3s; 
+        }
+        
+        .nav-links a:hover, 
+        .nav-links a.active { 
+            color: #007bff; 
+        }
+        
+        .user-menu { 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        
+        .user-info { 
+            color: #cccccc; 
+            font-size: 0.9rem; 
+        }
+        
+        .btn-logout { 
+            background: #ff6b6b; 
+            color: white; 
+            border: none; 
+            padding: 0.5rem 1rem; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+        }
+        
+        .btn-logout:hover { 
+            background: #e55a5a; 
+        }
+        
+        /* Main Content */
+        .main-content { 
+            padding: 120px 0 80px; 
+        }
+        
+        .dashboard-header { 
+            margin-bottom: 3rem; 
+        }
+        
+        .dashboard-title { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            margin-bottom: 1rem; 
+            color: #ffffff; 
+        }
+        
+        .dashboard-subtitle { 
+            color: #cccccc; 
+            font-size: 1.1rem; 
+        }
+        
+        /* Stats Cards */
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 2rem; 
+            margin-bottom: 3rem; 
+        }
+        
+        .stat-card { 
+            background: #1a1a1a; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            border: 1px solid #333; 
+            text-align: center; 
+        }
+        
+        .stat-card h3 { 
+            font-size: 2rem; 
+            font-weight: 700; 
+            color: #ffffff; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .stat-card p { 
+            color: #cccccc; 
+            font-size: 0.9rem; 
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 3rem; 
+            margin-bottom: 3rem; 
+        }
+        
+        /* Subscription Card */
+        .subscription-card { 
+            background: #1a1a1a; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            border: 1px solid #333; 
+        }
+        
+        .subscription-card h3 { 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            margin-bottom: 1rem; 
+            color: #ffffff; 
+        }
+        
+        .current-plan { 
+            background: #2a2a2a; 
+            padding: 1.5rem; 
+            border-radius: 10px; 
+            margin-bottom: 1.5rem; 
+        }
+        
+        .plan-name { 
+            font-size: 1.2rem; 
+            font-weight: 600; 
+            color: #ffffff; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .plan-price { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: #007bff; 
+            margin-bottom: 1rem; 
+        }
+        
+        .plan-features { 
+            list-style: none; 
+        }
+        
+        .plan-features li { 
+            color: #cccccc; 
+            margin-bottom: 0.5rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+        
+        .plan-features i { 
+            color: #25D366; 
+        }
+        
+        .upgrade-section h4 { 
+            color: #ffffff; 
+            margin-bottom: 1rem; 
+        }
+        
+        .btn-upgrade { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 0.8rem 1.5rem; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 500; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+        
+        .btn-upgrade:hover { 
+            background: #0056b3; 
+        }
+        
+        /* Business Profile */
+        .profile-card { 
+            background: #1a1a1a; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            border: 1px solid #333; 
+        }
+        
+        .profile-card h3 { 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            margin-bottom: 1.5rem; 
+            color: #ffffff; 
+        }
+        
+        .profile-info { 
+            display: grid; 
+            gap: 1rem; 
+        }
+        
+        .profile-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 0.8rem 0; 
+            border-bottom: 1px solid #333; 
+        }
+        
+        .profile-item:last-child { 
+            border-bottom: none; 
+        }
+        
+        .profile-label { 
+            color: #cccccc; 
+        }
+        
+        .profile-value { 
+            color: #ffffff; 
+            font-weight: 500; 
+        }
+        
+        /* Reviews Section */
+        .reviews-section { 
+            background: #1a1a1a; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            border: 1px solid #333; 
+            margin-bottom: 3rem; 
+        }
+        
+        .reviews-section h3 { 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            margin-bottom: 1.5rem; 
+            color: #ffffff; 
+        }
+        
+        .reviews-summary { 
+            display: flex; 
+            align-items: center; 
+            gap: 2rem; 
+            margin-bottom: 2rem; 
+            padding: 1.5rem; 
+            background: #2a2a2a; 
+            border-radius: 10px; 
+        }
+        
+        .rating-display { 
+            text-align: center; 
+        }
+        
+        .rating-stars { 
+            font-size: 2rem; 
+            color: #FFD700; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .rating-number { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: #ffffff; 
+            margin-bottom: 0.3rem; 
+        }
+        
+        .rating-count { 
+            color: #cccccc; 
+            font-size: 0.9rem; 
+        }
+        
+        .rating-breakdown { 
+            flex: 1; 
+        }
+        
+        .rating-bar { 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .rating-bar:last-child { 
+            margin-bottom: 0; 
+        }
+        
+        .rating-label { 
+            color: #cccccc; 
+            font-size: 0.9rem; 
+            width: 20px; 
+        }
+        
+        .rating-progress { 
+            flex: 1; 
+            height: 8px; 
+            background: #333; 
+            border-radius: 4px; 
+            overflow: hidden; 
+        }
+        
+        .rating-fill { 
+            height: 100%; 
+            background: #FFD700; 
+            border-radius: 4px; 
+        }
+        
+        .rating-percentage { 
+            color: #cccccc; 
+            font-size: 0.9rem; 
+            width: 30px; 
+            text-align: right; 
+        }
+        
+        .reviews-list { 
+            margin-top: 2rem; 
+        }
+        
+        .review-item { 
+            background: #2a2a2a; 
+            padding: 1.5rem; 
+            border-radius: 10px; 
+            margin-bottom: 1rem; 
+            border: 1px solid #333; 
+        }
+        
+        .review-item:last-child { 
+            margin-bottom: 0; 
+        }
+        
+        .review-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: start; 
+            margin-bottom: 1rem; 
+        }
+        
+        .reviewer-name { 
+            font-weight: 600; 
+            color: #ffffff; 
+        }
+        
+        .review-date { 
+            color: #888; 
+            font-size: 0.9rem; 
+        }
+        
+        .review-rating { 
+            color: #FFD700; 
+            margin-bottom: 0.5rem; 
+        }
+        
+        .review-text { 
+            color: #cccccc; 
+            line-height: 1.5; 
+        }
+        
+        /* Action Buttons */
+        .action-buttons { 
+            display: flex; 
+            gap: 1rem; 
+            flex-wrap: wrap; 
+        }
+        
+        .btn-action { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 0.8rem 1.5rem; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-weight: 500; 
+            text-decoration: none; 
+            transition: background 0.3s; 
+        }
+        
+        .btn-action:hover { 
+            background: #0056b3; 
+        }
+        
+        .btn-action.secondary { 
+            background: transparent; 
+            color: #007bff; 
+            border: 2px solid #007bff; 
+        }
+        
+        .btn-action.secondary:hover { 
+            background: #007bff; 
+            color: white; 
+        }
+        
+        /* Footer */
+        .footer { 
+            background: #222; 
+            color: white; 
+            padding: 40px 0; 
+            text-align: center; 
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links { 
+                display: none; 
+            }
+            .dashboard-grid { 
+                grid-template-columns: 1fr; 
+            }
+            .stats-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+            }
+            .reviews-summary { 
+                flex-direction: column; 
+                gap: 1rem; 
+            }
+            .action-buttons { 
+                flex-direction: column; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="directory.html" class="logo">BLKPAGES</a>
+                <ul class="nav-links">
+                    <li><a href="directory.html">Directory</a></li>
+                    <li><a href="search.html">Search</a></li>
+                    <li><a href="business-dashboard.html" class="active">Dashboard</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <div class="user-menu">
+                    <span class="user-info" id="userEmail">demo@royalhairstudio.com</span>
+                    <button class="btn-logout" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Business Dashboard</h1>
+                <p class="dashboard-subtitle">Manage your business listing and track your performance</p>
+            </div>
+            
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>127</h3>
+                    <p>Total Reviews</p>
+                </div>
+                <div class="stat-card">
+                    <h3>4.9</h3>
+                    <p>Average Rating</p>
+                </div>
+                <div class="stat-card">
+                    <h3>1,234</h3>
+                    <p>Profile Views</p>
+                </div>
+                <div class="stat-card">
+                    <h3>89</h3>
+                    <p>Bookings This Month</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- Subscription Management -->
+                <div class="subscription-card">
+                    <h3>Subscription Plan</h3>
+                    <div class="current-plan">
+                        <div class="plan-name">Premium Listing</div>
+                        <div class="plan-price">£19/month</div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> Customer reviews & ratings</li>
+                            <li><i class="fas fa-check"></i> Business logo</li>
+                            <li><i class="fas fa-check"></i> Photo gallery (10 photos)</li>
+                            <li><i class="fas fa-check"></i> Online booking system</li>
+                            <li><i class="fas fa-check"></i> Priority in search results</li>
+                            <li><i class="fas fa-check"></i> Analytics dashboard</li>
+                            <li><i class="fas fa-check"></i> Customer management</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="upgrade-section">
+                        <h4>Manage Subscription</h4>
+                        <button class="btn-upgrade" onclick="manageSubscription()">
+                            <i class="fas fa-credit-card"></i> Manage Payment
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Business Profile -->
+                <div class="profile-card">
+                    <h3>Business Profile</h3>
+                    <div class="profile-info">
+                        <div class="profile-item">
+                            <span class="profile-label">Business Name</span>
+                            <span class="profile-value">Royal Hair Studio</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Category</span>
+                            <span class="profile-value">Hairdresser</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Location</span>
+                            <span class="profile-value">Beauty City, BC</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Status</span>
+                            <span class="profile-value" style="color: #10B981;">Active</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Last Updated</span>
+                            <span class="profile-value">2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews Section -->
+            <div class="reviews-section">
+                <h3>Customer Reviews</h3>
+                <div class="reviews-summary">
+                    <div class="rating-display">
+                        <div class="rating-stars">★★★★★</div>
+                        <div class="rating-number">4.9</div>
+                        <div class="rating-count">Based on 127 reviews</div>
+                    </div>
+                    <div class="rating-breakdown">
+                        <div class="rating-bar">
+                            <span class="rating-label">5</span>
+                            <div class="rating-progress">
+                                <div class="rating-fill" style="width: 85%;"></div>
+                            </div>
+                            <span class="rating-percentage">85%</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="rating-label">4</span>
+                            <div class="rating-progress">
+                                <div class="rating-fill" style="width: 12%;"></div>
+                            </div>
+                            <span class="rating-percentage">12%</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="rating-label">3</span>
+                            <div class="rating-progress">
+                                <div class="rating-fill" style="width: 2%;"></div>
+                            </div>
+                            <span class="rating-percentage">2%</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="rating-label">2</span>
+                            <div class="rating-progress">
+                                <div class="rating-fill" style="width: 1%;"></div>
+                            </div>
+                            <span class="rating-percentage">1%</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="rating-label">1</span>
+                            <div class="rating-progress">
+                                <div class="rating-fill" style="width: 0%;"></div>
+                            </div>
+                            <span class="rating-percentage">0%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reviews-list">
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div>
+                                <div class="reviewer-name">Sarah Johnson</div>
+                                <div class="review-rating">★★★★★</div>
+                            </div>
+                            <div class="review-date">2 days ago</div>
+                        </div>
+                        <div class="review-text">
+                            "Amazing service! The stylist really understood what I wanted and my hair looks fantastic. The salon is clean and professional. Highly recommend!"
+                        </div>
+                    </div>
+                    
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div>
+                                <div class="reviewer-name">Michael Brown</div>
+                                <div class="review-rating">★★★★★</div>
+                            </div>
+                            <div class="review-date">1 week ago</div>
+                        </div>
+                        <div class="review-text">
+                            "Best haircut I've had in years! The barber was professional and took his time. Great atmosphere and friendly staff."
+                        </div>
+                    </div>
+                    
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div>
+                                <div class="reviewer-name">Lisa Davis</div>
+                                <div class="review-rating">★★★★☆</div>
+                            </div>
+                            <div class="review-date">2 weeks ago</div>
+                        </div>
+                        <div class="review-text">
+                            "Good service overall. The stylist was skilled and the salon is well-maintained. Would definitely come back."
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="business-booking-manager.html" class="btn-action">
+                    <i class="fas fa-magic"></i> Generate Booking Link
+                </a>
+                <a href="business-profile.html?id=royal-hair" class="btn-action">
+                    <i class="fas fa-eye"></i> View Public Profile
+                </a>
+                <button class="btn-action secondary" onclick="viewAnalytics()">
+                    <i class="fas fa-chart-bar"></i> View Analytics
+                </button>
+                <button class="btn-action secondary" onclick="manageBookings()">
+                    <i class="fas fa-calendar"></i> Manage Bookings
+                </button>
+                <button class="btn-action secondary" onclick="uploadPhotos()">
+                    <i class="fas fa-camera"></i> Upload Photos
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem;">
+                <div>
+                    <p>&copy; 2024 BLKPAGES. All rights reserved.</p>
+                </div>
+                <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                    <a href="about.html" style="color: #ffffff; text-decoration: none;">About Us</a>
+                    <a href="contact.html" style="color: #ffffff; text-decoration: none;">Contact Us</a>
+                    <a href="privacy.html" style="color: #ffffff; text-decoration: none;">Privacy Policy</a>
+                    <a href="terms.html" style="color: #ffffff; text-decoration: none;">Terms & Conditions</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Check if user is logged in
+        const isLoggedIn = localStorage.getItem('businessLoggedIn');
+        if (isLoggedIn !== 'true') {
+            console.log('User not logged in, redirecting to login page');
+            window.location.href = 'business-login.html';
+        } else {
+            console.log('User is logged in, showing dashboard');
+        }
+        
+        // Set user email
+        const userEmail = localStorage.getItem('businessEmail') || 'demo@royalhairstudio.com';
+        document.getElementById('userEmail').textContent = userEmail;
+        
+        function logout() {
+            localStorage.removeItem('businessLoggedIn');
+            localStorage.removeItem('businessEmail');
+            window.location.href = 'business-login.html';
+        }
+        
+        function manageSubscription() {
+            alert('Redirecting to subscription management page...\n\nThis would normally take you to a payment portal where you can:\n- Update payment method\n- Change subscription plan\n- View billing history\n- Cancel subscription');
+        }
+        
+        function viewAnalytics() {
+            alert('Opening analytics dashboard...\n\nThis would show:\n- Profile view statistics\n- Search result appearances\n- Customer demographics\n- Booking trends');
+        }
+        
+        function manageBookings() {
+            alert('Opening booking management...\n\nThis would allow you to:\n- View upcoming appointments\n- Manage availability\n- Process bookings\n- Send customer communications');
+        }
+        
+        function uploadPhotos() {
+            alert('Opening photo upload...\n\nThis would allow you to:\n- Upload business photos\n- Manage photo gallery\n- Set profile picture\n- Organize photos by category');
+        }
+    </script>
+</body>
+</html>
