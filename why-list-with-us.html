@@ -13,6 +13,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
             background: #000;
@@ -22,7 +26,7 @@
 
         .hero-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            min-height: 80vh;
             display: flex;
             align-items: center;
             position: relative;
@@ -37,8 +41,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1920&h=1080&fit=crop&crop=center&blur=1') center/cover;
-            opacity: 0.2;
+            background: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1920&h=1080&fit=crop&crop=center&blur=1') center 30%/cover;
+            opacity: 0.25;
         }
 
         .hero-bg::after {
@@ -48,7 +52,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.45);
             z-index: 1;
         }
 
@@ -62,14 +66,14 @@
 
         .hero-content {
             text-align: center;
-            padding: 80px 0;
+            padding: 60px 0;
             position: relative;
             z-index: 2;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: calc(100vh - 80px);
+            min-height: calc(80vh - 80px);
         }
 
         .hero-title {
@@ -141,7 +145,7 @@
         }
 
         .section {
-            padding: 80px 0;
+            padding: 30px 0;
         }
 
         .section-dark {
@@ -167,7 +171,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
-            margin-bottom: 60px;
+            margin-bottom: -5px;
         }
 
         .benefit-card {
@@ -186,15 +190,15 @@
         }
 
         .benefit-icon {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             background: linear-gradient(135deg, #ff6b6b, #9c27b0);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 2rem;
+            margin: 0 auto 15px;
+            font-size: 1.5rem;
             color: white;
         }
 
@@ -224,28 +228,74 @@
         }
 
         .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 20px;
             max-width: 1400px;
             margin: 0 auto;
-            align-items: stretch;
         }
 
         .pricing-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 25px 15px;
-            text-align: center;
+            padding: 30px 20px;
+            text-align: left;
             border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
             position: relative;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            min-height: 500px;
+            align-items: flex-start;
+            height: 100%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        .pricing-card .card-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-card:not(.popular) .card-content {
+            min-height: 400px;
+        }
+
+        .pricing-card .btn {
+            width: 100%;
+        }
+
+        .pricing-card .btn-wrapper {
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .pricing-card .pricing-name,
+        .pricing-card .pricing-price,
+        .pricing-card .pricing-period,
+        .pricing-card .pricing-description {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .pricing-card .pricing-name {
+            margin-bottom: 10px;
+        }
+
+        .pricing-card .pricing-price {
+            margin-bottom: 10px;
+        }
+
+        .pricing-card .pricing-period {
+            margin-bottom: 10px;
+        }
+
+        .pricing-card .pricing-description {
+            margin-bottom: 20px;
         }
 
         .pricing-card:hover {
@@ -295,8 +345,16 @@
 
         .pricing-period {
             color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             font-size: 0.9rem;
+        }
+
+        .pricing-description {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            font-style: italic;
         }
 
         .pricing-features {
@@ -305,34 +363,58 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
             justify-content: flex-start;
+            gap: 8px;
+            padding: 0;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .pricing-card:nth-child(1) .pricing-features {
+            margin-top: 40px;
         }
 
         .pricing-features li {
-            padding: 8px 0;
+            padding: 0;
             color: rgba(255, 255, 255, 0.9);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             font-size: 0.9rem;
+            line-height: 1.6;
+            width: 100%;
+            text-align: left;
         }
 
         .pricing-features li i {
             color: #4caf50;
             font-size: 1rem;
+            line-height: 1.6;
+            flex-shrink: 0;
+            width: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .pricing-features li.unavailable {
-            color: rgba(255, 255, 255, 0.5);
+            color: #888;
         }
 
         .pricing-features li.unavailable i {
-            color: rgba(255, 255, 255, 0.3);
+            color: #888;
+            line-height: 1.6;
+            flex-shrink: 0;
+            width: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .stats-section {
             background: #111;
-            padding: 80px 0;
+            padding: 25px 0;
         }
 
         .stats-grid {
@@ -340,22 +422,30 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 40px;
             text-align: center;
+            align-items: center;
         }
 
         .stat-item {
-            padding: 20px;
+            padding: -25px 20px 8px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
         }
 
         .stat-number {
             font-size: 3rem;
             font-weight: 900;
             color: #ff6b6b;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            line-height: 1;
         }
 
         .stat-label {
             font-size: 1.1rem;
             color: #ccc;
+            line-height: 1.2;
         }
 
         .testimonial-section {
@@ -365,32 +455,74 @@
 
         .testimonial-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
+            align-items: stretch;
         }
 
         .testimonial-card {
             background: #2a2a2a;
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid #333;
+            color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 260px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
         }
 
         .testimonial-text {
             font-style: italic;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             color: #ccc;
             line-height: 1.6;
+            flex-grow: 1;
         }
 
         .testimonial-author {
-            font-weight: 600;
-            color: #ff6b6b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        .initials-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff007f, #9333ea);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .testimonial-name {
+            font-weight: 700;
+            font-size: 16px;
         }
 
         .testimonial-business {
-            color: #999;
-            font-size: 0.9rem;
+            font-size: 14px;
+            color: #bbb;
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
         }
 
         .cta-section {
@@ -456,6 +588,15 @@
                 min-height: 400px;
             }
 
+            .pricing-features {
+                align-items: flex-start;
+            }
+
+            .pricing-features li {
+                justify-content: flex-start;
+                text-align: left;
+            }
+
             .cta-title {
                 font-size: 2rem;
             }
@@ -478,6 +619,20 @@
                 min-height: 350px;
                 padding: 25px 20px;
             }
+
+            .pricing-features {
+                align-items: flex-start;
+            }
+
+            .pricing-features li {
+                justify-content: flex-start;
+                text-align: left;
+                font-size: 0.85rem;
+            }
+
+            .pricing-features li i {
+                font-size: 0.9rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -487,6 +642,20 @@
 
             .hero-subtitle {
                 font-size: 1rem;
+            }
+
+            .pricing-features {
+                align-items: flex-start;
+            }
+
+            .pricing-features li {
+                justify-content: flex-start;
+                text-align: left;
+                font-size: 0.8rem;
+            }
+
+            .pricing-features li i {
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -615,74 +784,94 @@
             <div class="pricing-grid">
                 <!-- Free Plan -->
                 <div class="pricing-card">
-                    <h3 class="pricing-name">Free Forever</h3>
-                    <div class="pricing-price">£0</div>
-                    <div class="pricing-period">Forever</div>
-                    <ul class="pricing-features">
-                        <li><i class="fas fa-check"></i> Business listing</li>
-                        <li><i class="fas fa-check"></i> Basic contact info</li>
-                        <li><i class="fas fa-check"></i> Category listing</li>
-                        <li><i class="fas fa-check"></i> Basic search visibility</li>
-                        <li><i class="fas fa-times unavailable"></i> Customer reviews</li>
-                        <li><i class="fas fa-times unavailable"></i> Photo gallery</li>
-                        <li><i class="fas fa-times unavailable"></i> Online booking</li>
-                        <li><i class="fas fa-times unavailable"></i> Analytics</li>
-                    </ul>
-                    <a href="business-register.html" class="btn btn-secondary">Get Started Free</a>
+                    <div class="card-content">
+                        <h3 class="pricing-name">Free</h3>
+                        <div class="pricing-price">£0</div>
+                        <div class="pricing-period">Forever</div>
+                        <p class="pricing-description">Perfect for getting started. Join the community and showcase your business at no cost.</p>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check"></i> Business listing with category visibility</li>
+                            <li><i class="fas fa-check"></i> Basic contact details</li>
+                            <li><i class="fas fa-check"></i> Standard search placement</li>
+                            <li><i class="fas fa-times unavailable"></i> Business logo and photo gallery</li>
+                            <li><i class="fas fa-times unavailable"></i> Enhanced profile visibility</li>
+                            <li><i class="fas fa-times unavailable"></i> Customer review highlights</li>
+                            <li><i class="fas fa-times unavailable"></i> Basic booking system</li>
+                            <li><i class="fas fa-times unavailable"></i> Advanced booking system</li>
+                        </ul>
+                    </div>
+                    <div class="btn-wrapper">
+                        <a href="business-register.html" class="btn btn-secondary">Get Started for Free</a>
+                    </div>
                 </div>
 
                 <!-- Starter Plan -->
                 <div class="pricing-card">
-                    <h3 class="pricing-name">Starter</h3>
-                    <div class="pricing-price">£15</div>
-                    <div class="pricing-period">per month</div>
-                    <ul class="pricing-features">
-                        <li><i class="fas fa-check"></i> Everything in Free</li>
-                        <li><i class="fas fa-check"></i> Customer reviews</li>
-                        <li><i class="fas fa-check"></i> Business logo</li>
-                        <li><i class="fas fa-check"></i> 3 photos</li>
-                        <li><i class="fas fa-check"></i> Basic booking system</li>
-                        <li><i class="fas fa-times unavailable"></i> Photo gallery</li>
-                        <li><i class="fas fa-times unavailable"></i> Priority listing</li>
-                        <li><i class="fas fa-times unavailable"></i> Analytics dashboard</li>
-                    </ul>
-                    <a href="business-register.html" class="btn btn-secondary">Choose Starter</a>
+                    <div class="card-content">
+                        <h3 class="pricing-name">Starter</h3>
+                        <div class="pricing-price">£15</div>
+                        <div class="pricing-period">per month</div>
+                        <p class="pricing-description">Build your reputation and attract more clients. A great choice for growing businesses ready to stand out.</p>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check"></i> Everything in Free</li>
+                            <li><i class="fas fa-check"></i> Business logo and photo gallery (up to 3 photos)</li>
+                            <li><i class="fas fa-check"></i> Enhanced profile visibility</li>
+                            <li><i class="fas fa-check"></i> Customer review highlights</li>
+                            <li><i class="fas fa-check"></i> Basic booking system</li>
+                            <li><i class="fas fa-times unavailable"></i> Advanced booking system with calendar sync</li>
+                            <li><i class="fas fa-times unavailable"></i> Customer management dashboard</li>
+                            <li><i class="fas fa-times unavailable"></i> Priority placement in search</li>
+                        </ul>
+                    </div>
+                    <div class="btn-wrapper">
+                        <a href="business-register.html" class="btn btn-secondary">Choose Starter</a>
+                    </div>
                 </div>
 
                 <!-- Professional Plan -->
                 <div class="pricing-card popular">
-                    <h3 class="pricing-name">Professional</h3>
-                    <div class="pricing-price">£29</div>
-                    <div class="pricing-period">per month</div>
-                    <ul class="pricing-features">
-                        <li><i class="fas fa-check"></i> Everything in Starter</li>
-                        <li><i class="fas fa-check"></i> Photo gallery (10 photos)</li>
-                        <li><i class="fas fa-check"></i> Advanced booking system</li>
-                        <li><i class="fas fa-check"></i> Priority in search results</li>
-                        <li><i class="fas fa-check"></i> Basic analytics</li>
-                        <li><i class="fas fa-check"></i> Customer management</li>
-                        <li><i class="fas fa-times unavailable"></i> Advanced analytics</li>
-                        <li><i class="fas fa-times unavailable"></i> Marketing tools</li>
-                    </ul>
-                    <a href="business-register.html" class="btn btn-primary">Choose Professional</a>
+                    <div class="card-content">
+                        <h3 class="pricing-name">Professional</h3>
+                        <div class="pricing-price">£29</div>
+                        <div class="pricing-period">per month</div>
+                        <p class="pricing-description">Level up your bookings and take control. Ideal for busy professionals ready to scale and manage clients with ease.</p>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check"></i> Everything in Starter</li>
+                            <li><i class="fas fa-check"></i> Photo gallery (up to 10 photos)</li>
+                            <li><i class="fas fa-check"></i> Advanced booking system with calendar sync</li>
+                            <li><i class="fas fa-check"></i> Customer management dashboard</li>
+                            <li><i class="fas fa-check"></i> Priority placement in search</li>
+                            <li><i class="fas fa-check"></i> Basic analytics</li>
+                            <li><i class="fas fa-times unavailable"></i> Advanced analytics (performance trends)</li>
+                            <li><i class="fas fa-times unavailable"></i> Marketing tools</li>
+                        </ul>
+                    </div>
+                    <div class="btn-wrapper">
+                        <a href="business-register.html" class="btn btn-primary">Choose Professional</a>
+                    </div>
                 </div>
 
-                <!-- Premium Plan -->
+                <!-- Elite Plan -->
                 <div class="pricing-card">
-                    <h3 class="pricing-name">Premium</h3>
-                    <div class="pricing-price">£59</div>
-                    <div class="pricing-period">per month</div>
-                    <ul class="pricing-features">
-                        <li><i class="fas fa-check"></i> Everything in Professional</li>
-                        <li><i class="fas fa-check"></i> Unlimited photos</li>
-                        <li><i class="fas fa-check"></i> Advanced analytics</li>
-                        <li><i class="fas fa-check"></i> Marketing tools</li>
-                        <li><i class="fas fa-check"></i> Featured placement</li>
-                        <li><i class="fas fa-check"></i> Social media integration</li>
-                        <li><i class="fas fa-check"></i> Priority support</li>
-                        <li><i class="fas fa-check"></i> Custom branding</li>
-                    </ul>
-                    <a href="business-register.html" class="btn btn-secondary">Choose Premium</a>
+                    <div class="card-content">
+                        <h3 class="pricing-name">Elite</h3>
+                        <div class="pricing-price">£59</div>
+                        <div class="pricing-period">per month</div>
+                        <p class="pricing-description">Get full visibility, exclusive tools, and custom branding. Designed for established businesses who want the highest exposure.</p>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check"></i> Everything in Professional</li>
+                            <li><i class="fas fa-check"></i> Unlimited photos & media</li>
+                            <li><i class="fas fa-check"></i> Featured placement across pages</li>
+                            <li><i class="fas fa-check"></i> Advanced analytics (performance trends)</li>
+                            <li><i class="fas fa-check"></i> Marketing tools</li>
+                            <li><i class="fas fa-check"></i> Social media integration</li>
+                            <li><i class="fas fa-check"></i> Priority support</li>
+                            <li><i class="fas fa-check"></i> Custom branding options</li>
+                        </ul>
+                    </div>
+                    <div class="btn-wrapper">
+                        <a href="business-register.html" class="btn btn-secondary">Choose Elite</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -695,20 +884,35 @@
             <div class="testimonial-grid">
                 <div class="testimonial-card">
                     <p class="testimonial-text">"BlkPages has been a game-changer for my salon. I've gotten so many new customers who specifically wanted to support Black-owned businesses. The booking system is so easy for my clients to use."</p>
-                    <div class="testimonial-author">Sarah Johnson</div>
-                    <div class="testimonial-business">Royal Hair Studio</div>
+                    <div class="testimonial-header">
+                        <div class="initials-icon">SJ</div>
+                        <div>
+                            <div class="testimonial-name">Sarah Johnson</div>
+                            <div class="testimonial-business">Royal Hair Studio</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="testimonial-card">
                     <p class="testimonial-text">"I started with the free plan and saw immediate results. When I upgraded to Professional, my bookings tripled. The community support is incredible."</p>
-                    <div class="testimonial-author">Marcus Williams</div>
-                    <div class="testimonial-business">Elite Barber Shop</div>
+                    <div class="testimonial-header">
+                        <div class="initials-icon">MW</div>
+                        <div>
+                            <div class="testimonial-name">Marcus Williams</div>
+                            <div class="testimonial-business">Elite Barber Shop</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="testimonial-card">
                     <p class="testimonial-text">"The analytics help me understand my customers better. I can see which services are most popular and adjust my business accordingly. Highly recommend!"</p>
-                    <div class="testimonial-author">Lisa Davis</div>
-                    <div class="testimonial-business">Glamour Beauty Lounge</div>
+                    <div class="testimonial-header">
+                        <div class="initials-icon">LD</div>
+                        <div>
+                            <div class="testimonial-name">Lisa Davis</div>
+                            <div class="testimonial-business">Glamour Beauty Lounge</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -717,14 +921,14 @@
     <!-- CTA Section -->
     <section class="cta-section">
         <div class="container">
-            <h2 class="cta-title">Ready to Grow Your Business?</h2>
-            <p class="cta-subtitle">Join hundreds of successful Black-owned businesses on BlkPages</p>
+            <h2 class="cta-title">Ready to Grow Your Business with BlkPages?</h2>
+            <p class="cta-subtitle">Join the hundreds of successful Black-owned businesses connecting with new customers.</p>
             <div class="cta-buttons">
                 <a href="business-register.html" class="btn btn-primary">
-                    <i class="fas fa-rocket"></i> Start Free Today
+                    <i class="fas fa-rocket"></i> Join Today
                 </a>
                 <a href="contact.html" class="btn btn-secondary">
-                    <i class="fas fa-phone"></i> Talk to Sales
+                    <i class="fas fa-phone"></i> Contact Us
                 </a>
             </div>
         </div>
