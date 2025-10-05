@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 60, 172, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-header h1 {
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-header p {
+            color: #cccccc;
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: #121212;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #FF3CAC;
+            box-shadow: 0 0 0 3px rgba(255, 60, 172, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: #666;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #FF3CAC 0%, #784BA0 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 60, 172, 0.3);
+        }
+        
+        .form-links {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
+        .form-links a {
+            color: #FF3CAC;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0 0.5rem;
+        }
+        
+        .form-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .back-link a {
+            color: #cccccc;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .back-link a:hover {
+            color: #FF3CAC;
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            color: #fca5a5;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            color: #86efac;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* Back Button Styling */
+        .back-button {
+            margin-bottom: 1rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 60, 172, 0.2);
+            border-color: rgba(255, 60, 172, 0.4);
+            transform: translateX(-2px);
+        }
+
+        .back-btn i {
+            font-size: 0.8rem;
+        }
+
+        /* Demo Credentials Styling */
+        .demo-credentials {
+            background: rgba(13, 148, 136, 0.1);
+            border: 1px solid rgba(13, 148, 136, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .demo-credentials h4 {
+            color: #0D9488;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .demo-credentials p {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-credentials strong {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="back-button">
+            <button onclick="goBack()" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back</span>
+            </button>
+        </div>
+        <div class="login-header">
+            <h1>Sign In</h1>
+            <p>Welcome back to BlkPages</p>
+        </div>
+        
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-input" id="email" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="password" placeholder="Enter your password" required>
+            </div>
+            
+            <button type="submit" class="btn-primary">Sign In</button>
+        </form>
+        
+        <!-- Demo Credentials -->
+        <div class="demo-credentials">
+            <h4>Demo Credentials</h4>
+            <p><strong>Email:</strong> demo@blkpages.com</p>
+            <p><strong>Password:</strong> password123</p>
+            <button type="button" class="btn-secondary" onclick="fillDemoCredentials()">Fill Demo Details</button>
+        </div>
+        
+        <div class="form-links">
+            <a href="#" onclick="showForgotPassword()">Forgot password?</a>
+            <a href="customer-register.html">Create account</a>
+        </div>
+        
+        <div class="back-link">
+            <a href="business-profile.html">← Back to booking</a>
+        </div>
+    </div>
+
+    <script>
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+        
+        function showForgotPassword() {
+            alert('Forgot password functionality would be implemented here. For demo purposes, use any email and password to sign in.');
+        }
+
+        function fillDemoCredentials() {
+            document.getElementById('email').value = 'demo@blkpages.com';
+            document.getElementById('password').value = 'password123';
+        }
+        
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                showError('Please enter both email and password');
+                return;
+            }
+            
+            // Simulate login (in real app, this would call an API)
+            console.log('Signing in with:', email);
+            
+            // Show success message
+            showSuccess('Sign in successful! Redirecting to booking...');
+            
+            // Store user session (in real app, this would be handled by backend)
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userName', 'Demo User'); // Demo data
+            localStorage.setItem('userPhone', '07123456789'); // Demo data
+            localStorage.setItem('userLoggedIn', 'true');
+            
+            // Redirect back to booking page after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'business-profile.html';
+            }, 2000);
+        });
+
+        // Back button function
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // If no history, go to homepage
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
