@@ -126,21 +126,41 @@
                             <a href="index.html#home" class="text-light-grey hover:text-neon-pink transition-colors duration-300 font-medium">Home</a>
                             <a href="search-results.html" class="text-light-grey hover:text-neon-pink transition-colors duration-300 font-medium">Browse</a>
                             <a href="offers.html" class="text-light-grey hover:text-neon-pink transition-colors duration-300 font-medium">Offers</a>
-                            <a href="blog.html" class="text-light-grey hover:text-neon-pink transition-colors duration-300 font-medium">Blog</a>
                         </div>
                     <div class="flex items-center space-x-3">
                         <a href="business-register.html" class="px-3 py-2 rounded-full bg-gradient-to-r from-neon-green to-green-500 text-white font-semibold hover:from-green-500 hover:to-green-600 transition-all duration-300 text-sm">
                             <i class="fas fa-plus mr-1"></i>List Business
                         </a>
-                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
-                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
-                        </button>
-                        <button id="signupBtn" class="px-3 py-2 rounded-full bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="toggleSignupModal()">
-                            <i class="fas fa-user-plus mr-1"></i>Sign Up
-                        </button>
-                        <button id="signOutBtn" class="px-2 py-2 rounded-full border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-all duration-300 hidden" onclick="signOut()" title="Sign Out">
-                            <i class="fas fa-door-open"></i>
-                        </button>
+                        
+                        <!-- Basket Icon -->
+                        <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                            <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                            <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                        </div>
+                        
+                        <!-- Sign In Link (for guests) -->
+                        <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                            <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                                <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                            </button>
+                        </div>
+                        
+                        <!-- Customer Menu (for logged-in users) -->
+                        <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                            <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                                <span id="customerInitialText">U</span>
+                            </button>
+                            <div class="customer-dropdown" id="customerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
+                                <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                    <i class="fas fa-user"></i>
+                                    Account
+                                </a>
+                                <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Sign Out
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -168,14 +188,11 @@
                         <a href="business-register.html" class="block w-full py-3 rounded-xl bg-gradient-to-r from-neon-green to-green-500 text-white font-semibold hover:from-green-500 hover:to-green-600 transition-all duration-300 text-center" onclick="closeMobileMenu()">
                             <i class="fas fa-plus mr-2"></i>List Your Business
                         </a>
-                        <button class="block w-full py-3 rounded-xl border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 text-center" onclick="toggleLoginModal(); closeMobileMenu();">
+                        <button class="block w-full py-3 rounded-xl border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 text-center" onclick="saveBasket(); window.location.href='customer-login.html'; closeMobileMenu();">
                             <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                         </button>
-                        <button class="block w-full py-3 rounded-xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-center" onclick="toggleSignupModal(); closeMobileMenu();">
-                            <i class="fas fa-user-plus mr-2"></i>Sign Up
-                        </button>
                         <button id="mobileSignOutBtn" class="block w-full py-3 rounded-xl border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-all duration-300 text-center hidden" onclick="signOut(); closeMobileMenu();">
-                            <i class="fas fa-door-open mr-2"></i>Sign Out
+                            <i class="fas fa-sign-out-alt mr-2"></i>Sign Out
                         </button>
                     </div>
                 </div>
@@ -512,6 +529,7 @@
                         <a href="contact.html" class="hover:text-neon-pink transition-colors font-medium">Contact</a>
                         <a href="privacy.html" class="hover:text-neon-pink transition-colors font-medium">Privacy</a>
                         <a href="terms.html" class="hover:text-neon-pink transition-colors font-medium">Terms</a>
+                        <a href="blog.html" class="hover:text-neon-pink transition-colors font-medium">Blog</a>
                     </div>
                 </div>
                 <div class="flex justify-center space-x-6">
@@ -530,6 +548,140 @@
     </footer>
 
     <script>
+        // Basket management
+        const BASKET_KEY = 'blkpages_basket';
+        const GUEST_BASKET_KEY = 'blkpages_guest_basket';
+        let selectedServices = [];
+        
+        function saveBasket() {
+            const basketData = {
+                selectedServices: selectedServices,
+                timestamp: Date.now()
+            };
+            
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            if (isLoggedIn) {
+                localStorage.setItem(BASKET_KEY, JSON.stringify(basketData));
+            } else {
+                sessionStorage.setItem(GUEST_BASKET_KEY, JSON.stringify(basketData));
+            }
+        }
+        
+        function loadBasket() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            let basketData = null;
+            
+            if (isLoggedIn) {
+                const savedBasket = localStorage.getItem(BASKET_KEY);
+                if (savedBasket) basketData = JSON.parse(savedBasket);
+            } else {
+                const guestBasket = sessionStorage.getItem(GUEST_BASKET_KEY);
+                if (guestBasket) basketData = JSON.parse(guestBasket);
+            }
+            
+            if (basketData) {
+                selectedServices = basketData.selectedServices || [];
+                updateBasketCount();
+            }
+        }
+        
+        function updateBasketCount() {
+            const basketCount = document.getElementById('basketCount');
+            if (basketCount) {
+                basketCount.textContent = selectedServices.length;
+            }
+        }
+        
+        function scrollToBooking() {
+            if (selectedServices.length > 0) {
+                alert('You have ' + selectedServices.length + ' service(s) in your basket. Visit a business profile to complete your booking.');
+            } else {
+                alert('Your basket is empty. Browse businesses to add services.');
+            }
+        }
+        
+        // Customer menu functions
+        function toggleCustomerMenu() {
+            const dropdown = document.getElementById('customerDropdown');
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.style.display = 'none';
+            }
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const customerMenu = document.getElementById('customerMenu');
+            const dropdown = document.getElementById('customerDropdown');
+            
+            if (customerMenu && dropdown && !customerMenu.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+        
+        function updateNavVisibility() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const authLinks = document.getElementById('authLinks');
+            const customerMenu = document.getElementById('customerMenu');
+            const basketIcon = document.getElementById('basketIcon');
+            
+            if (isLoggedIn) {
+                if (authLinks) authLinks.style.display = 'none';
+                if (customerMenu) customerMenu.style.display = 'block';
+                if (basketIcon) basketIcon.style.display = 'flex';
+            } else {
+                if (authLinks) authLinks.style.display = 'flex';
+                if (customerMenu) customerMenu.style.display = 'none';
+                if (basketIcon) basketIcon.style.display = 'flex';
+            }
+        }
+        
+        // Check login status and show/hide customer menu
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const customerMenu = document.getElementById('customerMenu');
+            
+            if (customerMenu) {
+                if (isLoggedIn) {
+                    customerMenu.style.display = 'block';
+                    
+                    // Set customer initial
+                    const userName = localStorage.getItem('userName') || 'Demo User';
+                    const initial = userName.charAt(0).toUpperCase();
+                    document.getElementById('customerInitialText').textContent = initial;
+                } else {
+                    customerMenu.style.display = 'none';
+                }
+            }
+            
+            // Update navigation visibility
+            updateNavVisibility();
+        }
+        
+        function signOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                // Clear all user data from localStorage
+                localStorage.removeItem('userLoggedIn');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userPhone');
+                localStorage.removeItem('basketContents');
+                
+                // Show success message
+                alert('You have been signed out successfully.');
+                
+                // Reload the page
+                location.reload();
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            loadBasket();
+        });
+
         // Fade in animation on scroll
         const observerOptions = {
             threshold: 0.1,

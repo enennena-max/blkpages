@@ -118,74 +118,163 @@
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 bg-charcoal/95 backdrop-blur-md border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
+            <!-- Desktop Navigation -->
+            <div class="hidden lg:flex items-center justify-between h-16">
+                <!-- Left: Logo -->
                 <div class="flex items-center">
-                    <button onclick="goBack()" class="back-btn mr-4">
-                        <i class="fas fa-arrow-left"></i>
-                        <span>Back</span>
-                    </button>
-                    <a href="index.html" class="text-2xl font-bold text-white hover:text-neon-blue transition-colors duration-300">BlkPages</a>
-                </div>
-                <!-- Desktop Navigation -->
-                <div class="hidden lg:flex items-center space-x-8">
-                    <div class="flex items-baseline space-x-8">
-                        <a href="index.html#home" class="text-light-grey hover:text-neon-blue transition-colors duration-300 font-medium">Home</a>
-                        <a href="search-results.html" class="text-light-grey hover:text-neon-blue transition-colors duration-300 font-medium">Browse</a>
-                        <a href="offers.html" class="text-light-grey hover:text-neon-blue transition-colors duration-300 font-medium">Offers</a>
-                        <a href="blog.html" class="text-light-grey hover:text-neon-blue transition-colors duration-300 font-medium">Blog</a>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <a href="business-register.html" class="px-3 py-2 rounded-full bg-gradient-to-r from-neon-green to-green-500 text-white font-semibold hover:from-green-500 hover:to-green-600 transition-all duration-300 text-sm">
-                            <i class="fas fa-plus mr-1"></i>List Business
-                        </a>
-                        <button id="loginBtn" class="text-white hover:text-neon-blue transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
-                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
-                        </button>
-                        <button id="signupBtn" class="px-3 py-2 rounded-full bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="toggleSignupModal()">
-                            <i class="fas fa-user-plus mr-1"></i>Sign Up
-                        </button>
-                        <button id="signOutBtn" class="px-2 py-2 rounded-full border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-all duration-300 hidden" onclick="signOut()" title="Sign Out">
-                            <i class="fas fa-door-open"></i>
-                        </button>
-                    </div>
+                    <a href="index.html" class="text-2xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
                 </div>
                 
-                <!-- Mobile Hamburger Menu -->
-                <div class="lg:hidden">
-                    <button id="mobileMenuBtn" class="text-white hover:text-neon-blue transition-colors duration-300 p-2" onclick="toggleMobileMenu()">
+                <!-- Center: Main Navigation -->
+                <div class="flex items-center space-x-8">
+                    <a href="index.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Home</a>
+                    <a href="search-results.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Browse</a>
+                    <a href="offers.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Offers</a>
+                </div>
+                
+                <!-- Right: Actions -->
+                <div class="flex items-center space-x-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Customer Menu -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
+                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <i class="fas fa-user"></i>
+                                Account
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="px-3 py-2 rounded-full bg-gradient-to-r from-neon-green to-green-500 text-white font-semibold hover:from-green-500 hover:to-green-600 transition-all duration-300 text-sm">
+                        <i class="fas fa-plus mr-1"></i>List Business
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div class="lg:hidden flex items-center justify-between h-16">
+                <!-- Left: Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
+                </div>
+                
+                <!-- Right: Actions -->
+                <div class="flex items-center space-x-3">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="mobileBasketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="mobileBasketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Account Icon -->
+                    <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Customer Menu (Mobile) -->
+                    <div class="customer-menu" id="mobileCustomerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="mobileCustomerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="mobileCustomerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="mobileCustomerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
+                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <i class="fas fa-user"></i>
+                                Account
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Hamburger Menu -->
+                    <button onclick="toggleMobileMenu()" class="text-white hover:text-neon-pink transition-colors duration-300">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
             
             <!-- Mobile Menu Dropdown -->
-            <div id="mobileMenu" class="lg:hidden hidden bg-dark-grey border-t border-white/10">
-                <div class="px-4 py-6 space-y-4">
-                    <!-- Navigation Links -->
-                    <div class="space-y-3">
-                        <a href="index.html#home" class="block text-light-grey hover:text-neon-blue transition-colors duration-300 font-medium py-2" onclick="closeMobileMenu()">Home</a>
-                        <a href="search-results.html" class="block text-light-grey hover:text-neon-blue transition-colors duration-300 font-medium py-2" onclick="closeMobileMenu()">Browse</a>
-                        <a href="offers.html" class="block text-light-grey hover:text-neon-blue transition-colors duration-300 font-medium py-2" onclick="closeMobileMenu()">Offers</a>
-                        <a href="blog.html" class="block text-light-grey hover:text-neon-blue transition-colors duration-300 font-medium py-2" onclick="closeMobileMenu()">Blog</a>
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div class="pt-4 border-t border-white/10 space-y-3">
-                        <a href="business-register.html" class="block w-full py-3 rounded-xl bg-gradient-to-r from-neon-green to-green-500 text-white font-semibold hover:from-green-500 hover:to-green-600 transition-all duration-300 text-center" onclick="closeMobileMenu()">
-                            <i class="fas fa-plus mr-2"></i>List Your Business
-                        </a>
-                        <button class="block w-full py-3 rounded-xl border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 text-center" onclick="toggleLoginModal(); closeMobileMenu();">
-                            <i class="fas fa-sign-in-alt mr-2"></i>Sign In
-                        </button>
-                        <button class="block w-full py-3 rounded-xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-center" onclick="toggleSignupModal(); closeMobileMenu();">
-                            <i class="fas fa-user-plus mr-2"></i>Sign Up
-                        </button>
-                        <button id="mobileSignOutBtn" class="block w-full py-3 rounded-xl border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-all duration-300 text-center hidden" onclick="signOut(); closeMobileMenu();">
-                            <i class="fas fa-door-open mr-2"></i>Sign Out
-                        </button>
-                    </div>
+            <div id="mobileMenu" class="lg:hidden hidden bg-charcoal/95 backdrop-blur-md border-t border-white/10">
+                <div class="px-4 py-3 space-y-3">
+                    <a href="index.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium py-2">Home</a>
+                    <a href="search-results.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium py-2">Browse</a>
+                    <a href="offers.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium py-2">Offers</a>
+                    <a href="business-register.html" class="block px-3 py-2 rounded-full bg-gradient-to-r from-neon-green to-green-500 text-white font-semibold hover:from-green-500 hover:to-green-600 transition-all duration-300 text-sm text-center">
+                        <i class="fas fa-plus mr-1"></i>List Business
+                    </a>
                 </div>
             </div>
+            
+            <!-- Mobile Navigation -->
+            <div class="lg:hidden flex items-center justify-between h-16">
+                <!-- Left: Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
+                </div>
+                
+                <!-- Right: Actions -->
+                <div class="flex items-center space-x-3">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="mobileBasketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="mobileBasketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Account Icon -->
+                    <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Customer Menu (Mobile) -->
+                    <div class="customer-menu" id="mobileCustomerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="mobileCustomerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="mobileCustomerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="mobileCustomerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
+                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <i class="fas fa-user"></i>
+                                Account
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Hamburger Menu -->
+                    <button onclick="toggleMobileMenu()" class="text-white hover:text-neon-pink transition-colors duration-300">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
         </div>
     </nav>
 
@@ -194,10 +283,10 @@
         <div class="absolute inset-0 bg-black/60"></div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl md:text-6xl font-bold font-poppins gradient-text mb-4">
-                Search Results
+                Browse Businesses
             </h1>
-            <p class="text-xl text-light-grey">
-                Showing results for "Hair Salons in London"
+            <p class="text-xl text-light-grey" id="dynamicSubheading">
+                Discover amazing businesses near you
             </p>
         </div>
     </section>
@@ -262,22 +351,8 @@
                                     <span>Filters</span>
                                     <i class="fas fa-chevron-down text-sm"></i>
                                 </button>
-                                <div id="filterMenu" class="absolute top-full right-0 mt-2 w-80 bg-charcoal border border-white/20 rounded-lg shadow-lg z-10 hidden">
+                                <div id="filterMenu" class="absolute top-full right-0 mt-2 w-64 bg-charcoal border border-white/20 rounded-lg shadow-lg z-10 hidden">
                                     <div class="p-4 space-y-4">
-                                        <div>
-                                            <label class="block text-sm font-medium text-light-grey mb-2">Category</label>
-                                            <select id="categoryFilter" class="w-full px-3 py-2 bg-dark-grey border border-white/20 rounded text-white focus:border-neon-pink transition-all duration-300">
-                                                <option value="">All Categories</option>
-                                                <option value="hair">Hair Salons</option>
-                                                <option value="barber">Barbers</option>
-                                                <option value="beauty">Beauty</option>
-                                                <option value="nail">Nail Salons</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-sm font-medium text-light-grey mb-2">Location</label>
-                                            <input type="text" id="locationFilter" placeholder="Enter location" class="w-full px-3 py-2 bg-dark-grey border border-white/20 rounded text-white placeholder-light-grey focus:border-neon-pink transition-all duration-300">
-                                        </div>
                                         <div>
                                             <label class="block text-sm font-medium text-light-grey mb-2">Min Rating</label>
                                             <select id="ratingFilter" class="w-full px-3 py-2 bg-dark-grey border border-white/20 rounded text-white focus:border-neon-pink transition-all duration-300">
@@ -334,135 +409,201 @@
     <!-- Main Content - Two Column Layout -->
     <section class="py-12 bg-charcoal">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Mobile Featured Section (moved above main results) -->
+            <div class="lg:hidden mb-8">
+                <div class="bg-dark-grey rounded-2xl p-6 border border-white/10">
+                    <h3 class="text-xl font-bold text-white mb-6 font-poppins">Featured Businesses</h3>
+                    <div class="overflow-x-auto">
+                        <div class="flex space-x-4 pb-4" id="mobileFeaturedBusinessesTop" style="min-width: max-content;">
+                            <!-- Mobile featured businesses will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Main Results Column -->
                 <div class="lg:col-span-2">
                     <div class="mb-6">
-                        <h2 class="text-2xl font-bold text-white mb-2">Search Results</h2>
-                        <p class="text-light-grey">12 businesses found</p>
+                        <h2 class="text-2xl font-bold text-white mb-2" id="resultsHeading">All Businesses</h2>
+                        <p class="text-light-grey" id="resultsCount">12 businesses found</p>
                     </div>
                     
-                    <!-- Cache Test Indicator -->
-                    <div class="bg-neon-pink/20 border border-neon-pink/50 rounded-lg p-3 mb-6">
-                        <p class="text-neon-pink text-sm font-semibold">
-                            ✅ Page Updated Successfully - Changes Applied
-                        </p>
-                    </div>
                     
                     <!-- Business Listings Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Business Card 1 - Premium (with photo and booking) -->
-                        <div class="card-hover bg-dark-grey rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300">
-                            <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop&crop=center" alt="Royal Hair Studio" class="w-full h-48 object-cover rounded-xl mb-4">
-                            <div class="flex items-center justify-between mb-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="businessResults">
+                        <!-- Premium Business Card 1 -->
+                        <div class="bg-dark-grey rounded-2xl p-6 border border-white/10 card-hover">
+                            <div class="mb-4">
+                                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop&crop=center" alt="Royal Hair Studio" class="w-full h-48 object-cover rounded-lg">
+                            </div>
+                            <div class="flex items-center justify-between mb-2">
                                 <h3 class="text-xl font-bold text-white">Royal Hair Studio</h3>
-                                <span class="px-3 py-1 rounded-full text-xs font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
-                                    Hair Salon
-                                </span>
+                                <div class="flex items-center">
+                                    <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                </div>
                             </div>
-                            <div class="flex items-center text-yellow-400 mb-3">
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <span class="ml-2 text-sm font-semibold text-white">4.9</span>
-                                <span class="ml-2 text-sm text-light-grey">(127 reviews)</span>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 mr-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-light-grey text-sm">4.8 (127 reviews)</span>
                             </div>
-                            <div class="flex items-center text-light-grey mb-4">
+                            <p class="text-neon-pink text-sm font-medium mb-2">Hair Salon</p>
+                            <p class="text-light-grey text-sm mb-4 flex items-center">
                                 <i class="fas fa-map-marker-alt mr-2"></i>
-                                <span class="text-sm">123 Main Street, London</span>
-                            </div>
-                            <a href="business-profile.html" class="w-full py-3 rounded-xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow text-center block">
-                                View Profile
-                            </a>
+                                123 High Street, London SW1A 1AA
+                            </p>
+                            <button class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow">
+                                Book Now
+                            </button>
                         </div>
-                        
-                        <!-- Business Card 2 - Premium (with photo and booking) -->
-                        <div class="card-hover bg-dark-grey rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300">
-                            <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&h=250&fit=crop&crop=center" alt="Elite Barber Shop" class="w-full h-48 object-cover rounded-xl mb-4">
-                            <div class="flex items-center justify-between mb-3">
+
+                        <!-- Premium Business Card 2 -->
+                        <div class="bg-dark-grey rounded-2xl p-6 border border-white/10 card-hover">
+                            <div class="mb-4">
+                                <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=250&fit=crop&crop=center" alt="Elite Barber Shop" class="w-full h-48 object-cover rounded-lg">
+                            </div>
+                            <div class="flex items-center justify-between mb-2">
                                 <h3 class="text-xl font-bold text-white">Elite Barber Shop</h3>
-                                <span class="px-3 py-1 rounded-full text-xs font-medium bg-neon-blue/20 text-neon-blue border border-neon-blue/30">
-                                    Barber
-                                </span>
                             </div>
-                            <div class="flex items-center text-yellow-400 mb-3">
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <span class="ml-2 text-sm font-semibold text-white">4.8</span>
-                                <span class="ml-2 text-sm text-light-grey">(89 reviews)</span>
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 mr-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-light-grey text-sm">4.9 (89 reviews)</span>
                             </div>
-                            <div class="flex items-center text-light-grey mb-4">
+                            <p class="text-neon-pink text-sm font-medium mb-2">Barber Shop</p>
+                            <p class="text-light-grey text-sm mb-4 flex items-center">
                                 <i class="fas fa-map-marker-alt mr-2"></i>
-                                <span class="text-sm">456 High Street, London</span>
-                            </div>
-                            <a href="business-profile.html" class="w-full py-3 rounded-xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow text-center block">
-                                View Profile
-                            </a>
+                                456 King's Road, London SW3 4LX
+                            </p>
+                            <button class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow">
+                                Book Now
+                            </button>
                         </div>
-                        
-                        <!-- Business Card 3 - Premium (with photo and booking) -->
-                        <div class="card-hover bg-dark-grey rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300">
-                            <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=250&fit=crop&crop=center" alt="Glamour Beauty" class="w-full h-48 object-cover rounded-xl mb-4">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-xl font-bold text-white">Glamour Beauty</h3>
-                                <span class="px-3 py-1 rounded-full text-xs font-medium bg-neon-green/20 text-neon-green border border-neon-green/30">
-                                    Beauty
-                                </span>
+
+                        <!-- Premium Business Card 3 -->
+                        <div class="bg-dark-grey rounded-2xl p-6 border border-white/10 card-hover">
+                            <div class="mb-4">
+                                <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=250&fit=crop&crop=center" alt="Glamour Beauty Lounge" class="w-full h-48 object-cover rounded-lg">
                             </div>
-                            <div class="flex items-center text-yellow-400 mb-3">
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <span class="ml-2 text-sm font-semibold text-white">4.7</span>
-                                <span class="ml-2 text-sm text-light-grey">(156 reviews)</span>
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-white">Glamour Beauty Lounge</h3>
                             </div>
-                            <div class="flex items-center text-light-grey mb-4">
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400 mr-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-light-grey text-sm">4.7 (156 reviews)</span>
+                            </div>
+                            <p class="text-neon-pink text-sm font-medium mb-2">Beauty Salon</p>
+                            <p class="text-light-grey text-sm mb-4 flex items-center">
                                 <i class="fas fa-map-marker-alt mr-2"></i>
-                                <span class="text-sm">789 Queen Street, London</span>
-                            </div>
-                            <a href="business-profile.html" class="w-full py-3 rounded-xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow text-center block">
-                                View Profile
-                            </a>
+                                789 Oxford Street, London W1C 1JN
+                            </p>
+                            <button class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow">
+                                Book Now
+                            </button>
                         </div>
-                        
-                        <!-- Business Card 4 - Basic Listing (no photo, no reviews) -->
-                        <div class="card-hover bg-dark-grey rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300">
-                            <div class="flex items-center justify-between mb-3">
-                                <h3 class="text-xl font-bold text-white">Perfect Nails</h3>
-                                <span class="px-3 py-1 rounded-full text-xs font-medium bg-neon-purple/20 text-neon-purple border border-neon-purple/30">
-                                    Nail Salon
-                                </span>
+
+                        <!-- Basic Business Card 1 -->
+                        <div class="bg-dark-grey rounded-2xl p-6 border border-white/10">
+                            <div class="mb-4">
+                                <h3 class="text-xl font-bold text-white mb-2">Classic Cuts</h3>
+                                <p class="text-light-grey text-sm mb-3">Traditional barber shop with experienced stylists</p>
                             </div>
-                            <div class="flex items-center text-light-grey mb-4">
-                                <i class="fas fa-map-marker-alt mr-2"></i>
-                                <span class="text-sm">321 Beauty Lane, London</span>
+                            <div class="space-y-2 mb-4">
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-map-marker-alt mr-2 w-4"></i>
+                                    321 Baker Street, London NW1 6XE
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-phone mr-2 w-4"></i>
+                                    020 7123 4567
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-envelope mr-2 w-4"></i>
+                                    info@classiccuts.co.uk
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-clock mr-2 w-4"></i>
+                                    Mon-Fri: 9am-6pm, Sat: 9am-4pm
+                                </p>
                             </div>
-                            <div class="flex items-center text-light-grey mb-4">
-                                <i class="fas fa-phone mr-2"></i>
-                                <span class="text-sm">+44 20 7654 3210</span>
+                            <div class="text-center">
+                                <p class="text-light-grey text-sm mb-3">Contact the business directly for enquiries</p>
                             </div>
-                            <div class="flex items-center text-light-grey mb-4">
-                                <i class="fas fa-envelope mr-2"></i>
-                                <span class="text-sm">info@perfectnails.com</span>
+                        </div>
+
+                        <!-- Basic Business Card 2 -->
+                        <div class="bg-dark-grey rounded-2xl p-6 border border-white/10">
+                            <div class="mb-4">
+                                <h3 class="text-xl font-bold text-white mb-2">Natural Hair Care</h3>
+                                <p class="text-light-grey text-sm mb-3">Specializing in natural hair treatments and styling</p>
                             </div>
-                            <div class="flex items-center text-light-grey mb-4">
-                                <i class="fab fa-instagram mr-2"></i>
-                                <span class="text-sm">@perfectnails_london</span>
+                            <div class="space-y-2 mb-4">
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-map-marker-alt mr-2 w-4"></i>
+                                    654 Brixton Road, London SW9 8AD
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-phone mr-2 w-4"></i>
+                                    020 8765 4321
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-envelope mr-2 w-4"></i>
+                                    hello@naturalhaircare.com
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-clock mr-2 w-4"></i>
+                                    Tue-Sat: 10am-7pm
+                                </p>
                             </div>
-                            <div class="flex items-center text-light-grey mb-4">
-                                <i class="fab fa-tiktok mr-2"></i>
-                                <span class="text-sm">@perfectnails_uk</span>
+                            <div class="text-center">
+                                <p class="text-light-grey text-sm mb-3">Contact the business directly for enquiries</p>
                             </div>
-                            <a href="business-profile.html" class="w-full py-3 rounded-xl border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 text-center block">
-                                View Profile
-                            </a>
+                        </div>
+
+                        <!-- Basic Business Card 3 -->
+                        <div class="bg-dark-grey rounded-2xl p-6 border border-white/10">
+                            <div class="mb-4">
+                                <h3 class="text-xl font-bold text-white mb-2">Style Studio</h3>
+                                <p class="text-light-grey text-sm mb-3">Full-service hair and beauty salon</p>
+                            </div>
+                            <div class="space-y-2 mb-4">
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-map-marker-alt mr-2 w-4"></i>
+                                    987 Camden High Street, London NW1 7JE
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-phone mr-2 w-4"></i>
+                                    020 9876 5432
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-envelope mr-2 w-4"></i>
+                                    bookings@stylestudio.co.uk
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-clock mr-2 w-4"></i>
+                                    Mon-Sat: 9am-8pm, Sun: 10am-5pm
+                                </p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-light-grey text-sm mb-3">Contact the business directly for enquiries</p>
+                            </div>
                         </div>
                     </div>
                     
@@ -488,91 +629,171 @@
                 
                 <!-- Sidebar - Featured Businesses -->
                 <div class="lg:col-span-1">
-                    <div class="bg-dark-grey rounded-2xl p-6 border border-white/10">
+                    <!-- Desktop Featured Section -->
+                    <div class="hidden lg:block bg-dark-grey rounded-2xl p-6 border border-white/10">
                         <h3 class="text-xl font-bold text-white mb-6 font-poppins">Featured Businesses</h3>
-                        
-                        <div class="space-y-4">
+                        <div class="space-y-4" id="featuredBusinesses">
                             <!-- Featured Business 1 -->
-                            <div class="card-hover bg-charcoal rounded-xl p-4 border border-white/10 hover:border-neon-pink/50 transition-all duration-300">
-                                <div class="flex items-start space-x-3">
-                                    <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=80&h=80&fit=crop&crop=center" alt="Royal Hair Studio" class="w-16 h-16 object-cover rounded-lg">
-                                    <div class="flex-1">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <h4 class="text-sm font-bold text-white">Royal Hair Studio</h4>
-                                            <span class="px-2 py-1 rounded-full text-xs font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
-                                                Featured
-                                            </span>
-                                        </div>
-                                        <p class="text-xs text-light-grey mb-2">Premium hair styling services</p>
-                                        <div class="flex items-center text-yellow-400 mb-3">
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <span class="ml-1 text-xs font-semibold text-white">4.9</span>
-                                            <span class="ml-1 text-xs text-light-grey">(127)</span>
-                                        </div>
-                                        <a href="business-profile.html" class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-xs text-center block">
-                                            View Profile
-                                        </a>
-                                    </div>
+                            <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover">
+                                <div class="mb-3">
+                                    <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=150&fit=crop&crop=center" alt="Royal Hair Studio" class="w-full h-32 object-cover rounded-lg">
                                 </div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-lg font-bold text-white">Royal Hair Studio</h4>
+                                    <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <div class="flex text-yellow-400 mr-2">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-light-grey text-xs">4.8 (127)</span>
+                                </div>
+                                <p class="text-neon-pink text-xs font-medium mb-2">Hair Salon</p>
+                                <p class="text-light-grey text-xs mb-3">123 High Street, London</p>
+                                <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm">
+                                    Book Now
+                                </button>
                             </div>
-                            
+
                             <!-- Featured Business 2 -->
-                            <div class="card-hover bg-charcoal rounded-xl p-4 border border-white/10 hover:border-neon-pink/50 transition-all duration-300">
-                                <div class="flex items-start space-x-3">
-                                    <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=80&h=80&fit=crop&crop=center" alt="Elite Barber Shop" class="w-16 h-16 object-cover rounded-lg">
-                                    <div class="flex-1">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <h4 class="text-sm font-bold text-white">Elite Barber Shop</h4>
-                                            <span class="px-2 py-1 rounded-full text-xs font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
-                                                Featured
-                                            </span>
-                                        </div>
-                                        <p class="text-xs text-light-grey mb-2">Professional barbering services</p>
-                                        <div class="flex items-center text-yellow-400 mb-3">
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <span class="ml-1 text-xs font-semibold text-white">4.8</span>
-                                            <span class="ml-1 text-xs text-light-grey">(89)</span>
-                                        </div>
-                                        <a href="business-profile.html" class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-xs text-center block">
-                                            View Profile
-                                        </a>
-                                    </div>
+                            <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover">
+                                <div class="mb-3">
+                                    <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=150&fit=crop&crop=center" alt="Elite Barber Shop" class="w-full h-32 object-cover rounded-lg">
                                 </div>
-                            </div>
-                            
-                            <!-- Featured Business 3 -->
-                            <div class="card-hover bg-charcoal rounded-xl p-4 border border-white/10 hover:border-neon-pink/50 transition-all duration-300">
-                                <div class="flex items-start space-x-3">
-                                    <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=80&h=80&fit=crop&crop=center" alt="Glamour Beauty" class="w-16 h-16 object-cover rounded-lg">
-                                    <div class="flex-1">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <h4 class="text-sm font-bold text-white">Glamour Beauty</h4>
-                                            <span class="px-2 py-1 rounded-full text-xs font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
-                                                Featured
-                                            </span>
-                                        </div>
-                                        <p class="text-xs text-light-grey mb-2">Luxury beauty treatments</p>
-                                        <div class="flex items-center text-yellow-400 mb-3">
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <span class="ml-1 text-xs font-semibold text-white">4.7</span>
-                                            <span class="ml-1 text-xs text-light-grey">(156)</span>
-                                        </div>
-                                        <a href="business-profile.html" class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-xs text-center block">
-                                            View Profile
-                                        </a>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-lg font-bold text-white">Elite Barber Shop</h4>
+                                    <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <div class="flex text-yellow-400 mr-2">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
                                     </div>
+                                    <span class="text-light-grey text-xs">4.9 (89)</span>
+                                </div>
+                                <p class="text-neon-pink text-xs font-medium mb-2">Barber Shop</p>
+                                <p class="text-light-grey text-xs mb-3">456 King's Road, London</p>
+                                <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm">
+                                    Book Now
+                                </button>
+                            </div>
+
+                            <!-- Featured Business 3 -->
+                            <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover">
+                                <div class="mb-3">
+                                    <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=300&h=150&fit=crop&crop=center" alt="Glamour Beauty Lounge" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-lg font-bold text-white">Glamour Beauty Lounge</h4>
+                                    <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <div class="flex text-yellow-400 mr-2">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-light-grey text-xs">4.7 (156)</span>
+                                </div>
+                                <p class="text-neon-pink text-xs font-medium mb-2">Beauty Salon</p>
+                                <p class="text-light-grey text-xs mb-3">789 Oxford Street, London</p>
+                                <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm">
+                                    Book Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Featured Section -->
+                    <div class="lg:hidden bg-dark-grey rounded-2xl p-6 border border-white/10 mb-8">
+                        <h3 class="text-xl font-bold text-white mb-6 font-poppins">Featured Businesses</h3>
+                        <div class="overflow-x-auto">
+                            <div class="flex space-x-4 pb-4" id="mobileFeaturedBusinesses" style="min-width: max-content;">
+                                <!-- Mobile Featured Business 1 -->
+                                <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover flex-shrink-0" style="width: 280px;">
+                                    <div class="mb-3">
+                                        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=150&fit=crop&crop=center" alt="Royal Hair Studio" class="w-full h-32 object-cover rounded-lg">
+                                    </div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="text-lg font-bold text-white">Royal Hair Studio</h4>
+                                        <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                    </div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                        </div>
+                                        <span class="text-light-grey text-xs">4.8 (127)</span>
+                                    </div>
+                                    <p class="text-neon-pink text-xs font-medium mb-2">Hair Salon</p>
+                                    <p class="text-light-grey text-xs mb-3">123 High Street, London</p>
+                                    <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm">
+                                        Book Now
+                                    </button>
+                                </div>
+
+                                <!-- Mobile Featured Business 2 -->
+                                <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover flex-shrink-0" style="width: 280px;">
+                                    <div class="mb-3">
+                                        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=150&fit=crop&crop=center" alt="Elite Barber Shop" class="w-full h-32 object-cover rounded-lg">
+                                    </div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="text-lg font-bold text-white">Elite Barber Shop</h4>
+                                        <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                    </div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                        </div>
+                                        <span class="text-light-grey text-xs">4.9 (89)</span>
+                                    </div>
+                                    <p class="text-neon-pink text-xs font-medium mb-2">Barber Shop</p>
+                                    <p class="text-light-grey text-xs mb-3">456 King's Road, London</p>
+                                    <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm">
+                                        Book Now
+                                    </button>
+                                </div>
+
+                                <!-- Mobile Featured Business 3 -->
+                                <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover flex-shrink-0" style="width: 280px;">
+                                    <div class="mb-3">
+                                        <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=300&h=150&fit=crop&crop=center" alt="Glamour Beauty Lounge" class="w-full h-32 object-cover rounded-lg">
+                                    </div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="text-lg font-bold text-white">Glamour Beauty Lounge</h4>
+                                        <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                    </div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                        </div>
+                                        <span class="text-light-grey text-xs">4.7 (156)</span>
+                                    </div>
+                                    <p class="text-neon-pink text-xs font-medium mb-2">Beauty Salon</p>
+                                    <p class="text-light-grey text-xs mb-3">789 Oxford Street, London</p>
+                                    <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm">
+                                        Book Now
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -589,6 +810,13 @@
                 <div class="mb-8">
                     <h3 class="text-2xl font-bold font-poppins gradient-text mb-4">BlkPages</h3>
                     <p class="text-light-grey mb-8">© 2025 BlkPages – Supporting Black-owned Businesses</p>
+                    <div class="flex justify-center space-x-8 text-light-grey mb-6">
+                        <a href="about.html" class="hover:text-neon-blue transition-colors font-medium">About</a>
+                        <a href="contact.html" class="hover:text-neon-blue transition-colors font-medium">Contact</a>
+                        <a href="privacy.html" class="hover:text-neon-blue transition-colors font-medium">Privacy</a>
+                        <a href="terms.html" class="hover:text-neon-blue transition-colors font-medium">Terms</a>
+                        <a href="blog.html" class="hover:text-neon-blue transition-colors font-medium">Blog</a>
+                    </div>
                     <div class="max-w-4xl mx-auto mb-6">
                         <p class="text-xs text-light-grey leading-relaxed">
                             <strong>Disclaimer:</strong> BlkPages is a third-party directory and booking facilitator. Each business listed on our platform is an independent provider and is solely responsible for its own services, pricing, availability, and cancellation or refund policies. By booking through BlkPages, you agree that any cancellations, changes, or disputes must be resolved directly with the business.
@@ -631,9 +859,142 @@
             alert('Signup modal would open here');
         }
         
-        function signOut() {
-            alert('Sign out functionality');
+        // Basket management
+        const BASKET_KEY = 'blkpages_basket';
+        const GUEST_BASKET_KEY = 'blkpages_guest_basket';
+        let selectedServices = [];
+        
+        function saveBasket() {
+            const basketData = {
+                selectedServices: selectedServices,
+                timestamp: Date.now()
+            };
+            
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            if (isLoggedIn) {
+                localStorage.setItem(BASKET_KEY, JSON.stringify(basketData));
+            } else {
+                sessionStorage.setItem(GUEST_BASKET_KEY, JSON.stringify(basketData));
+            }
+            
+            // Store current page as referrer for login redirect
+            localStorage.setItem('loginReferrer', window.location.pathname);
         }
+        
+        function loadBasket() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            let basketData = null;
+            
+            if (isLoggedIn) {
+                const savedBasket = localStorage.getItem(BASKET_KEY);
+                if (savedBasket) basketData = JSON.parse(savedBasket);
+            } else {
+                const guestBasket = sessionStorage.getItem(GUEST_BASKET_KEY);
+                if (guestBasket) basketData = JSON.parse(guestBasket);
+            }
+            
+            if (basketData) {
+                selectedServices = basketData.selectedServices || [];
+                updateBasketCount();
+            }
+        }
+        
+        function updateBasketCount() {
+            const basketCount = document.getElementById('basketCount');
+            if (basketCount) {
+                basketCount.textContent = selectedServices.length;
+            }
+        }
+        
+        function scrollToBooking() {
+            if (selectedServices.length > 0) {
+                alert('You have ' + selectedServices.length + ' service(s) in your basket. Visit a business profile to complete your booking.');
+            } else {
+                alert('Your basket is empty. Browse businesses to add services.');
+            }
+        }
+        
+        // Customer menu functions
+        function toggleCustomerMenu() {
+            const dropdown = document.getElementById('customerDropdown');
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.style.display = 'none';
+            }
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const customerMenu = document.getElementById('customerMenu');
+            const dropdown = document.getElementById('customerDropdown');
+            
+            if (customerMenu && dropdown && !customerMenu.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+        
+        // Check login status and show/hide customer menu
+        function updateNavVisibility() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const authLinks = document.getElementById('authLinks');
+            const customerMenu = document.getElementById('customerMenu');
+            const basketIcon = document.getElementById('basketIcon');
+            
+            if (isLoggedIn) {
+                if (authLinks) authLinks.style.display = 'none';
+                if (customerMenu) customerMenu.style.display = 'block';
+                if (basketIcon) basketIcon.style.display = 'flex';
+            } else {
+                if (authLinks) authLinks.style.display = 'flex';
+                if (customerMenu) customerMenu.style.display = 'none';
+                if (basketIcon) basketIcon.style.display = 'flex';
+            }
+        }
+        
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const customerMenu = document.getElementById('customerMenu');
+            
+            if (customerMenu) {
+                if (isLoggedIn) {
+                    customerMenu.style.display = 'block';
+                    
+                    // Set customer initial
+                    const userName = localStorage.getItem('userName') || 'Demo User';
+                    const initial = userName.charAt(0).toUpperCase();
+                    document.getElementById('customerInitialText').textContent = initial;
+                } else {
+                    customerMenu.style.display = 'none';
+                }
+            }
+            
+            // Update navigation visibility
+            updateNavVisibility();
+        }
+        
+        function signOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                // Clear all user data from localStorage
+                localStorage.removeItem('userLoggedIn');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userPhone');
+                localStorage.removeItem('basketContents');
+                
+                // Show success message
+                alert('You have been signed out successfully.');
+                
+                // Reload the page
+                location.reload();
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            loadBasket();
+        });
 
         // Fade in animation on scroll
         const observerOptions = {
@@ -653,14 +1014,88 @@
             observer.observe(section);
         });
 
-        // Business data for search functionality
+        // Business data for search functionality with premium/basic tiers
         const businessData = [
-            { name: "Royal Hair Studio", category: "hair", rating: 4.9, location: "123 Main Street, London", image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop&crop=center" },
-            { name: "Elite Barber Shop", category: "barber", rating: 4.8, location: "456 High Street, London", image: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&h=250&fit=crop&crop=center" },
-            { name: "Glamour Beauty", category: "beauty", rating: 4.7, location: "789 Queen Street, London", image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=250&fit=crop&crop=center" },
-            { name: "Perfect Nails", category: "nail", rating: 4.6, location: "321 Beauty Lane, London", image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=250&fit=crop&crop=center" },
-            { name: "Royal Beauty Bar", category: "beauty", rating: 4.5, location: "555 Fashion Ave, London", image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=250&fit=crop&crop=center" },
-            { name: "Elite Hair Design", category: "hair", rating: 4.8, location: "777 Style Street, London", image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop&crop=center" }
+            // Premium businesses (with photos, ratings, booking)
+            { 
+                name: "Royal Hair Studio", 
+                category: "hair", 
+                rating: 4.9, 
+                reviews: 127,
+                location: "123 Main Street, London", 
+                image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop&crop=center",
+                subscription: "premium",
+                hasPhoto: true,
+                hasBooking: true,
+                featured: true
+            },
+            { 
+                name: "Elite Barber Shop", 
+                category: "barber", 
+                rating: 4.8, 
+                reviews: 89,
+                location: "456 High Street, London", 
+                image: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&h=250&fit=crop&crop=center",
+                subscription: "premium",
+                hasPhoto: true,
+                hasBooking: true,
+                featured: true
+            },
+            { 
+                name: "Glamour Beauty", 
+                category: "beauty", 
+                rating: 4.7, 
+                reviews: 156,
+                location: "789 Queen Street, London", 
+                image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=250&fit=crop&crop=center",
+                subscription: "premium",
+                hasPhoto: true,
+                hasBooking: true,
+                featured: true
+            },
+            // Basic businesses (no photos, no ratings, contact info only)
+            { 
+                name: "Perfect Nails", 
+                category: "nail", 
+                location: "321 Beauty Lane, London",
+                phone: "+44 20 7654 3210",
+                email: "info@perfectnails.com",
+                instagram: "@perfectnails_london",
+                tiktok: "@perfectnails_uk",
+                hours: "Mon-Fri: 9AM-7PM, Sat: 9AM-6PM, Sun: 10AM-5PM",
+                subscription: "basic",
+                hasPhoto: false,
+                hasBooking: false,
+                featured: false
+            },
+            { 
+                name: "Style & Grace Hair", 
+                category: "hair", 
+                location: "555 Fashion Ave, London",
+                phone: "+44 20 9876 5432",
+                email: "hello@styleandgrace.com",
+                instagram: "@styleandgrace_hair",
+                tiktok: "@styleandgrace_uk",
+                hours: "Tue-Sat: 10AM-8PM, Sun: 11AM-6PM",
+                subscription: "basic",
+                hasPhoto: false,
+                hasBooking: false,
+                featured: false
+            },
+            { 
+                name: "Urban Barber Co", 
+                category: "barber", 
+                location: "777 Style Street, London",
+                phone: "+44 20 1122 3344",
+                email: "book@urbanbarber.co.uk",
+                instagram: "@urbanbarber_co",
+                tiktok: "@urbanbarber_london",
+                hours: "Mon-Sat: 9AM-7PM, Sun: 10AM-5PM",
+                subscription: "basic",
+                hasPhoto: false,
+                hasBooking: false,
+                featured: false
+            }
         ];
 
         // Track if search has been performed
@@ -785,15 +1220,23 @@
         }
 
         function displaySearchResults(businesses) {
-            const resultsContainer = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.gap-6');
+            const resultsContainer = document.getElementById('businessResults');
             const resultsCount = document.querySelector('.text-light-grey');
             
             if (businesses.length === 0) {
                 resultsContainer.innerHTML = `
                     <div class="col-span-2 bg-dark-grey rounded-2xl p-8 border border-white/10 text-center">
                         <i class="fas fa-search text-4xl text-light-grey mb-4"></i>
-                        <h3 class="text-xl font-bold text-white mb-2">No businesses found</h3>
-                        <p class="text-light-grey mb-6">Try adjusting your search criteria or clearing filters</p>
+                        <h3 class="text-xl font-bold text-white mb-2">No results found</h3>
+                        <p class="text-light-grey mb-4">Try broadening your filters or search area.</p>
+                        <div class="text-sm text-light-grey mb-6">
+                            <p class="mb-2">Suggestions:</p>
+                            <ul class="text-left max-w-md mx-auto">
+                                <li>• Try different keywords or categories</li>
+                                <li>• Expand your search radius</li>
+                                <li>• Check nearby areas</li>
+                            </ul>
+                        </div>
                         <button onclick="clearAllFilters()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
                             Clear All Filters
                         </button>
@@ -806,9 +1249,7 @@
             resultsCount.textContent = `${businesses.length} businesses found`;
 
             resultsContainer.innerHTML = businesses.map(business => {
-                // Determine if business has premium features (photo and booking)
-                const isPremium = business.subscription === 'premium' || business.hasPhoto || business.hasBooking;
-                const hasBooking = business.subscription === 'premium' || business.hasBooking;
+                const isPremium = business.subscription === 'premium';
                 const categoryColor = business.category === 'hair' ? 'neon-pink' : 
                                      business.category === 'barber' ? 'neon-blue' : 
                                      business.category === 'beauty' ? 'neon-green' : 'neon-purple';
@@ -816,47 +1257,79 @@
                                    business.category === 'barber' ? 'fas fa-cut' : 
                                    business.category === 'beauty' ? 'fas fa-spa' : 'fas fa-star';
                 
-                return `
-                <div class="card-hover bg-dark-grey rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300">
-                    ${isPremium ? 
-                        `<img src="${business.image}" alt="${business.name}" class="w-full h-48 object-cover rounded-xl mb-4">` :
-                        `<div class="bg-gradient-to-br from-${categoryColor}/20 to-neon-purple/20 h-48 rounded-xl mb-4 flex items-center justify-center">
-                            <div class="text-center">
-                                <i class="${categoryIcon} text-4xl text-${categoryColor} mb-2"></i>
-                                <p class="text-light-grey text-sm">Photo not available</p>
+                if (isPremium) {
+                    // Premium card with photo, ratings, and Book Now button
+                    return `
+                    <div class="card-hover bg-dark-grey rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300" role="article" aria-label="Premium business listing for ${business.name}">
+                        <img src="${business.image}" alt="${business.name} - ${business.category} salon" class="w-full h-48 object-cover rounded-xl mb-4" loading="lazy">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xl font-bold text-white">${business.name}</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-${categoryColor}/20 text-${categoryColor} border border-${categoryColor}/30">
+                                ${business.category.charAt(0).toUpperCase() + business.category.slice(1)}
+                            </span>
+                        </div>
+                        <div class="flex items-center text-yellow-400 mb-3" aria-label="Rating: ${business.rating} out of 5 stars">
+                            <i class="fas fa-star text-sm" aria-hidden="true"></i>
+                            <i class="fas fa-star text-sm" aria-hidden="true"></i>
+                            <i class="fas fa-star text-sm" aria-hidden="true"></i>
+                            <i class="fas fa-star text-sm" aria-hidden="true"></i>
+                            <i class="fas fa-star text-sm" aria-hidden="true"></i>
+                            <span class="ml-2 text-sm font-semibold text-white">${business.rating}</span>
+                            <span class="ml-2 text-sm text-light-grey">(${business.reviews} reviews)</span>
+                        </div>
+                        <div class="flex items-center text-light-grey mb-4">
+                            <i class="fas fa-map-marker-alt mr-2" aria-hidden="true"></i>
+                            <span class="text-sm">${business.location}</span>
+                        </div>
+                        <a href="business-profile.html" class="w-full py-3 rounded-xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow text-center block" aria-label="Book appointment with ${business.name}">
+                            Book Now
+                        </a>
+                    </div>
+                `;
+                } else {
+                    // Basic card with contact info only
+                    return `
+                    <div class="card-hover bg-dark-grey rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300" role="article" aria-label="Basic business listing for ${business.name}">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-white">${business.name}</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-${categoryColor}/20 text-${categoryColor} border border-${categoryColor}/30">
+                                ${business.category.charAt(0).toUpperCase() + business.category.slice(1)}
+                            </span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-center text-light-grey">
+                                <i class="fas fa-map-marker-alt mr-3 w-4" aria-hidden="true"></i>
+                                <span class="text-sm">${business.location}</span>
                             </div>
-                        </div>`
-                    }
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-xl font-bold text-white">${business.name}</h3>
-                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-${categoryColor}/20 text-${categoryColor} border border-${categoryColor}/30">
-                            ${business.category.charAt(0).toUpperCase() + business.category.slice(1)}
-                        </span>
+                            <div class="flex items-center text-light-grey">
+                                <i class="fas fa-phone mr-3 w-4" aria-hidden="true"></i>
+                                <a href="tel:${business.phone}" class="text-sm hover:text-neon-blue transition-colors">${business.phone}</a>
+                            </div>
+                            <div class="flex items-center text-light-grey">
+                                <i class="fas fa-envelope mr-3 w-4" aria-hidden="true"></i>
+                                <a href="mailto:${business.email}" class="text-sm hover:text-neon-blue transition-colors">${business.email}</a>
+                            </div>
+                            <div class="flex items-center text-light-grey">
+                                <i class="fab fa-instagram mr-3 w-4" aria-hidden="true"></i>
+                                <span class="text-sm">${business.instagram}</span>
+                            </div>
+                            <div class="flex items-center text-light-grey">
+                                <i class="fab fa-tiktok mr-3 w-4" aria-hidden="true"></i>
+                                <span class="text-sm">${business.tiktok}</span>
+                            </div>
+                            <div class="flex items-center text-light-grey">
+                                <i class="fas fa-clock mr-3 w-4" aria-hidden="true"></i>
+                                <span class="text-sm">${business.hours}</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-charcoal/50 rounded-lg border border-white/10">
+                            <p class="text-sm text-light-grey text-center">
+                                Contact the business directly for enquiries.
+                            </p>
+                        </div>
                     </div>
-                    <div class="flex items-center text-yellow-400 mb-3">
-                        <i class="fas fa-star text-sm"></i>
-                        <i class="fas fa-star text-sm"></i>
-                        <i class="fas fa-star text-sm"></i>
-                        <i class="fas fa-star text-sm"></i>
-                        <i class="fas fa-star text-sm"></i>
-                        <span class="ml-2 text-sm font-semibold text-white">${business.rating}</span>
-                        <span class="ml-2 text-sm text-light-grey">(${Math.floor(Math.random() * 200) + 50} reviews)</span>
-                    </div>
-                    <div class="flex items-center text-light-grey mb-4">
-                        <i class="fas fa-map-marker-alt mr-2"></i>
-                        <span class="text-sm">${business.location}</span>
-                    </div>
-                    ${!hasBooking ? `
-                    <div class="flex items-center text-light-grey mb-4">
-                        <i class="fas fa-phone mr-2"></i>
-                        <span class="text-sm">${business.phone || '+44 20 1234 5678'}</span>
-                    </div>
-                    ` : ''}
-                    <a href="business-profile.html" class="w-full py-3 rounded-xl ${hasBooking ? 'bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow' : 'border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300'} text-center block">
-                        View Profile
-                    </a>
-                </div>
-            `;
+                `;
+                }
             }).join('');
         }
 
@@ -882,6 +1355,81 @@
             // Show advanced controls after any search is performed
             hasSearched = true;
             showAdvancedControls();
+        }
+
+        // Populate featured businesses
+        function populateFeaturedBusinesses() {
+            const featuredBusinesses = businessData.filter(business => business.featured);
+            const desktopContainer = document.getElementById('featuredBusinesses');
+            const mobileContainer = document.getElementById('mobileFeaturedBusinesses');
+            const mobileTopContainer = document.getElementById('mobileFeaturedBusinessesTop');
+            
+            // Desktop featured businesses
+            if (desktopContainer) {
+                desktopContainer.innerHTML = featuredBusinesses.map(business => `
+                    <div class="card-hover bg-charcoal rounded-xl p-4 border border-white/10 hover:border-neon-pink/50 transition-all duration-300" role="article" aria-label="Featured business: ${business.name}">
+                        <div class="flex items-start space-x-3">
+                            <img src="${business.image}" alt="${business.name}" class="w-16 h-16 object-cover rounded-lg" loading="lazy">
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-sm font-bold text-white">${business.name}</h4>
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
+                                        Featured
+                                    </span>
+                                </div>
+                                <p class="text-xs text-light-grey mb-2">Premium ${business.category} services</p>
+                                <div class="flex items-center text-yellow-400 mb-3" aria-label="Rating: ${business.rating} out of 5 stars">
+                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                                    <span class="ml-1 text-xs font-semibold text-white">${business.rating}</span>
+                                    <span class="ml-1 text-xs text-light-grey">(${business.reviews})</span>
+                                </div>
+                                <a href="business-profile.html" class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-xs text-center block" aria-label="Book appointment with ${business.name}">
+                                    Book Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Mobile featured businesses (horizontal scroll) - both containers
+            const mobileFeaturedHTML = featuredBusinesses.map(business => `
+                <div class="card-hover bg-charcoal rounded-xl p-4 border border-white/10 hover:border-neon-pink/50 transition-all duration-300 flex-shrink-0" style="width: 280px;" role="article" aria-label="Featured business: ${business.name}">
+                    <div class="flex flex-col">
+                        <img src="${business.image}" alt="${business.name}" class="w-full h-32 object-cover rounded-lg mb-3" loading="lazy">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="text-sm font-bold text-white">${business.name}</h4>
+                            <span class="px-2 py-1 rounded-full text-xs font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
+                                Featured
+                            </span>
+                        </div>
+                        <p class="text-xs text-light-grey mb-2">Premium ${business.category} services</p>
+                        <div class="flex items-center text-yellow-400 mb-3" aria-label="Rating: ${business.rating} out of 5 stars">
+                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                            <span class="ml-1 text-xs font-semibold text-white">${business.rating}</span>
+                            <span class="ml-1 text-xs text-light-grey">(${business.reviews})</span>
+                        </div>
+                        <a href="business-profile.html" class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-xs text-center block" aria-label="Book appointment with ${business.name}">
+                            Book Now
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+            
+            if (mobileContainer) {
+                mobileContainer.innerHTML = mobileFeaturedHTML;
+            }
+            if (mobileTopContainer) {
+                mobileTopContainer.innerHTML = mobileFeaturedHTML;
+            }
         }
 
         // Initialize page
@@ -922,6 +1470,7 @@
 
             // Initialize with all businesses and hidden advanced controls
             displaySearchResults(businessData);
+            populateFeaturedBusinesses();
             hideAdvancedControls();
         });
 
@@ -934,6 +1483,500 @@
                 window.location.href = 'index.html';
             }
         }
+
+        // Modal functions
+        function toggleLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.toggle('hidden');
+            
+            // Store current page as referrer when opening login modal
+            if (!modal.classList.contains('hidden')) {
+                localStorage.setItem('loginReferrer', window.location.pathname);
+            }
+        }
+
+        function toggleSignupModal() {
+            const modal = document.getElementById('signupModal');
+            modal.classList.toggle('hidden');
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            console.log('Login attempt:', email, password);
+            
+            // Demo credentials check
+            if (email === 'customer@example.com' && password === 'password123') {
+                console.log('Credentials valid, logging in...');
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', 'Demo Customer');
+                
+                // Close modal
+                toggleLoginModal();
+                
+                // Show success message
+                alert('Login successful! Redirecting...');
+                
+                // Redirect to referring page or dashboard
+                setTimeout(() => {
+                    console.log('Attempting redirect...');
+                    const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
+                    localStorage.removeItem('loginReferrer');
+                    window.location.replace(referringPage);
+                }, 500);
+                
+            } else {
+                alert('Invalid credentials. Use the demo credentials: customer@example.com / password123');
+            }
+        }
+
+        // Handle signup
+        function handleSignup(event) {
+            event.preventDefault();
+            const name = event.target.querySelector('input[type="text"]').value;
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            console.log('Signup attempt:', name, email, password);
+            
+            // Demo signup - just log them in
+            localStorage.setItem('userLoggedIn', 'true');
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userName', name);
+            
+            // Close modal
+            toggleSignupModal();
+            
+            // Show success message
+            alert('Account created successfully! Redirecting...');
+            
+            // Redirect to referring page or dashboard
+            setTimeout(() => {
+                console.log('Attempting redirect...');
+                const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
+                localStorage.removeItem('loginReferrer');
+                window.location.replace(referringPage);
+            }, 500);
+        }
+    </script>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold gradient-text">Login</h3>
+                    <button onclick="toggleLoginModal()" class="text-white/70 hover:text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="mb-4">
+                        <label class="block text-white/70 mb-2">Email</label>
+                        <input type="email" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="customer@example.com">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-white/70 mb-2">Password</label>
+                        <input type="password" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="password123">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
+                        Login
+                    </button>
+                </form>
+                <p class="text-center text-white/70 mt-4">
+                    Don't have an account? 
+                    <button onclick="toggleSignupModal(); toggleLoginModal();" class="text-neon-pink hover:underline">Sign up</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold gradient-text">Sign Up</h3>
+                    <button onclick="toggleSignupModal()" class="text-white/70 hover:text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="signupForm" onsubmit="handleSignup(event)">
+                    <div class="mb-4">
+                        <label class="block text-white/70 mb-2">Full Name</label>
+                        <input type="text" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="John Doe">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-white/70 mb-2">Email</label>
+                        <input type="email" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="customer@example.com">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-white/70 mb-2">Password</label>
+                        <input type="password" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="password123">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
+                        Sign Up
+                    </button>
+                </form>
+                <p class="text-center text-white/70 mt-4">
+                    Already have an account? 
+                    <button onclick="toggleLoginModal(); toggleSignupModal();" class="text-neon-pink hover:underline">Login</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functions
+        function updateNavVisibility() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const userName = localStorage.getItem('userName') || 'User';
+            const userInitial = userName.charAt(0).toUpperCase();
+            
+            // Desktop elements
+            const authLinks = document.getElementById('authLinks');
+            const customerMenu = document.getElementById('customerMenu');
+            const customerInitialText = document.getElementById('customerInitialText');
+            const basketIcon = document.getElementById('basketIcon');
+            
+            // Mobile elements
+            const mobileAuthLinks = document.getElementById('mobileAuthLinks');
+            const mobileCustomerMenu = document.getElementById('mobileCustomerMenu');
+            const mobileCustomerInitialText = document.getElementById('mobileCustomerInitialText');
+            const mobileBasketIcon = document.getElementById('mobileBasketIcon');
+            
+            if (isLoggedIn) {
+                // Show customer menu, hide sign in
+                if (authLinks) authLinks.style.display = 'none';
+                if (customerMenu) customerMenu.style.display = 'block';
+                if (customerInitialText) customerInitialText.textContent = userInitial;
+                
+                // Mobile
+                if (mobileAuthLinks) mobileAuthLinks.style.display = 'none';
+                if (mobileCustomerMenu) mobileCustomerMenu.style.display = 'block';
+                if (mobileCustomerInitialText) mobileCustomerInitialText.textContent = userInitial;
+            } else {
+                // Show sign in, hide customer menu
+                if (authLinks) authLinks.style.display = 'flex';
+                if (customerMenu) customerMenu.style.display = 'none';
+                
+                // Mobile
+                if (mobileAuthLinks) mobileAuthLinks.style.display = 'flex';
+                if (mobileCustomerMenu) mobileCustomerMenu.style.display = 'none';
+            }
+            
+            // Basket is always visible
+            if (basketIcon) basketIcon.style.display = 'flex';
+            if (mobileBasketIcon) mobileBasketIcon.style.display = 'flex';
+        }
+
+        // Modal functions
+        function toggleLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.toggle('hidden');
+            
+            // Store current page as referrer when opening login modal
+            if (!modal.classList.contains('hidden')) {
+                localStorage.setItem('loginReferrer', window.location.pathname);
+            }
+        }
+
+        function toggleSignupModal() {
+            const modal = document.getElementById('signupModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.add('hidden');
+        }
+
+        function toggleCustomerMenu() {
+            const dropdown = document.getElementById('customerDropdown');
+            const mobileDropdown = document.getElementById('mobileCustomerDropdown');
+            
+            if (dropdown) dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            if (mobileDropdown) mobileDropdown.style.display = mobileDropdown.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            console.log('Login attempt:', email, password);
+            
+            // Demo credentials check
+            if (email === 'customer@example.com' && password === 'password123') {
+                console.log('Credentials valid, logging in...');
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', 'Demo Customer');
+                
+                // Close modal
+                toggleLoginModal();
+                
+                // Show success message
+                alert('Login successful! Redirecting...');
+                
+                // Redirect to referring page or dashboard
+                setTimeout(() => {
+                    console.log('Attempting redirect...');
+                    const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
+                    localStorage.removeItem('loginReferrer');
+                    window.location.replace(referringPage);
+                }, 500);
+                
+            } else {
+                alert('Invalid credentials. Use the demo credentials: customer@example.com / password123');
+            }
+        }
+
+        // Handle signup
+        function handleSignup(event) {
+            event.preventDefault();
+            const name = event.target.querySelector('input[type="text"]').value;
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            console.log('Signup attempt:', name, email, password);
+            
+            // Demo signup - just log them in
+            localStorage.setItem('userLoggedIn', 'true');
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userName', name);
+            
+            // Close modal
+            toggleSignupModal();
+            
+            // Show success message
+            alert('Account created successfully! Redirecting...');
+            
+            // Redirect to referring page or dashboard
+            setTimeout(() => {
+                console.log('Attempting redirect...');
+                const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
+                localStorage.removeItem('loginReferrer');
+                window.location.replace(referringPage);
+            }, 500);
+        }
+
+        // Sign out function
+        function signOut() {
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('loginReferrer');
+            
+            // Update navigation
+            updateNavVisibility();
+            
+            // Redirect to homepage
+            window.location.href = 'index.html';
+        }
+
+        // Modal functions
+        function toggleLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.toggle('hidden');
+            
+            // Store current page as referrer when opening login modal
+            if (!modal.classList.contains('hidden')) {
+                localStorage.setItem('loginReferrer', window.location.pathname);
+            }
+        }
+        
+        function toggleSignupModal() {
+            const modal = document.getElementById('signupModal');
+            modal.classList.toggle('hidden');
+        }
+        
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+        
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.add('hidden');
+        }
+        
+        function toggleCustomerMenu() {
+            const dropdown = document.getElementById('customerDropdown');
+            const mobileDropdown = document.getElementById('mobileCustomerDropdown');
+            
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'none' || dropdown.style.display === '' ? 'block' : 'none';
+            }
+            if (mobileDropdown) {
+                mobileDropdown.style.display = mobileDropdown.style.display === 'none' || mobileDropdown.style.display === '' ? 'block' : 'none';
+            }
+        }
+        
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            console.log('Login attempt:', email, password);
+            
+            if (email === 'customer@example.com' && password === 'password123') {
+                console.log('Credentials valid, logging in...');
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', 'Demo Customer');
+                
+                toggleLoginModal(); // Close modal
+                alert('Login successful! Redirecting...');
+                
+                setTimeout(() => {
+                    console.log('Attempting redirect...');
+                    const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
+                    localStorage.removeItem('loginReferrer');
+                    window.location.replace(referringPage);
+                }, 500);
+                
+            } else {
+                alert('Invalid credentials. Use the demo credentials: customer@example.com / password123');
+            }
+        }
+        
+        // Handle signup
+        function handleSignup(event) {
+            event.preventDefault();
+            const name = event.target.querySelector('input[type="text"]').value;
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            // Simple validation
+            if (name && email && password) {
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', name);
+                updateNavVisibility();
+                toggleSignupModal();
+                alert('Account created successfully! You can now save searches.');
+            }
+        }
+        
+        // Dynamic heading and search functionality
+        function updateDynamicHeadings(searchTerm, location, category) {
+            const dynamicSubheading = document.getElementById('dynamicSubheading');
+            const resultsHeading = document.getElementById('resultsHeading');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            if (searchTerm || location || category) {
+                let context = '';
+                if (category) context += category;
+                if (location) context += (context ? ' in ' : '') + location;
+                if (searchTerm) context += (context ? ' matching "' : '') + searchTerm + (searchTerm ? '"' : '');
+                
+                if (dynamicSubheading) {
+                    dynamicSubheading.textContent = `Showing results for ${context}`;
+                }
+                if (resultsHeading) {
+                    resultsHeading.textContent = `Search Results`;
+                }
+            } else {
+                if (dynamicSubheading) {
+                    dynamicSubheading.textContent = 'Discover amazing businesses near you';
+                }
+                if (resultsHeading) {
+                    resultsHeading.textContent = 'All Businesses';
+                }
+            }
+        }
+        
+        // Search functionality
+        function performSearch() {
+            const businessName = document.getElementById('businessNameSearch').value;
+            const location = document.getElementById('locationSearch').value;
+            const category = document.getElementById('categorySearch').value;
+            
+            // Update dynamic headings
+            updateDynamicHeadings(businessName, location, category);
+            
+            // Show advanced controls after search
+            const advancedControls = document.getElementById('advancedControls');
+            if (advancedControls) {
+                advancedControls.classList.remove('hidden');
+            }
+            
+            // Update results count (simulate filtering)
+            const resultsCount = document.getElementById('resultsCount');
+            if (resultsCount) {
+                const baseCount = 12;
+                let filteredCount = baseCount;
+                
+                if (businessName) filteredCount = Math.max(3, Math.floor(filteredCount * 0.6));
+                if (location) filteredCount = Math.max(2, Math.floor(filteredCount * 0.7));
+                if (category) filteredCount = Math.max(1, Math.floor(filteredCount * 0.5));
+                
+                resultsCount.textContent = `${filteredCount} businesses found`;
+            }
+        }
+        
+        // Near Me functionality
+        function findNearMe() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // Simulate location-based results
+                    updateDynamicHeadings('', 'your area', '');
+                    const resultsCount = document.getElementById('resultsCount');
+                    if (resultsCount) {
+                        resultsCount.textContent = '8 businesses found near you';
+                    }
+                    
+                    // Show advanced controls
+                    const advancedControls = document.getElementById('advancedControls');
+                    if (advancedControls) {
+                        advancedControls.classList.remove('hidden');
+                    }
+                }, function(error) {
+                    alert('Unable to get your location. Please enter your postcode manually.');
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+        
+        // Initialize search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavVisibility();
+            
+            // Add event listeners
+            const searchBtn = document.getElementById('searchBtn');
+            const nearMeBtn = document.getElementById('nearMeBtn');
+            
+            if (searchBtn) {
+                searchBtn.addEventListener('click', performSearch);
+            }
+            
+            if (nearMeBtn) {
+                nearMeBtn.addEventListener('click', findNearMe);
+            }
+            
+            // Add enter key support for search inputs
+            const searchInputs = document.querySelectorAll('#businessNameSearch, #locationSearch');
+            searchInputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>

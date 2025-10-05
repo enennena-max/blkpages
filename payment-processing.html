@@ -292,12 +292,192 @@
             display: none;
             text-align: center;
             margin-top: 2rem;
+            padding: 2rem;
+        }
+        
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
         }
         
         .loading i {
-            color: #FF3CAC;
-            font-size: 2rem;
+            color: #1E3A8A;
+            font-size: 3rem;
             animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        .loading-message {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            aria-live: "polite";
+        }
+        
+        .loading-submessage {
+            color: #cccccc;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(13, 148, 136, 0.1);
+            border: 1px solid #0D9488;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            color: #0D9488;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .timeout-message {
+            display: none;
+            text-align: center;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid #DC2626;
+            border-radius: 8px;
+        }
+        
+        .timeout-message h3 {
+            color: #DC2626;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .timeout-message p {
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeout-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .timeout-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 44px;
+        }
+        
+        .timeout-button.retry {
+            background: linear-gradient(135deg, #1E3A8A, #0D9488);
+            color: white;
+        }
+        
+        .timeout-button.retry:hover {
+            background: linear-gradient(135deg, #1E40AF, #0F766E);
+            transform: translateY(-1px);
+        }
+        
+        .timeout-button.cancel {
+            background: #6B7280;
+            color: white;
+        }
+        
+        .timeout-button.cancel:hover {
+            background: #4B5563;
+        }
+        
+        .fallback-message {
+            display: none;
+            text-align: center;
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(13, 148, 136, 0.1);
+            border: 1px solid #0D9488;
+            border-radius: 8px;
+        }
+        
+        .fallback-message h3 {
+            color: #0D9488;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .fallback-message p {
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+        
+        .fallback-button {
+            background: linear-gradient(135deg, #1E3A8A, #0D9488);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 44px;
+        }
+        
+        .fallback-button:hover {
+            background: linear-gradient(135deg, #1E40AF, #0F766E);
+            transform: translateY(-1px);
+        }
+        
+        .processing-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .processing-content {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .processing-spinner {
+            color: #1E3A8A;
+            font-size: 3rem;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+        
+        .processing-title {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .processing-subtitle {
+            color: #cccccc;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .business-name {
+            color: #0D9488;
+            font-weight: 600;
         }
         
         @keyframes spin {
@@ -320,6 +500,26 @@
             
             .form-row {
                 grid-template-columns: 1fr;
+            }
+            
+            .processing-content {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .timeout-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .timeout-button {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .fallback-button {
+                width: 100%;
+                max-width: 200px;
             }
         }
     </style>
@@ -441,20 +641,62 @@
             
             <!-- Loading State -->
             <div class="loading" id="loading">
-                <i class="fas fa-spinner"></i>
-                <p>Processing your payment...</p>
+                <div class="loading-container">
+                    <i class="fas fa-spinner" alt="Loading animation"></i>
+                    <div class="loading-message" aria-live="polite">Processing your payment securely...</div>
+                    <div class="loading-submessage">Processing your payment via Stripe on behalf of <span class="business-name" id="businessName">Royal Hair Studio</span>.</div>
+                    <div class="security-badge">
+                        <i class="fas fa-lock"></i>
+                        🔒 Secure
+                    </div>
+                </div>
             </div>
             
-            <!-- Security Notice -->
+            <!-- Timeout Message -->
+            <div class="timeout-message" id="timeoutMessage">
+                <h3>Payment is taking longer than expected</h3>
+                <p>Your payment is still being processed. This can sometimes take a few extra moments.</p>
+                <div class="timeout-buttons">
+                    <button class="timeout-button retry" onclick="retryPayment()">Retry Payment</button>
+                    <button class="timeout-button cancel" onclick="returnToBooking()">Return to Booking</button>
+                </div>
+            </div>
+            
+            <!-- Fallback Message -->
+            <div class="fallback-message" id="fallbackMessage">
+                <h3>Payment Complete</h3>
+                <p>Your payment has been processed successfully. If you're not automatically redirected, click below to continue.</p>
+                <button class="fallback-button" onclick="continueToConfirmation()">Continue to Confirmation</button>
+            </div>
+            
+            <!-- Enhanced Security Notice -->
             <div class="security-notice">
                 <i class="fas fa-shield-alt"></i>
-                <small>Your payment is secured with 256-bit SSL encryption. We never store your card details.</small>
+                <small>Your payment is encrypted & securely processed by Stripe on behalf of <span class="business-name">Royal Hair Studio</span>. We never store your card details.</small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Processing Overlay -->
+    <div class="processing-overlay" id="processingOverlay">
+        <div class="processing-content">
+            <div class="processing-spinner">
+                <i class="fas fa-spinner" alt="Loading animation"></i>
+            </div>
+            <div class="processing-title">Processing your payment securely...</div>
+            <div class="processing-subtitle">Processing your payment via Stripe on behalf of <span class="business-name" id="overlayBusinessName">Royal Hair Studio</span>.</div>
+            <div class="security-badge">
+                <i class="fas fa-lock"></i>
+                🔒 Secure
             </div>
         </div>
     </div>
 
     <script>
         let selectedPaymentMethod = null;
+        let processingTimeout = null;
+        let isProcessing = false;
+        let businessName = 'Royal Hair Studio';
         
         function selectPaymentMethod(method) {
             selectedPaymentMethod = method;
@@ -478,14 +720,29 @@
         }
         
         function processPayment() {
+            if (isProcessing) return; // Prevent multiple submissions
+            
             console.log('Payment processing started');
+            isProcessing = true;
             
             const payButton = document.getElementById('payButton');
             const loading = document.getElementById('loading');
+            const processingOverlay = document.getElementById('processingOverlay');
             
-            // Show loading state
-            payButton.style.display = 'none';
-            loading.style.display = 'block';
+            // Disable all interactive elements
+            disableAllElements();
+            
+            // Show processing overlay
+            processingOverlay.style.display = 'flex';
+            
+            // Focus management for accessibility
+            const processingContent = document.querySelector('.processing-content');
+            processingContent.focus();
+            
+            // Set timeout for fallback (25 seconds)
+            processingTimeout = setTimeout(() => {
+                showTimeoutMessage();
+            }, 25000);
             
             // Simulate payment processing
             setTimeout(() => {
@@ -497,22 +754,91 @@
                     
                     if (success) {
                         console.log('Payment successful, redirecting to confirmation');
-                        // Redirect to success page with payment method
-                        window.location.href = 'booking-confirmation.html?payment=Paid%20Online';
+                        showFallbackMessage();
+                        
+                        // Auto-redirect after 3 seconds
+                        setTimeout(() => {
+                            window.location.href = 'booking-confirmation.html?payment=Paid%20Online';
+                        }, 3000);
                     } else {
                         console.log('Payment failed');
                         // Show error and reset
                         showPaymentError('Payment failed. Please try again with a different payment method.');
-                        payButton.style.display = 'block';
-                        loading.style.display = 'none';
+                        resetProcessingState();
                     }
                 } catch (error) {
                     console.error('Payment processing error:', error);
                     showPaymentError('Payment processing failed. Please try again.');
-                    payButton.style.display = 'block';
-                    loading.style.display = 'none';
+                    resetProcessingState();
                 }
             }, 3000);
+        }
+        
+        function disableAllElements() {
+            // Disable all buttons and inputs
+            document.querySelectorAll('button, input, .payment-option').forEach(element => {
+                element.disabled = true;
+                element.style.pointerEvents = 'none';
+            });
+        }
+        
+        function enableAllElements() {
+            // Re-enable all buttons and inputs
+            document.querySelectorAll('button, input, .payment-option').forEach(element => {
+                element.disabled = false;
+                element.style.pointerEvents = 'auto';
+            });
+        }
+        
+        function resetProcessingState() {
+            isProcessing = false;
+            enableAllElements();
+            
+            const processingOverlay = document.getElementById('processingOverlay');
+            const loading = document.getElementById('loading');
+            const payButton = document.getElementById('payButton');
+            
+            processingOverlay.style.display = 'none';
+            loading.style.display = 'none';
+            payButton.style.display = 'block';
+            
+            if (processingTimeout) {
+                clearTimeout(processingTimeout);
+                processingTimeout = null;
+            }
+        }
+        
+        function showTimeoutMessage() {
+            const processingOverlay = document.getElementById('processingOverlay');
+            const timeoutMessage = document.getElementById('timeoutMessage');
+            
+            processingOverlay.style.display = 'none';
+            timeoutMessage.style.display = 'block';
+        }
+        
+        function showFallbackMessage() {
+            const processingOverlay = document.getElementById('processingOverlay');
+            const fallbackMessage = document.getElementById('fallbackMessage');
+            
+            processingOverlay.style.display = 'none';
+            fallbackMessage.style.display = 'block';
+        }
+        
+        function retryPayment() {
+            const timeoutMessage = document.getElementById('timeoutMessage');
+            timeoutMessage.style.display = 'none';
+            
+            resetProcessingState();
+            processPayment();
+        }
+        
+        function returnToBooking() {
+            // Return to business profile page
+            window.location.href = 'business-profile.html';
+        }
+        
+        function continueToConfirmation() {
+            window.location.href = 'booking-confirmation.html?payment=Paid%20Online';
         }
         
         function showPaymentError(message) {
@@ -550,6 +876,15 @@
         
         // Load booking details from localStorage or URL parameters
         document.addEventListener('DOMContentLoaded', function() {
+            // Load business name from localStorage or use default
+            const savedBusinessName = localStorage.getItem('businessName') || 'Royal Hair Studio';
+            businessName = savedBusinessName;
+            
+            // Update business name in UI
+            document.getElementById('businessName').textContent = businessName;
+            document.getElementById('overlayBusinessName').textContent = businessName;
+            document.querySelector('.business-name').textContent = businessName;
+            
             // In a real app, this would come from the backend or URL parameters
             const bookingDetails = {
                 services: 'Hair Cut & Style',

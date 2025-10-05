@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Royal Hair Studio - BlkPages</title>
+    <script src="https://cdn.tailwindcss.com?v=2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -1699,23 +1700,150 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <button onclick="goBack()" class="back-btn">
-                    <i class="fas fa-arrow-left"></i>
-                    <span>Back</span>
-                </button>
-                <a href="index.html" class="logo">BlkPages</a>
-                <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="search-results.html">Browse</a></li>
-                    <li><a href="offers.html">Offers</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                </ul>
+    <nav class="fixed top-0 w-full z-50 bg-charcoal/95 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Desktop Navigation -->
+            <div class="hidden lg:flex items-center justify-between h-16">
+                <!-- Left: Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
+                </div>
+                
+                <!-- Center: Main Navigation -->
+                <div class="flex items-center space-x-8">
+                    <a href="index.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Home</a>
+                    <a href="search-results.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Browse</a>
+                    <a href="offers.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Offers</a>
+                </div>
+                
+                <!-- Right: Actions -->
+                <div class="flex items-center space-x-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Customer Menu -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
+                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <i class="fas fa-user"></i>
+                                Account
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="px-3 py-2 rounded-full bg-gradient-to-r from-neon-green to-green-500 text-white font-semibold hover:from-green-500 hover:to-green-600 transition-all duration-300 text-sm">
+                        <i class="fas fa-plus mr-1"></i>List Business
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div class="lg:hidden flex items-center justify-between h-16">
+                <!-- Left: Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
+                </div>
+                
+                <!-- Right: Actions -->
+                <div class="flex items-center space-x-3">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="mobileBasketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="mobileBasketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Account Icon -->
+                    <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Customer Menu (Mobile) -->
+                    <div class="customer-menu" id="mobileCustomerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="mobileCustomerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="mobileCustomerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="mobileCustomerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
+                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <i class="fas fa-user"></i>
+                                Account
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Hamburger Menu -->
+                    <button class="text-white hover:text-neon-pink transition-colors duration-300" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="lg:hidden hidden bg-charcoal/95 backdrop-blur-md border-t border-white/10">
+                <div class="px-4 py-4 space-y-4">
+                    <a href="index.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Home</a>
+                    <a href="search-results.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Browse</a>
+                    <a href="offers.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Offers</a>
+                    <a href="business-register.html" class="block text-neon-green hover:text-green-400 transition-colors duration-300 font-medium">
+                        <i class="fas fa-plus mr-2"></i>List Business
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold gradient-text">Login</h3>
+                    <button onclick="toggleLoginModal()" class="text-white/70 hover:text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="mb-4">
+                        <label class="block text-white/70 mb-2">Email</label>
+                        <input type="email" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="customer@example.com">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-white/70 mb-2">Password</label>
+                        <input type="password" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="password123">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
+                        Login
+                    </button>
+                </form>
+                <div class="mt-4 text-center">
+                    <p class="text-white/70 text-sm">Don't have an account? <a href="customer-register.html" class="text-neon-pink hover:text-neon-purple transition-colors duration-300">Sign up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Hero Banner -->
             <div class="container">
@@ -1957,7 +2085,7 @@
                     <!-- Treatwell-style Login/Guest Options -->
                     <div class="checkout-options-simple">
                         <p class="checkout-text">
-                            <a href="customer-login.html" class="checkout-link" onclick="saveBasketContents()">Sign in</a> or 
+                            <a href="#" class="checkout-link" onclick="saveBasketContents(); toggleLoginModal();">Sign in</a> or 
                             <a href="customer-register.html" class="checkout-link" onclick="saveBasketContents()">sign up</a> 
                             to save your details, or 
                             <span class="guest-text">continue as guest</span>
@@ -3627,6 +3755,84 @@
             console.log('Test data filled successfully');
             alert('Test data filled! Now select a service, date, time, and payment method.');
         }
+        
+        // Navigation Functions
+        function toggleLoginModal() {
+            const modal = document.getElementById('loginModal');
+            if (modal) {
+                modal.classList.toggle('hidden');
+            }
+        }
+        
+        function toggleCustomerMenu() {
+            const dropdown = document.getElementById('customerDropdown');
+            const mobileDropdown = document.getElementById('mobileCustomerDropdown');
+            
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            }
+            if (mobileDropdown) {
+                mobileDropdown.style.display = mobileDropdown.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+        
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        }
+        
+        function handleLogin(event) {
+            event.preventDefault();
+            // Simulate login
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            // Simple validation
+            if (email === 'customer@example.com' && password === 'password123') {
+                // Show customer menu, hide login
+                document.getElementById('authLinks').style.display = 'none';
+                document.getElementById('mobileAuthLinks').style.display = 'none';
+                document.getElementById('customerMenu').style.display = 'block';
+                document.getElementById('mobileCustomerMenu').style.display = 'block';
+                
+                // Close modal
+                toggleLoginModal();
+                
+                // Show success message
+                alert('Login successful!');
+            } else {
+                alert('Invalid credentials. Use customer@example.com / password123');
+            }
+        }
+        
+        function signOut() {
+            // Hide customer menu, show login
+            document.getElementById('authLinks').style.display = 'flex';
+            document.getElementById('mobileAuthLinks').style.display = 'flex';
+            document.getElementById('customerMenu').style.display = 'none';
+            document.getElementById('mobileCustomerMenu').style.display = 'none';
+            
+            // Close any open dropdowns
+            document.getElementById('customerDropdown').style.display = 'none';
+            document.getElementById('mobileCustomerDropdown').style.display = 'none';
+            
+            alert('Signed out successfully!');
+        }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const customerMenu = document.getElementById('customerMenu');
+            const mobileCustomerMenu = document.getElementById('mobileCustomerMenu');
+            
+            if (customerMenu && !customerMenu.contains(event.target)) {
+                document.getElementById('customerDropdown').style.display = 'none';
+            }
+            if (mobileCustomerMenu && !mobileCustomerMenu.contains(event.target)) {
+                document.getElementById('mobileCustomerDropdown').style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>

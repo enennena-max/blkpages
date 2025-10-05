@@ -307,10 +307,27 @@
             localStorage.setItem('userPhone', '07123456789'); // Demo data
             localStorage.setItem('userLoggedIn', 'true');
             
-            // Redirect back to booking page after 2 seconds
+            console.log('=== LOGIN SUCCESS ===');
+            console.log('User email stored:', localStorage.getItem('userEmail'));
+            console.log('User logged in flag:', localStorage.getItem('userLoggedIn'));
+            console.log('All localStorage keys:', Object.keys(localStorage));
+            
+            // Redirect back to the page they came from
             setTimeout(() => {
-                window.location.href = 'business-profile.html';
-            }, 2000);
+                console.log('Redirecting back to referring page...');
+                console.log('Final localStorage check before redirect:');
+                console.log('userLoggedIn:', localStorage.getItem('userLoggedIn'));
+                console.log('userEmail:', localStorage.getItem('userEmail'));
+                
+                // Get the referring page from localStorage
+                const referringPage = localStorage.getItem('loginReferrer') || 'index.html';
+                console.log('Redirecting to:', referringPage);
+                
+                // Clear the referrer from localStorage
+                localStorage.removeItem('loginReferrer');
+                
+                window.location.href = referringPage;
+            }, 3000);
         });
 
         // Back button function
