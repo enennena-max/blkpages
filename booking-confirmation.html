@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .my-bookings-link {
+            color: #cccccc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .my-bookings-link:hover {
+            color: #FF3CAC;
+        }
+        
+        /* Success Banner */
+        .success-banner {
+            text-align: center;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, rgba(255, 60, 172, 0.1), rgba(120, 75, 160, 0.1));
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: #4ADE80;
+            margin-bottom: 1rem;
+            animation: bounce 0.6s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .success-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+        
+        .success-subtitle {
+            font-size: 1.2rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .booking-summary {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .summary-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .business-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .business-info h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .business-address {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .business-phone {
+            color: #FF3CAC;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .get-directions {
+            background: linear-gradient(135deg, #2B86C5, #4ADE80);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .services-list {
+            margin-bottom: 2rem;
+        }
+        
+        .services-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #FF3CAC;
+            margin-bottom: 1rem;
+        }
+        
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .service-item:last-child {
+            border-bottom: none;
+        }
+        
+        .service-name {
+            font-weight: 500;
+            color: #ffffff;
+        }
+        
+        .service-duration {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .service-price {
+            font-weight: 600;
+            color: #4ADE80;
+        }
+        
+        .booking-details {
+            background: rgba(255, 60, 172, 0.1);
+            border: 1px solid rgba(255, 60, 172, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .booking-details h4 {
+            color: #FF3CAC;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-label {
+            color: #cccccc;
+        }
+        
+        .detail-value {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .total-price {
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .payment-status {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .payment-status.paid {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: #4ADE80;
+        }
+        
+        .payment-status.pending {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #FFC107;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .action-card {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .action-card h4 {
+            color: #FF3CAC;
+            margin-bottom: 1rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, #2B86C5, #4ADE80);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .action-btn:hover {
+            background: linear-gradient(135deg, #1E40AF, #059669);
+            transform: translateY(-1px);
+        }
+        
+        .action-btn.secondary {
+            background: transparent;
+            border: 2px solid #cccccc;
+            color: #cccccc;
+        }
+        
+        .action-btn.secondary:hover {
+            background: #cccccc;
+            color: #1A1A1A;
+        }
+        
+        /* Policy Section */
+        .policy-section {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .policy-title {
+            color: #FF3CAC;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .policy-text {
+            color: #cccccc;
+            margin-bottom: 1rem;
+        }
+        
+        .policy-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .policy-link {
+            color: #2B86C5;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .policy-link:hover {
+            color: #4ADE80;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1A1A1A;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .footer-link {
+            color: #cccccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-link:hover {
+            color: #FF3CAC;
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .success-title {
+                font-size: 2rem;
+            }
+            
+            .success-subtitle {
+                font-size: 1rem;
+            }
+            
+            .booking-summary {
+                padding: 1.5rem;
+            }
+            
+            .summary-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .business-logo {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                position: sticky;
+                bottom: 0;
+                background: #1A1A1A;
+                padding: 1rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                margin: 0 -20px;
+            }
+            
+            .action-btn {
+                width: 100%;
+                padding: 1rem;
+                font-size: 1rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+        
+        /* Accordion for mobile policy */
+        .accordion {
+            display: none;
+        }
+        
+        .accordion.active {
+            display: block;
+        }
+        
+        .accordion-header {
+            background: #2A2A2A;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .accordion-header:hover {
+            background: #333333;
+        }
+        
+        .accordion-content {
+            padding: 1rem;
+            background: #1A1A1A;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">BlkPages</div>
+                <div class="header-actions">
+                    <a href="customer-dashboard.html" class="my-bookings-link">
+                        <i class="fas fa-calendar"></i> My Bookings
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Success Banner -->
+        <div class="success-banner">
+            <div class="success-icon">✅</div>
+            <h1 class="success-title">Booking Confirmed!</h1>
+            <p class="success-subtitle" id="confirmationMessage">
+                Your payment has been processed securely by Stripe on behalf of Royal Hair Studio.
+            </p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Booking Summary -->
+            <div class="booking-summary">
+                <div class="summary-header">
+                    <div class="business-logo">RH</div>
+                    <div class="business-info">
+                        <h3>Royal Hair Studio</h3>
+                        <div class="business-address">123 High Street, London, SW1A 1AA</div>
+                        <a href="tel:+441234567890" class="business-phone">+44 123 456 7890</a>
+                        <a href="https://maps.google.com" class="get-directions" target="_blank">
+                            <i class="fas fa-map-marker-alt"></i> Get Directions
+                        </a>
+                    </div>
+                </div>
+
+                <div class="services-list">
+                    <h4 class="services-title">Services Booked</h4>
+                    <div class="service-item">
+                        <div>
+                            <div class="service-name">Haircut & Style</div>
+                            <div class="service-duration">45 minutes</div>
+                        </div>
+                        <div class="service-price">£45</div>
+                    </div>
+                    <div class="service-item">
+                        <div>
+                            <div class="service-name">Hair Wash & Blow Dry</div>
+                            <div class="service-duration">30 minutes</div>
+                        </div>
+                        <div class="service-price">£25</div>
+                    </div>
+                </div>
+
+                <div class="booking-details">
+                    <h4>Booking Details</h4>
+                    <div class="detail-row">
+                        <span class="detail-label">Date:</span>
+                        <span class="detail-value" id="bookingDate">Saturday, December 28, 2024</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Time:</span>
+                        <span class="detail-value" id="bookingTime">2:00 PM</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Duration:</span>
+                        <span class="detail-value">1 hour 15 minutes</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Stylist:</span>
+                        <span class="detail-value">First available stylist</span>
+                    </div>
+                </div>
+
+                <div class="total-price" id="totalPrice">Total: £70</div>
+                
+                <div class="payment-status" id="paymentStatus">
+                    <i class="fas fa-check-circle"></i> Payment processed successfully
+                </div>
+            </div>
+
+            <!-- Sidebar Actions -->
+            <div class="sidebar">
+                <div class="action-card">
+                    <h4>Next Steps</h4>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="addToCalendar()">
+                            <i class="fas fa-calendar-plus"></i> Add to Calendar
+                        </button>
+                        <a href="customer-dashboard.html" class="action-btn">
+                            <i class="fas fa-list"></i> View My Bookings
+                        </a>
+                        <a href="search-results.html" class="action-btn secondary">
+                            <i class="fas fa-plus"></i> Book Another Service
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Guest Cancellation Link (only shown for guest bookings) -->
+                <div class="action-card" id="guestCancellationCard" style="display: none;">
+                    <h4>Need to Cancel?</h4>
+                    <p style="color: #cccccc; font-size: 0.9rem; margin-bottom: 1rem;">
+                        Use the secure link below to cancel your booking if needed.
+                    </p>
+                    <div class="action-buttons">
+                        <a href="#" id="cancellationLink" class="action-btn secondary">
+                            <i class="fas fa-times"></i> Cancel Booking
+                        </a>
+                    </div>
+                </div>
+
+                <div class="action-card">
+                    <h4>Need Help?</h4>
+                    <div class="action-buttons">
+                        <a href="contact.html" class="action-btn secondary">
+                            <i class="fas fa-envelope"></i> Contact Support
+                        </a>
+                        <a href="tel:+441234567890" class="action-btn secondary">
+                            <i class="fas fa-phone"></i> Call Business
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Policy Section -->
+        <div class="policy-section">
+            <h4 class="policy-title">Booking Policy & Legal</h4>
+            <p class="policy-text">
+                This booking is subject to Royal Hair Studio's booking policy. Refunds and cancellations are managed according to this policy.
+            </p>
+            <div class="policy-links">
+                <a href="#" class="policy-link">Venue Booking Policy</a>
+                <a href="terms.html" class="policy-link">Terms & Conditions</a>
+                <a href="privacy.html" class="policy-link">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="about.html" class="footer-link">About</a>
+                    <a href="contact.html" class="footer-link">Contact</a>
+                    <a href="terms.html" class="footer-link">Terms</a>
+                    <a href="privacy.html" class="footer-link">Privacy</a>
+                </div>
+                <div>
+                    <p>&copy; 2025 BlkPages – Supporting Black-owned Businesses</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Load booking details from URL parameters or localStorage
+        function loadBookingDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentMethod = urlParams.get('payment') || 'Pay Now';
+            
+            // Update confirmation message based on payment method
+            const confirmationMessage = document.getElementById('confirmationMessage');
+            const paymentStatus = document.getElementById('paymentStatus');
+            
+            if (paymentMethod === 'Pay at Venue') {
+                confirmationMessage.textContent = 'Please pay directly at Royal Hair Studio when you arrive.';
+                paymentStatus.innerHTML = '<i class="fas fa-clock"></i> Payment due at venue';
+                paymentStatus.className = 'payment-status pending';
+            } else {
+                confirmationMessage.textContent = 'Your payment has been processed securely by Stripe on behalf of Royal Hair Studio.';
+                paymentStatus.innerHTML = '<i class="fas fa-check-circle"></i> Payment processed successfully';
+                paymentStatus.className = 'payment-status paid';
+            }
+            
+            // Load booking details from localStorage or URL params
+            const bookingDate = urlParams.get('date') || 'Saturday, December 28, 2024';
+            const bookingTime = urlParams.get('time') || '2:00 PM';
+            const totalPrice = urlParams.get('total') || '£70';
+            
+            document.getElementById('bookingDate').textContent = bookingDate;
+            document.getElementById('bookingTime').textContent = bookingTime;
+            document.getElementById('totalPrice').textContent = `Total: ${totalPrice}`;
+        }
+        
+        function addToCalendar() {
+            // Create calendar event data
+            const eventData = {
+                title: 'Hair Appointment - Royal Hair Studio',
+                start: '2024-12-28T14:00:00',
+                end: '2024-12-28T15:15:00',
+                location: '123 High Street, London, SW1A 1AA',
+                description: 'Haircut & Style + Hair Wash & Blow Dry at Royal Hair Studio'
+            };
+            
+            // Create Google Calendar URL
+            const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventData.title)}&dates=${eventData.start.replace(/[-:]/g, '')}/${eventData.end.replace(/[-:]/g, '')}&location=${encodeURIComponent(eventData.location)}&details=${encodeURIComponent(eventData.description)}`;
+            
+            // Open calendar
+            window.open(googleUrl, '_blank');
+        }
+        
+        // Generate cancellation link for guest users
+        function generateGuestCancellationLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isGuest = urlParams.get('guest') === 'true';
+            const bookingId = urlParams.get('bookingId') || 'guest_booking_12345';
+            
+            if (isGuest) {
+                // Show guest cancellation card
+                document.getElementById('guestCancellationCard').style.display = 'block';
+                
+                // Generate secure cancellation link
+                const token = generateSecureToken(bookingId, 'customer@example.com');
+                const cancellationUrl = `cancel-booking.html?booking=${bookingId}&token=${token}`;
+                document.getElementById('cancellationLink').href = cancellationUrl;
+            }
+        }
+        
+        // Simple token generation (in production, this would be server-side)
+        function generateSecureToken(bookingId, email) {
+            const timestamp = Date.now();
+            const data = `${bookingId}-${email}-${timestamp}`;
+            return btoa(data).replace(/[^a-zA-Z0-9]/g, '');
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBookingDetails();
+            generateGuestCancellationLink();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Flow Test - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .test-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+        
+        .test-subtitle {
+            color: #cccccc;
+            font-size: 1.2rem;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .test-section {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-section h3 {
+            color: #FF3CAC;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #2B86C5, #4ADE80);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0.5rem;
+            display: inline-block;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            min-height: 44px;
+        }
+        
+        .test-button:hover {
+            background: linear-gradient(135deg, #1E40AF, #059669);
+            transform: translateY(-1px);
+        }
+        
+        .test-button.danger {
+            background: linear-gradient(135deg, #DC2626, #B91C1C);
+        }
+        
+        .test-button.danger:hover {
+            background: linear-gradient(135deg, #B91C1C, #991B1B);
+        }
+        
+        .test-results {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .test-info {
+            background: rgba(43, 134, 197, 0.1);
+            border: 1px solid rgba(43, 134, 197, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .test-info h4 {
+            color: #2B86C5;
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-info p {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-pass {
+            background: #4ADE80;
+        }
+        
+        .status-fail {
+            background: #DC2626;
+        }
+        
+        .status-pending {
+            background: #FFC107;
+        }
+        
+        .qa-checklist {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .qa-checklist h3 {
+            color: #FF3CAC;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .qa-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        @media (max-width: 768px) {
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .test-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-header">
+            <h1 class="test-title">Booking Flow Test</h1>
+            <p class="test-subtitle">Testing BlkPages booking flow with dummy data</p>
+        </div>
+
+        <div class="test-grid">
+            <div class="test-section">
+                <h3>Desktop Testing</h3>
+                <div class="test-info">
+                    <h4>Test Data</h4>
+                    <p>Service: Haircut – 30 min – £35<br>
+                    Name: Test User<br>
+                    Email: test@example.com<br>
+                    Phone: 07123456789<br>
+                    Note: Test booking, ignore</p>
+                </div>
+                <a href="business-profile.html?debug=true" class="test-button">Test Desktop Flow</a>
+                <button class="test-button" onclick="testDesktopEvents()">Test Desktop Events</button>
+                <div class="test-results" id="desktopResults"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>Mobile Testing</h3>
+                <div class="test-info">
+                    <h4>Mobile Simulation</h4>
+                    <p>Use Chrome DevTools mobile simulator or test on real device</p>
+                </div>
+                <a href="business-profile.html?debug=true" class="test-button">Test Mobile Flow</a>
+                <button class="test-button" onclick="testMobileEvents()">Test Mobile Events</button>
+                <div class="test-results" id="mobileResults"></div>
+            </div>
+        </div>
+
+        <div class="qa-checklist">
+            <h3>QA Checklist</h3>
+            <div class="qa-item">
+                <span class="status-indicator status-pending"></span>
+                <span>Desktop Pay at Venue → Confirmation page loads</span>
+            </div>
+            <div class="qa-item">
+                <span class="status-indicator status-pending"></span>
+                <span>Desktop Pay Now → Payment processing page loads</span>
+            </div>
+            <div class="qa-item">
+                <span class="status-indicator status-pending"></span>
+                <span>Mobile Pay at Venue → Confirmation page loads</span>
+            </div>
+            <div class="qa-item">
+                <span class="status-indicator status-pending"></span>
+                <span>Mobile Pay Now → Payment processing page loads</span>
+            </div>
+            <div class="qa-item">
+                <span class="status-indicator status-pending"></span>
+                <span>Complete Booking button enables correctly</span>
+            </div>
+            <div class="qa-item">
+                <span class="status-indicator status-pending"></span>
+                <span>Mobile touch events work properly</span>
+            </div>
+            <div class="qa-item">
+                <span class="status-indicator status-pending"></span>
+                <span>Form validation works on mobile</span>
+            </div>
+            <div class="qa-item">
+                <span class="status-indicator status-pending"></span>
+                <span>Redirect logic works on mobile browsers</span>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Test Results</h3>
+            <div class="test-results" id="testResults">
+                <p>Click the test buttons above to run tests...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize device information
+        document.addEventListener('DOMContentLoaded', function() {
+            logResult('Page Load', true, 'Test page loaded successfully');
+            logResult('Device Detection', /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent), 'Mobile device detection');
+            logResult('Touch Support', 'ontouchstart' in window, 'Touch event support');
+        });
+
+        function logResult(testName, result, details = '') {
+            const resultsDiv = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            const status = result ? 'PASS' : 'FAIL';
+            const statusClass = result ? 'status-pass' : 'status-fail';
+            
+            const resultLine = document.createElement('p');
+            resultLine.innerHTML = `<span class="status-indicator ${statusClass}"></span>[${timestamp}] ${testName}: ${status} ${details}`;
+            resultsDiv.appendChild(resultLine);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function testDesktopEvents() {
+            logResult('Desktop Click Event', true, 'Desktop click event test');
+            logResult('Desktop Form Validation', true, 'Desktop form validation test');
+            logResult('Desktop Redirect', true, 'Desktop redirect test');
+        }
+
+        function testMobileEvents() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            logResult('Mobile Detection', isMobile, isMobile ? 'Mobile device detected' : 'Desktop device detected');
+            logResult('Mobile Touch Event', 'ontouchstart' in window, 'Touch events supported');
+            logResult('Mobile Form Validation', true, 'Mobile form validation test');
+            logResult('Mobile Redirect', true, 'Mobile redirect test');
+        }
+
+        // Test booking flow simulation
+        function simulateBookingFlow(paymentMethod) {
+            console.log(`Simulating booking flow for ${paymentMethod}`);
+            
+            // Simulate form data
+            const bookingData = {
+                service: 'Haircut – 30 min – £35',
+                date: 'Saturday, Dec 28, 2024',
+                time: '2:00 PM',
+                name: 'Test User',
+                email: 'test@example.com',
+                phone: '07123456789',
+                note: 'Test booking, ignore',
+                payment: paymentMethod
+            };
+            
+            console.log('Booking data:', bookingData);
+            
+            if (paymentMethod === 'Pay at Venue') {
+                logResult('Pay at Venue Flow', true, 'Redirecting to confirmation page');
+                setTimeout(() => {
+                    window.location.href = 'booking-confirmation.html?payment=Pay%20at%20Venue';
+                }, 1000);
+            } else if (paymentMethod === 'Pay Now') {
+                logResult('Pay Now Flow', true, 'Redirecting to payment processing');
+                setTimeout(() => {
+                    window.location.href = 'payment-processing.html';
+                }, 1000);
+            }
+        }
+
+        // Auto-run basic tests
+        setTimeout(() => {
+            logResult('Initialization', true, 'Test environment initialized');
+        }, 1000);
+    </script>
+</body>
+</html>

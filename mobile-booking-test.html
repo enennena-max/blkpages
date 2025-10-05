@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Booking Test - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .test-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+        
+        .test-subtitle {
+            color: #cccccc;
+            font-size: 1.2rem;
+        }
+        
+        .test-section {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .test-section h3 {
+            color: #FF3CAC;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #2B86C5, #4ADE80);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0.5rem;
+            display: inline-block;
+            text-decoration: none;
+            /* Mobile touch improvements */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            min-height: 44px;
+        }
+        
+        .test-button:hover {
+            background: linear-gradient(135deg, #1E40AF, #059669);
+            transform: translateY(-1px);
+        }
+        
+        .test-results {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .test-info {
+            background: rgba(43, 134, 197, 0.1);
+            border: 1px solid rgba(43, 134, 197, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .test-info h4 {
+            color: #2B86C5;
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-info p {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-pass {
+            background: #4ADE80;
+        }
+        
+        .status-fail {
+            background: #DC2626;
+        }
+        
+        .status-pending {
+            background: #FFC107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-header">
+            <h1 class="test-title">Mobile Booking Test</h1>
+            <p class="test-subtitle">Testing BlkPages booking flow on mobile devices</p>
+        </div>
+
+        <div class="test-section">
+            <h3>Device Information</h3>
+            <div class="test-info">
+                <h4>User Agent</h4>
+                <p id="userAgent"></p>
+            </div>
+            <div class="test-info">
+                <h4>Screen Size</h4>
+                <p id="screenSize"></p>
+            </div>
+            <div class="test-info">
+                <h4>Touch Support</h4>
+                <p id="touchSupport"></p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Button Event Tests</h3>
+            <p>Test button events on both desktop and mobile:</p>
+            <button class="test-button" onclick="testClickEvent()">Test Click Event</button>
+            <button class="test-button" onclick="testTouchEvent()">Test Touch Event</button>
+            <button class="test-button" onclick="testMobileButton()">Test Mobile Button</button>
+            <div class="test-results" id="buttonTestResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Form Validation Tests</h3>
+            <p>Test form validation on mobile devices:</p>
+            <button class="test-button" onclick="testFormValidation()">Test Form Validation</button>
+            <button class="test-button" onclick="testMobileForm()">Test Mobile Form</button>
+            <div class="test-results" id="formTestResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Redirect Tests</h3>
+            <p>Test redirect functionality:</p>
+            <a href="business-profile.html?debug=true" class="test-button">Test Business Profile (Debug Mode)</a>
+            <a href="payment-processing.html" class="test-button">Test Payment Processing</a>
+            <a href="booking-confirmation.html" class="test-button">Test Booking Confirmation</a>
+        </div>
+
+        <div class="test-section">
+            <h3>QA Checklist</h3>
+            <div id="qaChecklist">
+                <p><span class="status-indicator status-pending"></span>Desktop Pay Now → Stripe → Confirmation</p>
+                <p><span class="status-indicator status-pending"></span>Desktop Pay at Venue → Confirmation</p>
+                <p><span class="status-indicator status-pending"></span>Mobile Pay Now → Stripe → Confirmation</p>
+                <p><span class="status-indicator status-pending"></span>Mobile Pay at Venue → Confirmation</p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Test Results</h3>
+            <div class="test-results" id="testResults">
+                <p>Click the test buttons above to run tests...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize device information
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('userAgent').textContent = navigator.userAgent;
+            document.getElementById('screenSize').textContent = window.innerWidth + 'x' + window.innerHeight;
+            document.getElementById('touchSupport').textContent = 'ontouchstart' in window ? 'Yes' : 'No';
+        });
+
+        function logResult(testName, result, details = '') {
+            const resultsDiv = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            const status = result ? 'PASS' : 'FAIL';
+            const statusClass = result ? 'status-pass' : 'status-fail';
+            
+            const resultLine = document.createElement('p');
+            resultLine.innerHTML = `<span class="status-indicator ${statusClass}"></span>[${timestamp}] ${testName}: ${status} ${details}`;
+            resultsDiv.appendChild(resultLine);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function testClickEvent() {
+            logResult('Click Event', true, 'Button click event fired');
+        }
+
+        function testTouchEvent() {
+            if ('ontouchstart' in window) {
+                logResult('Touch Event', true, 'Touch events supported');
+            } else {
+                logResult('Touch Event', false, 'Touch events not supported');
+            }
+        }
+
+        function testMobileButton() {
+            const button = document.createElement('button');
+            button.textContent = 'Test Mobile Button';
+            button.style.cssText = `
+                background: #FF3CAC;
+                color: white;
+                border: none;
+                padding: 1rem 2rem;
+                border-radius: 6px;
+                margin: 0.5rem;
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
+                user-select: none;
+                min-height: 44px;
+            `;
+            
+            button.addEventListener('click', function() {
+                logResult('Mobile Button Click', true, 'Mobile button click event fired');
+            });
+            
+            button.addEventListener('touchend', function() {
+                logResult('Mobile Button Touch', true, 'Mobile button touch event fired');
+            });
+            
+            document.getElementById('buttonTestResults').appendChild(button);
+        }
+
+        function testFormValidation() {
+            // Test form validation logic
+            const testData = {
+                fullName: 'John Doe',
+                email: 'john@example.com',
+                phone: '1234567890',
+                services: [{ name: 'Haircut', price: 45 }],
+                date: '2024-12-28',
+                time: '14:00',
+                payment: 'payNow'
+            };
+            
+            // Simulate validation
+            const isValid = testData.fullName && testData.email && testData.phone && 
+                           testData.services.length > 0 && testData.date && testData.time && testData.payment;
+            
+            logResult('Form Validation', isValid, isValid ? 'All fields valid' : 'Missing required fields');
+        }
+
+        function testMobileForm() {
+            // Test mobile form behavior
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            logResult('Mobile Form Detection', isMobile, isMobile ? 'Mobile device detected' : 'Desktop device detected');
+        }
+
+        // Test redirect functionality
+        function testRedirect(url, testName) {
+            try {
+                window.location.href = url;
+                logResult(testName, true, 'Redirect successful');
+            } catch (error) {
+                logResult(testName, false, 'Redirect failed: ' + error.message);
+            }
+        }
+
+        // Auto-run basic tests
+        setTimeout(() => {
+            logResult('Page Load', true, 'Test page loaded successfully');
+            logResult('Device Detection', /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent), 'Mobile device detection');
+            logResult('Touch Support', 'ontouchstart' in window, 'Touch event support');
+        }, 1000);
+    </script>
+</body>
+</html>

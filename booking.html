@@ -3,414 +3,1191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Your Booking - Royal Hair Studio</title>
+    <title>Book Appointment - BlkPages</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #ffffff; background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%); min-height: 100vh; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
-        /* Navigation */
-        .navbar { background: rgba(0, 0, 0, 0.9); box-shadow: 0 2px 10px rgba(255,255,255,0.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
-        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; }
-        .logo { font-size: 1.8rem; font-weight: 700; color: #ffffff; text-decoration: none; }
-        .nav-links { display: flex; list-style: none; gap: 2rem; }
-        .nav-links a { text-decoration: none; color: #ffffff; font-weight: 500; transition: color 0.3s; }
-        .nav-links a:hover, .nav-links a.active { color: #007bff; }
-        .btn-nav { background: #007bff; color: white !important; padding: 0.5rem 1.5rem; border-radius: 25px; transition: background 0.3s; text-decoration: none; }
-        .btn-nav:hover { background: #0056b3; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .header-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .header-links a:hover {
+            color: #FF3CAC;
+        }
+        
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        
+        /* Progress Indicator */
+        .progress-container {
+            background: #1A1A1A;
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #cccccc;
+            font-weight: 500;
+        }
+        
+        .progress-step.active {
+            color: #FF3CAC;
+        }
+        
+        .progress-step.completed {
+            color: #0D9488;
+        }
+        
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #2A2A2A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+        
+        .progress-step.active .step-number {
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            color: white;
+        }
+        
+        .progress-step.completed .step-number {
+            background: #0D9488;
+            color: white;
+        }
+        
+        .progress-step.completed .step-number::before {
+            content: "✓";
+        }
+        
+        .progress-line {
+            height: 2px;
+            background: #2A2A2A;
+            flex: 1;
+            max-width: 100px;
+        }
+        
+        .progress-step.completed + .progress-line {
+            background: #0D9488;
+        }
         
         /* Main Content */
-        .main-content { padding: 120px 0 80px; }
-        .page-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; text-align: center; color: #ffffff; }
-        .page-subtitle { text-align: center; color: #cccccc; margin-bottom: 3rem; font-size: 1.1rem; }
-        
-        .booking-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
-        
-        /* Customer Form */
-        .customer-form { background: #1a1a1a; padding: 2rem; border-radius: 15px; border: 1px solid #333; }
-        .customer-form h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; color: #ffffff; }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #ffffff; }
-        .form-group input, .form-group select, .form-group textarea { 
-            width: 100%; 
-            padding: 0.75rem; 
-            border: 2px solid #333; 
-            border-radius: 8px; 
-            font-size: 1rem; 
-            background: #2a2a2a; 
-            color: #ffffff; 
-            font-family: inherit;
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            padding: 3rem 0;
         }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #007bff;
+        
+        .booking-form {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         
-        /* Booking Summary */
-        .booking-summary { background: #1a1a1a; padding: 2rem; border-radius: 15px; border: 1px solid #333; height: fit-content; }
-        .booking-summary h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; color: #ffffff; }
-        .summary-section { margin-bottom: 2rem; }
-        .summary-section h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; color: #ffffff; }
-        .summary-item { display: flex; justify-content: space-between; margin-bottom: 0.8rem; padding-bottom: 0.8rem; border-bottom: 1px solid #333; }
-        .summary-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .summary-label { color: #cccccc; }
-        .summary-value { color: #ffffff; font-weight: 500; }
-        .total-price { font-size: 1.3rem; font-weight: 700; color: #007bff; }
+        .booking-sidebar {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
         
-        /* Payment Section */
-        .payment-section { background: #1a1a1a; padding: 2rem; border-radius: 15px; border: 1px solid #333; margin-top: 2rem; }
-        .payment-section h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; color: #ffffff; }
-        .payment-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
-        .payment-method { 
-            background: #2a2a2a; 
-            padding: 1rem; 
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+        
+        /* Service Selection */
+        .service-card {
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px; 
-            border: 2px solid #333; 
-            cursor: pointer; 
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
             transition: all 0.3s;
-            text-align: center;
+            background: #2A2A2A;
         }
-        .payment-method:hover { border-color: #007bff; }
-        .payment-method.selected { border-color: #007bff; background: #1a3a5c; }
-        .payment-method i { font-size: 2rem; color: #007bff; margin-bottom: 0.5rem; }
-        .payment-method span { display: block; color: #ffffff; font-weight: 500; }
         
-        /* Stripe Test Card */
-        .stripe-test { background: #2a2a2a; padding: 1rem; border-radius: 8px; margin-top: 1rem; font-size: 0.9rem; color: #cccccc; }
-        .stripe-test h4 { color: #ffffff; margin-bottom: 0.5rem; }
-        .stripe-test p { margin-bottom: 0.3rem; }
+        .service-card:hover {
+            border-color: #FF3CAC;
+            box-shadow: 0 4px 6px rgba(255, 60, 172, 0.2);
+        }
         
-        /* Buttons */
-        .btn-complete { 
-            background: #007bff; 
-            color: white; 
-            border: none; 
-            padding: 1rem 2rem; 
-            border-radius: 25px; 
-            cursor: pointer; 
-            font-weight: 600; 
+        .service-card.selected {
+            border-color: #FF3CAC;
+            background: linear-gradient(135deg, rgba(255, 60, 172, 0.1), rgba(120, 75, 160, 0.1));
+        }
+        
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-name {
+            font-weight: 600;
             font-size: 1.1rem;
-            width: 100%;
-            margin-top: 1.5rem;
+            color: #ffffff; 
+        }
+        
+        .service-price {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #FF3CAC;
+        }
+        
+        .service-duration {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .service-description {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* Date & Time Selection */
+        .calendar-container {
+            margin-bottom: 2rem;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .calendar-nav {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #cccccc;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
             transition: background 0.3s;
         }
-        .btn-complete:hover { background: #0056b3; }
-        .btn-complete:disabled { background: #333; cursor: not-allowed; }
         
-        .btn-back { 
-            background: transparent; 
-            color: #007bff; 
-            border: 2px solid #007bff; 
-            padding: 0.8rem 1.5rem; 
-            border-radius: 25px; 
-            cursor: pointer; 
-            font-weight: 500; 
-            font-size: 1rem;
-            margin-right: 1rem;
+        .calendar-nav:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .calendar-month {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
+        
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
             transition: all 0.3s;
+            font-weight: 500;
+            color: #cccccc;
         }
-        .btn-back:hover { background: #007bff; color: white; }
         
-        /* Success Modal */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
-        .modal-content { 
-            background: #1a1a1a; 
-            margin: 10% auto; 
-            padding: 3rem; 
-            border-radius: 15px; 
-            width: 90%; 
-            max-width: 500px; 
-            position: relative; 
+        .calendar-day:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .calendar-day.selected {
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            color: white;
+        }
+        
+        .calendar-day.available {
+            background: rgba(255, 60, 172, 0.1);
+            color: #FF3CAC;
+        }
+        
+        .calendar-day.unavailable {
+            color: #666666;
+            cursor: not-allowed;
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .time-slot {
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             text-align: center;
-            border: 1px solid #333;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            background: #2A2A2A;
+            color: #ffffff;
         }
-        .modal-content h2 { color: #ffffff; margin-bottom: 1rem; }
-        .modal-content p { color: #cccccc; margin-bottom: 2rem; }
-        .success-icon { font-size: 4rem; color: #10B981; margin-bottom: 1rem; }
         
-        /* Footer */
-        .footer { background: #222; color: white; padding: 40px 0; text-align: center; }
+        .time-slot:hover {
+            border-color: #FF3CAC;
+            background: rgba(255, 60, 172, 0.1);
+        }
         
+        .time-slot.selected {
+            border-color: #FF3CAC;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            color: white;
+        }
+        
+        .time-slot.unavailable {
+            background: #1A1A1A;
+            color: #666666;
+            cursor: not-allowed;
+        }
+        
+        .time-slot.discounted {
+            border-color: #0D9488;
+            background: rgba(13, 148, 136, 0.1);
+        }
+        
+        .time-slot.discounted .original-price {
+            text-decoration: line-through;
+            color: #cccccc;
+            font-size: 0.8rem;
+        }
+        
+        .time-slot.discounted .discount-price {
+            color: #0D9488;
+            font-weight: 700;
+        }
+        
+        /* No Slots Available */
+        .no-slots {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #FFC107;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .no-slots h3 {
+            color: #FFC107;
+            margin-bottom: 0.5rem;
+        }
+        
+        .no-slots p {
+            color: #FFC107;
+            margin-bottom: 1rem;
+        }
+        
+        .no-slots a {
+            color: #FF3CAC;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: #2A2A2A;
+            color: #ffffff;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #FF3CAC;
+            box-shadow: 0 0 0 3px rgba(255, 60, 172, 0.1);
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+            background: #2A2A2A;
+            color: #ffffff;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: #FF3CAC;
+            box-shadow: 0 0 0 3px rgba(255, 60, 172, 0.1);
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-checkbox input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .form-checkbox label {
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+        
+        /* Payment Options */
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .payment-option {
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #2A2A2A;
+        }
+        
+        .payment-option:hover {
+            border-color: #FF3CAC;
+            box-shadow: 0 4px 6px rgba(255, 60, 172, 0.2);
+        }
+        
+        .payment-option.selected {
+            border-color: #FF3CAC;
+            background: linear-gradient(135deg, rgba(255, 60, 172, 0.1), rgba(120, 75, 160, 0.1));
+        }
+        
+        .payment-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .payment-title {
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .payment-description {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .payment-methods {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #2A2A2A;
+            color: #ffffff;
+        }
+        
+        .payment-method:hover {
+            border-color: #FF3CAC;
+            box-shadow: 0 2px 4px rgba(255, 60, 172, 0.2);
+        }
+        
+        .payment-method.selected {
+            border-color: #FF3CAC;
+            background: linear-gradient(135deg, rgba(255, 60, 172, 0.1), rgba(120, 75, 160, 0.1));
+        }
+        
+        /* Booking Summary */
+        .booking-summary {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .summary-label {
+            color: #cccccc;
+        }
+        
+        .summary-value {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        /* Policies */
+        .policies-section {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .policy-item {
+            margin-bottom: 1rem;
+        }
+        
+        .policy-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .policy-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .policy-checkbox input {
+            margin-top: 0.25rem;
+        }
+        
+        .policy-text {
+            font-size: 0.9rem;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+        
+        .policy-links {
+            color: #FF3CAC;
+            text-decoration: none;
+        }
+        
+        .policy-links:hover {
+            text-decoration: underline;
+        }
+        
+        /* CTA Button */
+        .cta-button {
+            width: 100%;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px rgba(255, 60, 172, 0.3);
+        }
+        
+        .cta-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #FF1493, #8A2BE2);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 8px rgba(255, 60, 172, 0.4);
+        }
+        
+        .cta-button:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .page-title { font-size: 2rem; }
-            .booking-container { grid-template-columns: 1fr; gap: 2rem; }
-            .form-row { grid-template-columns: 1fr; }
-            .payment-methods { grid-template-columns: 1fr; }
+            .header-links {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .booking-sidebar {
+                position: static;
+                order: -1;
+            }
+            
+            .progress-steps {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .progress-line {
+                display: none;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .payment-methods {
+                flex-direction: column;
+            }
+            
+            .cta-button {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: 0;
+                border-radius: 0;
+                z-index: 100;
+            }
+            
+            body {
+                padding-bottom: 80px;
+            }
+        }
+        
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #F3F4F6 25%, #E5E7EB 50%, #F3F4F6 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .skeleton-time-slot {
+            height: 60px;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
+    <!-- Header -->
+    <header class="header">
         <div class="container">
-            <div class="nav-wrapper">
-                <a href="index.html" class="logo">BLKPAGES</a>
-                <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="index.html#browse">Browse</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-                <a href="index.html" class="btn-nav">List Your Business</a>
+            <div class="header-content">
+                <a href="index.html" class="logo">BlkPages</a>
+                <div class="header-links">
+                    <a href="search-results.html">Back to Search</a>
+                    <a href="#help">Help</a>
+                </div>
+                <button class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
+    <!-- Progress Indicator -->
+    <div class="progress-container">
         <div class="container">
-            <h1 class="page-title">Complete Your Booking</h1>
-            <p class="page-subtitle">Royal Hair Studio - Finalize your appointment details</p>
-            
-            <div class="booking-container">
-                <!-- Customer Information Form -->
-                <div class="customer-form">
-                    <h3>Your Information</h3>
-                    <form id="bookingForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="firstName">First Name</label>
-                                <input type="text" id="firstName" name="firstName" required>
+            <div class="progress-steps">
+                <div class="progress-step active" id="step1">
+                    <div class="step-number">1</div>
+                    <span>Service</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" id="step2">
+                    <div class="step-number">2</div>
+                    <span>Date & Time</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" id="step3">
+                    <div class="step-number">3</div>
+                    <span>Details</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" id="step4">
+                    <div class="step-number">4</div>
+                    <span>Payment</span>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" id="step5">
+                    <div class="step-number">5</div>
+                    <span>Confirm</span>
+                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="lastName">Last Name</label>
-                                <input type="text" id="lastName" name="lastName" required>
                             </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" required>
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <div class="booking-form">
+                <!-- Service Selection -->
+                <div class="booking-section" id="serviceSection">
+                    <h2 class="section-title">Select Service</h2>
+                    <div class="service-card" onclick="selectService('Hair Cut & Style', 45, 30)">
+                        <div class="service-header">
+                            <div class="service-name">Hair Cut & Style</div>
+                            <div class="service-price">£45</div>
+                        </div>
+                        <div class="service-duration">30 minutes</div>
+                        <div class="service-description">Professional cut and styling for all hair types</div>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" required>
+                    <div class="service-card" onclick="selectService('Hair Coloring', 85, 90)">
+                        <div class="service-header">
+                            <div class="service-name">Hair Coloring</div>
+                            <div class="service-price">£85</div>
+                        </div>
+                        <div class="service-duration">90 minutes</div>
+                        <div class="service-description">Full color service with premium products</div>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="specialRequests">Special Requests (Optional)</label>
-                            <textarea id="specialRequests" name="specialRequests" rows="3" placeholder="Any specific requests or notes for your appointment..."></textarea>
+                    <div class="service-card" onclick="selectService('Deep Conditioning', 35, 45)">
+                        <div class="service-header">
+                            <div class="service-name">Deep Conditioning</div>
+                            <div class="service-price">£35</div>
                         </div>
-                    </form>
+                        <div class="service-duration">45 minutes</div>
+                        <div class="service-description">Intensive treatment for damaged hair</div>
+                    </div>
                 </div>
                 
-                <!-- Booking Summary -->
-                <div class="booking-summary">
-                    <h3>Booking Summary</h3>
+                <!-- Date & Time Selection -->
+                <div class="booking-section" id="dateTimeSection" style="display: none;">
+                    <h2 class="section-title">Select Date & Time</h2>
                     
-                    <div class="summary-section">
-                        <h4>Appointment Details</h4>
-                        <div class="summary-item">
-                            <span class="summary-label">Business:</span>
-                            <span class="summary-value" id="summaryBusiness">Royal Hair Studio</span>
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <button class="calendar-nav" onclick="changeMonth(-1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <div class="calendar-month" id="currentMonth">December 2024</div>
+                            <button class="calendar-nav" onclick="changeMonth(1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
-                        <div class="summary-item">
-                            <span class="summary-label">Service:</span>
-                            <span class="summary-value" id="summaryService">-</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">Date:</span>
-                            <span class="summary-value" id="summaryDate">-</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">Time:</span>
-                            <span class="summary-value" id="summaryTime">-</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">Duration:</span>
-                            <span class="summary-value" id="summaryDuration">-</span>
+                        
+                        <div class="calendar-days" id="calendarDays">
+                            <!-- Calendar days will be generated by JavaScript -->
                         </div>
                     </div>
                     
-                    <div class="summary-section">
-                        <h4>Pricing</h4>
-                        <div class="summary-item">
-                            <span class="summary-label">Service Price:</span>
-                            <span class="summary-value" id="summaryPrice">-</span>
+                    <div class="time-slots" id="timeSlots">
+                        <!-- Time slots will be generated by JavaScript -->
                         </div>
-                        <div class="summary-item">
-                            <span class="summary-label">Tax:</span>
-                            <span class="summary-value" id="summaryTax">-</span>
+                    
+                    <div class="no-slots" id="noSlots" style="display: none;">
+                        <h3>No slots available</h3>
+                        <p>We're fully booked for this date. Please try another day or see other hair salons in London.</p>
+                        <a href="search-results.html">Browse other salons</a>
                         </div>
-                        <div class="summary-item">
-                            <span class="summary-label">Total:</span>
-                            <span class="summary-value total-price" id="summaryTotal">-</span>
                         </div>
+
+                <!-- User Details -->
+                <div class="booking-section" id="detailsSection" style="display: none;">
+                    <h2 class="section-title">Your Details</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" class="form-input" id="fullName" required>
                     </div>
                     
-                    <!-- Payment Section -->
-                    <div class="payment-section">
-                        <h3>Payment Method</h3>
-                        <div class="payment-methods">
-                            <div class="payment-method" data-method="stripe">
-                                <i class="fab fa-cc-stripe"></i>
-                                <span>Credit/Debit Card</span>
-                            </div>
-                            <div class="payment-method" data-method="paypal">
-                                <i class="fab fa-paypal"></i>
-                                <span>PayPal</span>
-                            </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" class="form-input" id="email" required>
                         </div>
-                        
-                        <div class="stripe-test" id="stripeTestInfo" style="display: none;">
-                            <h4>Test Payment Information</h4>
-                            <p><strong>Card Number:</strong> 4242 4242 4242 4242</p>
-                            <p><strong>Expiry:</strong> Any future date</p>
-                            <p><strong>CVC:</strong> Any 3 digits</p>
-                            <p><strong>Postcode:</strong> Any UK postcode</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-input" id="phone" required>
                         </div>
-                        
-                        <button class="btn-complete" id="completeBtn" onclick="completeBooking()">
-                            <i class="fas fa-credit-card"></i> Complete Booking & Pay
-                        </button>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Booking Notes (Optional)</label>
+                        <textarea class="form-textarea" id="bookingNotes" placeholder="Any special requests or notes for your appointment..."></textarea>
+                        </div>
+                    
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="reminders">
+                        <label for="reminders">Receive appointment reminders by email/text</label>
+                    </div>
+                    
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="guestCheckout">
+                        <label for="guestCheckout">Continue as guest (no account required)</label>
                     </div>
                 </div>
+
+                <!-- Payment Options -->
+                <div class="booking-section" id="paymentSection" style="display: none;">
+                    <h2 class="section-title">Payment Options</h2>
+                    
+                    <div class="payment-options">
+                        <div class="payment-option" onclick="selectPayment('payNow')">
+                            <div class="payment-header">
+                                <div class="payment-icon">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <div>
+                                    <div class="payment-title">Pay Now</div>
+                                    <div class="payment-description">Secure payment with card or digital wallet</div>
+                                </div>
+                            </div>
+                            
+                            <div class="payment-methods" id="payNowMethods" style="display: none;">
+                                <div class="payment-method" onclick="selectPaymentMethod('card')">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>Card</span>
+                                </div>
+                                <div class="payment-method" onclick="selectPaymentMethod('paypal')">
+                                <i class="fab fa-paypal"></i>
+                                <span>PayPal</span>
+                                </div>
+                                <div class="payment-method" onclick="selectPaymentMethod('apple')">
+                                    <i class="fab fa-apple-pay"></i>
+                                    <span>Apple Pay</span>
+                                </div>
+                                <div class="payment-method" onclick="selectPaymentMethod('google')">
+                                    <i class="fab fa-google-pay"></i>
+                                    <span>Google Pay</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-option" onclick="selectPayment('payAtVenue')">
+                            <div class="payment-header">
+                                <div class="payment-icon">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <div>
+                                    <div class="payment-title">Pay at Venue</div>
+                                    <div class="payment-description">Pay when you arrive at the salon</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Policies -->
+                <div class="policies-section">
+                    <h3 style="margin-bottom: 1rem; color: #111827;">Venue Policies & Marketing Consent</h3>
+                    
+                    <div class="policy-item">
+                        <div class="policy-checkbox">
+                            <input type="checkbox" id="marketingPlatform">
+                            <label for="marketingPlatform" class="policy-text">
+                                Receive marketing emails from BlkPages. You can unsubscribe at any time.
+                            </label>
             </div>
         </div>
-    </main>
-
-    <!-- Success Modal -->
-    <div id="successModal" class="modal">
-        <div class="modal-content">
-            <div class="success-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <h2>Booking Confirmed!</h2>
-            <p>Your appointment has been successfully booked. You will receive a confirmation email shortly.</p>
-            <p><strong>Confirmation Code:</strong> <span id="confirmationCode"></span></p>
-            <button class="btn-complete" onclick="closeSuccessModal()">Close</button>
+                    
+                    <div class="policy-item">
+                        <div class="policy-checkbox">
+                            <input type="checkbox" id="marketingBusiness">
+                            <label for="marketingBusiness" class="policy-text">
+                                Receive marketing emails & SMS from Royal Hair Studio. You can unsubscribe at any time.
+                            </label>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem;">
-                <div>
-                    <p>&copy; 2024 BLKPAGES. All rights reserved.</p>
-                </div>
-                <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
-                    <a href="about.html" style="color: #ffffff; text-decoration: none;">About Us</a>
-                    <a href="contact.html" style="color: #ffffff; text-decoration: none;">Contact Us</a>
-                    <a href="privacy.html" style="color: #ffffff; text-decoration: none;">Privacy Policy</a>
-                    <a href="terms.html" style="color: #ffffff; text-decoration: none;">Terms & Conditions</a>
+                    <div class="policy-item">
+                        <p class="policy-text">
+                            By completing this booking, you agree to 
+                            <a href="#" class="policy-links">Royal Hair Studio's booking policy</a> 
+                            as well as our 
+                            <a href="terms.html" class="policy-links">Terms & Conditions</a> 
+                            and 
+                            <a href="privacy.html" class="policy-links">Privacy Policy</a>.
+                        </p>
+                    </div>
                 </div>
             </div>
+
+            <!-- Booking Summary Sidebar -->
+            <div class="booking-sidebar">
+                <h3 style="margin-bottom: 1.5rem; color: #111827;">Booking Summary</h3>
+                
+                <div class="booking-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">Service</span>
+                        <span class="summary-value" id="summaryService">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Date</span>
+                        <span class="summary-value" id="summaryDate">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Time</span>
+                        <span class="summary-value" id="summaryTime">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Duration</span>
+                        <span class="summary-value" id="summaryDuration">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total</span>
+                        <span class="summary-value" id="summaryTotal">£0</span>
+                    </div>
+                </div>
+                
+                <button class="cta-button" id="completeBooking" onclick="completeBooking()" disabled>
+                    Complete Booking - £0
+                </button>
+            </div>
         </div>
-    </footer>
+    </div>
 
     <script>
-        let bookingData = null;
+        // Booking state
+        let selectedService = null;
+        let selectedDate = null;
+        let selectedTime = null;
+        let selectedPayment = null;
         let selectedPaymentMethod = null;
-        
-        // Load booking data from localStorage
-        window.addEventListener('load', function() {
-            const storedData = localStorage.getItem('bookingData');
-            if (storedData) {
-                bookingData = JSON.parse(storedData);
-                populateSummary();
+        let currentStep = 1;
+
+        // Initialize calendar
+        function initializeCalendar() {
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            
+            document.getElementById('currentMonth').textContent = 
+                new Date(currentYear, currentMonth).toLocaleDateString('en-US', { 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            
+            generateCalendarDays(currentYear, currentMonth);
+        }
+
+        function generateCalendarDays(year, month) {
+            const calendarDays = document.getElementById('calendarDays');
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Clear existing days
+            calendarDays.innerHTML = '';
+            
+            // Add day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.textContent = day;
+                dayHeader.style.fontWeight = '600';
+                dayHeader.style.color = '#6B7280';
+                dayHeader.style.textAlign = 'center';
+                dayHeader.style.padding = '0.5rem';
+                calendarDays.appendChild(dayHeader);
+            });
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                calendarDays.appendChild(emptyDay);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day available';
+                dayElement.textContent = day;
+                dayElement.onclick = () => selectDate(day, month, year);
+                calendarDays.appendChild(dayElement);
+            }
+        }
+
+        function changeMonth(direction) {
+            // Implementation for month navigation
+            console.log('Change month:', direction);
+        }
+
+        function selectDate(day, month, year) {
+            selectedDate = new Date(year, month, day);
+            document.querySelectorAll('.calendar-day').forEach(el => el.classList.remove('selected'));
+            event.target.classList.add('selected');
+            
+            // Generate time slots for selected date
+            generateTimeSlots();
+            updateProgress(2);
+        }
+
+        function generateTimeSlots() {
+            const timeSlots = document.getElementById('timeSlots');
+            const slots = [
+                { time: '9:00 AM', available: true, discounted: false },
+                { time: '10:30 AM', available: true, discounted: true, originalPrice: 45, discountPrice: 35 },
+                { time: '12:00 PM', available: true, discounted: false },
+                { time: '1:30 PM', available: false },
+                { time: '3:00 PM', available: true, discounted: false },
+                { time: '4:30 PM', available: true, discounted: false },
+                { time: '6:00 PM', available: false }
+            ];
+            
+            timeSlots.innerHTML = '';
+            
+            slots.forEach(slot => {
+                const slotElement = document.createElement('div');
+                slotElement.className = `time-slot ${slot.available ? 'available' : 'unavailable'} ${slot.discounted ? 'discounted' : ''}`;
+                
+                if (slot.available) {
+                    slotElement.onclick = () => selectTime(slot.time);
+                    slotElement.innerHTML = `
+                        ${slot.discounted ? `
+                            <div class="original-price">£${slot.originalPrice}</div>
+                            <div class="discount-price">£${slot.discountPrice}</div>
+                        ` : slot.time}
+                    `;
+                } else {
+                    slotElement.textContent = slot.time;
+                }
+                
+                timeSlots.appendChild(slotElement);
+            });
+        }
+
+        function selectTime(time) {
+            selectedTime = time;
+            document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+            event.target.classList.add('selected');
+            updateBookingSummary();
+        }
+
+        function selectService(name, price, duration) {
+            selectedService = { name, price, duration };
+            
+            // Update UI
+            document.querySelectorAll('.service-card').forEach(card => card.classList.remove('selected'));
+            event.target.closest('.service-card').classList.add('selected');
+            
+            // Show next section
+            document.getElementById('serviceSection').style.display = 'none';
+            document.getElementById('dateTimeSection').style.display = 'block';
+            
+            updateProgress(2);
+            updateBookingSummary();
+        }
+
+        function selectPayment(type) {
+            selectedPayment = type;
+            
+            // Update UI
+            document.querySelectorAll('.payment-option').forEach(option => option.classList.remove('selected'));
+            event.target.closest('.payment-option').classList.add('selected');
+            
+            // Show payment methods if pay now
+            if (type === 'payNow') {
+                document.getElementById('payNowMethods').style.display = 'flex';
             } else {
-                // Redirect to appointments if no booking data
-                window.location.href = 'appointments.html';
+                document.getElementById('payNowMethods').style.display = 'none';
             }
-        });
-        
-        function populateSummary() {
-            if (bookingData) {
-                document.getElementById('summaryService').textContent = bookingData.service.name;
-                document.getElementById('summaryDate').textContent = new Date(bookingData.date).toLocaleDateString();
-                document.getElementById('summaryTime').textContent = bookingData.time;
-                document.getElementById('summaryDuration').textContent = bookingData.service.duration + ' minutes';
+            
+            updateBookingSummary();
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(method => method.classList.remove('selected'));
+            event.target.closest('.payment-method').classList.add('selected');
+        }
+
+        function updateProgress(step) {
+            // Update progress indicator
+            for (let i = 1; i <= 5; i++) {
+                const stepElement = document.getElementById(`step${i}`);
+                if (i < step) {
+                    stepElement.classList.remove('active');
+                    stepElement.classList.add('completed');
+                } else if (i === step) {
+                    stepElement.classList.remove('completed');
+                    stepElement.classList.add('active');
+                } else {
+                    stepElement.classList.remove('active', 'completed');
+                }
+            }
+            
+            currentStep = step;
+        }
+
+        function updateBookingSummary() {
+            if (selectedService) {
+                document.getElementById('summaryService').textContent = selectedService.name;
+                document.getElementById('summaryDuration').textContent = `${selectedService.duration} min`;
+            }
+            
+            if (selectedDate) {
+                document.getElementById('summaryDate').textContent = selectedDate.toLocaleDateString();
+            }
+            
+            if (selectedTime) {
+                document.getElementById('summaryTime').textContent = selectedTime;
+            }
+            
+            if (selectedService) {
+                const total = selectedService.price;
+                document.getElementById('summaryTotal').textContent = `£${total}`;
+                document.getElementById('completeBooking').textContent = `Complete Booking - £${total}`;
                 
-                const price = parseFloat(bookingData.service.price);
-                const tax = price * 0.08; // 8% tax
-                const total = price + tax;
+                // Enable button if all required fields are filled
+                const isComplete = selectedService && selectedDate && selectedTime && 
+                                 document.getElementById('fullName').value && 
+                                 document.getElementById('email').value && 
+                                 document.getElementById('phone').value;
                 
-                document.getElementById('summaryPrice').textContent = '$' + price.toFixed(2);
-                document.getElementById('summaryTax').textContent = '$' + tax.toFixed(2);
-                document.getElementById('summaryTotal').textContent = '$' + total.toFixed(2);
+                document.getElementById('completeBooking').disabled = !isComplete;
             }
         }
-        
-        // Payment method selection
-        document.querySelectorAll('.payment-method').forEach(method => {
-            method.addEventListener('click', function() {
-                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
-                this.classList.add('selected');
-                selectedPaymentMethod = this.dataset.method;
-                
-                // Show test info for Stripe
-                const stripeTestInfo = document.getElementById('stripeTestInfo');
-                if (selectedPaymentMethod === 'stripe') {
-                    stripeTestInfo.style.display = 'block';
-                } else {
-                    stripeTestInfo.style.display = 'none';
-                }
-            });
-        });
-        
+
         function completeBooking() {
-            // Validate form
-            const form = document.getElementById('bookingForm');
-            const formData = new FormData(form);
+            // Show confirmation page
+            window.location.href = 'booking-confirmation.html';
+        }
+
+        // Initialize the booking system
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCalendar();
             
-            // Check if all required fields are filled
-            const requiredFields = ['firstName', 'lastName', 'email', 'phone'];
-            let isValid = true;
-            
-            requiredFields.forEach(field => {
-                if (!formData.get(field)) {
-                    isValid = false;
-                    document.getElementById(field).style.borderColor = '#ff6b6b';
-                } else {
-                    document.getElementById(field).style.borderColor = '#333';
-                }
+            // Add form validation
+            const formInputs = document.querySelectorAll('.form-input');
+            formInputs.forEach(input => {
+                input.addEventListener('input', updateBookingSummary);
             });
-            
-            if (!selectedPaymentMethod) {
-                alert('Please select a payment method.');
-                return;
-            }
-            
-            if (!isValid) {
-                alert('Please fill in all required fields.');
-                return;
-            }
-            
-            // Simulate payment processing
-            document.getElementById('completeBtn').disabled = true;
-            document.getElementById('completeBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            
-            setTimeout(() => {
-                // Generate confirmation code
-                const confirmationCode = 'RH' + Math.random().toString(36).substr(2, 8).toUpperCase();
-                document.getElementById('confirmationCode').textContent = confirmationCode;
-                
-                // Show success modal
-                document.getElementById('successModal').style.display = 'block';
-                
-                // Clear booking data
-                localStorage.removeItem('bookingData');
-            }, 2000);
-        }
-        
-        function closeSuccessModal() {
-            document.getElementById('successModal').style.display = 'none';
-            window.location.href = 'index.html';
-        }
-        
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('successModal');
-            if (event.target === modal) {
-                closeSuccessModal();
-            }
-        }
+        });
     </script>
 </body>
 </html>
-
