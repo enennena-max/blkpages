@@ -38,7 +38,18 @@
             right: 0;
             bottom: 0;
             background: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1920&h=1080&fit=crop&crop=center&blur=1') center/cover;
-            opacity: 0.3;
+            opacity: 0.2;
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
         }
 
         .container {
@@ -52,6 +63,13 @@
         .hero-content {
             text-align: center;
             padding: 80px 0;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
         }
 
         .hero-title {
@@ -72,9 +90,12 @@
         }
 
         .hero-subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 3rem;
-            opacity: 0.9;
+            font-size: 1.3rem;
+            margin-bottom: 3.5rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+            line-height: 1.5;
+            max-width: 600px;
         }
 
         .cta-buttons {
@@ -204,82 +225,101 @@
 
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1000px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            max-width: 1400px;
             margin: 0 auto;
+            align-items: stretch;
         }
 
         .pricing-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 40px;
+            padding: 25px 15px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 500px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .pricing-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
         .pricing-card.popular {
             border: 2px solid #ff6b6b;
-            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.2);
+        }
+
+        .pricing-card.popular:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.25);
         }
 
         .pricing-card.popular::before {
             content: "Most Popular";
             position: absolute;
-            top: -15px;
+            top: -12px;
             left: 50%;
             transform: translateX(-50%);
             background: #ff6b6b;
             color: white;
-            padding: 8px 20px;
+            padding: 6px 16px;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 600;
+            z-index: 10;
         }
 
         .pricing-name {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: white;
         }
 
         .pricing-price {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 900;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: white;
         }
 
         .pricing-period {
             color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
         }
 
         .pricing-features {
             list-style: none;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
         .pricing-features li {
-            padding: 10px 0;
+            padding: 8px 0;
             color: rgba(255, 255, 255, 0.9);
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 0.9rem;
         }
 
         .pricing-features li i {
             color: #4caf50;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
 
         .pricing-features li.unavailable {
@@ -372,9 +412,28 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
+        @media (max-width: 1200px) {
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+                max-width: 900px;
+            }
+        }
+
         @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
+            .hero-content h1 {
+                font-size: 2.8rem !important;
+                line-height: 1.2 !important;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 2.5rem;
+            }
+
+            .hero-content {
+                padding: 60px 0;
+                min-height: calc(100vh - 60px);
             }
 
             .section-title {
@@ -385,6 +444,18 @@
                 font-size: 2rem;
             }
 
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                max-width: 500px;
+            }
+
+            .pricing-card {
+                padding: 30px 25px;
+                height: auto;
+                min-height: 400px;
+            }
+
             .cta-title {
                 font-size: 2rem;
             }
@@ -392,6 +463,30 @@
             .cta-buttons {
                 flex-direction: column;
                 align-items: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+                max-width: 400px;
+            }
+
+            .pricing-card {
+                height: auto;
+                min-height: 350px;
+                padding: 25px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2.2rem !important;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
             }
         }
     </style>
@@ -416,7 +511,10 @@
     <section class="hero-bg">
         <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title">Why List with BlkPages?</h1>
+                <!-- Main headline - large, bold, pure white -->
+                <h1 style="font-size: 4.5rem; font-weight: 900; color: #ffffff; text-align: center; margin: 0 0 1.5rem 0; line-height: 1.1; letter-spacing: -0.02em;">Get Seen. Get Booked.<br>Grow Your Business.</h1>
+                
+                <!-- Supporting text - softer white -->
                 <p class="hero-subtitle">Join the largest directory of Black-owned businesses and connect with customers who want to support you</p>
                 <div class="cta-buttons">
                     <a href="business-register.html" class="btn btn-primary">
@@ -433,7 +531,7 @@
     <!-- Benefits Section -->
     <section class="section section-dark">
         <div class="container">
-            <h2 class="section-title">Why Choose BlkPages?</h2>
+            <h2 class="section-title">Why List with BlkPages?</h2>
             <div class="benefits-grid">
                 <div class="benefit-card">
                     <div class="benefit-icon">
