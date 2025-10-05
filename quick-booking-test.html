@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Booking Test - BlkPages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: white;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #2B86C5, #4ADE80);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0.5rem;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .test-button:hover {
+            background: linear-gradient(135deg, #1E40AF, #059669);
+        }
+        .test-results {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status-pass { color: #4ADE80; }
+        .status-fail { color: #DC2626; }
+        .status-pending { color: #FFC107; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Quick Booking Flow Test</h1>
+        <p>Test the BlkPages booking flow on desktop and mobile</p>
+        
+        <div>
+            <h2>Test Links</h2>
+            <a href="business-profile.html?debug=true" class="test-button">🧪 Test Desktop Flow</a>
+            <a href="business-profile.html?debug=true" class="test-button">📱 Test Mobile Flow</a>
+            <a href="booking-flow-qa-test.html" class="test-button">📊 Full QA Test Suite</a>
+        </div>
+        
+        <div>
+            <h2>Test Instructions</h2>
+            <ol>
+                <li><strong>Desktop Testing:</strong>
+                    <ul>
+                        <li>Select a service, date, and time</li>
+                        <li>Fill in user details (Name: Test User, Email: test@example.com, Phone: 07123456789)</li>
+                        <li>Select "Pay at Venue" → button should show "Complete Booking"</li>
+                        <li>Select "Pay Now" → button should show "Pay Now - £XX"</li>
+                        <li>Click button and verify redirect</li>
+                    </ul>
+                </li>
+                <li><strong>Mobile Testing:</strong>
+                    <ul>
+                        <li>Use Chrome DevTools mobile simulator (iPhone/Android)</li>
+                        <li>Repeat desktop steps</li>
+                        <li>Verify sticky footer button updates dynamically</li>
+                        <li>Test touch events work properly</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+        
+        <div>
+            <h2>QA Checklist</h2>
+            <div class="test-results" id="checklist">
+                <div class="status-pending">⏳ Desktop Pay at Venue → "Complete Booking" → confirmation page</div>
+                <div class="status-pending">⏳ Desktop Pay Now → "Pay Now" → placeholder payment page</div>
+                <div class="status-pending">⏳ Mobile Pay at Venue → sticky button shows "Complete Booking" → confirmation page</div>
+                <div class="status-pending">⏳ Mobile Pay Now → sticky button shows "Pay Now" → placeholder payment page</div>
+                <div class="status-pending">⏳ Button validation works (disabled until all fields complete)</div>
+                <div class="status-pending">⏳ Mobile touch events work properly</div>
+                <div class="status-pending">⏳ Sticky button updates dynamically based on payment method</div>
+                <div class="status-pending">⏳ Form validation shows inline error messages</div>
+            </div>
+        </div>
+        
+        <div>
+            <h2>Test Script</h2>
+            <p>Copy and paste this into the browser console on business-profile.html:</p>
+            <pre style="background: #2A2A2A; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+// Load test script
+fetch('booking-test-script.js')
+  .then(response => response.text())
+  .then(script => {
+    eval(script);
+    testBookingFlow();
+  });
+            </pre>
+        </div>
+        
+        <div>
+            <h2>Device Information</h2>
+            <div class="test-results" id="deviceInfo">
+                <script>
+                    const userAgent = navigator.userAgent;
+                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+                    const screenSize = window.innerWidth + 'x' + window.innerHeight;
+                    const touchSupport = 'ontouchstart' in window;
+                    
+                    document.getElementById('deviceInfo').innerHTML = `
+                        <div><strong>Device:</strong> ${isMobile ? 'Mobile' : 'Desktop'}</div>
+                        <div><strong>Screen:</strong> ${screenSize}</div>
+                        <div><strong>Touch Support:</strong> ${touchSupport ? 'Yes' : 'No'}</div>
+                        <div><strong>User Agent:</strong> ${userAgent.substring(0, 80)}...</div>
+                    `;
+                </script>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

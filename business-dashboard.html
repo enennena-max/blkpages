@@ -351,6 +351,71 @@
             line-height: 1.4;
         }
         
+        /* Cancellation Policy Styles */
+        .custom-policy {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background: #1A1A1A;
+            color: #ffffff;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: #FF3CAC;
+            box-shadow: 0 0 0 3px rgba(255, 60, 172, 0.1);
+        }
+        
+        .form-help {
+            color: #888888;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+        
+        .policy-preview {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .policy-preview h4 {
+            color: #FF3CAC;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .preview-content {
+            background: #1A1A1A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 1rem;
+            color: #cccccc;
+            font-style: italic;
+        }
+        
         /* Action Buttons */
         .action-buttons {
             display: flex;
@@ -550,6 +615,45 @@
                 </div>
             </div>
             
+            <!-- Cancellation Policy Section -->
+            <div class="booking-options-section">
+                <h3>Cancellation Policy</h3>
+                <div class="booking-options-card">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Cancellation Terms</div>
+                            <div class="setting-description">Define your cancellation and refund policy for customers</div>
+                        </div>
+                        <div class="setting-control">
+                            <select id="cancellationPolicy" class="form-select" onchange="updateCancellationPolicy()">
+                                <option value="free-24h">Free cancellation up to 24 hours before appointment</option>
+                                <option value="free-12h">Free cancellation up to 12 hours before appointment</option>
+                                <option value="free-6h">Free cancellation up to 6 hours before appointment</option>
+                                <option value="50pct-12h">50% fee if cancelled within 12 hours</option>
+                                <option value="50pct-6h">50% fee if cancelled within 6 hours</option>
+                                <option value="non-refundable">Non-refundable - no cancellations allowed</option>
+                                <option value="custom">Custom policy</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="custom-policy" id="customPolicy" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Custom Cancellation Policy</label>
+                            <textarea id="customPolicyText" class="form-textarea" placeholder="Enter your custom cancellation policy..." onchange="updateCustomPolicy()" oninput="updateCustomPolicy()"></textarea>
+                            <small class="form-help">This text will be shown to customers when they book and cancel appointments.</small>
+                        </div>
+                    </div>
+                    
+                    <div class="policy-preview">
+                        <h4>Policy Preview</h4>
+                        <div class="preview-content" id="previewContent">
+                            Free cancellation up to 24 hours before appointment
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <a href="business-booking-manager.html" class="btn-action">
@@ -626,6 +730,45 @@
                 localStorage.setItem('payAtVenueEnabled', 'false');
                 console.log('Pay at Venue disabled');
             }
+        }
+        
+        function updateCancellationPolicy() {
+            const policySelect = document.getElementById('cancellationPolicy');
+            const customPolicy = document.getElementById('customPolicy');
+            const previewContent = document.getElementById('previewContent');
+            
+            const policies = {
+                'free-24h': 'Free cancellation up to 24 hours before appointment',
+                'free-12h': 'Free cancellation up to 12 hours before appointment',
+                'free-6h': 'Free cancellation up to 6 hours before appointment',
+                '50pct-12h': '50% fee if cancelled within 12 hours',
+                '50pct-6h': '50% fee if cancelled within 6 hours',
+                'non-refundable': 'Non-refundable - no cancellations allowed',
+                'custom': 'Custom policy'
+            };
+            
+            if (policySelect.value === 'custom') {
+                customPolicy.style.display = 'block';
+                previewContent.textContent = 'Enter your custom policy above...';
+            } else {
+                customPolicy.style.display = 'none';
+                previewContent.textContent = policies[policySelect.value];
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('cancellationPolicy', policySelect.value);
+            if (policySelect.value === 'custom') {
+                const customText = document.getElementById('customPolicyText').value;
+                localStorage.setItem('customPolicyText', customText);
+            }
+        }
+        
+        function updateCustomPolicy() {
+            const customText = document.getElementById('customPolicyText');
+            const previewContent = document.getElementById('previewContent');
+            
+            previewContent.textContent = customText.value || 'Enter your custom policy above...';
+            localStorage.setItem('customPolicyText', customText.value);
         }
         
         function manageSubscription() {

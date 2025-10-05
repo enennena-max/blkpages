@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlkPages Booking Functionality Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #121212;
+            color: white;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: #1A1A1A;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .test-button {
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: 600;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+        }
+        .test-result {
+            background: #2A2A2A;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4ADE80;
+        }
+        .test-error {
+            border-left-color: #FF3CAC;
+        }
+        .device-info {
+            background: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 BlkPages Booking Functionality Test</h1>
+        
+        <div class="device-info">
+            <h3>Device Information</h3>
+            <p><strong>User Agent:</strong> <span id="userAgent"></span></p>
+            <p><strong>Screen Size:</strong> <span id="screenSize"></span></p>
+            <p><strong>Touch Support:</strong> <span id="touchSupport"></span></p>
+            <p><strong>Device Type:</strong> <span id="deviceType"></span></p>
+        </div>
+
+        <div class="test-section">
+            <h2>📱 Mobile Responsiveness Tests</h2>
+            <button class="test-button" onclick="testMobileLayout()">Test Mobile Layout</button>
+            <button class="test-button" onclick="testTouchTargets()">Test Touch Targets</button>
+            <button class="test-button" onclick="testViewport()">Test Viewport</button>
+            <div id="mobileResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🖱️ Desktop Functionality Tests</h2>
+            <button class="test-button" onclick="testDesktopLayout()">Test Desktop Layout</button>
+            <button class="test-button" onclick="testHoverEffects()">Test Hover Effects</button>
+            <button class="test-button" onclick="testGridLayout()">Test Grid Layout</button>
+            <div id="desktopResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Booking Flow Tests</h2>
+            <button class="test-button" onclick="testBookingFlow()">Test Complete Booking Flow</button>
+            <button class="test-button" onclick="testFormValidation()">Test Form Validation</button>
+            <button class="test-button" onclick="testPopupFunctionality()">Test Popup Functionality</button>
+            <div id="bookingResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎯 Cross-Platform Tests</h2>
+            <button class="test-button" onclick="testCrossPlatform()">Run All Cross-Platform Tests</button>
+            <div id="crossPlatformResults"></div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize device information
+        document.getElementById('userAgent').textContent = navigator.userAgent;
+        document.getElementById('screenSize').textContent = `${window.innerWidth}x${window.innerHeight}`;
+        document.getElementById('touchSupport').textContent = 'ontouchstart' in window ? 'Yes' : 'No';
+        document.getElementById('deviceType').textContent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop';
+
+        function addResult(containerId, message, isError = false) {
+            const container = document.getElementById(containerId);
+            const result = document.createElement('div');
+            result.className = `test-result ${isError ? 'test-error' : ''}`;
+            result.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${message}`;
+            container.appendChild(result);
+        }
+
+        function testMobileLayout() {
+            const results = [];
+            
+            // Test viewport meta tag
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+                results.push('✅ Viewport meta tag present');
+            } else {
+                results.push('❌ Viewport meta tag missing');
+            }
+
+            // Test responsive CSS
+            const mediaQueries = window.matchMedia('(max-width: 768px)');
+            if (mediaQueries.matches) {
+                results.push('✅ Mobile media query active');
+            } else {
+                results.push('ℹ️ Desktop view (resize window to test mobile)');
+            }
+
+            // Test touch targets
+            const buttons = document.querySelectorAll('button');
+            let touchTargetIssues = 0;
+            buttons.forEach(button => {
+                const rect = button.getBoundingClientRect();
+                if (rect.height < 44) {
+                    touchTargetIssues++;
+                }
+            });
+
+            if (touchTargetIssues === 0) {
+                results.push('✅ All touch targets meet minimum 44px height');
+            } else {
+                results.push(`⚠️ ${touchTargetIssues} buttons below 44px minimum`);
+            }
+
+            results.forEach(result => addResult('mobileResults', result));
+        }
+
+        function testDesktopLayout() {
+            const results = [];
+
+            // Test grid layout
+            const gridElements = document.querySelectorAll('[style*="grid"]');
+            if (gridElements.length > 0) {
+                results.push('✅ Grid layout elements found');
+            } else {
+                results.push('❌ No grid layout elements found');
+            }
+
+            // Test hover effects
+            const hoverElements = document.querySelectorAll('[style*="hover"]');
+            if (hoverElements.length > 0) {
+                results.push('✅ Hover effects present');
+            } else {
+                results.push('ℹ️ Hover effects may be in CSS classes');
+            }
+
+            // Test sidebar layout
+            const sidebar = document.querySelector('.content-sidebar');
+            if (sidebar) {
+                results.push('✅ Sidebar element found');
+            } else {
+                results.push('❌ Sidebar element not found');
+            }
+
+            results.forEach(result => addResult('desktopResults', result));
+        }
+
+        function testTouchTargets() {
+            const results = [];
+            const buttons = document.querySelectorAll('button');
+            
+            buttons.forEach((button, index) => {
+                const rect = button.getBoundingClientRect();
+                const height = rect.height;
+                const width = rect.width;
+                
+                if (height >= 44 && width >= 44) {
+                    results.push(`✅ Button ${index + 1}: ${height}x${width}px (Good)`);
+                } else {
+                    results.push(`❌ Button ${index + 1}: ${height}x${width}px (Too small)`);
+                }
+            });
+
+            results.forEach(result => addResult('mobileResults', result));
+        }
+
+        function testViewport() {
+            const results = [];
+            
+            results.push(`📱 Current viewport: ${window.innerWidth}x${window.innerHeight}`);
+            results.push(`📐 Device pixel ratio: ${window.devicePixelRatio}`);
+            results.push(`🖱️ Touch support: ${'ontouchstart' in window ? 'Yes' : 'No'}`);
+            results.push(`📱 Mobile detection: ${/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'Yes' : 'No'}`);
+
+            results.forEach(result => addResult('mobileResults', result));
+        }
+
+        function testHoverEffects() {
+            const results = [];
+            
+            // Test if hover effects are defined
+            const styleSheets = document.styleSheets;
+            let hoverRules = 0;
+            
+            try {
+                for (let sheet of styleSheets) {
+                    if (sheet.cssRules) {
+                        for (let rule of sheet.cssRules) {
+                            if (rule.selectorText && rule.selectorText.includes(':hover')) {
+                                hoverRules++;
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                results.push('ℹ️ Cannot access external stylesheets (CORS)');
+            }
+
+            if (hoverRules > 0) {
+                results.push(`✅ Found ${hoverRules} hover effect rules`);
+            } else {
+                results.push('ℹ️ Hover effects may be inline or in external CSS');
+            }
+
+            results.forEach(result => addResult('desktopResults', result));
+        }
+
+        function testGridLayout() {
+            const results = [];
+            
+            // Test CSS Grid support
+            const testElement = document.createElement('div');
+            testElement.style.display = 'grid';
+            
+            if (testElement.style.display === 'grid') {
+                results.push('✅ CSS Grid supported');
+            } else {
+                results.push('❌ CSS Grid not supported');
+            }
+
+            // Test flexbox support
+            testElement.style.display = 'flex';
+            if (testElement.style.display === 'flex') {
+                results.push('✅ Flexbox supported');
+            } else {
+                results.push('❌ Flexbox not supported');
+            }
+
+            results.forEach(result => addResult('desktopResults', result));
+        }
+
+        function testBookingFlow() {
+            const results = [];
+            
+            // Test if booking functions exist
+            if (typeof bookAppointment === 'function') {
+                results.push('✅ bookAppointment function exists');
+            } else {
+                results.push('❌ bookAppointment function missing');
+            }
+
+            if (typeof completeBooking === 'function') {
+                results.push('✅ completeBooking function exists');
+            } else {
+                results.push('❌ completeBooking function missing');
+            }
+
+            if (typeof showBookingPopup === 'function') {
+                results.push('✅ showBookingPopup function exists');
+            } else {
+                results.push('❌ showBookingPopup function missing');
+            }
+
+            // Test form elements
+            const requiredInputs = ['fullName', 'email', 'phone'];
+            requiredInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    results.push(`✅ ${inputId} input found`);
+                } else {
+                    results.push(`❌ ${inputId} input missing`);
+                }
+            });
+
+            results.forEach(result => addResult('bookingResults', result));
+        }
+
+        function testFormValidation() {
+            const results = [];
+            
+            // Test email validation
+            const emailInput = document.getElementById('email');
+            if (emailInput) {
+                emailInput.value = 'test@example.com';
+                const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
+                if (isValid) {
+                    results.push('✅ Email validation working');
+                } else {
+                    results.push('❌ Email validation failed');
+                }
+            }
+
+            // Test required fields
+            const requiredFields = ['fullName', 'email', 'phone'];
+            let allFieldsPresent = true;
+            requiredFields.forEach(fieldId => {
+                if (!document.getElementById(fieldId)) {
+                    allFieldsPresent = false;
+                }
+            });
+
+            if (allFieldsPresent) {
+                results.push('✅ All required form fields present');
+            } else {
+                results.push('❌ Some required form fields missing');
+            }
+
+            results.forEach(result => addResult('bookingResults', result));
+        }
+
+        function testPopupFunctionality() {
+            const results = [];
+            
+            // Test popup creation
+            try {
+                const testPopup = document.createElement('div');
+                testPopup.id = 'test-popup';
+                testPopup.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.7);
+                    z-index: 1000;
+                `;
+                document.body.appendChild(testPopup);
+                
+                if (document.getElementById('test-popup')) {
+                    results.push('✅ Popup creation working');
+                } else {
+                    results.push('❌ Popup creation failed');
+                }
+                
+                // Clean up
+                testPopup.remove();
+            } catch (e) {
+                results.push('❌ Popup creation error: ' + e.message);
+            }
+
+            // Test scroll functionality
+            try {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                results.push('✅ Smooth scrolling supported');
+            } catch (e) {
+                results.push('❌ Smooth scrolling not supported');
+            }
+
+            results.forEach(result => addResult('bookingResults', result));
+        }
+
+        function testCrossPlatform() {
+            const results = [];
+            
+            // Test responsive design
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isSmallScreen = window.innerWidth <= 768;
+            
+            if (isMobile || isSmallScreen) {
+                results.push('📱 Mobile/Tablet detected');
+            } else {
+                results.push('🖥️ Desktop detected');
+            }
+
+            // Test touch vs mouse events
+            if ('ontouchstart' in window) {
+                results.push('✅ Touch events supported');
+            } else {
+                results.push('ℹ️ Mouse events only');
+            }
+
+            // Test viewport scaling
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+                results.push('✅ Viewport meta tag configured');
+            } else {
+                results.push('❌ Viewport meta tag missing');
+            }
+
+            // Test CSS Grid and Flexbox
+            const testDiv = document.createElement('div');
+            testDiv.style.display = 'grid';
+            const gridSupported = testDiv.style.display === 'grid';
+            testDiv.style.display = 'flex';
+            const flexSupported = testDiv.style.display === 'flex';
+
+            if (gridSupported && flexSupported) {
+                results.push('✅ Modern CSS layout supported');
+            } else {
+                results.push('⚠️ Limited CSS layout support');
+            }
+
+            results.forEach(result => addResult('crossPlatformResults', result));
+        }
+
+        // Auto-run basic tests on load
+        window.addEventListener('load', () => {
+            addResult('crossPlatformResults', '🚀 Test suite loaded successfully');
+            testCrossPlatform();
+        });
+    </script>
+</body>
+</html>

@@ -3,288 +3,1260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Dashboard - BlkPages</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>My Bookings - BlkPages</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'inter': ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'neon-pink': '#ff6b6b',
-                        'neon-purple': '#9c27b0',
-                        'neon-blue': '#2196f3',
-                        'neon-green': '#4caf50',
-                    },
-                }
-            }
-        }
-    </script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
             min-height: 100vh;
         }
         
-        .gradient-text {
-            background: linear-gradient(135deg, #ff6b6b, #9c27b0, #2196f3, #4caf50);
-            background-size: 400% 400%;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: gradientShift 3s ease-in-out infinite;
         }
         
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .header-link {
+            color: #cccccc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .header-link:hover {
+            color: #FF3CAC;
+        }
+        
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+        
+        .page-subtitle {
+            color: #cccccc;
+            font-size: 1.2rem;
+        }
+        
+        /* Dashboard Navigation */
+        .dashboard-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #cccccc;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+        
+        .nav-tab.active {
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            color: white;
+        }
+        
+        .nav-tab i {
+            font-size: 1.1rem;
+        }
+        
+        /* Dashboard Content */
+        .dashboard-content {
+            position: relative;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .section-header {
+            margin-bottom: 2rem;
+        }
+        
+        .section-header h2 {
+            color: #FF3CAC;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-header p {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+        
+        /* Favorites Grid */
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+        
+        .favorite-card {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .favorite-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .favorite-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .favorite-header .business-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .favorite-header .business-details h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+        
+        .favorite-header .business-category {
+            color: #FF3CAC;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .favorite-header .business-rating {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        
+        .favorite-btn {
+            background: transparent;
+            border: 2px solid #FF3CAC;
+            color: #FF3CAC;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .favorite-btn.active {
+            background: #FF3CAC;
+            color: white;
+        }
+        
+        .favorite-btn:hover {
+            background: #FF3CAC;
+            color: white;
+        }
+        
+        .favorite-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Recent Searches */
+        .recent-searches {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .search-item {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .search-info {
+            flex: 1;
+        }
+        
+        .search-query {
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .search-time {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .search-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .search-btn {
+            background: transparent;
+            border: 1px solid #cccccc;
+            color: #cccccc;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .search-btn:hover {
+            background: #cccccc;
+            color: #1A1A1A;
+        }
+        
+        /* Account Sections */
+        .account-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+        
+        .account-section {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .account-section h3 {
+            color: #FF3CAC;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            background: #2A2A2A;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #FF3CAC;
+        }
+        
+        .preference-item {
+            margin-bottom: 1rem;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #ffffff;
+        }
+        
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 0.75rem;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .account-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #DC2626, #B91C1C);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #B91C1C, #991B1B);
+        }
+        
+        /* Bookings Grid */
+        .bookings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .booking-card {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .booking-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .business-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .business-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .business-details h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+        
+        .business-category {
+            color: #FF3CAC;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .booking-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-confirmed {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ADE80;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+        
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .booking-details {
+            margin-bottom: 1.5rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-label {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .services-list {
+            margin-bottom: 1.5rem;
+        }
+        
+        .services-title {
+            color: #FF3CAC;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .service-name {
+            color: #cccccc;
+        }
+        
+        .service-price {
+            color: #4ADE80;
+            font-weight: 500;
+        }
+        
+        .booking-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #2B86C5, #4ADE80);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1E40AF, #059669);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #cccccc;
+            color: #cccccc;
+        }
+        
+        .btn-secondary:hover {
+            background: #cccccc;
+            color: #1A1A1A;
+        }
+        
+        .btn-danger {
+            background: transparent;
+            border: 2px solid #EF4444;
+            color: #EF4444;
+        }
+        
+        .btn-danger:hover {
+            background: #EF4444;
+            color: white;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: #1A1A1A;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            color: #666666;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-subtitle {
+            color: #cccccc;
+            margin-bottom: 2rem;
+        }
+        
+        .empty-cta {
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .empty-cta:hover {
+            background: linear-gradient(135deg, #FF1493, #8A2BE2);
+            transform: translateY(-1px);
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1A1A1A;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .footer-link {
+            color: #cccccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-link:hover {
+            color: #FF3CAC;
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .bookings-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .booking-card {
+                padding: 1.5rem;
+            }
+            
+            .booking-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .business-info {
+                width: 100%;
+            }
+            
+            .booking-actions {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
-<body class="bg-black text-white min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-black/90 backdrop-blur-md border-b border-white/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <a href="index.html" class="text-2xl font-bold gradient-text">BlkPages</a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <span class="text-white/70" id="userEmail">customer@example.com</span>
-                    <button onclick="logout()" class="px-4 py-2 rounded-full bg-red-600 text-white font-semibold hover:bg-red-700 transition-all duration-300">
-                        Logout
-                    </button>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">BlkPages</div>
+                <div class="header-actions">
+                    <a href="index.html" class="header-link">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="search-results.html" class="header-link">
+                        <i class="fas fa-search"></i> Browse
+                    </a>
                 </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="mb-8">
-            <h1 class="text-4xl font-bold mb-4 gradient-text">Welcome Back!</h1>
-            <p class="text-xl text-white/70">Manage your searches, favorites, and bookings</p>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">My Dashboard</h1>
+            <p class="page-subtitle">Manage your bookings, favorites, and account</p>
         </div>
 
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-neon-pink to-pink-500 flex items-center justify-center mr-4">
-                        <i class="fas fa-search text-white"></i>
+        <!-- Dashboard Navigation -->
+        <div class="dashboard-nav">
+            <button class="nav-tab active" onclick="showTab('bookings')">
+                <i class="fas fa-calendar"></i> My Bookings
+            </button>
+            <button class="nav-tab" onclick="showTab('favorites')">
+                <i class="fas fa-heart"></i> Favorites
+            </button>
+            <button class="nav-tab" onclick="showTab('recent')">
+                <i class="fas fa-history"></i> Recent Searches
+            </button>
+            <button class="nav-tab" onclick="showTab('account')">
+                <i class="fas fa-user"></i> Account
+            </button>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Bookings Tab -->
+            <div class="tab-content active" id="bookingsTab">
+                <div class="bookings-grid" id="bookingsGrid">
+            <!-- Sample Booking 1 -->
+            <div class="booking-card">
+                <div class="booking-header">
+                    <div class="business-info">
+                        <div class="business-logo">RH</div>
+                        <div class="business-details">
+                            <h3>Royal Hair Studio</h3>
+                            <div class="business-category">Hair Salon</div>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-bold text-white" id="totalSearches">12</h3>
-                        <p class="text-white/70">Total Searches</p>
+                    <div class="booking-status status-confirmed">Confirmed</div>
+                </div>
+                
+                <div class="booking-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Date:</span>
+                        <span class="detail-value">Saturday, Dec 28, 2024</span>
                     </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Time:</span>
+                        <span class="detail-value">2:00 PM</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Duration:</span>
+                        <span class="detail-value">1h 15m</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Payment:</span>
+                        <span class="detail-value">Paid Online</span>
                 </div>
             </div>
             
-            <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-neon-green to-green-500 flex items-center justify-center mr-4">
-                        <i class="fas fa-heart text-white"></i>
+                <div class="services-list">
+                    <div class="services-title">Services</div>
+                    <div class="service-item">
+                        <span class="service-name">Haircut & Style</span>
+                        <span class="service-price">£45</span>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-bold text-white" id="favorites">5</h3>
-                        <p class="text-white/70">Favorites</p>
+                    <div class="service-item">
+                        <span class="service-name">Hair Wash & Blow Dry</span>
+                        <span class="service-price">£25</span>
                     </div>
+                </div>
+                
+                <div class="booking-actions">
+                    <a href="booking-confirmation.html" class="action-btn btn-primary">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                    <a href="cancel-booking.html?booking=booking1&user=loggedin" class="action-btn btn-danger">
+                        <i class="fas fa-times"></i> Cancel Booking
+                    </a>
                 </div>
             </div>
             
-            <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-neon-blue to-blue-500 flex items-center justify-center mr-4">
-                        <i class="fas fa-calendar text-white"></i>
+            <!-- Sample Booking 2 -->
+            <div class="booking-card">
+                <div class="booking-header">
+                    <div class="business-info">
+                        <div class="business-logo">BS</div>
+                        <div class="business-details">
+                            <h3>Beauty Studio</h3>
+                            <div class="business-category">Beauty Salon</div>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-bold text-white" id="bookings">3</h3>
-                        <p class="text-white/70">Upcoming Bookings</p>
                     </div>
+                    <div class="booking-status status-pending">Pending</div>
+                </div>
+                
+                <div class="booking-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Date:</span>
+                        <span class="detail-value">Monday, Dec 30, 2024</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Time:</span>
+                        <span class="detail-value">10:00 AM</span>
+            </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Duration:</span>
+                        <span class="detail-value">2h 30m</span>
+        </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Payment:</span>
+                        <span class="detail-value">Pay at Venue</span>
+            </div>
+        </div>
+
+                <div class="services-list">
+                    <div class="services-title">Services</div>
+                    <div class="service-item">
+                        <span class="service-name">Full Body Massage</span>
+                        <span class="service-price">£80</span>
+                    </div>
+                    <div class="service-item">
+                        <span class="service-name">Facial Treatment</span>
+                        <span class="service-price">£60</span>
+            </div>
+        </div>
+
+                <div class="booking-actions">
+                    <a href="booking-confirmation.html" class="action-btn btn-primary">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                    <a href="cancel-booking.html?booking=booking2&user=loggedin" class="action-btn btn-danger">
+                        <i class="fas fa-times"></i> Cancel Booking
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Searches -->
-        <div class="mb-12">
-            <h2 class="text-2xl font-bold mb-6 text-white">Recent Searches</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="recentSearchesList">
-                <!-- Recent searches will be populated here -->
+                <!-- Empty State (hidden by default) -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-icon">📅</div>
+                    <h2 class="empty-title">No Bookings Yet</h2>
+                    <p class="empty-subtitle">Start exploring and book your first appointment</p>
+                    <a href="search-results.html" class="empty-cta">
+                        <i class="fas fa-search"></i> Browse Services
+                    </a>
+                </div>
+            </div>
+
+            <!-- Favorites Tab -->
+            <div class="tab-content" id="favoritesTab">
+                <div class="section-header">
+                    <h2>My Favorites</h2>
+                    <p>Businesses and services you've saved</p>
+                </div>
+                <div class="favorites-grid" id="favoritesGrid">
+                    <!-- Sample Favorite 1 -->
+                    <div class="favorite-card">
+                        <div class="favorite-header">
+                            <div class="business-logo">RH</div>
+                            <div class="business-details">
+                                <h3>Royal Hair Studio</h3>
+                                <div class="business-category">Hair Salon</div>
+                                <div class="business-rating">⭐ 4.8 (120 reviews)</div>
+                            </div>
+                            <button class="favorite-btn active" onclick="toggleFavorite(this)">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="favorite-actions">
+                            <a href="business-profile.html" class="action-btn btn-primary">
+                                <i class="fas fa-eye"></i> View Profile
+                            </a>
+                            <a href="business-profile.html" class="action-btn btn-secondary">
+                                <i class="fas fa-calendar"></i> Book Now
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Sample Favorite 2 -->
+                    <div class="favorite-card">
+                        <div class="favorite-header">
+                            <div class="business-logo">BS</div>
+                            <div class="business-details">
+                                <h3>Beauty Studio</h3>
+                                <div class="business-category">Beauty Salon</div>
+                                <div class="business-rating">⭐ 4.6 (89 reviews)</div>
+                            </div>
+                            <button class="favorite-btn active" onclick="toggleFavorite(this)">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="favorite-actions">
+                            <a href="business-profile.html" class="action-btn btn-primary">
+                                <i class="fas fa-eye"></i> View Profile
+                            </a>
+                            <a href="business-profile.html" class="action-btn btn-secondary">
+                                <i class="fas fa-calendar"></i> Book Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Searches Tab -->
+            <div class="tab-content" id="recentTab">
+                <div class="section-header">
+                    <h2>Recent Searches</h2>
+                    <p>Your recent search history</p>
+                </div>
+                <div class="recent-searches" id="recentSearches">
+                    <!-- Sample Recent Search 1 -->
+                    <div class="search-item">
+                        <div class="search-info">
+                            <div class="search-query">Hair salons in London</div>
+                            <div class="search-time">2 hours ago</div>
+                        </div>
+                        <div class="search-actions">
+                            <button class="search-btn" onclick="repeatSearch('Hair salons in London')">
+                                <i class="fas fa-search"></i> Search Again
+                            </button>
+                            <button class="search-btn" onclick="removeSearch(this)">
+                                <i class="fas fa-times"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sample Recent Search 2 -->
+                    <div class="search-item">
+                        <div class="search-info">
+                            <div class="search-query">Beauty treatments near me</div>
+                            <div class="search-time">1 day ago</div>
+                        </div>
+                        <div class="search-actions">
+                            <button class="search-btn" onclick="repeatSearch('Beauty treatments near me')">
+                                <i class="fas fa-search"></i> Search Again
+                            </button>
+                            <button class="search-btn" onclick="removeSearch(this)">
+                                <i class="fas fa-times"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sample Recent Search 3 -->
+                    <div class="search-item">
+                        <div class="search-info">
+                            <div class="search-query">Barbers in Manchester</div>
+                            <div class="search-time">3 days ago</div>
+                        </div>
+                        <div class="search-actions">
+                            <button class="search-btn" onclick="repeatSearch('Barbers in Manchester')">
+                                <i class="fas fa-search"></i> Search Again
+                            </button>
+                            <button class="search-btn" onclick="removeSearch(this)">
+                                <i class="fas fa-times"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Tab -->
+            <div class="tab-content" id="accountTab">
+                <div class="section-header">
+                    <h2>Account Settings</h2>
+                    <p>Manage your account details and preferences</p>
+                </div>
+                
+                <div class="account-sections">
+                    <!-- Profile Information -->
+                    <div class="account-section">
+                        <h3>Profile Information</h3>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="profileName" value="Test User" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="profileEmail" value="test@example.com" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="profilePhone" value="07123456789" class="form-input">
+                        </div>
+                        <button class="action-btn btn-primary" onclick="updateProfile()">
+                            <i class="fas fa-save"></i> Update Profile
+                        </button>
+                    </div>
+
+                    <!-- Change Password -->
+                    <div class="account-section">
+                        <h3>Change Password</h3>
+                        <div class="form-group">
+                            <label>Current Password</label>
+                            <input type="password" id="currentPassword" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" id="newPassword" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" id="confirmPassword" class="form-input">
+                        </div>
+                        <button class="action-btn btn-primary" onclick="changePassword()">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                    </div>
+
+                    <!-- Notification Preferences -->
+                    <div class="account-section">
+                        <h3>Notification Preferences</h3>
+                        <div class="preference-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="emailNotifications" checked>
+                                <span class="checkmark"></span>
+                                Email notifications
+                            </label>
+                        </div>
+                        <div class="preference-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="smsNotifications">
+                                <span class="checkmark"></span>
+                                SMS notifications
+                            </label>
+                        </div>
+                        <div class="preference-item">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="marketingEmails" checked>
+                                <span class="checkmark"></span>
+                                Marketing emails
+                            </label>
+                        </div>
+                        <button class="action-btn btn-secondary" onclick="updatePreferences()">
+                            <i class="fas fa-bell"></i> Update Preferences
+                        </button>
+                    </div>
+
+                    <!-- Account Actions -->
+                    <div class="account-section">
+                        <h3>Account Actions</h3>
+                        <div class="account-actions">
+                            <button class="action-btn btn-secondary" onclick="exportData()">
+                                <i class="fas fa-download"></i> Export My Data
+                            </button>
+                            <button class="action-btn btn-danger" onclick="deleteAccount()">
+                                <i class="fas fa-trash"></i> Delete Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Favorites -->
-        <div class="mb-12">
-            <h2 class="text-2xl font-bold mb-6 text-white">Your Favorites</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="favoritesList">
-                <!-- Favorites will be populated here -->
-            </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="about.html" class="footer-link">About</a>
+                    <a href="contact.html" class="footer-link">Contact</a>
+                    <a href="terms.html" class="footer-link">Terms</a>
+                    <a href="privacy.html" class="footer-link">Privacy</a>
+                </div>
+                <div>
+                    <p>&copy; 2025 BlkPages – Supporting Black-owned Businesses</p>
+                </div>
+                </div>
         </div>
-
-        <!-- Upcoming Bookings -->
-        <div class="mb-12">
-            <h2 class="text-2xl font-bold mb-6 text-white">Upcoming Bookings</h2>
-            <div class="space-y-4" id="bookingsList">
-                <!-- Bookings will be populated here -->
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <a href="directory.html" class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300 text-center">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-neon-pink to-pink-500 flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-search text-white"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-white mb-2">Search Businesses</h3>
-                <p class="text-white/70 text-sm">Find new businesses</p>
-            </a>
-            
-            <a href="directory.html?category=hair" class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300 text-center">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-neon-green to-green-500 flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-cut text-white"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-white mb-2">Hair Services</h3>
-                <p class="text-white/70 text-sm">Browse hair salons</p>
-            </a>
-            
-            <a href="directory.html?category=beauty" class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300 text-center">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-neon-blue to-blue-500 flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-spa text-white"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-white mb-2">Beauty Services</h3>
-                <p class="text-white/70 text-sm">Browse beauty salons</p>
-            </a>
-            
-            <a href="contact.html" class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300 text-center">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-neon-purple to-purple-500 flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-envelope text-white"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-white mb-2">Contact Support</h3>
-                <p class="text-white/70 text-sm">Get help</p>
-            </a>
-        </div>
-    </main>
+    </footer>
 
     <script>
-        // Check if user is logged in
-        if (localStorage.getItem('userLoggedIn') !== 'true') {
-            window.location.href = 'index.html';
-        }
-        
-        // Load user data
-        function loadUserData() {
-            const userEmail = localStorage.getItem('userEmail') || 'customer@example.com';
-            document.getElementById('userEmail').textContent = userEmail;
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            // Load recent searches
-            const searches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
-            const searchesList = document.getElementById('recentSearchesList');
+            // Remove active class from all nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            if (searches.length > 0) {
-                searchesList.innerHTML = searches.map(search => `
-                    <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300 cursor-pointer" onclick="searchAgain('${search}')">
-                        <div class="flex items-center mb-4">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-neon-pink to-pink-500 flex items-center justify-center mr-3">
-                                <i class="fas fa-search text-white"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-white">${search}</h3>
-                                <p class="text-white/70 text-sm">Recent search</p>
-                            </div>
-                        </div>
-                        <p class="text-white/60 text-sm">Click to search again</p>
-                    </div>
-                `).join('');
-            } else {
-                searchesList.innerHTML = '<p class="text-white/70 col-span-full text-center">No recent searches</p>';
+            // Show selected tab content
+            const selectedTab = document.getElementById(tabName + 'Tab');
+            if (selectedTab) {
+                selectedTab.classList.add('active');
             }
             
-            // Load favorites (demo data)
-            const favorites = [
-                { name: 'Royal Hair Studio', category: 'Hair', rating: 4.9 },
-                { name: 'Elite Beauty Lounge', category: 'Beauty', rating: 4.8 },
-                { name: 'Golden Touch Barbershop', category: 'Hair', rating: 4.7 }
-            ];
-            
-            const favoritesList = document.getElementById('favoritesList');
-            favoritesList.innerHTML = favorites.map(fav => `
-                <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300">
-                    <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-neon-pink to-pink-500 flex items-center justify-center mr-3">
-                            <i class="fas fa-heart text-white"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold text-white">${fav.name}</h3>
-                            <p class="text-white/70 text-sm">${fav.category}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center text-yellow-400 mb-2">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <span class="ml-2 text-white/70 text-sm">${fav.rating}</span>
-                    </div>
-                    <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
-                        View Details
-                    </button>
-                </div>
-            `).join('');
-            
-            // Load bookings (demo data)
-            const bookings = [
-                { business: 'Royal Hair Studio', service: 'Hair Cut & Style', date: 'Tomorrow, 2:00 PM' },
-                { business: 'Elite Beauty Lounge', service: 'Facial Treatment', date: 'Friday, 10:00 AM' },
-                { business: 'Golden Touch Barbershop', service: 'Beard Trim', date: 'Next Monday, 3:30 PM' }
-            ];
-            
-            const bookingsList = document.getElementById('bookingsList');
-            bookingsList.innerHTML = bookings.map(booking => `
-                <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="text-lg font-semibold text-white">${booking.business}</h3>
-                            <p class="text-white/70">${booking.service}</p>
-                            <p class="text-white/60 text-sm">${booking.date}</p>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button class="px-4 py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
-                                View
-                            </button>
-                            <button class="px-4 py-2 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300">
-                                Reschedule
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
         }
         
-        // Search again function
-        function searchAgain(searchTerm) {
-            localStorage.setItem('searchTerm', searchTerm);
-            window.location.href = `directory.html?q=${encodeURIComponent(searchTerm)}`;
+        // Favorites functionality
+        function toggleFavorite(button) {
+            const isActive = button.classList.contains('active');
+            
+            if (isActive) {
+                button.classList.remove('active');
+                button.innerHTML = '<i class="far fa-heart"></i>';
+                showMessage('Removed from favorites', 'success');
+            } else {
+                button.classList.add('active');
+                button.innerHTML = '<i class="fas fa-heart"></i>';
+                showMessage('Added to favorites', 'success');
+            }
         }
         
-        // Logout function
-        function logout() {
-            localStorage.removeItem('userLoggedIn');
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('userName');
-            window.location.href = 'index.html';
+        // Recent searches functionality
+        function repeatSearch(query) {
+            // Redirect to search results with the query
+            window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
+        }
+        
+        function removeSearch(button) {
+            const searchItem = button.closest('.search-item');
+            searchItem.remove();
+            showMessage('Search removed from history', 'success');
+        }
+        
+        // Account management functionality
+        function updateProfile() {
+            const name = document.getElementById('profileName').value;
+            const email = document.getElementById('profileEmail').value;
+            const phone = document.getElementById('profilePhone').value;
+            
+            if (!name || !email || !phone) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            // Simulate profile update
+            showMessage('Profile updated successfully', 'success');
+        }
+        
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showMessage('Please fill in all password fields', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showMessage('New passwords do not match', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                showMessage('Password must be at least 8 characters long', 'error');
+                return;
+            }
+            
+            // Simulate password change
+            showMessage('Password changed successfully', 'success');
+            
+            // Clear password fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+        
+        function updatePreferences() {
+            const emailNotifications = document.getElementById('emailNotifications').checked;
+            const smsNotifications = document.getElementById('smsNotifications').checked;
+            const marketingEmails = document.getElementById('marketingEmails').checked;
+            
+            showMessage('Notification preferences updated', 'success');
+        }
+        
+        function exportData() {
+            showMessage('Data export initiated. You will receive an email with your data shortly.', 'success');
+        }
+        
+        function deleteAccount() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                if (confirm('This will permanently delete all your data. Are you absolutely sure?')) {
+                    showMessage('Account deletion initiated. You will receive a confirmation email.', 'success');
+                }
+            }
+        }
+        
+        // Message display function
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 2rem;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 1000;
+                max-width: 300px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            `;
+            
+            if (type === 'success') {
+                messageDiv.style.background = '#4ADE80';
+            } else if (type === 'error') {
+                messageDiv.style.background = '#DC2626';
+            } else {
+                messageDiv.style.background = '#2B86C5';
+            }
+            
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 3000);
         }
         
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            loadUserData();
+            // Check if there are any bookings
+            const bookingsGrid = document.getElementById('bookingsGrid');
+            const bookings = bookingsGrid.querySelectorAll('.booking-card');
+            
+            if (bookings.length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+            }
+            
+            // Load user preferences from localStorage
+            loadUserPreferences();
+        });
+        
+        function loadUserPreferences() {
+            // Load notification preferences
+            const emailNotifications = localStorage.getItem('emailNotifications') === 'true';
+            const smsNotifications = localStorage.getItem('smsNotifications') === 'true';
+            const marketingEmails = localStorage.getItem('marketingEmails') === 'true';
+            
+            document.getElementById('emailNotifications').checked = emailNotifications;
+            document.getElementById('smsNotifications').checked = smsNotifications;
+            document.getElementById('marketingEmails').checked = marketingEmails;
+        }
+        
+        // Save preferences to localStorage
+        document.getElementById('emailNotifications').addEventListener('change', function() {
+            localStorage.setItem('emailNotifications', this.checked);
+        });
+        
+        document.getElementById('smsNotifications').addEventListener('change', function() {
+            localStorage.setItem('smsNotifications', this.checked);
+        });
+        
+        document.getElementById('marketingEmails').addEventListener('change', function() {
+            localStorage.setItem('marketingEmails', this.checked);
         });
     </script>
 </body>
 </html>
-
