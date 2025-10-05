@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #1a1a1a; color: white; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #28a745; }
+        .error { background: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>Simple Login Test</h1>
+    
+    <div id="status" class="status">Ready to test</div>
+    
+    <button onclick="testLogin()">Test Login</button>
+    <button onclick="clearLogin()">Clear Login</button>
+    <button onclick="goToDashboard()">Go to Dashboard</button>
+    <button onclick="checkStatus()">Check Status</button>
+
+    <script>
+        function testLogin() {
+            console.log('Setting login state...');
+            localStorage.setItem('businessLoggedIn', 'true');
+            localStorage.setItem('businessEmail', 'test@example.com');
+            localStorage.setItem('businessLoginTime', new Date().toISOString());
+            
+            document.getElementById('status').className = 'status success';
+            document.getElementById('status').textContent = 'Login state set!';
+            
+            console.log('Login state set, redirecting in 2 seconds...');
+            setTimeout(() => {
+                window.location.href = 'business-dashboard.html';
+            }, 2000);
+        }
+        
+        function clearLogin() {
+            localStorage.removeItem('businessLoggedIn');
+            localStorage.removeItem('businessEmail');
+            localStorage.removeItem('businessLoginTime');
+            
+            document.getElementById('status').className = 'status error';
+            document.getElementById('status').textContent = 'Login state cleared!';
+        }
+        
+        function goToDashboard() {
+            window.location.href = 'business-dashboard.html';
+        }
+        
+        function checkStatus() {
+            const isLoggedIn = localStorage.getItem('businessLoggedIn');
+            const email = localStorage.getItem('businessEmail');
+            
+            if (isLoggedIn === 'true') {
+                document.getElementById('status').className = 'status success';
+                document.getElementById('status').textContent = `Logged in as: ${email}`;
+            } else {
+                document.getElementById('status').className = 'status error';
+                document.getElementById('status').textContent = 'Not logged in';
+            }
+        }
+        
+        // Check status on load
+        checkStatus();
+    </script>
+</body>
+</html>

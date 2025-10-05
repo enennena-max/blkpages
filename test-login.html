@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Test - BLKPAGES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 20px;
+        }
+        .test-section {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background: #28a745; }
+        .error { background: #dc3545; }
+        .info { background: #17a2b8; }
+    </style>
+</head>
+<body>
+    <h1>Login Test Page</h1>
+    
+    <div class="test-section">
+        <h2>Current Login Status</h2>
+        <div id="loginStatus" class="status info">Checking...</div>
+        <button onclick="checkLoginStatus()">Refresh Status</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Actions</h2>
+        <button onclick="setLoginState()">Set Login State</button>
+        <button onclick="clearLoginState()">Clear Login State</button>
+        <button onclick="goToDashboard()">Go to Dashboard</button>
+        <button onclick="goToLogin()">Go to Login Page</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>LocalStorage Contents</h2>
+        <div id="localStorageContents"></div>
+        <button onclick="showLocalStorage()">Show LocalStorage</button>
+    </div>
+
+    <script>
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('businessLoggedIn');
+            const email = localStorage.getItem('businessEmail');
+            const loginTime = localStorage.getItem('businessLoginTime');
+            
+            const statusDiv = document.getElementById('loginStatus');
+            
+            if (isLoggedIn === 'true') {
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = `✅ LOGGED IN<br>Email: ${email}<br>Login Time: ${loginTime}`;
+            } else {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '❌ NOT LOGGED IN';
+            }
+        }
+        
+        function setLoginState() {
+            localStorage.setItem('businessLoggedIn', 'true');
+            localStorage.setItem('businessEmail', 'test@example.com');
+            localStorage.setItem('businessLoginTime', new Date().toISOString());
+            checkLoginStatus();
+            alert('Login state set!');
+        }
+        
+        function clearLoginState() {
+            localStorage.removeItem('businessLoggedIn');
+            localStorage.removeItem('businessEmail');
+            localStorage.removeItem('businessLoginTime');
+            checkLoginStatus();
+            alert('Login state cleared!');
+        }
+        
+        function goToDashboard() {
+            window.location.href = 'business-dashboard.html';
+        }
+        
+        function goToLogin() {
+            window.location.href = 'business-login.html';
+        }
+        
+        function showLocalStorage() {
+            const contents = document.getElementById('localStorageContents');
+            let html = '<h3>LocalStorage Contents:</h3>';
+            
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                html += `<div><strong>${key}:</strong> ${value}</div>`;
+            }
+            
+            if (localStorage.length === 0) {
+                html += '<div>No items in localStorage</div>';
+            }
+            
+            contents.innerHTML = html;
+        }
+        
+        // Initialize
+        checkLoginStatus();
+        showLocalStorage();
+    </script>
+</body>
+</html>
