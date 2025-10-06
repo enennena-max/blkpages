@@ -735,6 +735,94 @@
                 font-size: 0.85rem;
             }
         }
+
+        /* Info Icon and Tooltip Styles */
+        .info-icon {
+            display: inline-block;
+            margin-left: 6px;
+            cursor: pointer;
+            color: #999;
+            font-size: 14px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .info-icon:hover {
+            color: #ff6b6b;
+        }
+
+        .info-icon::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            color: #333;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 11px;
+            line-height: 1.3;
+            width: 180px;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e5e5e5;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            pointer-events: none;
+            overflow: hidden;
+            word-wrap: break-word;
+            hyphens: auto;
+        }
+
+        .info-icon:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Enhanced positioning for Customer Management Dashboard tooltip */
+        .info-icon[data-tooltip*="central hub"]::after {
+            z-index: 9999 !important;
+            position: absolute !important;
+            bottom: calc(100% + 40px) !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+        }
+
+        /* Mobile tooltip handling */
+        @media (max-width: 768px) {
+            .info-icon {
+                position: relative;
+            }
+            
+            .info-icon.active::after {
+                opacity: 1;
+                visibility: visible;
+                z-index: 9999 !important;
+                position: absolute !important;
+                bottom: auto !important;
+                top: 100% !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+
+            /* Enhanced mobile positioning for Customer Management Dashboard */
+            .info-icon[data-tooltip*="central hub"].active::after {
+                z-index: 9999 !important;
+                position: absolute !important;
+                bottom: auto !important;
+                top: 100% !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -892,7 +980,7 @@
                 <!-- Supporting text - softer white -->
                 <p class="hero-subtitle">Reach new customers, accept bookings online, and stand out in your area.</p>
                 <div class="cta-buttons">
-                    <a href="business-register.html" class="btn btn-primary">
+                    <a href="business-register.html" class="btn btn-primary" onclick="setDefaultPlan('free')">
                         <i class="fas fa-plus"></i> List Your Business
                     </a>
                     <a href="#pricing" class="btn btn-secondary">
@@ -967,19 +1055,19 @@
                 <div class="step-card" style="text-align: center; padding: 20px;">
                     <div class="step-number" style="width: 50px; height: 50px; background: linear-gradient(135deg, #0D9488, #10B981); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.3rem; font-weight: bold; color: white;">1</div>
                     <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: #fff;">Create your profile</h3>
-                    <p style="color: #ccc; line-height: 1.5; font-size: 0.9rem;">Set up your business listing with photos, services, and contact information.</p>
+                    <p style="color: #ccc; line-height: 1.5; font-size: 0.9rem;">Add your photos, services, and contact information in minutes.</p>
                 </div>
                 
                 <div class="step-card" style="text-align: center; padding: 20px;">
                     <div class="step-number" style="width: 50px; height: 50px; background: linear-gradient(135deg, #0D9488, #10B981); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.3rem; font-weight: bold; color: white;">2</div>
-                    <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: #fff;">Set services & availability</h3>
-                    <p style="color: #ccc; line-height: 1.5; font-size: 0.9rem;">Define your services, pricing, and available time slots for bookings.</p>
+                    <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: #fff;">Set services & schedule</h3>
+                    <p style="color: #ccc; line-height: 1.5; font-size: 0.9rem;">Define your pricing and schedule with ease.</p>
                 </div>
                 
                 <div class="step-card" style="text-align: center; padding: 20px;">
                     <div class="step-number" style="width: 50px; height: 50px; background: linear-gradient(135deg, #0D9488, #10B981); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.3rem; font-weight: bold; color: white;">3</div>
                     <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: #fff;">Start getting bookings</h3>
-                    <p style="color: #ccc; line-height: 1.5; font-size: 0.9rem;">Customers find and book your services directly through our platform.</p>
+                    <p style="color: #ccc; line-height: 1.5; font-size: 0.9rem;">Customers can find and book you instantly.</p>
                 </div>
             </div>
         </div>
@@ -991,19 +1079,19 @@
             <div class="stats-grid">
                 <div class="stat-item">
                     <div class="stat-number">500+</div>
-                    <div class="stat-label">Businesses Listed</div>
+                    <div class="stat-label">Businesses Growing with BlkPages</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">10K+</div>
-                    <div class="stat-label">Happy Customers</div>
+                    <div class="stat-label">Happy Customers Served</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">50K+</div>
-                    <div class="stat-label">Bookings Made</div>
+                    <div class="stat-label">Bookings Made Through the Platform</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">98%</div>
-                    <div class="stat-label">Satisfaction Rate</div>
+                    <div class="stat-label">Satisfaction Rate from Verified Reviews</div>
                 </div>
             </div>
         </div>
@@ -1033,7 +1121,7 @@
                         </ul>
                     </div>
                     <div class="btn-wrapper">
-                        <a href="business-register.html" class="btn btn-secondary">Choose Free</a>
+                        <a href="business-register.html?plan=free" class="btn btn-secondary">Choose Free</a>
                     </div>
                 </div>
 
@@ -1047,16 +1135,16 @@
                         <ul class="pricing-features">
                             <li><i class="fas fa-check"></i> Everything in Free</li>
                             <li><i class="fas fa-check"></i> Business logo and photo gallery (up to 3 photos)</li>
-                            <li><i class="fas fa-check"></i> Enhanced profile visibility</li>
-                            <li><i class="fas fa-check"></i> Customer review highlights</li>
+                            <li><i class="fas fa-check"></i> Enhanced profile visibility <span class="info-icon" data-tooltip="Enhanced profile visibility means your business appears higher in search results, can be featured in relevant categories, and stands out visually to attract more customers.">ⓘ</span></li>
+                            <li><i class="fas fa-check"></i> Customer review highlights <span class="info-icon" data-tooltip="Customer review highlights display top or most relevant customer feedback directly on your profile, helping new clients see why others recommend your business.">ⓘ</span></li>
                             <li><i class="fas fa-check"></i> Basic booking system</li>
                             <li><i class="fas fa-times unavailable"></i> Advanced booking system with calendar sync</li>
-                            <li><i class="fas fa-times unavailable"></i> Customer management dashboard</li>
+                            <li><i class="fas fa-times unavailable"></i> Customer management dashboard <span class="info-icon" data-tooltip="A central hub where businesses can view and manage their customer interactions — including bookings, contact details, messages, and key analytics — all in one simple dashboard.">ⓘ</span></li>
                             <li><i class="fas fa-times unavailable"></i> Priority placement in search</li>
                         </ul>
                     </div>
                     <div class="btn-wrapper">
-                        <a href="business-register.html" class="btn btn-secondary">Choose Starter</a>
+                        <a href="business-register.html?plan=starter" class="btn btn-secondary">Choose Starter</a>
                     </div>
                 </div>
 
@@ -1071,7 +1159,7 @@
                             <li><i class="fas fa-check"></i> Everything in Starter</li>
                             <li><i class="fas fa-check"></i> Photo gallery (up to 10 photos)</li>
                             <li><i class="fas fa-check"></i> Advanced booking system with calendar sync</li>
-                            <li><i class="fas fa-check"></i> Customer management dashboard</li>
+                            <li><i class="fas fa-check"></i> Customer management dashboard <span class="info-icon" data-tooltip="A central hub where businesses can view and manage their customer interactions — including bookings, contact details, messages, and key analytics — all in one simple dashboard.">ⓘ</span></li>
                             <li><i class="fas fa-check"></i> Priority placement in search</li>
                             <li><i class="fas fa-check"></i> Basic analytics</li>
                             <li><i class="fas fa-times unavailable"></i> Advanced analytics (performance trends)</li>
@@ -1079,7 +1167,7 @@
                         </ul>
                     </div>
                     <div class="btn-wrapper">
-                        <a href="business-register.html" class="btn btn-primary">Choose Professional</a>
+                        <a href="business-register.html?plan=professional" class="btn btn-primary">Choose Professional</a>
                     </div>
                 </div>
 
@@ -1102,7 +1190,7 @@
                         </ul>
                     </div>
                     <div class="btn-wrapper">
-                        <a href="business-register.html" class="btn btn-secondary">Choose Elite</a>
+                        <a href="business-register.html?plan=elite" class="btn btn-secondary">Choose Elite</a>
                     </div>
                 </div>
             </div>
@@ -1156,7 +1244,7 @@
             <h2 class="cta-title">Ready to grow your business?</h2>
             <p class="cta-subtitle">Join the hundreds of successful Black-owned businesses connecting with new customers.</p>
             <div class="cta-buttons">
-                <a href="business-register.html" class="btn btn-primary">
+                <a href="business-register.html" class="btn btn-primary" onclick="setDefaultPlan('free')">
                     <i class="fas fa-rocket"></i> List Your Business Today
                 </a>
                 <a href="contact.html" class="btn btn-secondary">
@@ -1290,6 +1378,43 @@
                 document.getElementById('mobileCustomerDropdown').style.display = 'none';
             }
         });
+
+        // Mobile tooltip handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const infoIcons = document.querySelectorAll('.info-icon');
+            
+            infoIcons.forEach(icon => {
+                // Handle mobile tap
+                icon.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Close other tooltips
+                    infoIcons.forEach(otherIcon => {
+                        if (otherIcon !== icon) {
+                            otherIcon.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current tooltip
+                    icon.classList.toggle('active');
+                });
+            });
+            
+            // Close tooltips when tapping outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.info-icon')) {
+                    infoIcons.forEach(icon => {
+                        icon.classList.remove('active');
+                    });
+                }
+            });
+        });
+
+        // Function to set default plan in session storage
+        function setDefaultPlan(plan) {
+            sessionStorage.setItem('selectedPlan', plan);
+        }
     </script>
 </body>
 </html>

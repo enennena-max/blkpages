@@ -146,6 +146,22 @@
         }
         .tier-card:hover { border-color: #007bff; }
         .tier-card.selected { border-color: #007bff; background: #1a3a5c; }
+        .tier-card { transition: all 0.3s ease; }
+        .subscription-tiers { transition: all 0.3s ease; }
+        
+        /* Visual indicator for selected plan at top */
+        .tier-card.selected::after {
+            content: "✓ Selected";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #007bff;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
         .tier-card.popular { border-color: #ff6b35; }
         .tier-card.popular::before {
             content: "Most Popular";
@@ -209,6 +225,16 @@
             .page-title { font-size: 2rem; }
             .registration-container { grid-template-columns: 1fr; gap: 2rem; }
             .form-row { grid-template-columns: 1fr; }
+            .subscription-tiers { grid-template-columns: 1fr; }
+            .tier-card { margin-bottom: 1rem; }
+            
+            /* Ensure selected plan indicator is visible on mobile */
+            .tier-card.selected::after {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.6rem;
+                top: 8px;
+                right: 8px;
+            }
         }
     </style>
 </head>
@@ -557,6 +583,27 @@
             selectedTier = tier;
             document.querySelectorAll('.tier-card').forEach(card => card.classList.remove('selected'));
             document.querySelector(`[data-tier="${tier}"]`).classList.add('selected');
+            
+            // Store selection in session storage
+            sessionStorage.setItem('selectedPlan', tier);
+            
+            // Reorder plans to put selected plan at the top
+            reorderPlans(tier);
+        }
+        
+        function reorderPlans(selectedTier) {
+            const subscriptionTiers = document.querySelector('.subscription-tiers');
+            const selectedCard = document.querySelector(`[data-tier="${selectedTier}"]`);
+            const allCards = Array.from(document.querySelectorAll('.tier-card'));
+            
+            // Remove the selected card from its current position
+            selectedCard.remove();
+            
+            // Insert the selected card at the top
+            subscriptionTiers.insertBefore(selectedCard, subscriptionTiers.firstChild);
+            
+            // Add smooth transition
+            selectedCard.style.transition = 'all 0.3s ease';
         }
         
         // Cancellation Policy Templates
@@ -807,8 +854,27 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
             }, 2000);
         });
         
-        // Initialize with free tier selected
-        selectTier('free');
+        // Initialize with selected plan from URL or session storage
+        function initializePlanSelection() {
+            // Check URL parameters first
+            const urlParams = new URLSearchParams(window.location.search);
+            const planFromUrl = urlParams.get('plan');
+            
+            // Check session storage
+            const planFromStorage = sessionStorage.getItem('selectedPlan');
+            
+            // Use URL parameter if available, otherwise use session storage, otherwise default to free
+            const selectedPlan = planFromUrl || planFromStorage || 'free';
+            
+            // Store the selection in session storage
+            sessionStorage.setItem('selectedPlan', selectedPlan);
+            
+            // Select the tier and reorder plans
+            selectTier(selectedPlan);
+        }
+        
+        // Initialize plan selection
+        initializePlanSelection();
     </script>
 </body>
 </html>
