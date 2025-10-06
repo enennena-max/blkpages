@@ -482,6 +482,103 @@
             background: #1A1A1A;
             border-radius: 8px;
         }
+        
+        /* Cancellation Policy Styles */
+        .payment-model-info {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 60, 172, 0.1);
+            border: 1px solid rgba(255, 60, 172, 0.3);
+            border-radius: 12px;
+        }
+        
+        .payment-model-info h4 {
+            color: #FF3CAC;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .payment-model-info h4::before {
+            content: "💳";
+            font-size: 1.2rem;
+        }
+        
+        .payment-message {
+            background: #1A1A1A;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: #e5e7eb;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .cancellation-info {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            color: #9CA3AF;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .cancellation-info a {
+            color: #FF3CAC;
+            text-decoration: none;
+        }
+        
+        .cancellation-info a:hover {
+            text-decoration: underline;
+        }
+        
+        .cancellation-policy {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #1A1A1A;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            border-left: 4px solid #FF3CAC;
+        }
+        
+        .cancellation-policy h4 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .cancellation-policy h4::before {
+            content: "📋";
+            font-size: 1.2rem;
+        }
+        
+        .policy-content {
+            color: #e5e7eb;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .policy-content p {
+            margin-bottom: 0.75rem;
+        }
+        
+        .policy-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .policy-content strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -567,6 +664,29 @@
                 
                 <div class="payment-status" id="paymentStatus">
                     <i class="fas fa-check-circle"></i> Payment processed successfully
+                </div>
+                
+                <!-- Payment Model Information -->
+                <div class="payment-model-info" id="paymentModelInfo">
+                    <h4>Payment Information</h4>
+                    <div class="payment-message" id="paymentMessage">
+                        <!-- Payment model message will be populated by JavaScript -->
+                    </div>
+                    <div class="cancellation-info" id="cancellationInfo">
+                        <!-- Cancellation information will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Cancellation Policy Section -->
+                <div class="cancellation-policy">
+                    <h4>Cancellation Policy</h4>
+                    <div class="policy-content">
+                        <p><strong>Royal Hair Studio – Cancellation Policy:</strong></p>
+                        <p>You may cancel your booking up to 48 hours before your appointment for a full refund.</p>
+                        <p>Cancellations made within 48 hours will be charged 50% of the service price.</p>
+                        <p>No-shows will be charged 100% of the service price.</p>
+                        <p>Refunds are returned to your original payment method within 5–10 business days.</p>
+                    </div>
                 </div>
             </div>
 
@@ -673,6 +793,46 @@
             document.getElementById('bookingDate').textContent = bookingDate;
             document.getElementById('bookingTime').textContent = bookingTime;
             document.getElementById('totalPrice').textContent = `Total: ${totalPrice}`;
+            
+            // Update payment model information
+            updatePaymentModelInfo();
+        }
+        
+        // Update payment model information based on business payment model
+        function updatePaymentModelInfo() {
+            const paymentMessage = document.getElementById('paymentMessage');
+            const cancellationInfo = document.getElementById('cancellationInfo');
+            
+            // In real implementation, this would come from business data
+            const businessPaymentModel = 'deposit-balance'; // Options: 'full-online', 'deposit-balance', 'full-venue'
+            const customerName = 'John Doe'; // In real implementation, get from user data
+            const totalPrice = 70; // In real implementation, get from booking data
+            const depositPercentage = 30; // In real implementation, get from business data
+            const depositAmount = Math.round(totalPrice * (depositPercentage / 100));
+            const balanceAmount = totalPrice - depositAmount;
+            
+            let paymentMessageText = '';
+            let cancellationMessage = '';
+            
+            switch (businessPaymentModel) {
+                case 'full-online':
+                    paymentMessageText = `You've paid the full amount (£${totalPrice}) online. Nothing more is due at the venue.`;
+                    cancellationMessage = `If you cancel, your refund will depend on the venue's cancellation policy. <a href="#" onclick="openCancellationPolicyModal(); return false;">View cancellation policy</a>`;
+                    break;
+                    
+                case 'deposit-balance':
+                    paymentMessageText = `You've paid a deposit of £${depositAmount}. The remaining £${balanceAmount} is payable at the venue.`;
+                    cancellationMessage = `If you cancel, your deposit may or may not be refunded depending on the venue's cancellation policy. <a href="#" onclick="openCancellationPolicyModal(); return false;">View cancellation policy</a>`;
+                    break;
+                    
+                case 'full-venue':
+                    paymentMessageText = `You'll pay the full amount (£${totalPrice}) directly at the venue. No payment has been taken online.`;
+                    cancellationMessage = `If you cancel, no refund is required as no payment was taken online. The venue's cancellation policy may still apply. <a href="#" onclick="openCancellationPolicyModal(); return false;">View cancellation policy</a>`;
+                    break;
+            }
+            
+            paymentMessage.textContent = paymentMessageText;
+            cancellationInfo.innerHTML = cancellationMessage;
         }
         
         function addToCalendar() {

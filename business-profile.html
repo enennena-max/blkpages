@@ -378,6 +378,36 @@
             gap: 1rem;
         }
         
+        /* Payment Method Info */
+        .payment-method-info {
+            background: rgba(255, 60, 172, 0.1);
+            border: 1px solid rgba(255, 60, 172, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .payment-method-text {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            color: #e5e7eb;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .payment-method-text i {
+            color: #FF3CAC;
+            font-size: 1rem;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+        
+        .payment-method-text strong {
+            color: #FF3CAC;
+            font-weight: 600;
+        }
+        
         .service-item {
             background: #2A2A2A;
             padding: 1.5rem;
@@ -627,6 +657,69 @@
             background: linear-gradient(135deg, rgba(255, 60, 172, 0.1), rgba(120, 75, 160, 0.1));
         }
         
+        /* Payment Model Info Styles */
+        .payment-model-info {
+            background: rgba(255, 60, 172, 0.1);
+            border: 1px solid rgba(255, 60, 172, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .payment-model-info h4 {
+            color: #FF3CAC;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .payment-model-info h4::before {
+            content: "💳";
+            font-size: 1.2rem;
+        }
+        
+        .payment-model-info .payment-details {
+            color: #e5e7eb;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .payment-model-info .payment-amount {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0.5rem 0;
+        }
+        
+        .payment-model-info .balance-info {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .payment-disclaimer {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .payment-disclaimer p {
+            color: #9CA3AF;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin: 0;
+        }
+        
+        .payment-disclaimer strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
         .payment-header {
             display: flex;
             align-items: center;
@@ -844,6 +937,20 @@
         .disclaimer-text strong {
             color: #ffffff;
             font-weight: 600;
+        }
+        
+        /* Policy Modal Styles */
+        #policyModalContent {
+            background: #111111;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 1.5rem;
+            color: #e5e7eb;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-line;
+            max-height: 60vh;
+            overflow-y: auto;
         }
         
         .venue-payment-disclaimer {
@@ -1927,6 +2034,15 @@
                     <!-- Services Section -->
                 <div class="card">
                     <h2>Services & Prices</h2>
+                    
+                    <!-- Payment Method Information -->
+                    <div class="payment-method-info" id="paymentMethodInfo">
+                        <div class="payment-method-text">
+                            <i class="fas fa-credit-card"></i>
+                            <span id="paymentMethodText">Loading payment information...</span>
+                        </div>
+                    </div>
+                    
                         <div class="services-grid">
                         <div class="service-item">
                             <div class="service-info">
@@ -2156,30 +2272,12 @@
                     
                     <!-- Payment Options -->
                     <div class="booking-payment">
-                        <h3>Payment Options</h3>
-                        <div class="payment-options">
-                            <div class="payment-option" onclick="selectPayment('payNow')">
-                                <div class="payment-header">
-                                    <div class="payment-icon">
-                                        <i class="fas fa-credit-card"></i>
-                                    </div>
-                                    <div>
-                                        <div class="payment-title">Pay Now</div>
-                                        <div class="payment-description">Secure payment with card or digital wallet</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="payment-option" onclick="selectPayment('payAtVenue')">
-                                <div class="payment-header">
-                                    <div class="payment-icon">
-                                        <i class="fas fa-store"></i>
-                                    </div>
-                                    <div>
-                                        <div class="payment-title">Pay at Venue</div>
-                                        <div class="payment-description">Pay when you arrive at the salon</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <h3>Payment Information</h3>
+                        <div class="payment-model-info" id="paymentModelInfo">
+                            <!-- Payment model information will be populated by JavaScript -->
+                        </div>
+                        <div class="payment-options" id="paymentOptions">
+                            <!-- Payment options will be populated based on business model -->
                         </div>
                         
                         <!-- Pay at Venue Disclaimer -->
@@ -2198,7 +2296,7 @@
                                 <i class="fas fa-credit-card"></i>
                             </div>
                             <div class="disclaimer-text">
-                                Payments are processed by BlkPages via Stripe, on behalf of Royal Hair Studio. Your contract of service is with Royal Hair Studio, not BlkPages. Refunds are subject to the venue's cancellation policy. <a href="cancellation-policy.html" target="_blank" class="terms-link">View Royal Hair Studio's cancellation policy</a>
+                                Payments are processed by BlkPages via Stripe, on behalf of Royal Hair Studio. Your contract of service is with Royal Hair Studio, not BlkPages. Refunds are subject to the venue's cancellation policy. <a href="#" onclick="openCancellationPolicyModal(); return false;" class="terms-link">View Royal Hair Studio's cancellation policy</a>
                             </div>
                         </div>
                     </div>
@@ -2219,7 +2317,7 @@
                             <input type="checkbox" id="acceptTerms" onchange="updateBookingButton()" required>
                             <label for="acceptTerms" class="required-label">
                                 <span class="required-asterisk">*</span>
-                                By completing this booking, I agree to BlkPages' booking policy as well as <a href="cancellation-policy.html" target="_blank" class="terms-link">Royal Hair Studio's cancellation policy</a>.
+                                By completing this booking, I agree to BlkPages' booking policy as well as <a href="#" onclick="openCancellationPolicyModal(); return false;" class="terms-link">Royal Hair Studio's cancellation policy</a>.
                             </label>
                         </div>
                     </div>
@@ -2321,6 +2419,23 @@
         </div>
     </div>
 
+    <!-- Cancellation Policy Modal -->
+    <div id="cancellationPolicyModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-2xl w-full border border-white/10">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold gradient-text" id="policyModalTitle">Cancellation Policy</h3>
+                    <button onclick="closeCancellationPolicyModal()" class="text-white/70 hover:text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="policy-content" id="policyModalContent">
+                    <!-- Policy content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -2391,6 +2506,7 @@
             updateBookingSummary();
             updateBookingServicesList();
             updateCompleteBookingButton();
+            updatePaymentModelDisplay();
             
             // Hide no services message and show booking section
             hideNoServicesMessage();
@@ -2435,6 +2551,7 @@
             updateBookingSummary();
             updateBookingServicesList();
             updateCompleteBookingButton();
+            updatePaymentModelDisplay();
             
             // Clear selected date and time when service is removed
             selectedDate = null;
@@ -2608,9 +2725,158 @@
             }
         }
 
+        // Update Payment Method Information
+        function updatePaymentMethodInfo() {
+            const paymentMethodText = document.getElementById('paymentMethodText');
+            
+            // In real implementation, this would come from business data
+            const businessPaymentModel = 'deposit-balance'; // Options: 'full-online', 'deposit-balance', 'full-venue'
+            const depositPercentage = 30; // In real implementation, this would come from business data
+            
+            let paymentMethodDescription = '';
+            
+            switch (businessPaymentModel) {
+                case 'full-online':
+                    paymentMethodDescription = 'This business accepts <strong>Full Payment Online</strong> payments. The total price due will be reflected in the payment information box below once you have selected a service and it\'s in your basket.';
+                    break;
+                    
+                case 'deposit-balance':
+                    paymentMethodDescription = `This business accepts <strong>Deposit Online + Balance at Venue</strong> payments (${depositPercentage}% deposit required). The total price due will be reflected in the payment information box below once you have selected a service and it's in your basket.`;
+                    break;
+                    
+                case 'full-venue':
+                    paymentMethodDescription = 'This business accepts <strong>Full Payment at Venue</strong> payments. No payment is required online - you will pay the full amount when you arrive. The total price due will be reflected in the payment information box below once you have selected a service and it\'s in your basket.';
+                    break;
+            }
+            
+            paymentMethodText.innerHTML = paymentMethodDescription;
+        }
+        
+        // Payment Model Display Function
+        function updatePaymentModelDisplay() {
+            const paymentModelInfo = document.getElementById('paymentModelInfo');
+            const paymentOptions = document.getElementById('paymentOptions');
+            
+            // Calculate total (use 0 if no services selected)
+            const total = selectedServices.length > 0 ? selectedServices.reduce((sum, service) => sum + service.price, 0) : 0;
+            
+            // In real implementation, this would come from business data
+            const businessPaymentModel = 'deposit-balance'; // Options: 'full-online', 'deposit-balance', 'full-venue'
+            const depositPercentage = 30; // In real implementation, this would come from business data
+            
+            let paymentModelHTML = '';
+            let paymentOptionsHTML = '';
+            
+            // If no services selected, show placeholder message
+            if (total === 0) {
+                paymentModelHTML = `
+                    <h4>Payment Information</h4>
+                    <div class="payment-details">
+                        <p>No current services selected. Select services above to see payment information.</p>
+                    </div>
+                `;
+                paymentOptionsHTML = '';
+            } else {
+                switch (businessPaymentModel) {
+                case 'full-online':
+                    paymentModelHTML = `
+                        <h4>Full Payment Online</h4>
+                        <div class="payment-details">
+                            <div class="payment-amount">Full payment of £${total} due now.</div>
+                            <p>Complete your booking with secure online payment. No additional payment required at the venue.</p>
+                            <div class="payment-disclaimer">
+                                <p><strong>Payment Processing:</strong> Payments are processed by BlkPages via Stripe, on behalf of Royal Hair Studio. Your contract of service is with Royal Hair Studio, not BlkPages.</p>
+                            </div>
+                        </div>
+                    `;
+                    paymentOptionsHTML = `
+                        <div class="payment-option" onclick="selectPayment('payNow')">
+                            <div class="payment-header">
+                                <div class="payment-icon">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <div>
+                                    <div class="payment-title">Pay Now</div>
+                                    <div class="payment-description">Secure payment with card or digital wallet</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'deposit-balance':
+                    const depositAmount = Math.round(total * (depositPercentage / 100));
+                    const balanceAmount = total - depositAmount;
+                    paymentModelHTML = `
+                        <h4>Deposit Online + Balance at Venue</h4>
+                        <div class="payment-details">
+                            <div class="payment-amount">Pay £${depositAmount} now (${depositPercentage}%), balance £${balanceAmount} at the venue.</div>
+                            <p>Secure your booking with a ${depositPercentage}% deposit. Pay the remaining balance when you arrive.</p>
+                            <div class="balance-info">
+                                <strong>Deposit:</strong> £${depositAmount} (${depositPercentage}%)<br>
+                                <strong>Balance at venue:</strong> £${balanceAmount}
+                            </div>
+                            <div class="payment-disclaimer">
+                                <p><strong>Payment Processing:</strong> Payments are processed by BlkPages via Stripe, on behalf of Royal Hair Studio. Your contract of service is with Royal Hair Studio, not BlkPages.</p>
+                            </div>
+                        </div>
+                    `;
+                    paymentOptionsHTML = `
+                        <div class="payment-option" onclick="selectPayment('payNow')">
+                            <div class="payment-header">
+                                <div class="payment-icon">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <div>
+                                    <div class="payment-title">Pay Deposit Now</div>
+                                    <div class="payment-description">Pay £${depositAmount} deposit online</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'full-venue':
+                    paymentModelHTML = `
+                        <h4>Full Payment at Venue</h4>
+                        <div class="payment-details">
+                            <div class="payment-amount">No payment due now. Full balance of £${total} payable at the venue.</div>
+                            <p>Book your appointment without any upfront payment. Pay the full amount when you arrive.</p>
+                            <div class="payment-disclaimer">
+                                <p><strong>Payment Processing:</strong> No online payment required. You will pay Royal Hair Studio directly at the venue. Your contract of service is with Royal Hair Studio, not BlkPages.</p>
+                            </div>
+                        </div>
+                    `;
+                    paymentOptionsHTML = `
+                        <div class="payment-option" onclick="selectPayment('payAtVenue')">
+                            <div class="payment-header">
+                                <div class="payment-icon">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <div>
+                                    <div class="payment-title">Pay at Venue</div>
+                                    <div class="payment-description">No payment required now - pay £${total} at the venue</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                }
+            }
+            
+            paymentModelInfo.innerHTML = paymentModelHTML;
+            paymentOptions.innerHTML = paymentOptionsHTML;
+        }
+        
         // Run check on page load
         document.addEventListener('DOMContentLoaded', function() {
             checkUserLogin();
+            
+            // Initialize payment method info
+            updatePaymentMethodInfo();
+            
+            // Initialize payment model display
+            updatePaymentModelDisplay();
             
             // Debug: Check if booking section exists
             const bookingSection = document.getElementById('booking-section');
@@ -3067,6 +3333,9 @@
             // Update complete booking button
             updateCompleteBookingButton();
             updateBookingSummary();
+            
+            // Update payment model display
+            updatePaymentModelDisplay();
         }
         
         function updateCompleteBookingButton() {
@@ -3847,6 +4116,64 @@
             if (modal) {
                 modal.classList.toggle('hidden');
             }
+        }
+        
+        // Cancellation Policy Modal Functions
+        function openCancellationPolicyModal() {
+            const modal = document.getElementById('cancellationPolicyModal');
+            const modalContent = document.getElementById('policyModalContent');
+            const modalTitle = document.getElementById('policyModalTitle');
+            
+            // Get business name (in real implementation, this would come from the business data)
+            const businessName = 'Royal Hair Studio';
+            
+            // Get cancellation policy (in real implementation, this would come from the business data)
+            const policyType = 'moderate'; // This would be retrieved from business data
+            
+            // Policy templates (same as in business registration)
+            const cancellationTemplates = {
+                flexible: `${businessName} – Cancellation Policy:
+You may cancel your booking up to 24 hours before your appointment for a full refund.
+Cancellations made within 24 hours and no-shows will be charged 100% of the service price.
+Refunds are returned to your original payment method within 5–10 business days.
+
+This policy is set by ${businessName}. BlkPages processes payments via Stripe on behalf of the venue but is not responsible for enforcing refunds.`,
+                
+                moderate: `${businessName} – Cancellation Policy:
+You may cancel your booking up to 48 hours before your appointment for a full refund.
+Cancellations made within 48 hours will be charged 50% of the service price.
+No-shows will be charged 100% of the service price.
+Refunds are returned to your original payment method within 5–10 business days.
+
+This policy is set by ${businessName}. BlkPages processes payments via Stripe on behalf of the venue but is not responsible for enforcing refunds.`,
+                
+                strict: `${businessName} – Cancellation Policy:
+This booking is non-refundable once confirmed.
+No-shows will be charged 100% of the service price.
+Refunds are returned to your original payment method within 5–10 business days.
+
+This policy is set by ${businessName}. BlkPages processes payments via Stripe on behalf of the venue but is not responsible for enforcing refunds.`,
+                
+                custom: `${businessName} – Cancellation Policy:
+Cancellations: You may cancel your appointment up to [X hours/days] before the scheduled time for a full refund.
+Late Cancellations: Cancellations made within [X hours/days] will be charged [X%] of the service price.
+No-Shows: If you do not attend your appointment without notice, you will be charged [100%] of the service price.
+Refunds: Refunds (where applicable) will be processed back to your original payment method within [X working days].
+
+This policy is set by ${businessName}. BlkPages processes payments via Stripe on behalf of the venue but is not responsible for enforcing refunds.`
+            };
+            
+            // Set modal content
+            modalTitle.textContent = `${businessName} – Cancellation Policy`;
+            modalContent.textContent = cancellationTemplates[policyType] || cancellationTemplates.moderate;
+            
+            // Show modal
+            modal.classList.remove('hidden');
+        }
+        
+        function closeCancellationPolicyModal() {
+            const modal = document.getElementById('cancellationPolicyModal');
+            modal.classList.add('hidden');
         }
         
         function toggleCustomerMenu() {

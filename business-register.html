@@ -52,6 +52,81 @@
         .required { color: #ff6b6b; }
         .form-help { color: #888; font-size: 0.9rem; margin-top: 0.5rem; }
         
+        /* Policy Preview Styles */
+        .policy-preview {
+            background: #1a1a1a;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .policy-preview h4 {
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .policy-content {
+            background: #111111;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            padding: 1rem;
+            color: #e5e7eb;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+        
+        .custom-policy-editor {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #1a1a1a;
+            border: 1px solid #374151;
+            border-radius: 8px;
+        }
+        
+        .custom-policy-editor label {
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .custom-policy-editor textarea {
+            background: #111111;
+            border: 1px solid #374151;
+            color: #e5e7eb;
+            font-family: inherit;
+        }
+        
+        /* Payment Model Styles */
+        .payment-preview {
+            background: #1a1a1a;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .payment-preview h4 {
+            color: #FF3CAC;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .preview-content {
+            background: #111111;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            padding: 1rem;
+            color: #e5e7eb;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
         /* Subscription Tiers */
         .subscription-section { background: #1a1a1a; padding: 3rem; border-radius: 15px; border: 1px solid #333; height: fit-content; }
         .subscription-section h2 { font-size: 2rem; font-weight: 600; margin-bottom: 2rem; color: #ffffff; }
@@ -273,16 +348,74 @@
                         <!-- Booking Policies -->
                         <div class="form-section">
                             <h3>Booking Policies</h3>
+                            
+                            <!-- Cancellation Policy -->
                             <div class="form-group">
                                 <label for="cancellationPolicy">Cancellation Policy <span class="required">*</span></label>
-                                <textarea id="cancellationPolicy" name="cancellationPolicy" rows="4" required placeholder="Please describe your cancellation policy. For example: 'Cancellations must be made at least 24 hours in advance. Late cancellations or no-shows will be charged 50% of the service fee.'"></textarea>
-                                <div class="form-help">This information will be shown to customers when they book with you. Be clear about your cancellation terms, fees, and time requirements.</div>
+                                <select id="cancellationPolicy" name="cancellationPolicy" required onchange="updateCancellationPreview()">
+                                    <option value="">Select Policy</option>
+                                    <option value="flexible">Flexible</option>
+                                    <option value="moderate">Moderate</option>
+                                    <option value="strict">Strict</option>
+                                    <option value="custom" id="customOption" style="display: none;">Custom (Premium Only)</option>
+                                </select>
+                                <div class="form-help">Choose a cancellation policy that works for your business.</div>
+                            </div>
+                            
+                            <!-- Policy Preview -->
+                            <div id="policyPreview" class="policy-preview" style="display: none;">
+                                <h4>Policy Preview</h4>
+                                <div class="policy-content" id="policyContent"></div>
+                            </div>
+                            
+                            <!-- Custom Policy Editor (Premium Only) -->
+                            <div id="customPolicyEditor" class="custom-policy-editor" style="display: none;">
+                                <label for="customPolicyText">Custom Policy Text</label>
+                                <textarea id="customPolicyText" name="customPolicyText" rows="6" placeholder="Enter your custom cancellation policy..."></textarea>
+                                <div class="form-help">You can customize the policy text. Use [Business Name] to insert your business name automatically.</div>
                             </div>
                             
                             <div class="form-group">
                                 <label for="bookingNotes">Additional Booking Information</label>
                                 <textarea id="bookingNotes" name="bookingNotes" rows="3" placeholder="Any additional information customers should know when booking (e.g., arrival time, what to bring, special requirements)"></textarea>
                                 <div class="form-help">Optional: Additional information to help customers prepare for their appointment.</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Model -->
+                        <div class="form-section">
+                            <h3>Payment Model</h3>
+                            <div class="form-group">
+                                <label for="paymentModel">Payment Model <span class="required">*</span></label>
+                                <select id="paymentModel" name="paymentModel" required onchange="updatePaymentModel()">
+                                    <option value="">Select Payment Model</option>
+                                    <option value="full-online">Full Payment Online</option>
+                                    <option value="deposit-balance">Deposit Online + Balance at Venue</option>
+                                    <option value="full-venue">Full Payment at Venue</option>
+                                </select>
+                                <div class="form-help">Choose how customers will pay for your services. This cannot be changed after setup.</div>
+                            </div>
+                            
+                            <!-- Deposit Percentage (only shown for deposit + balance option) -->
+                            <div class="form-group" id="depositPercentageGroup" style="display: none;">
+                                <label for="depositPercentage">Deposit Percentage <span class="required">*</span></label>
+                                <select id="depositPercentage" name="depositPercentage">
+                                    <option value="">Select Deposit Percentage</option>
+                                    <option value="10">10%</option>
+                                    <option value="20">20%</option>
+                                    <option value="30">30%</option>
+                                    <option value="40">40%</option>
+                                    <option value="50">50%</option>
+                                </select>
+                                <div class="form-help">Choose what percentage customers will pay as a deposit online.</div>
+                            </div>
+                            
+                            <!-- Payment Model Preview -->
+                            <div class="payment-preview" id="paymentPreview" style="display: none;">
+                                <h4>Payment Model Preview</h4>
+                                <div class="preview-content" id="paymentPreviewContent">
+                                    <!-- Preview content will be populated by JavaScript -->
+                                </div>
                             </div>
                         </div>
                         
@@ -426,6 +559,156 @@
             document.querySelector(`[data-tier="${tier}"]`).classList.add('selected');
         }
         
+        // Cancellation Policy Templates
+        const cancellationTemplates = {
+            flexible: `[Business Name] – Cancellation Policy:
+You may cancel your booking up to 24 hours before your appointment for a full refund.
+Cancellations made within 24 hours and no-shows will be charged 100% of the service price.
+Refunds are returned to your original payment method within 5–10 business days.`,
+            
+            moderate: `[Business Name] – Cancellation Policy:
+You may cancel your booking up to 48 hours before your appointment for a full refund.
+Cancellations made within 48 hours will be charged 50% of the service price.
+No-shows will be charged 100% of the service price.
+Refunds are returned to your original payment method within 5–10 business days.`,
+            
+            strict: `[Business Name] – Cancellation Policy:
+This booking is non-refundable once confirmed.
+No-shows will be charged 100% of the service price.
+Refunds are returned to your original payment method within 5–10 business days.`,
+            
+            custom: `[Business Name] – Cancellation Policy:
+Cancellations: You may cancel your appointment up to [X hours/days] before the scheduled time for a full refund.
+Late Cancellations: Cancellations made within [X hours/days] will be charged [X%] of the service price.
+No-Shows: If you do not attend your appointment without notice, you will be charged [100%] of the service price.
+Refunds: Refunds (where applicable) will be processed back to your original payment method within [X working days].`
+        };
+        
+        // Update cancellation policy preview
+        function updateCancellationPreview() {
+            const policySelect = document.getElementById('cancellationPolicy');
+            const policyPreview = document.getElementById('policyPreview');
+            const policyContent = document.getElementById('policyContent');
+            const customEditor = document.getElementById('customPolicyEditor');
+            const customOption = document.getElementById('customOption');
+            const businessName = document.getElementById('businessName').value || '[Business Name]';
+            
+            if (policySelect.value === '') {
+                policyPreview.style.display = 'none';
+                customEditor.style.display = 'none';
+                return;
+            }
+            
+            // Show custom option for premium tiers
+            const selectedTier = document.querySelector('.tier-card.selected')?.getAttribute('data-tier');
+            if (selectedTier === 'professional' || selectedTier === 'elite') {
+                customOption.style.display = 'block';
+            } else {
+                customOption.style.display = 'none';
+                if (policySelect.value === 'custom') {
+                    policySelect.value = '';
+                    return;
+                }
+            }
+            
+            if (policySelect.value === 'custom') {
+                policyPreview.style.display = 'none';
+                customEditor.style.display = 'block';
+                
+                // Pre-fill custom template
+                const customText = document.getElementById('customPolicyText');
+                if (!customText.value) {
+                    customText.value = cancellationTemplates.custom.replace('[Business Name]', businessName);
+                }
+            } else {
+                customEditor.style.display = 'none';
+                policyPreview.style.display = 'block';
+                
+                // Show preview with business name
+                const template = cancellationTemplates[policySelect.value];
+                policyContent.textContent = template.replace('[Business Name]', businessName);
+            }
+        }
+        
+        // Update preview when business name changes
+        document.getElementById('businessName').addEventListener('input', function() {
+            if (document.getElementById('policyPreview').style.display !== 'none') {
+                updateCancellationPreview();
+            }
+        });
+        
+        // Payment Model Functions
+        function updatePaymentModel() {
+            const paymentModel = document.getElementById('paymentModel').value;
+            const depositGroup = document.getElementById('depositPercentageGroup');
+            const paymentPreview = document.getElementById('paymentPreview');
+            const previewContent = document.getElementById('paymentPreviewContent');
+            
+            if (paymentModel === '') {
+                depositGroup.style.display = 'none';
+                paymentPreview.style.display = 'none';
+                return;
+            }
+            
+            if (paymentModel === 'deposit-balance') {
+                depositGroup.style.display = 'block';
+                document.getElementById('depositPercentage').required = true;
+            } else {
+                depositGroup.style.display = 'none';
+                document.getElementById('depositPercentage').required = false;
+            }
+            
+            // Show preview
+            paymentPreview.style.display = 'block';
+            
+            // Update preview content based on selected model
+            const businessName = document.getElementById('businessName').value || '[Business Name]';
+            const depositPercentage = document.getElementById('depositPercentage').value;
+            
+            let previewText = '';
+            
+            switch (paymentModel) {
+                case 'full-online':
+                    previewText = `Full Payment Online:
+• Customers pay the full service price online at booking
+• No additional payment required at the venue
+• Example: "Full payment of £70 due now."`;
+                    break;
+                    
+                case 'deposit-balance':
+                    if (depositPercentage) {
+                        const depositAmount = Math.round(70 * (depositPercentage / 100)); // Using £70 as example
+                        const balanceAmount = 70 - depositAmount;
+                        previewText = `Deposit Online + Balance at Venue:
+• Customers pay ${depositPercentage}% deposit online (£${depositAmount})
+• Remaining balance (£${balanceAmount}) paid at the venue
+• Example: "Pay £${depositAmount} now (${depositPercentage}%), balance £${balanceAmount} at the venue."`;
+                    } else {
+                        previewText = `Deposit Online + Balance at Venue:
+• Customers pay a percentage deposit online
+• Remaining balance paid at the venue
+• Select deposit percentage above to see example`;
+                    }
+                    break;
+                    
+                case 'full-venue':
+                    previewText = `Full Payment at Venue:
+• No payment required online at booking
+• Full service price paid directly at the venue
+• Example: "No payment due now. Full balance of £70 payable at the venue."`;
+                    break;
+            }
+            
+            previewContent.textContent = previewText;
+        }
+        
+        // Update preview when deposit percentage changes
+        document.getElementById('depositPercentage').addEventListener('change', function() {
+            if (document.getElementById('paymentModel').value === 'deposit-balance') {
+                updatePaymentModel();
+            }
+        });
+        
         // Form validation
         document.getElementById('businessRegistrationForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -493,7 +776,10 @@
                 hoursEnd: document.getElementById('hoursEnd').value,
                 daysOpen: Array.from(document.getElementById('daysOpen').selectedOptions).map(option => option.value),
                 cancellationPolicy: document.getElementById('cancellationPolicy').value,
+                customPolicyText: document.getElementById('customPolicyText').value,
                 bookingNotes: document.getElementById('bookingNotes').value,
+                paymentModel: document.getElementById('paymentModel').value,
+                depositPercentage: document.getElementById('depositPercentage').value,
                 ownerName: document.getElementById('ownerName').value,
                 password: document.getElementById('password').value,
                 selectedTier: selectedTier
