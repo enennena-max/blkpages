@@ -286,6 +286,134 @@
             background: #c82333;
         }
         
+        /* Add-On Card Styles */
+        .addon-card {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .addon-card:hover {
+            border-color: #FF3CAC;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 60, 172, 0.1);
+        }
+        
+        .addon-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .addon-icon {
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .addon-info {
+            flex: 1;
+        }
+        
+        .addon-info h4 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .addon-info p {
+            color: #cccccc;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .addon-price {
+            text-align: right;
+        }
+        
+        .addon-price .price {
+            color: #FF3CAC;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .addon-price .period {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-left: 0.25rem;
+        }
+        
+        .addon-features {
+            margin-bottom: 1.5rem;
+        }
+        
+        .addon-features ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .addon-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            color: #cccccc;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .addon-features li i {
+            color: #28a745;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+        
+        .addon-actions {
+            text-align: center;
+        }
+        
+        .btn-addon {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-addon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-addon.added {
+            background: #28a745;
+            cursor: default;
+        }
+        
+        .btn-addon.added:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
         /* Footer */
         .footer {
             background: #1A1A1A;
@@ -311,6 +439,16 @@
             
             .test-buttons {
                 flex-direction: column;
+            }
+            
+            .addon-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .addon-price {
+                text-align: center;
             }
         }
     </style>
@@ -371,6 +509,43 @@
                     <a href="business-register.html" class="btn-register">Create Business Listing</a>
                 </div>
                 
+                <!-- Add-Ons Section -->
+                <div class="test-section">
+                    <h3>Premium Add-Ons</h3>
+                    <p style="text-align: center; color: #cccccc; margin-bottom: 1.5rem;">Enhance your business with these premium features</p>
+                    
+                    <div class="addon-card">
+                        <div class="addon-header">
+                            <div class="addon-icon">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                            <div class="addon-info">
+                                <h4>Loyalty Rewards Programme</h4>
+                                <p>Create customer loyalty programs to encourage repeat bookings</p>
+                            </div>
+                            <div class="addon-price">
+                                <span class="price">£5</span>
+                                <span class="period">/month</span>
+                            </div>
+                        </div>
+                        <div class="addon-features">
+                            <ul>
+                                <li><i class="fas fa-check"></i> Visit-based rewards (book X visits, get reward)</li>
+                                <li><i class="fas fa-check"></i> Spend-based rewards (spend £Y, get reward)</li>
+                                <li><i class="fas fa-check"></i> Time-limited challenges (book X visits in Z weeks)</li>
+                                <li><i class="fas fa-check"></i> Free services, discounts, and percentage off rewards</li>
+                                <li><i class="fas fa-check"></i> Customer progress tracking</li>
+                                <li><i class="fas fa-check"></i> Automatic reward application at checkout</li>
+                            </ul>
+                        </div>
+                        <div class="addon-actions">
+                            <button onclick="selectLoyaltyAddon()" class="btn-addon">
+                                <i class="fas fa-plus"></i> Add to Plan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Test Section -->
                 <div class="test-section">
                     <h3>Quick Test Access</h3>
@@ -413,6 +588,32 @@
             localStorage.removeItem('businessEmail');
             localStorage.removeItem('businessLoginTime');
             alert('Login state cleared!');
+        }
+        
+        // Select loyalty add-on function
+        function selectLoyaltyAddon() {
+            const button = event.target;
+            
+            // Check if already added
+            if (button.classList.contains('added')) {
+                alert('Loyalty Rewards Programme is already added to your plan!');
+                return;
+            }
+            
+            // Show confirmation
+            const confirmed = confirm('Add Loyalty Rewards Programme to your plan?\n\nThis will add £5/month to your subscription.\n\nYou can manage this add-on in your business dashboard.');
+            
+            if (confirmed) {
+                // Update button state
+                button.innerHTML = '<i class="fas fa-check"></i> Added to Plan';
+                button.classList.add('added');
+                
+                // Save to localStorage (in real implementation, this would be saved to database)
+                localStorage.setItem('loyaltyAddonActive', 'true');
+                localStorage.setItem('loyaltyAddonAddedDate', new Date().toISOString());
+                
+                alert('Loyalty Rewards Programme added successfully!\n\nYou can now configure your loyalty program in your business dashboard.');
+            }
         }
         
         // Form submission handler
