@@ -512,6 +512,59 @@
             font-style: italic;
         }
         
+        /* Loyalty Rewards Styles */
+        .loyalty-preview-card {
+            background: #2A2A2A;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #FF3CAC;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .loyalty-progress {
+            background: #333;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .loyalty-progress-bar {
+            background: #444;
+            border-radius: 4px;
+            height: 8px;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+        
+        .loyalty-progress-fill {
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .loyalty-reward {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .loyalty-reward.unlocked {
+            background: rgba(40, 167, 69, 0.2);
+            border-color: #28a745;
+        }
+        
         /* Action Buttons */
         .action-buttons { 
             display: flex; 
@@ -1052,6 +1105,116 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
                 </div>
             </div>
             
+            <!-- Loyalty Rewards Section -->
+            <div class="booking-options-section" id="loyaltySection" style="display: none;">
+                <h3>Loyalty Rewards</h3>
+                <div class="booking-options-card">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Loyalty Program Type</div>
+                            <div class="setting-description">Choose how customers earn rewards</div>
+                        </div>
+                        <div class="setting-control">
+                            <select id="loyaltyType" class="form-select" onchange="updateLoyaltyType()">
+                                <option value="">Select Loyalty Type</option>
+                                <option value="visitBased">Visit-based: Book X visits, get reward</option>
+                                <option value="spendBased">Spend-based: Spend £Y, get reward</option>
+                                <option value="timeLimited">Time-limited: Book X visits within Z weeks, get reward</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item" id="thresholdSetting" style="display: none;">
+                        <div class="setting-info">
+                            <div class="setting-title">Threshold</div>
+                            <div class="setting-description" id="thresholdDescription">Set the number of visits or amount to spend</div>
+                        </div>
+                        <div class="setting-control">
+                            <input type="number" id="loyaltyThreshold" class="form-input" placeholder="Enter threshold" min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item" id="timeLimitSetting" style="display: none;">
+                        <div class="setting-info">
+                            <div class="setting-title">Time Limit (Weeks)</div>
+                            <div class="setting-description">How many weeks customers have to complete visits</div>
+                        </div>
+                        <div class="setting-control">
+                            <input type="number" id="loyaltyTimeLimit" class="form-input" placeholder="Enter weeks" min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item" id="rewardTypeSetting" style="display: none;">
+                        <div class="setting-info">
+                            <div class="setting-title">Reward Type</div>
+                            <div class="setting-description">What reward customers receive</div>
+                        </div>
+                        <div class="setting-control">
+                            <select id="rewardType" class="form-select" onchange="updateRewardType()">
+                                <option value="">Select Reward Type</option>
+                                <option value="freeService">1 Free Service</option>
+                                <option value="fixedDiscount">Fixed £ Discount</option>
+                                <option value="percentageDiscount">% Discount</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item" id="rewardValueSetting" style="display: none;">
+                        <div class="setting-info">
+                            <div class="setting-title">Reward Value</div>
+                            <div class="setting-description" id="rewardValueDescription">Set the discount amount or percentage</div>
+                        </div>
+                        <div class="setting-control">
+                            <input type="number" id="loyaltyRewardValue" class="form-input" placeholder="Enter value" min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item" id="loyaltyPreview" style="display: none;">
+                        <div class="setting-info">
+                            <div class="setting-title">Customer Preview</div>
+                            <div class="setting-description">How customers will see your loyalty program</div>
+                        </div>
+                        <div class="setting-control">
+                            <div class="loyalty-preview-card">
+                                <div class="preview-header">
+                                    <i class="fas fa-gift"></i>
+                                    <span>Loyalty Rewards</span>
+                                </div>
+                                <div class="preview-content" id="loyaltyPreviewContent">
+                                    <!-- Preview content will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-control">
+                            <button class="btn-action" onclick="saveLoyaltyProgram()" id="saveLoyaltyBtn" style="display: none;">
+                                <i class="fas fa-save"></i> Save Loyalty Program
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add-Ons Section -->
+            <div class="booking-options-section">
+                <h3>Add-Ons</h3>
+                <div class="booking-options-card">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Loyalty Rewards</div>
+                            <div class="setting-description">Create customer loyalty programs to encourage repeat bookings</div>
+                        </div>
+                        <div class="setting-control">
+                            <button class="btn-action" onclick="toggleLoyaltySection()">
+                                <i class="fas fa-gift"></i> Manage Loyalty
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <a href="business-booking-manager.html" class="btn-action">
@@ -1392,6 +1555,7 @@ Refunds are returned to your original payment method within 5–10 business days
             alert('Opening photo upload...\n\nThis would allow you to:\n- Upload business photos\n- Manage photo gallery\n- Set profile picture\n- Organize photos by category');
         }
         
+<<<<<<< HEAD
         // Navigation functionality
         function showSection(sectionId) {
             // Hide all sections
@@ -1515,6 +1679,169 @@ Refunds are returned to your original payment method within 5–10 business days
         document.addEventListener('DOMContentLoaded', function() {
             updatePendingCount();
         });
+=======
+        // Loyalty Rewards Functions
+        function toggleLoyaltySection() {
+            const loyaltySection = document.getElementById('loyaltySection');
+            if (loyaltySection.style.display === 'none') {
+                loyaltySection.style.display = 'block';
+            } else {
+                loyaltySection.style.display = 'none';
+            }
+        }
+        
+        function updateLoyaltyType() {
+            const loyaltyType = document.getElementById('loyaltyType').value;
+            const thresholdSetting = document.getElementById('thresholdSetting');
+            const timeLimitSetting = document.getElementById('timeLimitSetting');
+            const rewardTypeSetting = document.getElementById('rewardTypeSetting');
+            const thresholdDescription = document.getElementById('thresholdDescription');
+            
+            // Show threshold setting for all types
+            thresholdSetting.style.display = 'block';
+            
+            // Show time limit only for time-limited
+            if (loyaltyType === 'timeLimited') {
+                timeLimitSetting.style.display = 'block';
+                thresholdDescription.textContent = 'Set the number of visits to complete';
+            } else {
+                timeLimitSetting.style.display = 'none';
+                if (loyaltyType === 'visitBased') {
+                    thresholdDescription.textContent = 'Set the number of visits required';
+                } else if (loyaltyType === 'spendBased') {
+                    thresholdDescription.textContent = 'Set the amount to spend (£)';
+                }
+            }
+            
+            // Show reward type setting
+            rewardTypeSetting.style.display = 'block';
+            
+            updateLoyaltyPreview();
+        }
+        
+        function updateRewardType() {
+            const rewardType = document.getElementById('rewardType').value;
+            const rewardValueSetting = document.getElementById('rewardValueSetting');
+            const rewardValueDescription = document.getElementById('rewardValueDescription');
+            
+            if (rewardType) {
+                rewardValueSetting.style.display = 'block';
+                
+                if (rewardType === 'freeService') {
+                    rewardValueDescription.textContent = 'No value needed for free service';
+                    document.getElementById('loyaltyRewardValue').style.display = 'none';
+                } else if (rewardType === 'fixedDiscount') {
+                    rewardValueDescription.textContent = 'Set the discount amount (£)';
+                    document.getElementById('loyaltyRewardValue').style.display = 'block';
+                    document.getElementById('loyaltyRewardValue').placeholder = 'Enter discount amount';
+                } else if (rewardType === 'percentageDiscount') {
+                    rewardValueDescription.textContent = 'Set the discount percentage (%)';
+                    document.getElementById('loyaltyRewardValue').style.display = 'block';
+                    document.getElementById('loyaltyRewardValue').placeholder = 'Enter percentage';
+                }
+            } else {
+                rewardValueSetting.style.display = 'none';
+            }
+            
+            updateLoyaltyPreview();
+        }
+        
+        function updateLoyaltyPreview() {
+            const loyaltyType = document.getElementById('loyaltyType').value;
+            const threshold = document.getElementById('loyaltyThreshold').value;
+            const timeLimit = document.getElementById('loyaltyTimeLimit').value;
+            const rewardType = document.getElementById('rewardType').value;
+            const rewardValue = document.getElementById('loyaltyRewardValue').value;
+            
+            if (!loyaltyType || !threshold || !rewardType) {
+                document.getElementById('loyaltyPreview').style.display = 'none';
+                return;
+            }
+            
+            // Show preview
+            document.getElementById('loyaltyPreview').style.display = 'block';
+            
+            // Generate preview content
+            let previewText = '';
+            let progressText = '';
+            
+            if (loyaltyType === 'visitBased') {
+                previewText = `Book ${threshold} visits, get reward`;
+                progressText = `0 of ${threshold} visits complete`;
+            } else if (loyaltyType === 'spendBased') {
+                previewText = `Spend £${threshold}, get reward`;
+                progressText = `£0 of £${threshold} spent`;
+            } else if (loyaltyType === 'timeLimited') {
+                previewText = `Book ${threshold} visits within ${timeLimit} weeks, get reward`;
+                progressText = `0 of ${threshold} visits complete (${timeLimit} weeks remaining)`;
+            }
+            
+            let rewardText = '';
+            if (rewardType === 'freeService') {
+                rewardText = '1 Free Service';
+            } else if (rewardType === 'fixedDiscount') {
+                rewardText = `£${rewardValue} off next booking`;
+            } else if (rewardType === 'percentageDiscount') {
+                rewardText = `${rewardValue}% off next booking`;
+            }
+            
+            const previewContent = `
+                <div class="loyalty-progress">
+                    <div style="color: #ffffff; font-weight: 600; margin-bottom: 0.5rem;">${previewText}</div>
+                    <div style="color: #cccccc; font-size: 0.9rem; margin-bottom: 0.5rem;">${progressText}</div>
+                    <div class="loyalty-progress-bar">
+                        <div class="loyalty-progress-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+                <div class="loyalty-reward">
+                    <div style="color: #28a745; font-weight: 600; margin-bottom: 0.5rem;">🎁 Reward</div>
+                    <div style="color: #ffffff;">${rewardText}</div>
+                </div>
+            `;
+            
+            document.getElementById('loyaltyPreviewContent').innerHTML = previewContent;
+            document.getElementById('saveLoyaltyBtn').style.display = 'block';
+        }
+        
+        function saveLoyaltyProgram() {
+            const loyaltyType = document.getElementById('loyaltyType').value;
+            const threshold = document.getElementById('loyaltyThreshold').value;
+            const timeLimit = document.getElementById('loyaltyTimeLimit').value;
+            const rewardType = document.getElementById('rewardType').value;
+            const rewardValue = document.getElementById('loyaltyRewardValue').value;
+            
+            // Validate inputs
+            if (!loyaltyType || !threshold || !rewardType) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            if (loyaltyType === 'timeLimited' && !timeLimit) {
+                alert('Please enter time limit for time-limited program');
+                return;
+            }
+            
+            if (rewardType !== 'freeService' && !rewardValue) {
+                alert('Please enter reward value');
+                return;
+            }
+            
+            // Save to localStorage (in real implementation, save to database)
+            const loyaltyProgram = {
+                type: loyaltyType,
+                threshold: parseInt(threshold),
+                timeLimit: timeLimit ? parseInt(timeLimit) : null,
+                rewardType: rewardType,
+                rewardValue: rewardValue ? parseFloat(rewardValue) : null,
+                isActive: true,
+                createdAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('loyaltyProgram', JSON.stringify(loyaltyProgram));
+            
+            alert('Loyalty program saved successfully!\n\nYour customers will now see this loyalty program on your business profile and in their dashboard.');
+        }
+>>>>>>> f97809e (created rewards page)
     </script>
 </body>
 </html>
