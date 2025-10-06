@@ -25,6 +25,8 @@
             line-height: 1.6;
         }
 
+        .list-business-btn:hover { box-shadow: 0 0 16px rgba(16,185,129,0.6); }
+
         .hero-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 60vh;
@@ -740,7 +742,7 @@
                     
                     <!-- Sign In / Customer Menu -->
                     <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal(event)">
                             <i class="fas fa-sign-in-alt mr-1"></i>Sign In
                         </button>
                     </div>
@@ -762,10 +764,8 @@
                         </div>
                     </div>
                     
-                    <!-- List Business Button (smaller and less overpowering) -->
-                    <a href="business-register.html" class="px-2 py-1.5 rounded-md bg-gradient-to-r from-neon-green to-green-500 text-white font-medium hover:from-green-500 hover:to-green-600 transition-all duration-300 text-xs">
-                        <i class="fas fa-plus mr-1"></i>List Business
-                    </a>
+                    <!-- List Business Button (text-only with hover) -->
+                    <a href="business-register.html" class="text-text-secondary hover:text-green-400 transition-colors duration-300 font-medium text-sm list-business-btn">+ List Business</a>
                 </div>
             </div>
             
@@ -786,7 +786,7 @@
                     
                     <!-- Account Icon -->
                     <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal(event)">
                             <i class="fas fa-sign-in-alt"></i>
                         </button>
                     </div>
@@ -822,9 +822,7 @@
                     <a href="search-results.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Browse</a>
                     <a href="offers.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Offers</a>
                     <a href="why-list-with-us.html#pricing" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Plans</a>
-                    <a href="business-register.html" class="block text-neon-green hover:text-green-400 transition-colors duration-300 font-medium">
-                        <i class="fas fa-plus mr-2"></i>List Business
-                    </a>
+                    <a href="business-register.html" class="block text-text-secondary hover:text-green-400 transition-colors duration-300 font-medium py-2 list-business-btn">+ List Business</a>
                 </div>
             </div>
         </div>
@@ -836,7 +834,7 @@
             <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold gradient-text">Login</h3>
-                    <button onclick="toggleLoginModal()" class="text-white/70 hover:text-white">
+                    <button onclick="toggleLoginModal(event)" class="text-white/70 hover:text-white">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -1183,7 +1181,11 @@
         });
         
         // Navigation Functions
-        function toggleLoginModal() {
+        function toggleLoginModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             const modal = document.getElementById('loginModal');
             if (modal) {
                 modal.classList.toggle('hidden');

@@ -54,6 +54,7 @@
     </script>
     
     <style>
+        .list-business-btn:hover{box-shadow:0 0 16px rgba(16,185,129,0.6);}/* green glow */
         * {
             margin: 0;
             padding: 0;
@@ -415,6 +416,21 @@
         .add-service-btn:hover {
             background: linear-gradient(135deg, #FF1493, #8A2BE2);
             transform: translateY(-1px);
+        }
+        
+        .add-service-btn.selected {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .add-service-btn.selected:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+        }
+        
+        .add-service-btn.selected i {
+            transform: rotate(45deg);
         }
         
         .selected-services {
@@ -1727,7 +1743,7 @@
                     
                     <!-- Sign In / Customer Menu -->
                     <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal(event)">
                             <i class="fas fa-sign-in-alt mr-1"></i>Sign In
                         </button>
                     </div>
@@ -1750,9 +1766,7 @@
                     </div>
                     
                     <!-- List Business Button (smaller and less overpowering) -->
-                    <a href="business-register.html" class="px-2 py-1.5 rounded-md bg-gradient-to-r from-neon-green to-green-500 text-white font-medium hover:from-green-500 hover:to-green-600 transition-all duration-300 text-xs">
-                        <i class="fas fa-plus mr-1"></i>List Business
-                    </a>
+                    <a href="business-register.html" class="text-text-secondary hover:text-green-400 transition-colors duration-300 font-medium text-sm list-business-btn">+ List Business</a>
                 </div>
             </div>
             
@@ -1773,7 +1787,7 @@
                     
                     <!-- Account Icon -->
                     <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal(event)">
                             <i class="fas fa-sign-in-alt"></i>
                         </button>
                     </div>
@@ -1809,9 +1823,7 @@
                     <a href="search-results.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Browse</a>
                     <a href="offers.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Offers</a>
                     <a href="why-list-with-us.html#pricing" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Plans</a>
-                    <a href="business-register.html" class="block text-neon-green hover:text-green-400 transition-colors duration-300 font-medium">
-                        <i class="fas fa-plus mr-2"></i>List Business
-                    </a>
+                    <a href="business-register.html" class="block text-text-secondary hover:text-green-400 transition-colors duration-300 font-medium py-2 list-business-btn">+ List Business</a>
                 </div>
             </div>
         </div>
@@ -1823,7 +1835,7 @@
             <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold gradient-text">Login</h3>
-                    <button onclick="toggleLoginModal()" class="text-white/70 hover:text-white">
+                    <button onclick="toggleLoginModal(event)" class="text-white/70 hover:text-white">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -2087,7 +2099,7 @@
                     <!-- Treatwell-style Login/Guest Options -->
                     <div class="checkout-options-simple">
                         <p class="checkout-text">
-                            <a href="#" class="checkout-link" onclick="saveBasketContents(); toggleLoginModal();">Sign in</a> or 
+                            <a href="#" class="checkout-link" onclick="saveBasketContents(); toggleLoginModal(event);">Sign in</a> or 
                             <a href="customer-register.html" class="checkout-link" onclick="saveBasketContents()">sign up</a> 
                             to save your details, or 
                             <span class="guest-text">continue as guest</span>
@@ -2186,7 +2198,7 @@
                                 <i class="fas fa-credit-card"></i>
                             </div>
                             <div class="disclaimer-text">
-                                Payments are processed by BlkPages via Stripe, on behalf of Royal Hair Studio. Your contract of service is with Royal Hair Studio, not BlkPages. Refunds are subject to the venue's cancellation policy.
+                                Payments are processed by BlkPages via Stripe, on behalf of Royal Hair Studio. Your contract of service is with Royal Hair Studio, not BlkPages. Refunds are subject to the venue's cancellation policy. <a href="cancellation-policy.html" target="_blank" class="terms-link">View Royal Hair Studio's cancellation policy</a>
                             </div>
                         </div>
                     </div>
@@ -2207,9 +2219,7 @@
                             <input type="checkbox" id="acceptTerms" onchange="updateBookingButton()" required>
                             <label for="acceptTerms" class="required-label">
                                 <span class="required-asterisk">*</span>
-                                By completing this booking, I agree to Royal Hair Studio's booking policy as well as BlkPages 
-                                <a href="terms.html" target="_blank" class="terms-link">Terms & Conditions</a> and 
-                                <a href="privacy.html" target="_blank" class="terms-link">Privacy Policy</a>.
+                                By completing this booking, I agree to BlkPages' booking policy as well as <a href="cancellation-policy.html" target="_blank" class="terms-link">Royal Hair Studio's cancellation policy</a>.
                             </label>
                         </div>
                     </div>
@@ -2370,6 +2380,13 @@
             selectedServices.push({ name, price, duration });
             console.log('Selected services after adding:', selectedServices);
             
+            // Add visual feedback to the button
+            const button = event.target.closest('.add-service-btn');
+            if (button) {
+                button.classList.add('selected');
+                button.innerHTML = '<i class="fas fa-check"></i> Added';
+            }
+            
             updateSelectedServices();
             updateBookingSummary();
             updateBookingServicesList();
@@ -2403,6 +2420,16 @@
             console.log('Removing service:', name);
             selectedServices = selectedServices.filter(service => service.name !== name);
             console.log('Selected services after removal:', selectedServices);
+            
+            // Reset the button appearance
+            const serviceButtons = document.querySelectorAll('.add-service-btn');
+            serviceButtons.forEach(button => {
+                const serviceName = button.getAttribute('onclick');
+                if (serviceName && serviceName.includes(`'${name}'`)) {
+                    button.classList.remove('selected');
+                    button.innerHTML = '<i class="fas fa-plus"></i> Add';
+                }
+            });
             
             updateSelectedServices();
             updateBookingSummary();
@@ -2694,6 +2721,9 @@
         }
         
         function showBookingPopup(missingItems) {
+            // Store missing items for later use
+            window.lastMissingItems = missingItems;
+            
             // Create popup overlay
             const overlay = document.createElement('div');
             overlay.id = 'booking-popup-overlay';
@@ -2774,54 +2804,103 @@
                 overlay.remove();
             }
             
-            // Scroll to Services & Prices section
+            // Scroll to the first missing field in logical order
             setTimeout(() => {
-                console.log('Attempting to scroll to Services section...');
-                
-                // Try multiple selectors to find the services section
-                let targetElement = null;
-                
-                // Method 1: Look for Services & Prices heading
-                const allHeadings = document.querySelectorAll('h2');
-                for (let heading of allHeadings) {
-                    if (heading.textContent.includes('Services & Prices')) {
-                        targetElement = heading;
-                        console.log('Found Services heading:', heading);
-                        break;
-                    }
-                }
-                
-                // Method 2: Look for services section by class or ID
-                if (!targetElement) {
-                    targetElement = document.querySelector('.services-section') || 
-                                  document.querySelector('#services-section') ||
-                                  document.querySelector('[class*="service"]');
-                    console.log('Found services section by class:', targetElement);
-                }
-                
-                // Method 3: Look for any card containing services
-                if (!targetElement) {
-                    const cards = document.querySelectorAll('.card');
-                    for (let card of cards) {
-                        if (card.textContent.includes('Services') || card.textContent.includes('Prices')) {
-                            targetElement = card;
-                            console.log('Found services card:', card);
-                            break;
+                scrollToFirstMissingField();
+            }, 300);
+        }
+        
+        function scrollToFirstMissingField() {
+            if (!window.lastMissingItems || window.lastMissingItems.length === 0) {
+                return;
+            }
+            
+            const missingItems = window.lastMissingItems;
+            
+            // Check for missing items in logical order
+            for (let item of missingItems) {
+                if (item === 'Select a Service') {
+                    // Scroll to services section - try multiple selectors
+                    let servicesSection = document.querySelector('.services-section') || 
+                                        document.querySelector('#services-section') ||
+                                        document.querySelector('[class*="service"]');
+                    
+                    // If not found by class, look for heading containing "Services"
+                    if (!servicesSection) {
+                        const headings = document.querySelectorAll('h2, h3');
+                        for (let heading of headings) {
+                            if (heading.textContent.toLowerCase().includes('service')) {
+                                servicesSection = heading;
+                                break;
+                            }
                         }
                     }
+                    
+                    if (servicesSection) {
+                        servicesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        return;
+                    }
+                } else if (item === 'Accept Terms & Conditions') {
+                    // Scroll to terms checkbox
+                    const termsCheckbox = document.getElementById('acceptTerms');
+                    if (termsCheckbox) {
+                        termsCheckbox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        termsCheckbox.focus();
+                        return;
+                    }
+                } else if (item === 'Select Payment Method') {
+                    // Scroll to payment section - try multiple selectors
+                    let paymentSection = document.querySelector('.payment-options') ||
+                                       document.querySelector('[id*="payment"]') ||
+                                       document.querySelector('[class*="payment"]');
+                    
+                    // If not found, look for heading containing "Payment"
+                    if (!paymentSection) {
+                        const headings = document.querySelectorAll('h3, h4');
+                        for (let heading of headings) {
+                            if (heading.textContent.toLowerCase().includes('payment')) {
+                                paymentSection = heading;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (paymentSection) {
+                        paymentSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        return;
+                    }
+                } else if (item === 'Enter Your Name') {
+                    // Scroll to name field
+                    const nameField = document.getElementById('fullName');
+                    if (nameField) {
+                        nameField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        nameField.focus();
+                        return;
+                    }
+                } else if (item === 'Enter Valid Email') {
+                    // Scroll to email field
+                    const emailField = document.getElementById('email');
+                    if (emailField) {
+                        emailField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        emailField.focus();
+                        return;
+                    }
+                } else if (item === 'Enter Phone Number') {
+                    // Scroll to phone field
+                    const phoneField = document.getElementById('phone');
+                    if (phoneField) {
+                        phoneField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        phoneField.focus();
+                        return;
+                    }
                 }
-                
-                if (targetElement) {
-                    console.log('Scrolling to element:', targetElement);
-                    targetElement.scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                } else {
-                    console.log('No services section found, scrolling to top');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            }, 200); // Increased delay to ensure popup is fully removed
+            }
+            
+            // Fallback: scroll to booking section if no specific field found
+            const bookingSection = document.getElementById('booking-section');
+            if (bookingSection) {
+                bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
         
         function updateBookingServicesList() {
@@ -3759,7 +3838,11 @@
         }
         
         // Navigation Functions
-        function toggleLoginModal() {
+        function toggleLoginModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             const modal = document.getElementById('loginModal');
             if (modal) {
                 modal.classList.toggle('hidden');

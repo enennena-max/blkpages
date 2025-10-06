@@ -54,6 +54,9 @@
         }
     </script>
     <style>
+        .list-business-btn:hover { box-shadow: 0 0 16px rgba(16,185,129,0.6); }
+    </style>
+    <style>
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
@@ -376,7 +379,7 @@
                     
                     <!-- Sign In / Customer Menu -->
                     <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal(event)">
                             <i class="fas fa-sign-in-alt mr-1"></i>Sign In
                     </button>
                     </div>
@@ -399,9 +402,7 @@
                     </div>
                     
                     <!-- List Business Button (smaller and less overpowering) -->
-                    <a href="business-register.html" class="px-2 py-1.5 rounded-md bg-gradient-to-r from-neon-green to-green-500 text-white font-medium hover:from-green-500 hover:to-green-600 transition-all duration-300 text-xs">
-                        <i class="fas fa-plus mr-1"></i>List Business
-                    </a>
+                    <a href="business-register.html" class="text-text-secondary hover:text-green-400 transition-colors duration-300 font-medium text-sm list-business-btn">+ List Business</a>
                 </div>
             </div>
             
@@ -422,7 +423,7 @@
                     
                     <!-- Account Icon -->
                     <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal()">
+                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal(event)">
                         <i class="fas fa-sign-in-alt"></i>
                     </button>
                     </div>
@@ -472,7 +473,7 @@
             <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold gradient-text">Login</h3>
-                    <button onclick="toggleLoginModal()" class="text-white/70 hover:text-white">
+                    <button onclick="toggleLoginModal(event)" class="text-white/70 hover:text-white">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -883,7 +884,7 @@
             <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold gradient-text">Login</h3>
-                    <button onclick="toggleLoginModal()" class="text-white/70 hover:text-white">
+                    <button onclick="toggleLoginModal(event)" class="text-white/70 hover:text-white">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -917,7 +918,7 @@
                 </div>
                 <p class="text-center text-white/70 mt-4">
                     Don't have an account? 
-                    <button onclick="toggleSignupModal(); toggleLoginModal();" class="text-neon-pink hover:underline">Sign up</button>
+                    <button onclick="toggleSignupModal(event); toggleLoginModal(event);" class="text-neon-pink hover:underline">Sign up</button>
                 </p>
             </div>
         </div>
@@ -929,7 +930,7 @@
             <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold gradient-text">Sign Up</h3>
-                    <button onclick="toggleSignupModal()" class="text-white/70 hover:text-white">
+                    <button onclick="toggleSignupModal(event)" class="text-white/70 hover:text-white">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -952,7 +953,7 @@
                 </form>
                 <p class="text-center text-white/70 mt-4">
                     Already have an account? 
-                    <button onclick="toggleLoginModal(); toggleSignupModal();" class="text-neon-pink hover:underline">Login</button>
+                    <button onclick="toggleLoginModal(event); toggleSignupModal(event);" class="text-neon-pink hover:underline">Login</button>
                 </p>
             </div>
         </div>
@@ -1213,7 +1214,11 @@
         }
         
         // Modal functions
-        function toggleLoginModal() {
+        function toggleLoginModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             const modal = document.getElementById('loginModal');
             modal.classList.toggle('hidden');
         }
@@ -1228,7 +1233,11 @@
             mobileMenu.classList.add('hidden');
         }
         
-        function toggleSignupModal() {
+        function toggleSignupModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             const modal = document.getElementById('signupModal');
             modal.classList.toggle('hidden');
         }
