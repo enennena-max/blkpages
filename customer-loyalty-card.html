@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loyalty Rewards - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .loyalty-container {
+            max-width: 400px;
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+        
+        /* Header */
+        .business-header {
+            margin-bottom: 2rem;
+        }
+        
+        .business-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1E90FF, #0056b3);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .business-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .loyalty-subtitle {
+            color: #1E90FF;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        /* Progress Display */
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+        
+        .progress-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-display {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Stamps/Points Display */
+        .stamps-container {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .stamp {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .stamp.filled {
+            background: #1E90FF;
+            border-color: #1E90FF;
+            color: white;
+        }
+        
+        .stamp.empty {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #666;
+        }
+        
+        /* Progress Bar Alternative */
+        .progress-bar-container {
+            background: #2a2a2a;
+            border-radius: 10px;
+            height: 20px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            border: 1px solid #444;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1E90FF, #0056b3);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+        
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .progress-text {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #1E90FF;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        /* Buttons */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: #1E90FF;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 144, 255, 0.3);
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Success Message */
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1a1a1a;
+            border: 2px solid #1E90FF;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            max-width: 300px;
+            width: 90%;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .success-message.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .success-icon {
+            font-size: 3rem;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+        
+        .success-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-text {
+            color: #cccccc;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .close-success {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Reward Info */
+        .reward-info {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .reward-title {
+            color: #1E90FF;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .reward-description {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .loyalty-container {
+                padding: 1.5rem;
+                margin: 10px;
+            }
+            
+            .business-logo {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .business-name {
+                font-size: 1.3rem;
+            }
+            
+            .stamp {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="loyalty-container fade-in">
+        <!-- Header -->
+        <div class="business-header">
+            <div class="business-logo">
+                <i class="fas fa-store"></i>
+            </div>
+            <h1 class="business-name" id="businessName">Royal Hair Studio</h1>
+            <p class="loyalty-subtitle">Loyalty Rewards</p>
+        </div>
+        
+        <!-- Progress Display -->
+        <div class="progress-section">
+            <h2 class="progress-title">Your Progress</h2>
+            
+            <!-- Reward Info -->
+            <div class="reward-info">
+                <div class="reward-title" id="rewardTitle">Free Coffee</div>
+                <div class="reward-description" id="rewardDescription">Get a free coffee after collecting 10 stamps</div>
+            </div>
+            
+            <!-- Stamps Display -->
+            <div class="stamps-container" id="stampsContainer">
+                <!-- Stamps will be generated by JavaScript -->
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
+            </div>
+            
+            <!-- Progress Text -->
+            <div class="progress-text" id="progressText">You have 0 of 10 points. 10 more until your reward!</div>
+            
+            <!-- Progress Stats -->
+            <div class="progress-stats">
+                <span id="currentPoints">0</span>
+                <span id="requiredPoints">10</span>
+            </div>
+        </div>
+        
+        <!-- Buttons -->
+        <div class="button-container">
+            <button class="btn btn-primary" id="addPointBtn" onclick="addPoint()">
+                <i class="fas fa-plus"></i> Add Point
+            </button>
+            <button class="btn btn-success" id="redeemBtn" onclick="redeemReward()" disabled>
+                <i class="fas fa-gift"></i> Redeem Reward
+            </button>
+        </div>
+    </div>
+    
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+        <button class="close-success" onclick="closeSuccessMessage()">&times;</button>
+        <div class="success-icon">🎉</div>
+        <h3 class="success-title">Congratulations!</h3>
+        <p class="success-text">You've earned your reward. Show this screen to the business to redeem.</p>
+    </div>
+
+    <script>
+        // Customer loyalty card functionality
+        let currentPoints = 0;
+        let requiredPoints = 10;
+        let rewardTitle = 'Free Coffee';
+        let rewardDescription = 'Get a free coffee after collecting 10 stamps';
+        let businessName = 'Royal Hair Studio';
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLoyaltyData();
+            updateDisplay();
+        });
+        
+        function loadLoyaltyData() {
+            // Extract business ID from URL pattern: blkpages.co.uk/loyalty/{businessID}
+            let businessId = null;
+            const currentUrl = window.location.href;
+            
+            // Check if URL matches the loyalty pattern
+            const loyaltyMatch = currentUrl.match(/loyalty\/([^\/\?]+)/);
+            if (loyaltyMatch) {
+                businessId = loyaltyMatch[1];
+            } else {
+                // Fallback to URL parameters for testing
+                const urlParams = new URLSearchParams(window.location.search);
+                businessId = urlParams.get('business');
+            }
+            
+            if (businessId) {
+                // Load business loyalty programme data
+                const loyaltyData = localStorage.getItem('loyaltyProgrammeData');
+                if (loyaltyData) {
+                    const data = JSON.parse(loyaltyData);
+                    if (data.businessId === businessId) {
+                        requiredPoints = parseInt(data.pointsRequired) || 10;
+                        rewardTitle = data.rewardTitle || 'Free Coffee';
+                        rewardDescription = data.rewardDescription || 'Get a free coffee after collecting 10 stamps';
+                    }
+                }
+                
+                // Load or create customer data
+                const customerId = getOrCreateCustomerId();
+                const customerData = localStorage.getItem(`customer_${customerId}_${businessId}`);
+                
+                if (customerData) {
+                    const data = JSON.parse(customerData);
+                    currentPoints = data.currentPoints || 0;
+                } else {
+                    // First time customer - check if they need to provide info
+                    const customerInfo = localStorage.getItem(`customer_info_${customerId}`);
+                    if (!customerInfo) {
+                        promptCustomerInfo(customerId);
+                    }
+                }
+            } else {
+                // Load default data for testing
+                const loyaltyData = localStorage.getItem('loyaltyProgrammeData');
+                if (loyaltyData) {
+                    const data = JSON.parse(loyaltyData);
+                    requiredPoints = parseInt(data.pointsRequired) || 10;
+                    rewardTitle = data.rewardTitle || 'Free Coffee';
+                    rewardDescription = data.rewardDescription || 'Get a free coffee after collecting 10 stamps';
+                }
+            }
+            
+            // Update UI with loaded data
+            document.getElementById('businessName').textContent = businessName;
+            document.getElementById('rewardTitle').textContent = rewardTitle;
+            document.getElementById('rewardDescription').textContent = rewardDescription;
+            document.getElementById('requiredPoints').textContent = requiredPoints;
+        }
+        
+        function getOrCreateCustomerId() {
+            let customerId = localStorage.getItem('customerId');
+            if (!customerId) {
+                customerId = 'cust_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5);
+                localStorage.setItem('customerId', customerId);
+            }
+            return customerId;
+        }
+        
+        function promptCustomerInfo(customerId) {
+            const name = prompt('Welcome! Please enter your name (optional):');
+            const email = prompt('Enter your email (optional):');
+            
+            const customerInfo = {
+                name: name || 'Anonymous',
+                email: email || '',
+                firstVisit: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`customer_info_${customerId}`, JSON.stringify(customerInfo));
+        }
+        
+        function updateDisplay() {
+            // Update progress text
+            const remaining = requiredPoints - currentPoints;
+            const progressText = document.getElementById('progressText');
+            
+            if (currentPoints >= requiredPoints) {
+                progressText.textContent = `You have ${currentPoints} of ${requiredPoints} points. Ready to redeem!`;
+                document.getElementById('redeemBtn').disabled = false;
+            } else {
+                progressText.textContent = `You have ${currentPoints} of ${requiredPoints} points. ${remaining} more until your reward!`;
+                document.getElementById('redeemBtn').disabled = true;
+            }
+            
+            // Update current points display
+            document.getElementById('currentPoints').textContent = currentPoints;
+            
+            // Update progress bar
+            const progressPercentage = (currentPoints / requiredPoints) * 100;
+            document.getElementById('progressBarFill').style.width = Math.min(progressPercentage, 100) + '%';
+            
+            // Generate stamps
+            generateStamps();
+            
+            // Save data
+            saveLoyaltyData();
+        }
+        
+        function generateStamps() {
+            const stampsContainer = document.getElementById('stampsContainer');
+            stampsContainer.innerHTML = '';
+            
+            for (let i = 0; i < requiredPoints; i++) {
+                const stamp = document.createElement('div');
+                stamp.className = `stamp ${i < currentPoints ? 'filled' : 'empty'}`;
+                stamp.innerHTML = i < currentPoints ? '<i class="fas fa-check"></i>' : '<i class="fas fa-circle"></i>';
+                stampsContainer.appendChild(stamp);
+            }
+        }
+        
+        function addPoint() {
+            if (currentPoints < requiredPoints) {
+                currentPoints++;
+                updateDisplay();
+                
+                // Add pulse animation to the button
+                const addBtn = document.getElementById('addPointBtn');
+                addBtn.classList.add('pulse');
+                setTimeout(() => addBtn.classList.remove('pulse'), 500);
+                
+                // Update business analytics
+                const businessId = getBusinessIdFromUrl();
+                const customerId = getOrCreateCustomerId();
+                
+                if (businessId) {
+                    // Update business analytics
+                    updateBusinessAnalytics(businessId, customerId, 'scan');
+                    
+                    // Save customer data
+                    saveCustomerData(customerId, businessId);
+                }
+                
+                // Show success message if reward is ready
+                if (currentPoints >= requiredPoints) {
+                    setTimeout(() => {
+                        showSuccessMessage('🎉 Congratulations! You\'ve earned your reward!');
+                    }, 500);
+                }
+            }
+        }
+        
+        function redeemReward() {
+            if (currentPoints >= requiredPoints) {
+                showSuccessMessage('🎉 Congratulations! You\'ve earned your reward. Show this screen to the business to redeem.');
+                
+                // Update business analytics for redemption
+                const businessId = getBusinessIdFromUrl();
+                const customerId = getOrCreateCustomerId();
+                
+                if (businessId) {
+                    // Update business analytics
+                    updateBusinessAnalytics(businessId, customerId, 'redeem');
+                    
+                    // Reset points after redemption
+                    setTimeout(() => {
+                        currentPoints = 0;
+                        updateDisplay();
+                        saveCustomerData(customerId, businessId);
+                    }, 3000);
+                } else {
+                    // Fallback for testing
+                    setTimeout(() => {
+                        currentPoints = 0;
+                        updateDisplay();
+                    }, 3000);
+                }
+            }
+        }
+        
+        function getBusinessIdFromUrl() {
+            const currentUrl = window.location.href;
+            const loyaltyMatch = currentUrl.match(/loyalty\/([^\/\?]+)/);
+            if (loyaltyMatch) {
+                return loyaltyMatch[1];
+            }
+            
+            // Fallback to URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('business');
+        }
+        
+        function saveCustomerData(customerId, businessId) {
+            const customerData = {
+                currentPoints: currentPoints,
+                lastVisit: new Date().toISOString()
+            };
+            localStorage.setItem(`customer_${customerId}_${businessId}`, JSON.stringify(customerData));
+        }
+        
+        // Function to update business analytics (matches the one in business dashboard)
+        function updateBusinessAnalytics(businessId, customerId, action) {
+            const analyticsKey = `analytics_${businessId}`;
+            const analyticsData = localStorage.getItem(analyticsKey);
+            
+            if (analyticsData) {
+                const analytics = JSON.parse(analyticsData);
+                
+                if (action === 'scan') {
+                    // Increment points and update customer data
+                    analytics.totalPoints++;
+                    
+                    if (!analytics.customerData[customerId]) {
+                        analytics.customerData[customerId] = { points: 0, lastVisit: new Date().toISOString() };
+                        analytics.activeMembers++;
+                    } else {
+                        analytics.customerData[customerId].points++;
+                        analytics.customerData[customerId].lastVisit = new Date().toISOString();
+                    }
+                } else if (action === 'redeem') {
+                    // Handle reward redemption
+                    analytics.totalRewards++;
+                    analytics.lastRedemption = new Date().toLocaleDateString();
+                    
+                    if (analytics.customerData[customerId]) {
+                        analytics.customerData[customerId].points = 0;
+                        analytics.customerData[customerId].lastRedemption = new Date().toISOString();
+                    }
+                }
+                
+                localStorage.setItem(analyticsKey, JSON.stringify(analytics));
+            }
+        }
+        
+        function showSuccessMessage(message) {
+            const successMessage = document.getElementById('successMessage');
+            const successText = successMessage.querySelector('.success-text');
+            successText.textContent = message;
+            successMessage.classList.add('show');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                closeSuccessMessage();
+            }, 5000);
+        }
+        
+        function closeSuccessMessage() {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.classList.remove('show');
+        }
+        
+        function saveLoyaltyData() {
+            // This function is now handled by saveCustomerData
+            // Keeping for compatibility but functionality moved to saveCustomerData
+        }
+        
+        // Close success message when clicking outside
+        document.addEventListener('click', function(event) {
+            const successMessage = document.getElementById('successMessage');
+            if (event.target === successMessage) {
+                closeSuccessMessage();
+            }
+        });
+        
+        // Handle escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSuccessMessage();
+            }
+        });
+    </script>
+</body>
+</html>

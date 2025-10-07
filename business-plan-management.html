@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Your Plan - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            line-height: 1.6; 
+            color: #ffffff; 
+            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%); 
+            min-height: 100vh; 
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Navigation */
+        .navbar { 
+            background: rgba(0, 0, 0, 0.95); 
+            box-shadow: 0 2px 10px rgba(255,255,255,0.1); 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000; 
+        }
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: #ffffff; text-decoration: none; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #ffffff; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #007bff; }
+        .btn-nav { background: #007bff; color: white !important; padding: 0.5rem 1.5rem; border-radius: 25px; transition: background 0.3s; text-decoration: none; }
+        .btn-nav:hover { background: #0056b3; }
+        
+        /* Main Content */
+        .main-content { padding: 120px 0 80px; }
+        .page-title { font-size: 3rem; font-weight: 700; margin-bottom: 1rem; text-align: center; color: #ffffff; }
+        .page-subtitle { text-align: center; color: #cccccc; margin-bottom: 3rem; font-size: 1.1rem; }
+        
+        /* Plan Management Grid */
+        .plan-management-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .plan-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+        
+        .plan-section h2 {
+            color: #1E90FF;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        /* Current Plan Card */
+        .current-plan-card {
+            background: linear-gradient(135deg, #1E90FF, #007bff);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .current-plan-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: rotate(45deg);
+        }
+        
+        .current-plan-header {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .current-plan-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .current-plan-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .current-plan-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .current-plan-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .current-plan-features li i {
+            color: #ffffff;
+            font-size: 1.1rem;
+        }
+        
+        .plan-status {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        /* Available Plans */
+        .available-plans {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .plan-option {
+            background: #2a2a2a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .plan-option:hover {
+            border-color: #1E90FF;
+            transform: translateY(-2px);
+        }
+        
+        .plan-option.current {
+            border-color: #1E90FF;
+            background: #1a3a5c;
+        }
+        
+        .plan-option.current::after {
+            content: "Current Plan";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #1E90FF;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .plan-option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .plan-option-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .plan-option-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1E90FF;
+        }
+        
+        .plan-option-features {
+            list-style: none;
+            margin-bottom: 1rem;
+        }
+        
+        .plan-option-features li {
+            padding: 0.25rem 0;
+            font-size: 0.9rem;
+            color: #cccccc;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .plan-option-features li i {
+            color: #28a745;
+            font-size: 0.8rem;
+        }
+        
+        .plan-option-features li.unavailable i {
+            color: #dc3545;
+        }
+        
+        .plan-action {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .plan-action.upgrade {
+            background: #28a745;
+            color: white;
+        }
+        
+        .plan-action.upgrade:hover {
+            background: #1e7e34;
+        }
+        
+        .plan-action.downgrade {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .plan-action.downgrade:hover {
+            background: #e0a800;
+        }
+        
+        .plan-action.current {
+            background: #6c757d;
+            color: white;
+            cursor: not-allowed;
+        }
+        
+        /* Add-ons Section */
+        .addons-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #333;
+            margin-bottom: 2rem;
+        }
+        
+        .addon-card {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .addon-info h4 {
+            color: #1E90FF;
+            margin-bottom: 0.5rem;
+        }
+        
+        .addon-info p {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .addon-price {
+            color: #ffffff;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+        
+        .addon-action {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .addon-action.add {
+            background: #28a745;
+            color: white;
+        }
+        
+        .addon-action.add:hover {
+            background: #1e7e34;
+        }
+        
+        .addon-action.remove {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .addon-action.remove:hover {
+            background: #c82333;
+        }
+        
+        .addon-action.added {
+            background: #6c757d;
+            color: white;
+            cursor: not-allowed;
+        }
+        
+        /* Billing Section */
+        .billing-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #333;
+            margin-bottom: 2rem;
+        }
+        
+        .billing-summary {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .billing-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #444;
+        }
+        
+        .billing-item:last-child {
+            border-bottom: none;
+        }
+        
+        .billing-item.total {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1E90FF;
+            border-top: 2px solid #1E90FF;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+        }
+        
+        .next-payment {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .next-payment h4 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .next-payment-date {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        /* Payment History */
+        .payment-history {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+        
+        .payment-history-item {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .payment-info h5 {
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+        
+        .payment-info p {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .payment-amount {
+            font-weight: 600;
+            color: #28a745;
+        }
+        
+        .payment-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .payment-status.paid {
+            background: #28a745;
+            color: white;
+        }
+        
+        .payment-status.pending {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .payment-status.failed {
+            background: #dc3545;
+            color: white;
+        }
+        
+        /* Cancellation Section */
+        .cancellation-section {
+            background: #2a1a1a;
+            border: 1px solid #dc3545;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .cancellation-warning {
+            background: #3d2a1a;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            color: #ffc107;
+            font-size: 0.9rem;
+        }
+        
+        .btn-cancel {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-cancel:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        /* Cancellation Modal */
+        .cancellation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .cancellation-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .cancellation-modal-content {
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid #dc3545;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .cancellation-modal.show .cancellation-modal-content {
+            transform: scale(1);
+        }
+        
+        .cancellation-modal h3 {
+            color: #dc3545;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .cancellation-modal p {
+            color: #cccccc;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cancellation-consequences {
+            background: #2a1a1a;
+            border: 1px solid #dc3545;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .cancellation-consequences h4 {
+            color: #dc3545;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cancellation-consequences ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .cancellation-consequences li {
+            padding: 0.25rem 0;
+            color: #cccccc;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .cancellation-consequences li i {
+            color: #dc3545;
+            font-size: 0.8rem;
+        }
+        
+        .cancellation-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .btn-confirm-cancel {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-confirm-cancel:hover {
+            background: #c82333;
+        }
+        
+        .btn-keep-subscription {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-keep-subscription:hover {
+            background: #5a6268;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-title { font-size: 2rem; }
+            .plan-management-grid { grid-template-columns: 1fr; }
+            .addon-card { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .addon-action { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="index.html" class="logo">BLKPAGES</a>
+                <ul class="nav-links">
+                    <li><a href="business-dashboard.html">Dashboard</a></li>
+                    <li><a href="business-profile.html">Profile</a></li>
+                    <li><a href="business-booking-manager.html">Bookings</a></li>
+                    <li><a href="business-plan-management.html" class="active">Plan</a></li>
+                </ul>
+                <a href="business-login.html" class="btn-nav">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Manage Your Plan</h1>
+            <p class="page-subtitle">Upgrade, downgrade, or manage your subscription and add-ons</p>
+            
+            <div class="plan-management-grid">
+                <!-- Current Plan & Available Plans -->
+                <div class="plan-section">
+                    <h2>Your Current Plan</h2>
+                    
+                    <div class="current-plan-card">
+                        <div class="current-plan-header">
+                            <div class="current-plan-name" id="currentPlanName">Professional Plan</div>
+                            <div class="current-plan-price" id="currentPlanPrice">£29/month</div>
+                            <span class="plan-status" id="planStatus">Active</span>
+                        </div>
+                        <ul class="current-plan-features" id="currentPlanFeatures">
+                            <li><i class="fas fa-check"></i> Everything in Starter</li>
+                            <li><i class="fas fa-check"></i> Photo gallery (up to 10 photos)</li>
+                            <li><i class="fas fa-check"></i> Advanced booking system</li>
+                            <li><i class="fas fa-check"></i> Customer management dashboard</li>
+                            <li><i class="fas fa-check"></i> Priority placement in search</li>
+                            <li><i class="fas fa-check"></i> Basic analytics</li>
+                        </ul>
+                    </div>
+                    
+                    <h3 style="color: #ffffff; margin-bottom: 1rem;">Available Plans</h3>
+                    <div class="available-plans">
+                        <div class="plan-option" data-plan="free">
+                            <div class="plan-option-header">
+                                <div class="plan-option-name">Free Listing</div>
+                                <div class="plan-option-price">£0</div>
+                            </div>
+                            <ul class="plan-option-features">
+                                <li><i class="fas fa-check"></i> Business name & contact</li>
+                                <li><i class="fas fa-check"></i> Basic address</li>
+                                <li><i class="fas fa-check"></i> Phone number</li>
+                                <li><i class="fas fa-check"></i> Category listing</li>
+                                <li><i class="fas fa-times unavailable"></i> Customer reviews</li>
+                                <li><i class="fas fa-times unavailable"></i> Business logo</li>
+                                <li><i class="fas fa-times unavailable"></i> Photo gallery</li>
+                                <li><i class="fas fa-times unavailable"></i> Online booking</li>
+                            </ul>
+                            <button class="plan-action downgrade" onclick="changePlan('free')">Downgrade to Free</button>
+                        </div>
+                        
+                        <div class="plan-option" data-plan="starter">
+                            <div class="plan-option-header">
+                                <div class="plan-option-name">Starter</div>
+                                <div class="plan-option-price">£15/month</div>
+                            </div>
+                            <ul class="plan-option-features">
+                                <li><i class="fas fa-check"></i> Everything in Free</li>
+                                <li><i class="fas fa-check"></i> Business logo and photo gallery (up to 3 photos)</li>
+                                <li><i class="fas fa-check"></i> Enhanced profile visibility</li>
+                                <li><i class="fas fa-check"></i> Customer review highlights</li>
+                                <li><i class="fas fa-check"></i> Basic booking system</li>
+                                <li><i class="fas fa-times unavailable"></i> Advanced booking system</li>
+                                <li><i class="fas fa-times unavailable"></i> Customer management dashboard</li>
+                                <li><i class="fas fa-times unavailable"></i> Priority placement in search</li>
+                            </ul>
+                            <button class="plan-action downgrade" onclick="changePlan('starter')">Downgrade to Starter</button>
+                        </div>
+                        
+                        <div class="plan-option current" data-plan="professional">
+                            <div class="plan-option-header">
+                                <div class="plan-option-name">Professional</div>
+                                <div class="plan-option-price">£29/month</div>
+                            </div>
+                            <ul class="plan-option-features">
+                                <li><i class="fas fa-check"></i> Everything in Starter</li>
+                                <li><i class="fas fa-check"></i> Photo gallery (up to 10 photos)</li>
+                                <li><i class="fas fa-check"></i> Advanced booking system with calendar sync</li>
+                                <li><i class="fas fa-check"></i> Customer management dashboard</li>
+                                <li><i class="fas fa-check"></i> Priority placement in search</li>
+                                <li><i class="fas fa-check"></i> Basic analytics</li>
+                                <li><i class="fas fa-times unavailable"></i> Advanced analytics</li>
+                                <li><i class="fas fa-times unavailable"></i> Marketing tools</li>
+                            </ul>
+                            <button class="plan-action current">Current Plan</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Billing & Payment History -->
+                <div class="plan-section">
+                    <h2>Billing & Payments</h2>
+                    
+                    <div class="billing-summary">
+                        <h4 style="color: #1E90FF; margin-bottom: 1rem;">Current Billing</h4>
+                        <div class="billing-item">
+                            <span>Professional Plan</span>
+                            <span>£29.00/month</span>
+                        </div>
+                        <div class="billing-item">
+                            <span>Loyalty Rewards Programme</span>
+                            <span>£5.00/month</span>
+                        </div>
+                        <div class="billing-item total">
+                            <span>Total Monthly</span>
+                            <span>£34.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="next-payment">
+                        <h4>Next Payment Due</h4>
+                        <div class="next-payment-date" id="nextPaymentDate">15th March 2024</div>
+                        <p style="margin-top: 0.5rem; opacity: 0.9;">Auto-renewal enabled</p>
+                    </div>
+                    
+                    <div class="cancellation-section">
+                        <h4 style="color: #dc3545; margin-bottom: 1rem;">Danger Zone</h4>
+                        <div class="cancellation-warning">
+                            <i class="fas fa-exclamation-triangle" style="color: #ffc107; margin-right: 0.5rem;"></i>
+                            <span>Cancel your subscription to stop all payments and lose access to premium features.</span>
+                        </div>
+                        <button class="btn-cancel" onclick="showCancellationModal()">
+                            <i class="fas fa-times-circle"></i> Cancel Subscription
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add-ons Section -->
+            <div class="addons-section">
+                <h2>Premium Add-ons</h2>
+                <p style="color: #cccccc; margin-bottom: 2rem;">Enhance your business with these premium features</p>
+                
+                <div class="addon-card">
+                    <div class="addon-info">
+                        <h4>📲 Extra SMS Credits</h4>
+                        <p>Send appointment reminders and updates to customers</p>
+                    </div>
+                    <div class="addon-price">£3 per 50 messages</div>
+                    <button class="addon-action add" id="smsAddonBtn" onclick="toggleSMSAddon()">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+                
+                <div class="addon-card">
+                    <div class="addon-info">
+                        <h4>⭐ Featured Listing</h4>
+                        <p>Get priority placement in search results</p>
+                    </div>
+                    <div class="addon-price">£5/month</div>
+                    <button class="addon-action add" id="featuredAddonBtn" onclick="toggleFeaturedAddon()">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+                
+                <div class="addon-card">
+                    <div class="addon-info">
+                        <h4>📸 Instagram/TikTok Widget</h4>
+                        <p>Social media booking link widget</p>
+                    </div>
+                    <div class="addon-price">£4/month</div>
+                    <button class="addon-action add" id="socialAddonBtn" onclick="toggleSocialAddon()">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+                
+                <div class="addon-card">
+                    <div class="addon-info">
+                        <h4>🎁 Customer Loyalty Rewards</h4>
+                        <p>Digital punch card system for customer retention</p>
+                    </div>
+                    <div class="addon-price">£5/month</div>
+                    <button class="addon-action added" id="loyaltyAddonBtn" onclick="toggleLoyaltyAddon()">
+                        <i class="fas fa-check"></i> Added
+                    </button>
+                </div>
+                
+                <div class="addon-card">
+                    <div class="addon-info">
+                        <h4>📊 Advanced Analytics</h4>
+                        <p>Performance & trends analysis</p>
+                    </div>
+                    <div class="addon-price">£5/month</div>
+                    <button class="addon-action add" id="analyticsAddonBtn" onclick="toggleAnalyticsAddon()">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+                
+                <div class="addon-card">
+                    <div class="addon-info">
+                        <h4>👥 Multi-Staff Scheduling</h4>
+                        <p>Per extra staff member scheduling</p>
+                    </div>
+                    <div class="addon-price">£2/month per staff</div>
+                    <button class="addon-action add" id="staffAddonBtn" onclick="toggleStaffAddon()">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Payment History -->
+            <div class="payment-history">
+                <h2>Payment History</h2>
+                <p style="color: #cccccc; margin-bottom: 2rem;">Your recent payment transactions</p>
+                
+                <div class="payment-history-item">
+                    <div class="payment-info">
+                        <h5>Monthly Subscription - March 2024</h5>
+                        <p>Professional Plan + Loyalty Rewards Programme</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="payment-amount">£34.00</div>
+                        <div class="payment-status paid">Paid</div>
+                    </div>
+                </div>
+                
+                <div class="payment-history-item">
+                    <div class="payment-info">
+                        <h5>Monthly Subscription - February 2024</h5>
+                        <p>Professional Plan + Loyalty Rewards Programme</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="payment-amount">£34.00</div>
+                        <div class="payment-status paid">Paid</div>
+                    </div>
+                </div>
+                
+                <div class="payment-history-item">
+                    <div class="payment-info">
+                        <h5>Monthly Subscription - January 2024</h5>
+                        <p>Professional Plan</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="payment-amount">£29.00</div>
+                        <div class="payment-status paid">Paid</div>
+                    </div>
+                </div>
+                
+                <div class="payment-history-item">
+                    <div class="payment-info">
+                        <h5>Plan Upgrade - December 2023</h5>
+                        <p>Upgraded from Starter to Professional</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="payment-amount">£14.00</div>
+                        <div class="payment-status paid">Paid</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cancellation Modal -->
+    <div id="cancellationModal" class="cancellation-modal">
+        <div class="cancellation-modal-content">
+            <h3>⚠️ Cancel Subscription</h3>
+            <p>Are you sure you want to cancel your subscription? This action cannot be undone and will take effect immediately.</p>
+            
+            <div class="cancellation-consequences">
+                <h4>What happens when you cancel:</h4>
+                <ul>
+                    <li><i class="fas fa-times"></i> All premium features will be disabled</li>
+                    <li><i class="fas fa-times"></i> Your business will revert to free listing</li>
+                    <li><i class="fas fa-times"></i> Photo gallery will be hidden</li>
+                    <li><i class="fas fa-times"></i> Online booking system will be disabled</li>
+                    <li><i class="fas fa-times"></i> Priority placement in search will be removed</li>
+                    <li><i class="fas fa-times"></i> Analytics dashboard will be unavailable</li>
+                    <li><i class="fas fa-times"></i> All add-ons will be removed</li>
+                </ul>
+            </div>
+            
+            <div class="cancellation-buttons">
+                <button class="btn-keep-subscription" onclick="hideCancellationModal()">
+                    <i class="fas fa-arrow-left"></i> Keep Subscription
+                </button>
+                <button class="btn-confirm-cancel" onclick="confirmCancellation()">
+                    <i class="fas fa-times-circle"></i> Yes, Cancel Subscription
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Business plan management functionality
+        let currentPlan = 'professional';
+        let selectedAddons = ['loyalty'];
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBusinessData();
+            updatePlanDisplay();
+            updateBillingSummary();
+        });
+        
+        function loadBusinessData() {
+            // Load business data from localStorage or API
+            const businessData = localStorage.getItem('businessRegistrationData');
+            if (businessData) {
+                const data = JSON.parse(businessData);
+                currentPlan = data.selectedTier || 'professional';
+                selectedAddons = data.loyaltyAddonSelected ? ['loyalty'] : [];
+            }
+        }
+        
+        function updatePlanDisplay() {
+            const planNames = {
+                'free': 'Free Listing',
+                'starter': 'Starter Plan',
+                'professional': 'Professional Plan'
+            };
+            
+            const planPrices = {
+                'free': 'Free',
+                'starter': '£15/month',
+                'professional': '£29/month'
+            };
+            
+            document.getElementById('currentPlanName').textContent = planNames[currentPlan];
+            document.getElementById('currentPlanPrice').textContent = planPrices[currentPlan];
+            
+            // Update plan option buttons
+            document.querySelectorAll('.plan-option').forEach(option => {
+                const plan = option.dataset.plan;
+                const button = option.querySelector('.plan-action');
+                
+                if (plan === currentPlan) {
+                    option.classList.add('current');
+                    button.textContent = 'Current Plan';
+                    button.className = 'plan-action current';
+                } else {
+                    option.classList.remove('current');
+                    if (plan === 'free') {
+                        button.textContent = 'Downgrade to Free';
+                        button.className = 'plan-action downgrade';
+                    } else if (plan === 'starter') {
+                        button.textContent = 'Downgrade to Starter';
+                        button.className = 'plan-action downgrade';
+                    } else if (plan === 'professional') {
+                        button.textContent = 'Upgrade to Professional';
+                        button.className = 'plan-action upgrade';
+                    }
+                }
+            });
+        }
+        
+        function updateBillingSummary() {
+            const planCosts = {
+                'free': 0,
+                'starter': 15,
+                'professional': 29
+            };
+            
+            const addonCosts = {
+                'sms': 3,
+                'featured': 5,
+                'social': 4,
+                'loyalty': 5,
+                'analytics': 5,
+                'staff': 2
+            };
+            
+            const planCost = planCosts[currentPlan];
+            const totalAddonCost = selectedAddons.reduce((total, addon) => total + (addonCosts[addon] || 0), 0);
+            const totalCost = planCost + totalAddonCost;
+            
+            // Update billing summary
+            const billingItems = document.querySelectorAll('.billing-item');
+            billingItems[0].innerHTML = `<span>${currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} Plan</span><span>£${planCost}.00/month</span>`;
+            
+            if (selectedAddons.length > 0) {
+                billingItems[1].innerHTML = `<span>Add-ons</span><span>£${totalAddonCost}.00/month</span>`;
+                billingItems[1].style.display = 'flex';
+            } else {
+                billingItems[1].style.display = 'none';
+            }
+            
+            billingItems[2].innerHTML = `<span>Total Monthly</span><span>£${totalCost}.00</span>`;
+        }
+        
+        function changePlan(newPlan) {
+            if (newPlan === currentPlan) return;
+            
+            const planNames = {
+                'free': 'Free Listing',
+                'starter': 'Starter Plan',
+                'professional': 'Professional Plan'
+            };
+            
+            const confirmed = confirm(`Are you sure you want to change to ${planNames[newPlan]}?\n\nThis change will take effect immediately.`);
+            
+            if (confirmed) {
+                currentPlan = newPlan;
+                updatePlanDisplay();
+                updateBillingSummary();
+                
+                // Show success message
+                alert(`Successfully changed to ${planNames[newPlan]}!`);
+            }
+        }
+        
+        // SMS Add-on function
+        function toggleSMSAddon() {
+            const button = document.getElementById('smsAddonBtn');
+            const index = selectedAddons.indexOf('sms');
+            
+            if (index > -1) {
+                // Remove addon
+                selectedAddons.splice(index, 1);
+                button.innerHTML = '<i class="fas fa-plus"></i> Add';
+                button.className = 'addon-action add';
+                alert('Extra SMS Credits removed from your plan.');
+            } else {
+                // Add addon
+                selectedAddons.push('sms');
+                button.innerHTML = '<i class="fas fa-check"></i> Added';
+                button.className = 'addon-action added';
+                alert('Extra SMS Credits added to your plan.');
+            }
+            
+            updateBillingSummary();
+        }
+        
+        // Featured Add-on function
+        function toggleFeaturedAddon() {
+            const button = document.getElementById('featuredAddonBtn');
+            const index = selectedAddons.indexOf('featured');
+            
+            if (index > -1) {
+                // Remove addon
+                selectedAddons.splice(index, 1);
+                button.innerHTML = '<i class="fas fa-plus"></i> Add';
+                button.className = 'addon-action add';
+                alert('Featured Listing removed from your plan.');
+            } else {
+                // Add addon
+                selectedAddons.push('featured');
+                button.innerHTML = '<i class="fas fa-check"></i> Added';
+                button.className = 'addon-action added';
+                alert('Featured Listing added to your plan.');
+            }
+            
+            updateBillingSummary();
+        }
+        
+        // Social Add-on function
+        function toggleSocialAddon() {
+            const button = document.getElementById('socialAddonBtn');
+            const index = selectedAddons.indexOf('social');
+            
+            if (index > -1) {
+                // Remove addon
+                selectedAddons.splice(index, 1);
+                button.innerHTML = '<i class="fas fa-plus"></i> Add';
+                button.className = 'addon-action add';
+                alert('Instagram/TikTok Widget removed from your plan.');
+            } else {
+                // Add addon
+                selectedAddons.push('social');
+                button.innerHTML = '<i class="fas fa-check"></i> Added';
+                button.className = 'addon-action added';
+                alert('Instagram/TikTok Widget added to your plan.');
+            }
+            
+            updateBillingSummary();
+        }
+        
+        // Loyalty Add-on function
+        function toggleLoyaltyAddon() {
+            const button = document.getElementById('loyaltyAddonBtn');
+            const index = selectedAddons.indexOf('loyalty');
+            
+            if (index > -1) {
+                // Remove addon
+                selectedAddons.splice(index, 1);
+                button.innerHTML = '<i class="fas fa-plus"></i> Add';
+                button.className = 'addon-action add';
+                alert('Customer Loyalty Rewards removed from your plan.');
+            } else {
+                // Add addon
+                selectedAddons.push('loyalty');
+                button.innerHTML = '<i class="fas fa-check"></i> Added';
+                button.className = 'addon-action added';
+                alert('Customer Loyalty Rewards added to your plan.');
+            }
+            
+            updateBillingSummary();
+        }
+        
+        // Analytics Add-on function
+        function toggleAnalyticsAddon() {
+            const button = document.getElementById('analyticsAddonBtn');
+            const index = selectedAddons.indexOf('analytics');
+            
+            if (index > -1) {
+                // Remove addon
+                selectedAddons.splice(index, 1);
+                button.innerHTML = '<i class="fas fa-plus"></i> Add';
+                button.className = 'addon-action add';
+                alert('Advanced Analytics removed from your plan.');
+            } else {
+                // Add addon
+                selectedAddons.push('analytics');
+                button.innerHTML = '<i class="fas fa-check"></i> Added';
+                button.className = 'addon-action added';
+                alert('Advanced Analytics added to your plan.');
+            }
+            
+            updateBillingSummary();
+        }
+        
+        // Staff Add-on function
+        function toggleStaffAddon() {
+            const button = document.getElementById('staffAddonBtn');
+            const index = selectedAddons.indexOf('staff');
+            
+            if (index > -1) {
+                // Remove addon
+                selectedAddons.splice(index, 1);
+                button.innerHTML = '<i class="fas fa-plus"></i> Add';
+                button.className = 'addon-action add';
+                alert('Multi-Staff Scheduling removed from your plan.');
+            } else {
+                // Add addon
+                selectedAddons.push('staff');
+                button.innerHTML = '<i class="fas fa-check"></i> Added';
+                button.className = 'addon-action added';
+                alert('Multi-Staff Scheduling added to your plan.');
+            }
+            
+            updateBillingSummary();
+        }
+        
+        // Cancellation functions
+        function showCancellationModal() {
+            const modal = document.getElementById('cancellationModal');
+            modal.classList.add('show');
+        }
+        
+        function hideCancellationModal() {
+            const modal = document.getElementById('cancellationModal');
+            modal.classList.remove('show');
+        }
+        
+        function confirmCancellation() {
+            // Show final confirmation
+            const finalConfirm = confirm('FINAL WARNING: This will immediately cancel your subscription and remove all premium features. Are you absolutely sure?');
+            
+            if (finalConfirm) {
+                // Process cancellation
+                processCancellation();
+            }
+        }
+        
+        function processCancellation() {
+            // Update plan to free
+            currentPlan = 'free';
+            selectedAddons = [];
+            
+            // Update the display
+            updatePlanDisplay();
+            updateBillingSummary();
+            
+            // Hide the modal
+            hideCancellationModal();
+            
+            // Show success message
+            alert('Your subscription has been cancelled successfully.\n\nYour account has been downgraded to the free plan. You can upgrade again at any time from this page.');
+            
+            // Update the page to reflect the changes
+            updateCancellationState();
+        }
+        
+        function updateCancellationState() {
+            // Update current plan display
+            document.getElementById('currentPlanName').textContent = 'Free Listing';
+            document.getElementById('currentPlanPrice').textContent = 'Free';
+            document.getElementById('planStatus').textContent = 'Cancelled';
+            
+            // Update next payment
+            document.getElementById('nextPaymentDate').textContent = 'No payments due';
+            document.querySelector('.next-payment p').textContent = 'Subscription cancelled';
+            
+            // Hide cancellation section since it's now cancelled
+            document.querySelector('.cancellation-section').style.display = 'none';
+            
+            // Add reactivation section
+            addReactivationSection();
+        }
+        
+        function addReactivationSection() {
+            const billingSection = document.querySelector('.plan-section:last-child');
+            
+            const reactivationSection = document.createElement('div');
+            reactivationSection.className = 'reactivation-section';
+            reactivationSection.innerHTML = `
+                <div style="background: #1a3a1a; border: 1px solid #28a745; border-radius: 10px; padding: 1.5rem; margin-top: 2rem; text-align: center;">
+                    <h4 style="color: #28a745; margin-bottom: 1rem;">Reactivate Your Subscription</h4>
+                    <p style="color: #cccccc; margin-bottom: 1.5rem;">Your subscription has been cancelled. You can reactivate it anytime to regain access to premium features.</p>
+                    <button class="btn-reactivate" onclick="reactivateSubscription()" style="background: #28a745; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fas fa-undo"></i> Reactivate Subscription
+                    </button>
+                </div>
+            `;
+            
+            billingSection.appendChild(reactivationSection);
+        }
+        
+        function reactivateSubscription() {
+            const confirmed = confirm('Reactivate your subscription?\n\nThis will restore your previous Professional plan with all add-ons for £34/month.');
+            
+            if (confirmed) {
+                // Restore previous plan
+                currentPlan = 'professional';
+                selectedAddons = ['loyalty'];
+                
+                // Update displays
+                updatePlanDisplay();
+                updateBillingSummary();
+                
+                // Remove reactivation section
+                const reactivationSection = document.querySelector('.reactivation-section');
+                if (reactivationSection) {
+                    reactivationSection.remove();
+                }
+                
+                // Show cancellation section again
+                document.querySelector('.cancellation-section').style.display = 'block';
+                
+                // Update status
+                document.getElementById('planStatus').textContent = 'Active';
+                document.getElementById('nextPaymentDate').textContent = '15th March 2024';
+                document.querySelector('.next-payment p').textContent = 'Auto-renewal enabled';
+                
+                alert('Your subscription has been reactivated successfully!\n\nWelcome back to the Professional plan with all your premium features restored.');
+            }
+        }
+        
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('cancellationModal');
+            if (event.target === modal) {
+                hideCancellationModal();
+            }
+        });
+    </script>
+</body>
+</html>

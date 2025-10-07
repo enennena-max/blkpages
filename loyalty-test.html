@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loyalty System Test - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .test-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .test-card h2 {
+            color: #1E90FF;
+            margin-bottom: 1rem;
+        }
+        
+        .test-card p {
+            color: #cccccc;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            margin: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #1E90FF;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+        
+        .url-display {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            color: #1E90FF;
+            word-break: break-all;
+        }
+        
+        .instructions {
+            background: #2a2a2a;
+            border-left: 4px solid #1E90FF;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .instructions h4 {
+            color: #1E90FF;
+            margin-bottom: 0.5rem;
+        }
+        
+        .instructions ol {
+            color: #cccccc;
+            padding-left: 1.5rem;
+        }
+        
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 2rem; color: #1E90FF;">Loyalty System Test</h1>
+        
+        <div class="test-card">
+            <h2>Business Loyalty Dashboard</h2>
+            <p>Access the business loyalty dashboard to set up and manage loyalty programmes.</p>
+            <a href="business-loyalty-dashboard.html" class="btn btn-primary">
+                <i class="fas fa-cog"></i> Open Business Dashboard
+            </a>
+        </div>
+        
+        <div class="test-card">
+            <h2>Customer Loyalty Card (Direct Access)</h2>
+            <p>Test the customer loyalty card page directly with a sample business ID.</p>
+            <div class="url-display" id="sampleUrl">customer-loyalty-card.html?business=sample_business_123</div>
+            <a href="customer-loyalty-card.html?business=sample_business_123" class="btn btn-success">
+                <i class="fas fa-mobile-alt"></i> Test Customer Card
+            </a>
+        </div>
+        
+        <div class="test-card">
+            <h2>Simulated QR Code URL</h2>
+            <p>This simulates what happens when a customer scans a QR code with the URL pattern:</p>
+            <div class="url-display" id="qrUrl">blkpages.co.uk/loyalty/sample_business_123</div>
+            <button class="btn btn-primary" onclick="simulateQRScan()">
+                <i class="fas fa-qrcode"></i> Simulate QR Scan
+            </button>
+        </div>
+        
+        <div class="instructions">
+            <h4>Testing Instructions:</h4>
+            <ol>
+                <li>First, open the Business Loyalty Dashboard and set up a loyalty programme</li>
+                <li>Generate a QR code to get your business ID</li>
+                <li>Use the "Test Customer Card" button to simulate a customer accessing the loyalty page</li>
+                <li>Add points and test the redemption flow</li>
+                <li>Return to the Business Dashboard to see updated analytics</li>
+                <li>The system maintains data persistence across sessions</li>
+            </ol>
+        </div>
+        
+        <div class="test-card">
+            <h2>System Features</h2>
+            <p>The connected loyalty system includes:</p>
+            <ul style="color: #cccccc; padding-left: 1.5rem;">
+                <li>Unique business ID generation and QR code creation</li>
+                <li>Customer data persistence and point tracking</li>
+                <li>Real-time analytics updates in business dashboard</li>
+                <li>Automatic point increment on QR scans</li>
+                <li>Reward redemption with point reset</li>
+                <li>Mobile-responsive design for all devices</li>
+                <li>Secure customer ID management</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function simulateQRScan() {
+            // Simulate the URL pattern that would be generated by QR code
+            const businessId = 'sample_business_123';
+            const loyaltyUrl = `blkpages.co.uk/loyalty/${businessId}`;
+            
+            // Show the URL that would be generated
+            document.getElementById('qrUrl').textContent = loyaltyUrl;
+            
+            // In a real implementation, this would redirect to the customer loyalty page
+            // For testing, we'll show an alert and then redirect
+            alert(`QR Code scanned! Redirecting to: ${loyaltyUrl}`);
+            
+            // Redirect to customer loyalty page with business ID
+            window.location.href = `customer-loyalty-card.html?business=${businessId}`;
+        }
+        
+        // Generate a sample business ID for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            const sampleBusinessId = 'sample_business_123';
+            const sampleUrl = `customer-loyalty-card.html?business=${sampleBusinessId}`;
+            const qrUrl = `blkpages.co.uk/loyalty/${sampleBusinessId}`;
+            
+            document.getElementById('sampleUrl').textContent = sampleUrl;
+            document.getElementById('qrUrl').textContent = qrUrl;
+        });
+    </script>
+</body>
+</html>

@@ -1041,6 +1041,81 @@
                 text-align: left;
             }
         }
+        
+        /* Payment Model Display Styles */
+        .payment-model-display {
+            background: linear-gradient(135deg, #1E90FF, #007bff);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .payment-details-display {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .payment-model-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .payment-model-info i {
+            color: #1E90FF;
+            font-size: 1.2rem;
+        }
+        
+        .payment-model-info h4 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .payment-model-description {
+            color: #cccccc;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .payment-model-breakdown {
+            background: #1a1a1a;
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-top: 0.75rem;
+        }
+        
+        .payment-model-breakdown h5 {
+            color: #1E90FF;
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .payment-model-breakdown ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .payment-model-breakdown li {
+            color: #cccccc;
+            font-size: 0.85rem;
+            padding: 0.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .payment-model-breakdown li i {
+            color: #28a745;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
@@ -1132,9 +1207,9 @@
                             <div class="setting-description">Create loyalty programs to encourage repeat bookings and reward your customers</div>
                     </div>
                         <div class="setting-control">
-                            <button class="btn-action" onclick="openLoyaltyModal()" style="background: linear-gradient(135deg, #10B981, #059669);">
+                            <a href="business-loyalty-dashboard.html" class="btn-action" style="background: linear-gradient(135deg, #10B981, #059669); text-decoration: none;">
                                 <i class="fas fa-gift"></i> Manage Loyalty Programme
-                        </button>
+                            </a>
                         </div>
                     </div>
                     </div>
@@ -1212,9 +1287,9 @@
                             </li>
                         </ul>
                     </div>
-                    <button class="btn-action" onclick="manageSubscription()" style="margin-top: 1.5rem;">
+                    <a href="business-plan-management.html" class="btn-action" style="margin-top: 1.5rem; text-decoration: none; display: inline-block;">
                         <i class="fas fa-credit-card"></i> Manage Plan
-                    </button>
+                    </a>
                 </div>
             </div>
             
@@ -1247,6 +1322,41 @@
                         </div>
                             </div>
                 
+            <!-- Payment Model Section -->
+            <div class="booking-options-section">
+                <h3>Payment Model Configuration</h3>
+                <div class="booking-options-card">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Current Payment Model</div>
+                            <div class="setting-description">How customers pay for your services</div>
+                        </div>
+                        <div class="setting-control">
+                            <div id="currentPaymentModel" class="payment-model-display">
+                                <!-- Payment model will be loaded from registration data -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Payment Model Details</div>
+                            <div class="setting-description">Detailed breakdown of your payment configuration</div>
+                        </div>
+                        <div class="setting-control">
+                            <div id="paymentModelDetails" class="payment-details-display">
+                                <!-- Payment details will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-disclaimer">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Your payment model was set during business registration and cannot be changed here. Contact support if you need to modify your payment settings.</span>
+                    </div>
+                </div>
+            </div>
+                
             <!-- Cancellation Policy Section -->
             <div class="booking-options-section">
                 <h3>Cancellation Policy</h3>
@@ -1262,7 +1372,7 @@
                                 <option value="flexible">Flexible - 24h notice for full refund</option>
                                 <option value="moderate">Moderate - 48h notice for full refund</option>
                                 <option value="strict">Strict - Non-refundable once confirmed</option>
-                                <option value="custom" id="customOption" style="display: none;">Custom (Premium Only)</option>
+                                <option value="custom" id="customOption" style="display: none;">Custom (Professional Package Required)</option>
                             </select>
                             <div class="policy-disclaimer">
                                 <i class="fas fa-info-circle"></i>
@@ -1718,10 +1828,134 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
     </footer>
 
     <script>
+        // Load business data from registration
+        function loadBusinessData() {
+            // Try to load from localStorage first (from business registration)
+            const businessRegistrationData = localStorage.getItem('businessRegistrationData');
+            if (businessRegistrationData) {
+                try {
+                    return JSON.parse(businessRegistrationData);
+                } catch (e) {
+                    console.error('Error parsing business registration data:', e);
+                }
+            }
+            
+            // Fallback to business manager if available
+            if (typeof window.businessManager !== 'undefined') {
+                const businesses = window.businessManager.getBusinesses();
+                if (businesses.length > 0) {
+                    // Return the first business data (in real app, would match current business)
+                    return businesses[0];
+                }
+            }
+            
+            // Default fallback data
+            return {
+                paymentModel: 'deposit-balance',
+                depositPercentage: '30',
+                businessName: 'Royal Hair Studio'
+            };
+        }
+        
+        // Get current business plan
+        function getCurrentBusinessPlan() {
+            const businessData = loadBusinessData();
+            return businessData.selectedTier || 'free'; // Default to free, only show custom for professional
+        }
+        
+        // Update payment model display
+        function updatePaymentModelDisplay() {
+            const businessData = loadBusinessData();
+            const currentPaymentModel = document.getElementById('currentPaymentModel');
+            const paymentModelDetails = document.getElementById('paymentModelDetails');
+            
+            const paymentModel = businessData.paymentModel || 'deposit-balance';
+            const depositPercentage = parseInt(businessData.depositPercentage) || 30;
+            const businessName = businessData.businessName || 'Royal Hair Studio';
+            
+            // Update current payment model display
+            let modelTitle = '';
+            let modelDescription = '';
+            
+            switch (paymentModel) {
+                case 'full-online':
+                    modelTitle = 'Full Payment Online';
+                    modelDescription = 'Customers pay the full amount online when booking';
+                    break;
+                case 'deposit-balance':
+                    modelTitle = `Deposit + Balance (${depositPercentage}%)`;
+                    modelDescription = `Customers pay ${depositPercentage}% deposit online, balance at venue`;
+                    break;
+                case 'full-venue':
+                    modelTitle = 'Full Payment at Venue';
+                    modelDescription = 'Customers pay the full amount when they arrive';
+                    break;
+                default:
+                    modelTitle = 'Deposit + Balance (30%)';
+                    modelDescription = 'Customers pay 30% deposit online, balance at venue';
+            }
+            
+            currentPaymentModel.innerHTML = modelTitle;
+            
+            // Update payment model details
+            let detailsHTML = `
+                <div class="payment-model-info">
+                    <i class="fas fa-credit-card"></i>
+                    <h4>${modelTitle}</h4>
+                </div>
+                <div class="payment-model-description">
+                    ${modelDescription}
+                </div>
+                <div class="payment-model-breakdown">
+                    <h5>How it works:</h5>
+                    <ul>
+            `;
+            
+            switch (paymentModel) {
+                case 'full-online':
+                    detailsHTML += `
+                        <li><i class="fas fa-check"></i> Customer selects services and books appointment</li>
+                        <li><i class="fas fa-check"></i> Full payment is processed online via Stripe</li>
+                        <li><i class="fas fa-check"></i> No additional payment required at venue</li>
+                        <li><i class="fas fa-check"></i> Payment is secure and encrypted</li>
+                    `;
+                    break;
+                case 'deposit-balance':
+                    detailsHTML += `
+                        <li><i class="fas fa-check"></i> Customer selects services and books appointment</li>
+                        <li><i class="fas fa-check"></i> ${depositPercentage}% deposit is processed online via Stripe</li>
+                        <li><i class="fas fa-check"></i> Remaining balance is paid at the venue</li>
+                        <li><i class="fas fa-check"></i> Deposit secures the booking</li>
+                    `;
+                    break;
+                case 'full-venue':
+                    detailsHTML += `
+                        <li><i class="fas fa-check"></i> Customer selects services and books appointment</li>
+                        <li><i class="fas fa-check"></i> No online payment required</li>
+                        <li><i class="fas fa-check"></i> Full payment is made at the venue</li>
+                        <li><i class="fas fa-check"></i> You collect payment directly</li>
+                    `;
+                    break;
+            }
+            
+            detailsHTML += `
+                    </ul>
+                </div>
+            `;
+            
+            paymentModelDetails.innerHTML = detailsHTML;
+        }
+        
         // Check if user is logged in
         document.addEventListener('DOMContentLoaded', function() {
         const isLoggedIn = localStorage.getItem('businessLoggedIn');
             console.log('Checking login status:', isLoggedIn);
+            
+            // Load and display payment model
+            updatePaymentModelDisplay();
+            
+            // Update cancellation policy based on current plan
+            updateCancellationPolicy();
             
         if (isLoggedIn !== 'true') {
             console.log('User not logged in, redirecting to login page');
@@ -1774,11 +2008,12 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
             
             const businessName = 'Royal Hair Studio'; // In real implementation, get from business data
             
-            // Check if business has premium subscription (Professional/Elite)
-            const hasPremiumSubscription = true; // In real implementation, check subscription tier
+            // Check if business has Professional package specifically
+            const currentPlan = getCurrentBusinessPlan();
+            const hasProfessionalPlan = currentPlan === 'professional';
             
-            // Show/hide custom option based on subscription
-            if (hasPremiumSubscription) {
+            // Show/hide custom option based on Professional package
+            if (hasProfessionalPlan) {
                 document.getElementById('customOption').style.display = 'block';
             } else {
                 document.getElementById('customOption').style.display = 'none';
