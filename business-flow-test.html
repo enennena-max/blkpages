@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLKPAGES Business Flow Test</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: white;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #333;
+        }
+        
+        .test-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #2a2a2a;
+            border-radius: 10px;
+            border: 1px solid #444;
+        }
+        
+        .test-section h3 {
+            color: #1E90FF;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+        
+        .business-list {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #1a1a1a;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        
+        .business-item {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #2a2a2a;
+            border-radius: 6px;
+            border-left: 4px solid #1E90FF;
+        }
+        
+        .business-item h4 {
+            color: #1E90FF;
+            margin-bottom: 0.25rem;
+        }
+        
+        .business-item p {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin: 0.25rem 0;
+        }
+        
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+        
+        .status.active {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status.free {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .status.premium {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .instructions {
+            background: #2a2a2a;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #1E90FF;
+        }
+        
+        .instructions h3 {
+            color: #1E90FF;
+            margin-bottom: 0.5rem;
+        }
+        
+        .instructions p {
+            color: #cccccc;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 style="text-align: center; margin-bottom: 2rem; color: #1E90FF;">🧪 BLKPAGES Business Flow Test</h1>
+        
+        <div class="instructions">
+            <h3>📋 Test Instructions</h3>
+            <p>This page demonstrates the complete business registration and display flow. Follow these steps to test the system:</p>
+            <ol style="color: #cccccc; margin: 0.5rem 0 0 1rem;">
+                <li>Click "Register New Business" to open the registration form</li>
+                <li>Fill out the form and select a package</li>
+                <li>Submit the form to create the business</li>
+                <li>Return here and click "Refresh Business List" to see your new business</li>
+                <li>Click "Test Search" to see how it appears in search results</li>
+            </ol>
+        </div>
+        
+        <div class="test-section">
+            <h3>🏢 Business Management</h3>
+            <button class="btn" onclick="openRegistration()">Register New Business</button>
+            <button class="btn btn-success" onclick="refreshBusinessList()">Refresh Business List</button>
+            <button class="btn btn-warning" onclick="clearAllBusinesses()">Clear All Businesses</button>
+            
+            <div id="businessList" class="business-list" style="margin-top: 1rem;">
+                <p style="text-align: center; color: #888;">Click "Refresh Business List" to load businesses</p>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔍 Search & Browse Test</h3>
+            <button class="btn" onclick="testSearch()">Test Search Results</button>
+            <button class="btn" onclick="testCategorySearch()">Test Category Search</button>
+            <button class="btn" onclick="testLocationSearch()">Test Location Search</button>
+            
+            <div id="searchResults" class="business-list" style="margin-top: 1rem;">
+                <p style="text-align: center; color: #888;">Click a search button to test search functionality</p>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 System Status</h3>
+            <div id="systemStatus">
+                <p><strong>Business Manager:</strong> <span id="managerStatus">Loading...</span></p>
+                <p><strong>Total Businesses:</strong> <span id="totalBusinesses">0</span></p>
+                <p><strong>Categories:</strong> <span id="categories">None</span></p>
+                <p><strong>Locations:</strong> <span id="locations">None</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Business Manager Script -->
+    <script src="business-manager.js"></script>
+    
+    <script>
+        // Initialize the test page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSystemStatus();
+        });
+        
+        function updateSystemStatus() {
+            if (typeof window.businessManager !== 'undefined') {
+                document.getElementById('managerStatus').textContent = '✅ Loaded';
+                document.getElementById('managerStatus').style.color = '#28a745';
+                
+                const businesses = window.businessManager.getBusinesses();
+                document.getElementById('totalBusinesses').textContent = businesses.length;
+                
+                const categories = [...new Set(businesses.map(b => b.category))];
+                document.getElementById('categories').textContent = categories.join(', ') || 'None';
+                
+                const locations = [...new Set(businesses.map(b => b.city))];
+                document.getElementById('locations').textContent = locations.join(', ') || 'None';
+            } else {
+                document.getElementById('managerStatus').textContent = '❌ Not Loaded';
+                document.getElementById('managerStatus').style.color = '#dc3545';
+            }
+        }
+        
+        function openRegistration() {
+            window.open('business-register.html', '_blank');
+        }
+        
+        function refreshBusinessList() {
+            if (typeof window.businessManager === 'undefined') {
+                alert('Business Manager not loaded. Please refresh the page.');
+                return;
+            }
+            
+            const businesses = window.businessManager.getBusinesses();
+            const businessList = document.getElementById('businessList');
+            
+            if (businesses.length === 0) {
+                businessList.innerHTML = '<p style="text-align: center; color: #888;">No businesses found. Register a new business to see it here.</p>';
+                return;
+            }
+            
+            businessList.innerHTML = businesses.map(business => `
+                <div class="business-item">
+                    <h4>${business.name}</h4>
+                    <p><strong>Category:</strong> ${business.category}</p>
+                    <p><strong>Location:</strong> ${business.location}</p>
+                    <p><strong>Phone:</strong> ${business.phone}</p>
+                    <p><strong>Email:</strong> ${business.email}</p>
+                    <p><strong>Created:</strong> ${new Date(business.dateCreated).toLocaleDateString()}</p>
+                    <span class="status ${business.subscription}">${business.subscription.toUpperCase()}</span>
+                </div>
+            `).join('');
+            
+            updateSystemStatus();
+        }
+        
+        function clearAllBusinesses() {
+            if (confirm('Are you sure you want to clear all businesses? This will reset to demo data.')) {
+                localStorage.removeItem('blkpages_businesses');
+                // Reinitialize with demo data
+                window.businessManager = new BusinessManager();
+                refreshBusinessList();
+                alert('All businesses cleared. Demo data restored.');
+            }
+        }
+        
+        function testSearch() {
+            if (typeof window.businessManager === 'undefined') {
+                alert('Business Manager not loaded. Please refresh the page.');
+                return;
+            }
+            
+            const businesses = window.businessManager.getBusinesses();
+            const searchResults = document.getElementById('searchResults');
+            
+            searchResults.innerHTML = businesses.map(business => `
+                <div class="business-item">
+                    <h4>${business.name}</h4>
+                    <p><strong>Category:</strong> ${business.category}</p>
+                    <p><strong>Location:</strong> ${business.location}</p>
+                    <p><strong>Rating:</strong> ${business.rating}/5 (${business.reviews} reviews)</p>
+                    <p><strong>Subscription:</strong> ${business.subscription}</p>
+                </div>
+            `).join('');
+        }
+        
+        function testCategorySearch() {
+            if (typeof window.businessManager === 'undefined') {
+                alert('Business Manager not loaded. Please refresh the page.');
+                return;
+            }
+            
+            const hairdresserBusinesses = window.businessManager.getBusinessesByCategory('hairdresser');
+            const searchResults = document.getElementById('searchResults');
+            
+            searchResults.innerHTML = hairdresserBusinesses.length > 0 ? 
+                hairdresserBusinesses.map(business => `
+                    <div class="business-item">
+                        <h4>${business.name}</h4>
+                        <p><strong>Category:</strong> ${business.category}</p>
+                        <p><strong>Location:</strong> ${business.location}</p>
+                        <p><strong>Description:</strong> ${business.description}</p>
+                    </div>
+                `).join('') : 
+                '<p style="text-align: center; color: #888;">No hairdresser businesses found. Register one to see it here.</p>';
+        }
+        
+        function testLocationSearch() {
+            if (typeof window.businessManager === 'undefined') {
+                alert('Business Manager not loaded. Please refresh the page.');
+                return;
+            }
+            
+            const londonBusinesses = window.businessManager.getBusinessesByLocation('London');
+            const searchResults = document.getElementById('searchResults');
+            
+            searchResults.innerHTML = londonBusinesses.length > 0 ? 
+                londonBusinesses.map(business => `
+                    <div class="business-item">
+                        <h4>${business.name}</h4>
+                        <p><strong>Category:</strong> ${business.category}</p>
+                        <p><strong>Location:</strong> ${business.location}</p>
+                        <p><strong>Address:</strong> ${business.address}</p>
+                    </div>
+                `).join('') : 
+                '<p style="text-align: center; color: #888;">No London businesses found. Register one to see it here.</p>';
+        }
+    </script>
+</body>
+</html>

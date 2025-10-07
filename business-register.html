@@ -340,10 +340,205 @@
             font-size: 1.1rem;
             width: 100%;
             margin-top: 2rem;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
         }
-        .btn-submit:hover { background: #0056b3; }
-        .btn-submit:disabled { background: #333; cursor: not-allowed; }
+        .btn-submit:hover { 
+            background: #0056b3; 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+        }
+        .btn-submit:disabled { background: #333; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        /* Button validation feedback */
+        .btn-submit.validation-feedback {
+            animation: buttonPulse 0.6s ease-in-out;
+        }
+        
+        @keyframes buttonPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Form Validation Styles */
+        .form-group input.validation-error, 
+        .form-group select.validation-error, 
+        .form-group textarea.validation-error {
+            border: 2px solid #1E90FF !important;
+            background-color: #E6F0FF20 !important;
+            box-shadow: 0 0 10px rgba(30, 144, 255, 0.3), 0 0 20px rgba(30, 144, 255, 0.1) !important;
+            animation: fieldShake 0.5s ease-in-out;
+        }
+        
+        @keyframes fieldShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+            20%, 40%, 60%, 80% { transform: translateX(3px); }
+        }
+        
+        /* Validation Tooltip */
+        .validation-tooltip {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            background: rgba(30, 144, 255, 0.9);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            border: 1px solid #1E90FF;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .validation-tooltip.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        /* Validation Pop-up Modal */
+        .validation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .validation-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .validation-modal-content {
+            background: #111;
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid #1E90FF;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .validation-modal.show .validation-modal-content {
+            transform: scale(1);
+        }
+        
+        .validation-modal h3 {
+            color: #1E90FF;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .validation-modal p {
+            color: #ffffff;
+            line-height: 1.5;
+        }
+        
+        /* Payment Section Styles */
+        .payment-notice {
+            background: #1a3a5c;
+            border: 1px solid #1E90FF;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .payment-notice i {
+            color: #1E90FF;
+            font-size: 1.2rem;
+        }
+        
+        .payment-notice p {
+            color: #ffffff;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .card-icons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .card-icons i {
+            font-size: 1.5rem;
+            color: #888;
+            transition: color 0.3s;
+        }
+        
+        .card-icons i:hover {
+            color: #1E90FF;
+        }
+        
+        .payment-summary {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .payment-summary h4 {
+            color: #1E90FF;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #444;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-item.total {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1E90FF;
+            border-top: 2px solid #1E90FF;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+        }
+        
+        .summary-item span:first-child {
+            color: #cccccc;
+        }
+        
+        .summary-item span:last-child {
+            color: #ffffff;
+            font-weight: 500;
+        }
         
         /* Terms */
         .terms-section { margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #333; }
@@ -378,6 +573,41 @@
             
             .addon-price {
                 text-align: center;
+            }
+            
+            /* Mobile validation styles */
+            .validation-modal-content {
+                margin: 1rem;
+                padding: 1.5rem;
+                max-width: calc(100% - 2rem);
+            }
+            
+            .validation-tooltip {
+                font-size: 0.75rem;
+                padding: 3px 6px;
+                bottom: -22px;
+            }
+            
+            .form-group input.validation-error, 
+            .form-group select.validation-error, 
+            .form-group textarea.validation-error {
+                box-shadow: 0 0 8px rgba(30, 144, 255, 0.4), 0 0 15px rgba(30, 144, 255, 0.2) !important;
+            }
+            
+            /* Ensure tooltips don't overflow on mobile */
+            .form-group {
+                margin-bottom: 2rem;
+            }
+            
+            /* Touch-friendly validation feedback */
+            .btn-submit.validation-feedback {
+                animation: buttonPulseMobile 0.6s ease-in-out;
+            }
+            
+            @keyframes buttonPulseMobile {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.02); }
+                100% { transform: scale(1); }
             }
         }
     </style>
@@ -589,6 +819,92 @@
                             </div>
                         </div>
                         
+                        <!-- Payment Information (for Starter and Professional packages) -->
+                        <div class="form-section" id="paymentSection" style="display: none;">
+                            <h3>Payment Information</h3>
+                            <div class="payment-notice">
+                                <i class="fas fa-credit-card"></i>
+                                <p>Secure payment processing. Your card details are encrypted and secure.</p>
+                            </div>
+                            
+                            <div id="freePlanAddonNotice" class="payment-notice" style="display: none; background: #2d5016; border-color: #28a745;">
+                                <i class="fas fa-info-circle" style="color: #28a745;"></i>
+                                <p>You've selected premium add-ons with your free plan. Payment is required for these additional features.</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cardNumber">Card Number <span class="required">*</span></label>
+                                <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                                <div class="card-icons">
+                                    <i class="fab fa-cc-visa"></i>
+                                    <i class="fab fa-cc-mastercard"></i>
+                                    <i class="fab fa-cc-amex"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="expiryDate">Expiry Date <span class="required">*</span></label>
+                                    <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" maxlength="5">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cvv">CVV <span class="required">*</span></label>
+                                    <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="4">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cardholderName">Cardholder Name <span class="required">*</span></label>
+                                <input type="text" id="cardholderName" name="cardholderName" placeholder="Name as it appears on card">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="billingAddress">Billing Address <span class="required">*</span></label>
+                                <input type="text" id="billingAddress" name="billingAddress" placeholder="Street address">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="billingCity">City <span class="required">*</span></label>
+                                    <input type="text" id="billingCity" name="billingCity" placeholder="City">
+                                </div>
+                                <div class="form-group">
+                                    <label for="billingPostcode">Postcode <span class="required">*</span></label>
+                                    <input type="text" id="billingPostcode" name="billingPostcode" placeholder="SW1A 1AA">
+                                </div>
+                            </div>
+                            
+                            <div class="payment-summary">
+                                <h4>Payment Summary</h4>
+                                <div class="summary-item">
+                                    <span>Selected Plan:</span>
+                                    <span id="selectedPlanName">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Monthly Cost:</span>
+                                    <span id="monthlyCost">-</span>
+                                </div>
+                                <div id="addonsSection" style="display: none;">
+                                    <div class="summary-item">
+                                        <span>Premium Add-ons:</span>
+                                        <span id="addonsList">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span>Add-ons Cost:</span>
+                                        <span id="addonsCost">-</span>
+                                    </div>
+                                </div>
+                                <div class="summary-item total">
+                                    <span>Total Today:</span>
+                                    <span id="totalToday">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Recurring Monthly:</span>
+                                    <span id="recurringMonthly">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <!-- Account Information -->
                         <div class="form-section">
                             <h3>Account Information</h3>
@@ -722,6 +1038,14 @@
         </div>
     </main>
 
+    <!-- Validation Modal -->
+    <div id="validationModal" class="validation-modal">
+        <div class="validation-modal-content">
+            <h3>⚠️ Required Fields Missing</h3>
+            <p>Please complete all required fields before submitting your listing.</p>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -739,6 +1063,9 @@
         </div>
     </footer>
 
+    <!-- Business Manager Script -->
+    <script src="business-manager.js"></script>
+    
     <script>
         let selectedTier = 'free';
         
@@ -752,6 +1079,12 @@
             
             // Reorder plans to put selected plan at the top
             reorderPlans(tier);
+            
+            // Show/hide payment section based on tier
+            togglePaymentSection(tier);
+            
+            // Update payment summary
+            updatePaymentSummary(tier);
         }
         
         function reorderPlans(selectedTier) {
@@ -919,104 +1252,379 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
             }
         });
         
-        // Form validation
-        document.getElementById('businessRegistrationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validate passwords match
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                alert('Passwords do not match!');
-                return;
+        // Form Validation System
+        class FormValidator {
+            constructor() {
+                this.baseRequiredFields = [
+                    'businessName', 'category', 'description', 'phone', 'email', 
+                    'address', 'city', 'state', 'zipCode', 'cancellationPolicy', 
+                    'paymentModel', 'ownerName', 'password', 'confirmPassword'
+                ];
+                this.paymentFields = [
+                    'cardNumber', 'expiryDate', 'cvv', 'cardholderName', 
+                    'billingAddress', 'billingCity', 'billingPostcode'
+                ];
+                this.requiredFields = [...this.baseRequiredFields];
+                this.firstEmptyField = null;
+                this.init();
             }
             
-            // Validate required fields
-            const requiredFields = ['businessName', 'category', 'description', 'phone', 'email', 'address', 'city', 'state', 'zipCode', 'cancellationPolicy', 'ownerName', 'password'];
-            let isValid = true;
-            
-            // Validate UK postcode format
-            const postcode = document.getElementById('zipCode').value;
-            const ukPostcodeRegex = /^[A-Za-z]{1,2}[0-9Rr][0-9A-Za-z]? [0-9][ABD-HJLNP-UW-Zabd-hjlnp-uw-z]{2}$/;
-            if (!ukPostcodeRegex.test(postcode)) {
-                alert('Please enter a valid UK postcode (e.g., SW1A 1AA, M1 1AA)');
-                document.getElementById('zipCode').focus();
-                return;
+            init() {
+                // Add event listeners to all form fields
+                this.requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field) {
+                        // Clear validation effects when user starts typing
+                        field.addEventListener('input', () => this.clearFieldValidation(field));
+                        field.addEventListener('focus', () => this.clearFieldValidation(field));
+                    }
+                });
+                
+                // Form submission handler
+                document.getElementById('businessRegistrationForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.validateForm();
+                });
             }
             
-            // Validate UK phone number format
-            const phone = document.getElementById('phone').value;
-            const ukPhoneRegex = /^(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}$/;
-            if (!ukPhoneRegex.test(phone)) {
-                alert('Please enter a valid UK phone number (e.g., +44 7123 456789 or 07123 456789)');
-                document.getElementById('phone').focus();
-                return;
-            }
-            
-            requiredFields.forEach(field => {
-                const element = document.getElementById(field);
-                if (!element.value.trim()) {
-                    isValid = false;
-                    element.style.borderColor = '#ff6b6b';
-                } else {
-                    element.style.borderColor = '#333';
+            validateForm() {
+                // Clear previous validation states
+                this.clearAllValidation();
+                
+                // Check for empty required fields
+                const emptyFields = this.getEmptyRequiredFields();
+                
+                if (emptyFields.length > 0) {
+                    this.showValidationError(emptyFields);
+                    return false;
                 }
-            });
-            
-            if (!isValid) {
-                alert('Please fill in all required fields.');
-                return;
+                
+                // Additional validations
+                if (!this.validatePasswords()) return false;
+                if (!this.validatePostcode()) return false;
+                if (!this.validatePhone()) return false;
+                if (!this.validateDepositPercentage()) return false;
+                if (!this.validatePaymentFields()) return false;
+                
+                // If all validations pass, proceed with form submission
+                this.submitForm();
+                return true;
             }
             
-            // Collect form data
-            const formData = {
-                businessName: document.getElementById('businessName').value,
-                category: document.getElementById('category').value,
-                description: document.getElementById('description').value,
-                phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value,
-                website: document.getElementById('website').value,
-                address: document.getElementById('address').value,
-                city: document.getElementById('city').value,
-                state: document.getElementById('state').value,
-                zipCode: document.getElementById('zipCode').value,
-                serviceArea: document.getElementById('serviceArea').value,
-                hoursStart: document.getElementById('hoursStart').value,
-                hoursEnd: document.getElementById('hoursEnd').value,
-                daysOpen: Array.from(document.getElementById('daysOpen').selectedOptions).map(option => option.value),
-                cancellationPolicy: document.getElementById('cancellationPolicy').value,
-                customPolicyText: document.getElementById('customPolicyText').value,
-                bookingNotes: document.getElementById('bookingNotes').value,
-                paymentModel: document.getElementById('paymentModel').value,
-                depositPercentage: document.getElementById('depositPercentage').value,
-                ownerName: document.getElementById('ownerName').value,
-                password: document.getElementById('password').value,
-                selectedTier: selectedTier,
-                loyaltyAddonSelected: sessionStorage.getItem('loyaltyAddonSelected') === 'true'
-            };
+            getEmptyRequiredFields() {
+                const emptyFields = [];
+                
+                this.requiredFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field && !field.value.trim()) {
+                        emptyFields.push(field);
+                    }
+                });
+                
+                return emptyFields;
+            }
             
-            // Store form data in localStorage for payment page
-            localStorage.setItem('businessRegistrationData', JSON.stringify(formData));
+            showValidationError(emptyFields) {
+                // Add button feedback animation
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.classList.add('validation-feedback');
+                setTimeout(() => submitBtn.classList.remove('validation-feedback'), 600);
+                
+                // Highlight ALL empty fields simultaneously
+                emptyFields.forEach((field, index) => {
+                    // Apply validation styling to ALL fields
+                    field.classList.add('validation-error');
+                    this.addTooltip(field);
+                    
+                    // Add shake animation to first field only
+                    if (index === 0) {
+                        this.firstEmptyField = field;
+                        // Keep the shake animation on first field
+                        setTimeout(() => field.classList.remove('validation-error'), 500);
+                        // Re-add the validation styling after shake animation
+                        setTimeout(() => field.classList.add('validation-error'), 500);
+                    }
+                });
+                
+                // Show validation modal
+                this.showValidationModal();
+            }
             
-            // Show loading state
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Listing...';
-            
-            // Simulate form submission
-            setTimeout(() => {
-                if (selectedTier === 'premium') {
-                    // Redirect to payment page
-                    alert('Redirecting to payment page for Premium subscription...');
-                    window.location.href = 'business-payment.html';
-                } else {
-                    // Free listing created
-                    alert('Your free business listing has been created! You can now log in to manage your profile.');
-                    window.location.href = 'business-login.html';
+            addTooltip(field) {
+                // Remove existing tooltip if any
+                const existingTooltip = field.parentNode.querySelector('.validation-tooltip');
+                if (existingTooltip) {
+                    existingTooltip.remove();
                 }
-            }, 2000);
-        });
+                
+                // Create new tooltip
+                const tooltip = document.createElement('div');
+                tooltip.className = 'validation-tooltip';
+                tooltip.textContent = 'This field is required.';
+                
+                // Add tooltip to form group
+                field.parentNode.appendChild(tooltip);
+                
+                // Show tooltip with animation
+                setTimeout(() => tooltip.classList.add('show'), 100);
+            }
+            
+            showValidationModal() {
+                const modal = document.getElementById('validationModal');
+                modal.classList.add('show');
+                
+                // Auto-hide modal after 3 seconds
+                setTimeout(() => {
+                    modal.classList.remove('show');
+                }, 3000);
+            }
+            
+            clearFieldValidation(field) {
+                // Remove validation error styling
+                field.classList.remove('validation-error');
+                
+                // Remove tooltip
+                const tooltip = field.parentNode.querySelector('.validation-tooltip');
+                if (tooltip) {
+                    tooltip.classList.remove('show');
+                    setTimeout(() => tooltip.remove(), 300);
+                }
+            }
+            
+            clearAllValidation() {
+                // Clear all field validations
+                document.querySelectorAll('.validation-error').forEach(field => {
+                    field.classList.remove('validation-error');
+                });
+                
+                // Remove all tooltips
+                document.querySelectorAll('.validation-tooltip').forEach(tooltip => {
+                    tooltip.remove();
+                });
+                
+                // Hide modal
+                document.getElementById('validationModal').classList.remove('show');
+            }
+            
+            addPaymentFieldsToValidation() {
+                // Add payment fields to required fields if not already present
+                this.paymentFields.forEach(fieldId => {
+                    if (!this.requiredFields.includes(fieldId)) {
+                        this.requiredFields.push(fieldId);
+                    }
+                });
+            }
+            
+            removePaymentFieldsFromValidation() {
+                // Remove payment fields from required fields
+                this.requiredFields = this.requiredFields.filter(fieldId => 
+                    !this.paymentFields.includes(fieldId)
+                );
+            }
+            
+            validatePasswords() {
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (password !== confirmPassword) {
+                    this.showFieldError('confirmPassword', 'Passwords do not match!');
+                    return false;
+                }
+                return true;
+            }
+            
+            validatePostcode() {
+                const postcode = document.getElementById('zipCode').value;
+                const ukPostcodeRegex = /^[A-Za-z]{1,2}[0-9Rr][0-9A-Za-z]? [0-9][ABD-HJLNP-UW-Zabd-hjlnp-uw-z]{2}$/;
+                
+                if (!ukPostcodeRegex.test(postcode)) {
+                    this.showFieldError('zipCode', 'Please enter a valid UK postcode (e.g., SW1A 1AA)');
+                    return false;
+                }
+                return true;
+            }
+            
+            validatePhone() {
+                const phone = document.getElementById('phone').value;
+                const ukPhoneRegex = /^(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}$/;
+                
+                if (!ukPhoneRegex.test(phone)) {
+                    this.showFieldError('phone', 'Please enter a valid UK phone number');
+                    return false;
+                }
+                return true;
+            }
+            
+            validateDepositPercentage() {
+                const paymentModel = document.getElementById('paymentModel').value;
+                const depositPercentage = document.getElementById('depositPercentage').value;
+                
+                if (paymentModel === 'deposit-balance' && !depositPercentage) {
+                    this.showFieldError('depositPercentage', 'Please select a deposit percentage');
+                    return false;
+                }
+                return true;
+            }
+            
+            validatePaymentFields() {
+                // Only validate payment fields if they're visible (paid plans or free plan with add-ons)
+                const paymentSection = document.getElementById('paymentSection');
+                if (paymentSection.style.display === 'none') {
+                    return true;
+                }
+                
+                // Validate card number
+                const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+                if (cardNumber.length < 13 || cardNumber.length > 19) {
+                    this.showFieldError('cardNumber', 'Please enter a valid card number');
+                    return false;
+                }
+                
+                // Validate expiry date
+                const expiryDate = document.getElementById('expiryDate').value;
+                const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+                if (!expiryRegex.test(expiryDate)) {
+                    this.showFieldError('expiryDate', 'Please enter a valid expiry date (MM/YY)');
+                    return false;
+                }
+                
+                // Validate CVV
+                const cvv = document.getElementById('cvv').value;
+                if (cvv.length < 3 || cvv.length > 4) {
+                    this.showFieldError('cvv', 'Please enter a valid CVV');
+                    return false;
+                }
+                
+                // Validate cardholder name
+                const cardholderName = document.getElementById('cardholderName').value.trim();
+                if (cardholderName.length < 2) {
+                    this.showFieldError('cardholderName', 'Please enter the cardholder name');
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            showFieldError(fieldId, message) {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    this.highlightField(field);
+                    this.addCustomTooltip(field, message);
+                    field.focus();
+                }
+            }
+            
+            addCustomTooltip(field, message) {
+                // Remove existing tooltip if any
+                const existingTooltip = field.parentNode.querySelector('.validation-tooltip');
+                if (existingTooltip) {
+                    existingTooltip.remove();
+                }
+                
+                // Create new tooltip with custom message
+                const tooltip = document.createElement('div');
+                tooltip.className = 'validation-tooltip';
+                tooltip.textContent = message;
+                
+                // Add tooltip to form group
+                field.parentNode.appendChild(tooltip);
+                
+                // Show tooltip with animation
+                setTimeout(() => tooltip.classList.add('show'), 100);
+            }
+            
+            submitForm() {
+                // Collect form data
+                const formData = {
+                    businessName: document.getElementById('businessName').value,
+                    category: document.getElementById('category').value,
+                    description: document.getElementById('description').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    website: document.getElementById('website').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    zipCode: document.getElementById('zipCode').value,
+                    serviceArea: document.getElementById('serviceArea').value,
+                    hoursStart: document.getElementById('hoursStart').value,
+                    hoursEnd: document.getElementById('hoursEnd').value,
+                    daysOpen: Array.from(document.getElementById('daysOpen').selectedOptions).map(option => option.value),
+                    cancellationPolicy: document.getElementById('cancellationPolicy').value,
+                    customPolicyText: document.getElementById('customPolicyText').value,
+                    bookingNotes: document.getElementById('bookingNotes').value,
+                    paymentModel: document.getElementById('paymentModel').value,
+                    depositPercentage: document.getElementById('depositPercentage').value,
+                    ownerName: document.getElementById('ownerName').value,
+                    password: document.getElementById('password').value,
+                    selectedTier: selectedTier,
+                    loyaltyAddonSelected: sessionStorage.getItem('loyaltyAddonSelected') === 'true',
+                    // Payment information (if applicable)
+                    cardNumber: document.getElementById('cardNumber')?.value || '',
+                    expiryDate: document.getElementById('expiryDate')?.value || '',
+                    cvv: document.getElementById('cvv')?.value || '',
+                    cardholderName: document.getElementById('cardholderName')?.value || '',
+                    billingAddress: document.getElementById('billingAddress')?.value || '',
+                    billingCity: document.getElementById('billingCity')?.value || '',
+                    billingPostcode: document.getElementById('billingPostcode')?.value || '',
+                    // Calculate total costs
+                    monthlyCost: calculateMonthlyCost(selectedTier),
+                    addonsCost: calculateAddonsTotal(getSelectedAddons()),
+                    totalCost: calculateMonthlyCost(selectedTier) + calculateAddonsTotal(getSelectedAddons())
+                };
+                
+                // Show loading state
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Listing...';
+                
+                // Save business to the system
+                setTimeout(() => {
+                    try {
+                        // Add business to the business manager
+                        const newBusiness = window.businessManager.addBusiness(formData);
+                        
+                        if (newBusiness) {
+                            // Store form data in localStorage for payment page (if needed)
+                            localStorage.setItem('businessRegistrationData', JSON.stringify(formData));
+                            
+                            // Show success message
+                            const successMessage = `🎉 Congratulations! Your business "${newBusiness.name}" has been successfully registered and is now live on BLKPAGES!
+                            
+📍 Your business will appear in:
+• ${newBusiness.category.charAt(0).toUpperCase() + newBusiness.category.slice(1)} category listings
+• Location: ${newBusiness.city}, ${newBusiness.state}
+• Search results for your area
+
+${selectedTier === 'free' ? 
+    '💡 Upgrade to a paid plan to unlock features like photo galleries, online booking, and priority placement!' : 
+    '✨ Your premium features are now active!'}`;
+                            
+                            alert(successMessage);
+                            
+                            // Redirect based on subscription tier
+                            if (selectedTier === 'professional' || selectedTier === 'starter') {
+                                // For paid tiers, redirect to payment page
+                                window.location.href = 'business-payment.html';
+                            } else {
+                                // For free tier, redirect to login
+                                window.location.href = 'business-login.html';
+                            }
+                        } else {
+                            throw new Error('Failed to create business listing');
+                        }
+                    } catch (error) {
+                        console.error('Error creating business:', error);
+                        alert('❌ There was an error creating your business listing. Please try again.');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = 'Create Business Listing';
+                    }
+                }, 2000);
+            }
+        }
+        
+        // Initialize form validator
+        const formValidator = new FormValidator();
         
         // Initialize with selected plan from URL or session storage
         function initializePlanSelection() {
@@ -1035,10 +1643,178 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
             
             // Select the tier and reorder plans
             selectTier(selectedPlan);
+            
+            // Initialize add-on button states
+            initializeAddonStates();
+        }
+        
+        function initializeAddonStates() {
+            // Check if loyalty add-on is already selected
+            const loyaltySelected = sessionStorage.getItem('loyaltyAddonSelected') === 'true';
+            const loyaltyButton = document.getElementById('loyaltyAddonBtn');
+            
+            if (loyaltySelected && loyaltyButton) {
+                loyaltyButton.innerHTML = '<i class="fas fa-check"></i> Added to Plan';
+                loyaltyButton.classList.add('added');
+            }
         }
         
         // Initialize plan selection
         initializePlanSelection();
+        
+        // Payment section functions
+        function togglePaymentSection(tier) {
+            const paymentSection = document.getElementById('paymentSection');
+            const freePlanAddonNotice = document.getElementById('freePlanAddonNotice');
+            const hasAddons = getSelectedAddons().length > 0;
+            
+            // Show payment section if:
+            // 1. Paid plan (starter/professional) OR
+            // 2. Free plan but has premium add-ons
+            if (tier === 'starter' || tier === 'professional' || (tier === 'free' && hasAddons)) {
+                paymentSection.style.display = 'block';
+                // Add payment fields to required fields for validation
+                addPaymentFieldsToValidation();
+                
+                // Show special notice for free plan with add-ons
+                if (tier === 'free' && hasAddons) {
+                    freePlanAddonNotice.style.display = 'flex';
+                } else {
+                    freePlanAddonNotice.style.display = 'none';
+                }
+            } else {
+                paymentSection.style.display = 'none';
+                freePlanAddonNotice.style.display = 'none';
+                // Remove payment fields from required fields
+                removePaymentFieldsFromValidation();
+            }
+        }
+        
+        function updatePaymentSummary(tier) {
+            const planName = document.getElementById('selectedPlanName');
+            const monthlyCost = document.getElementById('monthlyCost');
+            const totalToday = document.getElementById('totalToday');
+            const recurringMonthly = document.getElementById('recurringMonthly');
+            const addonsSection = document.getElementById('addonsSection');
+            const addonsList = document.getElementById('addonsList');
+            const addonsCost = document.getElementById('addonsCost');
+            
+            const pricing = {
+                'free': { name: 'Free Listing', cost: 0 },
+                'starter': { name: 'Starter Plan', cost: 15 },
+                'professional': { name: 'Professional Plan', cost: 29 }
+            };
+            
+            const plan = pricing[tier];
+            
+            if (plan) {
+                planName.textContent = plan.name;
+                monthlyCost.textContent = plan.cost > 0 ? `£${plan.cost}/month` : 'Free';
+                
+                // Calculate add-ons
+                const selectedAddons = getSelectedAddons();
+                const addonsTotal = calculateAddonsTotal(selectedAddons);
+                
+                // Show/hide add-ons section
+                if (selectedAddons.length > 0) {
+                    addonsSection.style.display = 'block';
+                    addonsList.textContent = selectedAddons.map(addon => addon.name).join(', ');
+                    addonsCost.textContent = `£${addonsTotal}/month`;
+                } else {
+                    addonsSection.style.display = 'none';
+                }
+                
+                // Calculate totals
+                const totalCost = plan.cost + addonsTotal;
+                const recurringTotal = plan.cost + addonsTotal;
+                
+                totalToday.textContent = totalCost > 0 ? `£${totalCost}` : 'Free';
+                recurringMonthly.textContent = recurringTotal > 0 ? `£${recurringTotal}/month` : 'Free';
+            }
+        }
+        
+        function getSelectedAddons() {
+            const selectedAddons = [];
+            
+            // Check loyalty add-on
+            const loyaltySelected = sessionStorage.getItem('loyaltyAddonSelected') === 'true';
+            if (loyaltySelected) {
+                selectedAddons.push({
+                    name: 'Loyalty Rewards Programme',
+                    cost: 5
+                });
+            }
+            
+            return selectedAddons;
+        }
+        
+        function calculateAddonsTotal(addons) {
+            return addons.reduce((total, addon) => total + addon.cost, 0);
+        }
+        
+        function calculateMonthlyCost(tier) {
+            const pricing = {
+                'free': 0,
+                'starter': 15,
+                'professional': 29
+            };
+            return pricing[tier] || 0;
+        }
+        
+        function addPaymentFieldsToValidation() {
+            // Add payment fields to form validator
+            formValidator.addPaymentFieldsToValidation();
+            
+            // Add event listeners for payment field formatting
+            formValidator.paymentFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', formatPaymentField);
+                    field.addEventListener('focus', () => formValidator.clearFieldValidation(field));
+                }
+            });
+        }
+        
+        function removePaymentFieldsFromValidation() {
+            // Remove payment fields from form validator
+            formValidator.removePaymentFieldsFromValidation();
+            
+            // Clear payment fields when hidden
+            formValidator.paymentFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.value = '';
+                }
+            });
+        }
+        
+        function formatPaymentField(event) {
+            const field = event.target;
+            const value = field.value;
+            
+            switch (field.id) {
+                case 'cardNumber':
+                    // Format card number with spaces
+                    const cardNumber = value.replace(/\s/g, '').replace(/(.{4})/g, '$1 ').trim();
+                    field.value = cardNumber;
+                    break;
+                    
+                case 'expiryDate':
+                    // Format expiry date as MM/YY
+                    const expiry = value.replace(/\D/g, '');
+                    if (expiry.length >= 2) {
+                        field.value = expiry.substring(0, 2) + '/' + expiry.substring(2, 4);
+                    } else {
+                        field.value = expiry;
+                    }
+                    break;
+                    
+                case 'cvv':
+                    // Only allow numbers for CVV
+                    field.value = value.replace(/\D/g, '');
+                    break;
+            }
+        }
         
         // Select loyalty add-on function
         function selectLoyaltyAddon() {
@@ -1046,7 +1822,23 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
             
             // Check if already added
             if (button.classList.contains('added')) {
-                alert('Loyalty Rewards Programme is already added to your plan!');
+                // Remove add-on
+                const confirmed = confirm('Remove Loyalty Rewards Programme from your plan?\n\nThis will remove £5/month from your subscription.');
+                
+                if (confirmed) {
+                    // Update button state
+                    button.innerHTML = '<i class="fas fa-plus"></i> Add to Plan';
+                    button.classList.remove('added');
+                    
+                    // Remove from session storage
+                    sessionStorage.removeItem('loyaltyAddonSelected');
+                    
+                    // Update payment summary and toggle payment section
+                    updatePaymentSummary(selectedTier);
+                    togglePaymentSection(selectedTier);
+                    
+                    alert('Loyalty Rewards Programme removed from your plan.');
+                }
                 return;
             }
             
@@ -1060,6 +1852,10 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
                 
                 // Store selection in session storage
                 sessionStorage.setItem('loyaltyAddonSelected', 'true');
+                
+                // Update payment summary and toggle payment section
+                updatePaymentSummary(selectedTier);
+                togglePaymentSection(selectedTier);
                 
                 alert('Loyalty Rewards Programme added successfully!\n\nYou can configure your loyalty program after creating your business listing.');
             }

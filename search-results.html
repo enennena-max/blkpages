@@ -1021,92 +1021,25 @@
             observer.observe(section);
         });
 
-        // Business data for search functionality with premium/basic tiers
-        const businessData = [
-            // Premium businesses (with photos, ratings, booking)
-            { 
-                name: "Royal Hair Studio", 
-                category: "hair", 
-                rating: 4.9, 
-                reviews: 127,
-                location: "123 Main Street, London", 
-                image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop&crop=center",
-                subscription: "premium",
-                hasPhoto: true,
-                hasBooking: true,
-                featured: true
-            },
-            { 
-                name: "Elite Barber Shop", 
-                category: "barber", 
-                rating: 4.8, 
-                reviews: 89,
-                location: "456 High Street, London", 
-                image: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&h=250&fit=crop&crop=center",
-                subscription: "premium",
-                hasPhoto: true,
-                hasBooking: true,
-                featured: true
-            },
-            { 
-                name: "Glamour Beauty", 
-                category: "beauty", 
-                rating: 4.7, 
-                reviews: 156,
-                location: "789 Queen Street, London", 
-                image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=250&fit=crop&crop=center",
-                subscription: "premium",
-                hasPhoto: true,
-                hasBooking: true,
-                featured: true
-            },
-            // Basic businesses (no photos, no ratings, contact info only)
-            { 
-                name: "Perfect Nails", 
-                category: "nail", 
-                location: "321 Beauty Lane, London",
-                phone: "+44 20 7654 3210",
-                email: "info@perfectnails.com",
-                instagram: "@perfectnails_london",
-                tiktok: "@perfectnails_uk",
-                hours: "Mon-Fri: 9AM-7PM, Sat: 9AM-6PM, Sun: 10AM-5PM",
-                subscription: "basic",
-                hasPhoto: false,
-                hasBooking: false,
-                featured: false
-            },
-            { 
-                name: "Style & Grace Hair", 
-                category: "hair", 
-                location: "555 Fashion Ave, London",
-                phone: "+44 20 9876 5432",
-                email: "hello@styleandgrace.com",
-                instagram: "@styleandgrace_hair",
-                tiktok: "@styleandgrace_uk",
-                hours: "Tue-Sat: 10AM-8PM, Sun: 11AM-6PM",
-                subscription: "basic",
-                hasPhoto: false,
-                hasBooking: false,
-                featured: false
-            },
-            { 
-                name: "Urban Barber Co", 
-                category: "barber", 
-                location: "777 Style Street, London",
-                phone: "+44 20 1122 3344",
-                email: "book@urbanbarber.co.uk",
-                instagram: "@urbanbarber_co",
-                tiktok: "@urbanbarber_london",
-                hours: "Mon-Sat: 9AM-7PM, Sun: 10AM-5PM",
-                subscription: "basic",
-                hasPhoto: false,
-                hasBooking: false,
-                featured: false
-            }
-        ];
-
-        // Track if search has been performed
-        let hasSearched = false;
+        // Load business manager
+        if (typeof window.businessManager === 'undefined') {
+            // Load business manager script if not already loaded
+            const script = document.createElement('script');
+            script.src = 'business-manager.js';
+            script.onload = function() {
+                initializeSearch();
+            };
+            document.head.appendChild(script);
+        } else {
+            initializeSearch();
+        }
+        
+        function initializeSearch() {
+            // Get business data from business manager
+            const businessData = window.businessManager.getBusinesses();
+            
+            // Track if search has been performed
+            let hasSearched = false;
 
         // Show advanced controls after search
         function showAdvancedControls() {
@@ -1170,21 +1103,15 @@
             const distance = document.getElementById('distanceFilter')?.value || '5';
             const sortBy = document.getElementById('sortMenuText')?.textContent.toLowerCase() || 'relevance';
 
-            let filteredBusinesses = businessData.filter(business => {
-                // Business name partial matching
-                const nameMatch = !businessName || business.name.toLowerCase().includes(businessName);
-                
-                // Category filter (from initial search or advanced filters)
-                const categoryMatch = !category && !advancedCategory || business.category === category || business.category === advancedCategory;
-                
-                // Location filter (from initial search or advanced filters)
-                const locationMatch = !location && !advancedLocation || business.location.toLowerCase().includes(location) || business.location.toLowerCase().includes(advancedLocation);
-                
-                // Rating filter (from advanced filters only)
-                const ratingMatch = !minRating || business.rating >= parseFloat(minRating);
-                
-                return nameMatch && categoryMatch && locationMatch && ratingMatch;
-            });
+            // Use business manager to search
+            const searchFilters = {
+                businessName: businessName,
+                category: advancedCategory || category,
+                location: advancedLocation || location,
+                minRating: minRating ? parseFloat(minRating) : null
+            };
+            
+            let filteredBusinesses = window.businessManager.searchBusinesses(searchFilters);
 
             // Sort results
             if (sortBy === 'price') {

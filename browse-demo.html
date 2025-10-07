@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLKPAGES Browse Demo - See New Businesses</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            line-height: 1.6; 
+            color: #ffffff; 
+            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%); 
+            min-height: 100vh; 
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Navigation */
+        .navbar { 
+            background: rgba(0, 0, 0, 0.95); 
+            box-shadow: 0 2px 10px rgba(255,255,255,0.1); 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000; 
+        }
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: #ffffff; text-decoration: none; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #ffffff; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #007bff; }
+        
+        /* Main Content */
+        .main-content { padding: 120px 0 80px; }
+        .page-title { font-size: 3rem; font-weight: 700; margin-bottom: 1rem; text-align: center; color: #ffffff; }
+        .page-subtitle { text-align: center; color: #cccccc; margin-bottom: 3rem; font-size: 1.1rem; }
+        
+        /* Demo Section */
+        .demo-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #333;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-section h3 {
+            color: #1E90FF;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .demo-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-step {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #1E90FF;
+        }
+        
+        .demo-step h4 {
+            color: #1E90FF;
+            margin-bottom: 0.5rem;
+        }
+        
+        .demo-step p {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        /* Search Section */
+        .search-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #333;
+            margin-bottom: 2rem;
+        }
+        
+        .search-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-controls input,
+        .search-controls select {
+            padding: 0.75rem;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #2a2a2a;
+            color: #ffffff;
+            font-family: inherit;
+        }
+        
+        .search-controls input:focus,
+        .search-controls select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+        
+        /* Business Grid */
+        .businesses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .business-card {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+        }
+        
+        .business-card:hover {
+            border-color: #1E90FF;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 144, 255, 0.2);
+        }
+        
+        .business-card h4 {
+            color: #1E90FF;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .business-card .category {
+            display: inline-block;
+            background: #1E90FF;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .business-card .location {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .business-card .description {
+            color: #aaaaaa;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .business-card .contact {
+            color: #888;
+            font-size: 0.8rem;
+        }
+        
+        .business-card .subscription {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        .business-card .subscription.free {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .business-card .subscription.starter {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .business-card .subscription.professional {
+            background: #28a745;
+            color: white;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: #888;
+            padding: 2rem;
+            background: #2a2a2a;
+            border-radius: 10px;
+            border: 1px solid #444;
+        }
+        
+        .live-demo {
+            background: linear-gradient(135deg, #1E90FF, #007bff);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .live-demo h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-title { font-size: 2rem; }
+            .demo-steps { grid-template-columns: 1fr; }
+            .search-controls { grid-template-columns: 1fr; }
+            .businesses-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="index.html" class="logo">BLKPAGES</a>
+                <ul class="nav-links">
+                    <li><a href="search-results.html">Browse</a></li>
+                    <li><a href="business-register.html">List Business</a></li>
+                    <li><a href="business-flow-test.html">Test System</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">🔍 Browse Demo</h1>
+            <p class="page-subtitle">See how new businesses automatically appear in the browse tool</p>
+            
+            <div class="live-demo">
+                <h3>🎯 Live Demo</h3>
+                <p>This page shows ALL businesses in the system. When you register a new business, it will automatically appear here!</p>
+            </div>
+            
+            <div class="demo-section">
+                <h3>📋 How to Test the System</h3>
+                <div class="demo-steps">
+                    <div class="demo-step">
+                        <h4>1. Register a Business</h4>
+                        <p>Click "Register New Business" below to open the registration form. Fill it out completely and submit.</p>
+                    </div>
+                    <div class="demo-step">
+                        <h4>2. Return to This Page</h4>
+                        <p>Come back to this page and click "Refresh Results" to see your new business appear instantly.</p>
+                    </div>
+                    <div class="demo-step">
+                        <h4>3. Test Search</h4>
+                        <p>Use the search controls below to filter by category or location. Your business will appear in relevant searches.</p>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn" onclick="openRegistration()">Register New Business</button>
+                    <button class="btn btn-success" onclick="refreshResults()">Refresh Results</button>
+                </div>
+            </div>
+            
+            <div class="search-section">
+                <h3>🔍 Search & Filter Businesses</h3>
+                <div class="search-controls">
+                    <input type="text" id="businessName" placeholder="Search by business name...">
+                    <select id="category">
+                        <option value="">All Categories</option>
+                        <option value="hairdresser">Hairdresser</option>
+                        <option value="barber">Barber</option>
+                        <option value="beauty">Beauty</option>
+                        <option value="nail">Nail</option>
+                    </select>
+                    <input type="text" id="location" placeholder="Search by location...">
+                    <button class="btn" onclick="searchBusinesses()">Search</button>
+                </div>
+                
+                <div id="resultsInfo" style="color: #cccccc; margin-bottom: 1rem;">
+                    <p>Click "Refresh Results" to load all businesses</p>
+                </div>
+                
+                <div id="businessesContainer">
+                    <div class="no-results">
+                        <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem; color: #1E90FF;"></i>
+                        <p>No businesses loaded yet. Click "Refresh Results" to see all businesses in the system.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Business Manager Script -->
+    <script src="business-manager.js"></script>
+    
+    <script>
+        let allBusinesses = [];
+        let filteredBusinesses = [];
+        
+        function openRegistration() {
+            window.open('business-register.html', '_blank');
+        }
+        
+        function refreshResults() {
+            if (typeof window.businessManager === 'undefined') {
+                alert('Business Manager not loaded. Please refresh the page.');
+                return;
+            }
+            
+            allBusinesses = window.businessManager.getBusinesses();
+            filteredBusinesses = [...allBusinesses];
+            
+            updateResultsInfo();
+            displayBusinesses();
+        }
+        
+        function searchBusinesses() {
+            const businessName = document.getElementById('businessName').value.toLowerCase().trim();
+            const category = document.getElementById('category').value;
+            const location = document.getElementById('location').value.toLowerCase().trim();
+            
+            filteredBusinesses = allBusinesses.filter(business => {
+                const nameMatch = !businessName || business.name.toLowerCase().includes(businessName);
+                const categoryMatch = !category || business.category === category;
+                const locationMatch = !location || 
+                    business.location.toLowerCase().includes(location) ||
+                    business.city.toLowerCase().includes(location) ||
+                    business.state.toLowerCase().includes(location);
+                
+                return nameMatch && categoryMatch && locationMatch;
+            });
+            
+            updateResultsInfo();
+            displayBusinesses();
+        }
+        
+        function updateResultsInfo() {
+            const resultsInfo = document.getElementById('resultsInfo');
+            const total = allBusinesses.length;
+            const showing = filteredBusinesses.length;
+            
+            if (total === 0) {
+                resultsInfo.innerHTML = '<p style="color: #ffc107;">No businesses found. Register a new business to see it here!</p>';
+            } else if (showing === total) {
+                resultsInfo.innerHTML = `<p>Showing all ${total} businesses in the system</p>`;
+            } else {
+                resultsInfo.innerHTML = `<p>Showing ${showing} of ${total} businesses</p>`;
+            }
+        }
+        
+        function displayBusinesses() {
+            const container = document.getElementById('businessesContainer');
+            
+            if (filteredBusinesses.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem; color: #1E90FF;"></i>
+                        <p>No businesses match your search criteria.</p>
+                        <p style="margin-top: 0.5rem; color: #888;">Try adjusting your search terms or register a new business.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="businesses-grid">
+                    ${filteredBusinesses.map(business => `
+                        <div class="business-card">
+                            <h4>${business.name}</h4>
+                            <span class="category">${business.category.charAt(0).toUpperCase() + business.category.slice(1)}</span>
+                            <div class="location">
+                                <i class="fas fa-map-marker-alt"></i> ${business.location}
+                            </div>
+                            <div class="description">${business.description || 'Professional services'}</div>
+                            <div class="contact">
+                                <i class="fas fa-phone"></i> ${business.phone}<br>
+                                <i class="fas fa-envelope"></i> ${business.email}
+                            </div>
+                            <span class="subscription ${business.subscription}">${business.subscription.toUpperCase()}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Auto-refresh when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                refreshResults();
+            }, 500);
+        });
+        
+        // Auto-refresh every 5 seconds to catch new businesses
+        setInterval(() => {
+            if (allBusinesses.length > 0) {
+                const currentBusinesses = window.businessManager.getBusinesses();
+                if (currentBusinesses.length !== allBusinesses.length) {
+                    refreshResults();
+                }
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
