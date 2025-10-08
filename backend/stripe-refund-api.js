@@ -106,6 +106,10 @@ async function processCancellation(bookingId, cancellationReason = 'Customer can
             }
         }
         
+        // Update both dashboards with cancellation and refund information
+        await updateCustomerDashboard(booking, refundAmount, refundResult);
+        await updateBusinessDashboard(booking, refundAmount, refundResult);
+        
         // Send notifications
         await sendCancellationNotifications(booking, refundResult, refundAmount);
         
@@ -168,6 +172,82 @@ async function sendCancellationNotifications(booking, refundResult, refundAmount
     // Send emails (implement your email service)
     await sendEmail(customerEmail);
     await sendEmail(businessEmail);
+}
+
+/**
+ * Update customer dashboard with cancellation and refund information
+ */
+async function updateCustomerDashboard(booking, refundAmount, refundResult) {
+    try {
+        const customerId = booking.customerId;
+        const customerBookings = JSON.parse(localStorage.getItem(`customerBookings_${customerId}`) || '[]');
+        const bookingIndex = customerBookings.findIndex(b => b.bookingId === booking.id);
+        
+        if (bookingIndex !== -1) {
+            // Update booking status to cancelled
+            customerBookings[bookingIndex].status = 'Cancelled';
+            customerBookings[bookingIndex].cancelledAt = new Date().toISOString();
+            customerBookings[bookingIndex].cancellationReason = booking.cancellationReason || 'Customer cancellation';
+            
+            // Add refund information if applicable
+            if (refundAmount > 0) {
+                customerBookings[bookingIndex].refundAmount = refundAmount;
+                customerBookings[bookingIndex].refundId = refundResult?.id;
+                customerBookings[bookingIndex].refundStatus = 'Processed';
+                customerBookings[bookingIndex].refundTimestamp = new Date().toISOString();
+                customerBookings[bookingIndex].paymentStatus = 'Refunded';
+            } else {
+                customerBookings[bookingIndex].refundStatus = 'Non-refundable';
+                customerBookings[bookingIndex].paymentStatus = 'Non-refundable';
+            }
+            
+            // Save updated bookings
+            localStorage.setItem(`customerBookings_${customerId}`, JSON.stringify(customerBookings));
+            
+            // Trigger storage event for real-time updates
+            localStorage.setItem(`bookingCancelled_${booking.id}`, Date.now().toString());
+            
+            console.log('Customer dashboard updated for booking cancellation:', booking.id);
+        }
+    } catch (error) {
+        console.error('Failed to update customer dashboard:', error);
+    }
+}
+
+/**
+ * Update business dashboard with cancellation and refund information
+ */
+async function updateBusinessDashboard(booking, refundAmount, refundResult) {
+    try {
+        const businessId = booking.businessId;
+        const businessBookings = JSON.parse(localStorage.getItem(`businessBookings_${businessId}`) || '[]');
+        const bookingIndex = businessBookings.findIndex(b => b.bookingId === booking.id);
+        
+        if (bookingIndex !== -1) {
+            // Update booking status to refunded (from business perspective)
+            businessBookings[bookingIndex].status = 'Refunded';
+            businessBookings[bookingIndex].cancelledAt = new Date().toISOString();
+            businessBookings[bookingIndex].cancellationReason = booking.cancellationReason || 'Customer cancellation';
+            
+            // Add refund information
+            businessBookings[bookingIndex].refundAmount = refundAmount;
+            businessBookings[bookingIndex].refundId = refundResult?.id;
+            businessBookings[bookingIndex].refundStatus = refundAmount > 0 ? 'Processed' : 'Non-refundable';
+            businessBookings[bookingIndex].refundTimestamp = new Date().toISOString();
+            businessBookings[bookingIndex].originalAmount = booking.totalAmount;
+            businessBookings[bookingIndex].netAmount = booking.totalAmount - refundAmount;
+            
+            // Save updated bookings
+            localStorage.setItem(`businessBookings_${businessId}`, JSON.stringify(businessBookings));
+            
+            // Trigger storage event for real-time updates
+            localStorage.setItem(`businessBookingCancelled_${booking.id}`, Date.now().toString());
+            
+            console.log('Business dashboard updated for booking cancellation:', booking.id);
+        }
+    } catch (error) {
+        console.error('Failed to update business dashboard:', error);
+    }
 }
 
 /**

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Authentication - BlkPages</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .debug-section {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        .debug-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #333;
+            border-radius: 4px;
+        }
+        .status-true { color: #4ade80; }
+        .status-false { color: #f87171; }
+        .status-undefined { color: #fbbf24; }
+        button {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #7c3aed;
+        }
+        .test-section {
+            background: #1e3a8a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Authentication Debug Page</h1>
+    
+    <div class="debug-section">
+        <h2>Current Authentication Status</h2>
+        <div id="authStatus"></div>
+        <button onclick="refreshStatus()">🔄 Refresh Status</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>LocalStorage Values</h2>
+        <div id="localStorageValues"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Access Control Test</h2>
+        <div id="accessControlTest"></div>
+        <button onclick="testAccessControl()">🧪 Test Access Control</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Quick Actions</h2>
+        <button onclick="simulateLogin()">🔐 Simulate Login</button>
+        <button onclick="clearAllAuth()">🗑️ Clear All Auth</button>
+        <button onclick="testCustomerDashboard()">📊 Test Customer Dashboard</button>
+        <button onclick="goToLogin()">🔑 Go to Login Page</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Console Logs</h2>
+        <div id="consoleLogs"></div>
+        <button onclick="runDebugAuthStatus()">📝 Run debugAuthStatus()</button>
+    </div>
+
+    <script src="js/customer-auth.js"></script>
+    <script src="js/access-control.js"></script>
+    
+    <script>
+        function refreshStatus() {
+            updateAuthStatus();
+            updateLocalStorageValues();
+            updateAccessControlTest();
+        }
+        
+        function updateAuthStatus() {
+            const statusDiv = document.getElementById('authStatus');
+            const customerLoggedIn = localStorage.getItem('customerLoggedIn') === 'true';
+            const userLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const userEmail = localStorage.getItem('userEmail');
+            const authData = localStorage.getItem('authData');
+            
+            statusDiv.innerHTML = `
+                <div class="debug-item">
+                    <strong>Customer Logged In:</strong> 
+                    <span class="${customerLoggedIn ? 'status-true' : 'status-false'}">${customerLoggedIn}</span>
+                </div>
+                <div class="debug-item">
+                    <strong>User Logged In:</strong> 
+                    <span class="${userLoggedIn ? 'status-true' : 'status-false'}">${userLoggedIn}</span>
+                </div>
+                <div class="debug-item">
+                    <strong>User Email:</strong> 
+                    <span class="${userEmail ? 'status-true' : 'status-false'}">${userEmail || 'Not set'}</span>
+                </div>
+                <div class="debug-item">
+                    <strong>Auth Data:</strong> 
+                    <span class="${authData ? 'status-true' : 'status-false'}">${authData ? 'Present' : 'Not set'}</span>
+                </div>
+            `;
+        }
+        
+        function updateLocalStorageValues() {
+            const valuesDiv = document.getElementById('localStorageValues');
+            const relevantKeys = [
+                'customerLoggedIn', 'userLoggedIn', 'userEmail', 'authData', 
+                'currentUser', 'isLoggedIn', 'returnUrl'
+            ];
+            
+            let html = '';
+            relevantKeys.forEach(key => {
+                const value = localStorage.getItem(key);
+                html += `
+                    <div class="debug-item">
+                        <strong>${key}:</strong> 
+                        <span class="${value ? 'status-true' : 'status-false'}">${value || 'Not set'}</span>
+                    </div>
+                `;
+            });
+            
+            valuesDiv.innerHTML = html;
+        }
+        
+        function updateAccessControlTest() {
+            const testDiv = document.getElementById('accessControlTest');
+            
+            if (window.AccessControl) {
+                const isCustomerLoggedIn = window.AccessControl.isCustomerLoggedIn();
+                const userRole = window.AccessControl.getUserRole();
+                const canAccessDashboard = window.AccessControl.canAccessPage('customer-dashboard.html');
+                
+                testDiv.innerHTML = `
+                    <div class="debug-item">
+                        <strong>AccessControl.isCustomerLoggedIn():</strong> 
+                        <span class="${isCustomerLoggedIn ? 'status-true' : 'status-false'}">${isCustomerLoggedIn}</span>
+                    </div>
+                    <div class="debug-item">
+                        <strong>AccessControl.getUserRole():</strong> 
+                        <span class="${userRole === 'customer' ? 'status-true' : 'status-false'}">${userRole}</span>
+                    </div>
+                    <div class="debug-item">
+                        <strong>Can Access Dashboard:</strong> 
+                        <span class="${canAccessDashboard ? 'status-true' : 'status-false'}">${canAccessDashboard}</span>
+                    </div>
+                `;
+            } else {
+                testDiv.innerHTML = '<div class="debug-item">AccessControl not available</div>';
+            }
+        }
+        
+        function simulateLogin() {
+            // Simulate a successful login
+            localStorage.setItem('customerLoggedIn', 'true');
+            localStorage.setItem('userLoggedIn', 'true');
+            localStorage.setItem('userEmail', 'customer@example.com');
+            localStorage.setItem('authData', JSON.stringify({
+                user: {
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    email: 'customer@example.com'
+                },
+                timestamp: new Date().toISOString(),
+                rememberMe: false
+            }));
+            
+            alert('✅ Simulated login complete! Refresh the status to see changes.');
+            refreshStatus();
+        }
+        
+        function clearAllAuth() {
+            // Clear all authentication data
+            localStorage.removeItem('customerLoggedIn');
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('authData');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('returnUrl');
+            
+            alert('🗑️ All authentication data cleared!');
+            refreshStatus();
+        }
+        
+        function testCustomerDashboard() {
+            const canAccess = window.AccessControl ? window.AccessControl.canAccessPage('customer-dashboard.html') : false;
+            if (canAccess) {
+                window.location.href = 'customer-dashboard.html';
+            } else {
+                alert('❌ Cannot access customer dashboard. Check authentication status above.');
+            }
+        }
+        
+        function goToLogin() {
+            window.location.href = 'customer-login.html';
+        }
+        
+        function runDebugAuthStatus() {
+            if (window.debugAuthStatus) {
+                window.debugAuthStatus();
+                alert('📝 Check browser console for debug output!');
+            } else {
+                alert('❌ debugAuthStatus function not available');
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshStatus();
+        });
+    </script>
+</body>
+</html>
+
+
+

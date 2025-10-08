@@ -1715,6 +1715,61 @@
             // Navigate to register page
             window.location.href = 'customer-register.html';
         }
+        
+        // Basket management functions
+        const BASKET_KEY = 'blkpages_basket';
+        const GUEST_BASKET_KEY = 'blkpages_guest_basket';
+        let selectedServices = [];
+        
+        function updateBasketCount() {
+            const basketCount = document.getElementById('basketCount');
+            const mobileBasketCount = document.getElementById('mobileBasketCount');
+            const count = selectedServices ? selectedServices.length : 0;
+            
+            if (basketCount) {
+                basketCount.textContent = count;
+            }
+            if (mobileBasketCount) {
+                mobileBasketCount.textContent = count;
+            }
+        }
+        
+        function saveBasket() {
+            const basketData = {
+                selectedServices: selectedServices,
+                timestamp: Date.now()
+            };
+            
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            if (isLoggedIn) {
+                localStorage.setItem(BASKET_KEY, JSON.stringify(basketData));
+            } else {
+                sessionStorage.setItem(GUEST_BASKET_KEY, JSON.stringify(basketData));
+            }
+        }
+        
+        function loadBasket() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            let basketData = null;
+            
+            if (isLoggedIn) {
+                const savedBasket = localStorage.getItem(BASKET_KEY);
+                if (savedBasket) basketData = JSON.parse(savedBasket);
+            } else {
+                const guestBasket = sessionStorage.getItem(GUEST_BASKET_KEY);
+                if (guestBasket) basketData = JSON.parse(guestBasket);
+            }
+            
+            if (basketData) {
+                selectedServices = basketData.selectedServices || [];
+                updateBasketCount();
+            }
+        }
+        
+        // Load basket on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBasket();
+        });
 
     </script>
     

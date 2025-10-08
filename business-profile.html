@@ -2964,6 +2964,10 @@
             // Update progress indicator and payment display
             updateProgressIndicator();
             updatePaymentModelDisplay();
+            
+            // Update basket count and save basket
+            updateBasketCount();
+            saveBasket();
         }
         
         // Update selected services display
@@ -3059,6 +3063,10 @@
             
             // Update display
             updateSelectedServicesDisplay();
+            
+            // Update basket count and save basket
+            updateBasketCount();
+            saveBasket();
             
             // Hide booking section if no services and clear date/time
             if (selectedServices.length === 0) {
@@ -3194,68 +3202,150 @@
             document.querySelectorAll('.services-error').forEach(el => el.remove());
         }
         
-        // UK-specific validation functions
+        // Enhanced UK-specific validation functions
         function validateName(name) {
-            if (!name) {
+            if (!name || !name.trim()) {
                 return { isValid: false, message: 'Please enter your full name.' };
             }
             
+            const trimmedName = name.trim();
+            
+            // Check minimum length
+            if (trimmedName.length < 2) {
+                return { isValid: false, message: 'Name must be at least 2 characters long.' };
+            }
+            
+            // Check maximum length
+            if (trimmedName.length > 50) {
+                return { isValid: false, message: 'Name must be 50 characters or less.' };
+            }
+            
             // Check if only one word (no space)
-            if (!name.includes(' ')) {
+            if (!trimmedName.includes(' ')) {
                 return { isValid: false, message: 'Please enter your first and last name.' };
             }
             
             // Check for invalid characters (only letters, hyphens, apostrophes, and spaces)
             const nameRegex = /^[a-zA-Z\s\-']+$/;
-            if (!nameRegex.test(name)) {
+            if (!nameRegex.test(trimmedName)) {
                 return { isValid: false, message: 'Names can only include letters, hyphens, or apostrophes.' };
+            }
+            
+            // Check for consecutive spaces
+            if (trimmedName.includes('  ')) {
+                return { isValid: false, message: 'Name cannot contain consecutive spaces.' };
+            }
+            
+            // Check for names starting or ending with spaces, hyphens, or apostrophes
+            if (trimmedName.startsWith(' ') || trimmedName.endsWith(' ') ||
+                trimmedName.startsWith('-') || trimmedName.endsWith('-') ||
+                trimmedName.startsWith("'") || trimmedName.endsWith("'")) {
+                return { isValid: false, message: 'Name cannot start or end with spaces, hyphens, or apostrophes.' };
             }
             
             return { isValid: true };
         }
         
         function validateEmail(email) {
-            if (!email) {
+            if (!email || !email.trim()) {
+                return { isValid: false, message: 'Please enter your email address.' };
+            }
+            
+            const trimmedEmail = email.trim();
+            
+            // Check maximum length
+            if (trimmedEmail.length > 254) {
+                return { isValid: false, message: 'Email address is too long (maximum 254 characters).' };
+            }
+            
+            // Enhanced email regex for better validation
+            const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+            if (!emailRegex.test(trimmedEmail)) {
                 return { isValid: false, message: 'Please enter a valid email address (e.g., name@example.com).' };
             }
             
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                return { isValid: false, message: 'Please enter a valid email address (e.g., name@example.com).' };
+            // Check for consecutive dots
+            if (trimmedEmail.includes('..')) {
+                return { isValid: false, message: 'Email cannot contain consecutive dots.' };
+            }
+            
+            // Check for spaces
+            if (trimmedEmail.includes(' ')) {
+                return { isValid: false, message: 'Email cannot contain spaces.' };
             }
             
             return { isValid: true };
         }
         
         function validatePhone(phone) {
-            if (!phone) {
-                return { isValid: false, message: 'Please enter a valid UK mobile or landline number.' };
+            if (!phone || !phone.trim()) {
+                return { isValid: false, message: 'Please enter your phone number.' };
             }
             
+            const trimmedPhone = phone.trim();
+            
             // Remove all spaces, hyphens, and parentheses for validation
-            const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+            const cleanPhone = trimmedPhone.replace(/[\s\-\(\)]/g, '');
+            
+            // Check if phone contains only valid characters
+            const validPhoneRegex = /^[\d\+\s\-\(\)]+$/;
+            if (!validPhoneRegex.test(trimmedPhone)) {
+                return { isValid: false, message: 'Phone number can only contain digits, spaces, hyphens, parentheses, and + sign.' };
+            }
+            
+            // Check minimum length (UK numbers are at least 10 digits)
+            if (cleanPhone.length < 10) {
+                return { isValid: false, message: 'Phone number is too short. UK numbers must be at least 10 digits.' };
+            }
+            
+            // Check maximum length (UK numbers are at most 15 digits including country code)
+            if (cleanPhone.length > 15) {
+                return { isValid: false, message: 'Phone number is too long. Please check your number.' };
+            }
             
             // UK phone number patterns
             const ukMobileRegex = /^(\+44|0)7[0-9]{9}$/; // Mobile numbers starting with 07
             const ukLandlineRegex = /^(\+44|0)[1-9][0-9]{8,9}$/; // Landline numbers
+            const ukSpecialRegex = /^(\+44|0)800[0-9]{6,7}$/; // Freephone numbers
+            const ukPremiumRegex = /^(\+44|0)9[0-9]{8,9}$/; // Premium rate numbers
             
-            if (!ukMobileRegex.test(cleanPhone) && !ukLandlineRegex.test(cleanPhone)) {
-                return { isValid: false, message: 'Please enter a valid UK mobile or landline number.' };
+            if (!ukMobileRegex.test(cleanPhone) && 
+                !ukLandlineRegex.test(cleanPhone) && 
+                !ukSpecialRegex.test(cleanPhone) && 
+                !ukPremiumRegex.test(cleanPhone)) {
+                return { isValid: false, message: 'Please enter a valid UK phone number (mobile, landline, freephone, or premium rate).' };
             }
             
             return { isValid: true };
         }
         
         function validatePostcode(postcode) {
-            if (!postcode) {
-                return { isValid: false, message: 'Please enter a valid UK postcode (e.g., SW1A 1AA).' };
+            if (!postcode || !postcode.trim()) {
+                return { isValid: false, message: 'Please enter your postcode.' };
             }
             
-            // UK postcode regex pattern
-            const ukPostcodeRegex = /^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][A-Z]{2}$/i;
+            const trimmedPostcode = postcode.trim().toUpperCase();
             
-            if (!ukPostcodeRegex.test(postcode)) {
-                return { isValid: false, message: 'Please enter a valid UK postcode (e.g., SW1A 1AA).' };
+            // Check maximum length
+            if (trimmedPostcode.length > 8) {
+                return { isValid: false, message: 'Postcode is too long. UK postcodes are maximum 8 characters.' };
+            }
+            
+            // Check minimum length
+            if (trimmedPostcode.length < 5) {
+                return { isValid: false, message: 'Postcode is too short. UK postcodes are minimum 5 characters.' };
+            }
+            
+            // Enhanced UK postcode regex pattern with more comprehensive coverage
+            const ukPostcodeRegex = /^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][A-Z]{2}$/;
+            
+            if (!ukPostcodeRegex.test(trimmedPostcode)) {
+                return { isValid: false, message: 'Please enter a valid UK postcode (e.g., SW1A 1AA, M1 1AA, B33 8TH).' };
+            }
+            
+            // Additional validation for specific invalid patterns
+            if (trimmedPostcode.includes('  ')) {
+                return { isValid: false, message: 'Postcode cannot contain consecutive spaces.' };
             }
             
             return { isValid: true };
@@ -5111,6 +5201,9 @@
             
             // Update payment model display
             updatePaymentModelDisplay();
+            
+            // Complete the booking after successful validation
+            completeBooking();
         }
         
         
@@ -5192,57 +5285,78 @@
                 return;
             }
             
-            // Validate required form fields
+            // Enhanced validation for required form fields
             const fullName = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
+            const postcode = document.getElementById('postcode').value.trim();
             
             console.log('Form validation - Full Name:', fullName);
             console.log('Form validation - Email:', email);
             console.log('Form validation - Phone:', phone);
+            console.log('Form validation - Postcode:', postcode);
             console.log('Form validation - Selected Services:', selectedServices);
             console.log('Form validation - Selected Date:', selectedDate);
             console.log('Form validation - Selected Time:', selectedTime);
             console.log('Form validation - Selected Payment:', selectedPayment);
             
+            // Clear any existing errors first
+            clearAllFieldErrors();
+            
             // For logged-in users, only phone is required (name and email are auto-populated)
             // For guest users, all fields are required
             const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            let validationErrors = [];
             
             if (isLoggedIn) {
                 // Only validate phone for logged-in users
                 if (!phone) {
-                    console.log('Validation failed: No phone (logged-in user)');
-                    showInlineError('phone', 'Please enter your phone number.');
-                    return;
+                    validationErrors.push({ field: 'phone', message: 'Please enter your phone number.' });
                 }
             } else {
                 // Validate all fields for guest users
                 if (!fullName) {
-                    console.log('Validation failed: No full name (guest user)');
-                    showInlineError('fullName', 'Please enter your full name.');
-                    return;
+                    validationErrors.push({ field: 'fullName', message: 'Please enter your full name.' });
                 }
                 
                 if (!email) {
-                    console.log('Validation failed: No email (guest user)');
-                    showInlineError('email', 'Please enter your email address.');
-                    return;
-                }
-                
-                // Basic email validation
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    console.log('Validation failed: Invalid email format');
-                    showInlineError('email', 'Please enter a valid email address.');
-                    return;
+                    validationErrors.push({ field: 'email', message: 'Please enter your email address.' });
+                } else {
+                    // Enhanced email validation
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        validationErrors.push({ field: 'email', message: 'Please enter a valid email address.' });
+                    }
                 }
                 
                 if (!phone) {
-                    console.log('Validation failed: No phone (guest user)');
-                    showInlineError('phone', 'Please enter your phone number.');
-                    return;
+                    validationErrors.push({ field: 'phone', message: 'Please enter your phone number.' });
+                } else {
+                    // Enhanced phone validation for UK numbers
+                    const phoneRegex = /^(\+44|0)[1-9]\d{8,9}$/;
+                    if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+                        validationErrors.push({ field: 'phone', message: 'Please enter a valid UK phone number.' });
+                    }
                 }
+                
+                if (!postcode) {
+                    validationErrors.push({ field: 'postcode', message: 'Please enter your postcode.' });
+                } else {
+                    // Enhanced UK postcode validation
+                    const postcodeRegex = /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i;
+                    if (!postcodeRegex.test(postcode)) {
+                        validationErrors.push({ field: 'postcode', message: 'Please enter a valid UK postcode.' });
+                    }
+                }
+            }
+            
+            // Show validation errors if any
+            if (validationErrors.length > 0) {
+                console.log('Validation failed with errors:', validationErrors);
+                validationErrors.forEach(error => {
+                    showInlineError(error.field, error.message);
+                });
+                return;
             }
             
             // Check if all required fields are filled
@@ -5292,12 +5406,29 @@
                 try {
                     // Generate booking ID and secure token for guest cancellation
                     const bookingId = generateBookingId();
-                    const isGuest = true; // For demo purposes, assume guest booking
+                    const isGuest = !localStorage.getItem('userLoggedIn') === 'true';
                     
                     console.log('Generated booking ID:', bookingId);
                     console.log('Selected services:', selectedServices);
                     console.log('Selected date:', selectedDate);
                     console.log('Selected time:', selectedTime);
+                    
+                    // Save booking to both customer and business dashboards
+                    saveBookingToDashboards(bookingId, {
+                        customerName: fullName,
+                        customerEmail: email,
+                        customerPhone: phone,
+                        customerPostcode: postcode,
+                        businessName: 'Royal Hair Studio',
+                        businessId: 'royal-hair-studio',
+                        services: selectedServices,
+                        date: selectedDate,
+                        time: selectedTime,
+                        paymentMethod: selectedPayment,
+                        totalAmount: selectedServices.reduce((sum, s) => sum + s.price, 0),
+                        status: 'Confirmed',
+                        isGuest: isGuest
+                    });
                     
                     // Redirect to confirmation page with booking details
                     const params = new URLSearchParams({
@@ -5679,6 +5810,20 @@
             }
         }
         
+        function clearAllFieldErrors() {
+            // Remove all existing error messages
+            document.querySelectorAll('[id$="-error"]').forEach(error => error.remove());
+            
+            // Reset all field borders
+            const fields = ['fullName', 'email', 'phone', 'postcode'];
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.style.borderColor = '';
+                }
+            });
+        }
+        
         // Add form input listeners
         document.addEventListener('DOMContentLoaded', function() {
             const formInputs = ['fullName', 'email', 'phone', 'postcode'];
@@ -5992,6 +6137,150 @@ This policy is set by ${businessName}. BlkPages processes payments via Stripe on
             // Navigate to register page
             window.location.href = 'customer-register.html';
         }
+        
+        // Basket management functions
+        const BASKET_KEY = 'blkpages_basket';
+        const GUEST_BASKET_KEY = 'blkpages_guest_basket';
+        
+        function updateBasketCount() {
+            const basketCount = document.getElementById('basketCount');
+            const mobileBasketCount = document.getElementById('mobileBasketCount');
+            const count = selectedServices ? selectedServices.length : 0;
+            
+            if (basketCount) {
+                basketCount.textContent = count;
+            }
+            if (mobileBasketCount) {
+                mobileBasketCount.textContent = count;
+            }
+        }
+        
+        function saveBasket() {
+            const basketData = {
+                selectedServices: selectedServices,
+                timestamp: Date.now()
+            };
+            
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            if (isLoggedIn) {
+                localStorage.setItem(BASKET_KEY, JSON.stringify(basketData));
+            } else {
+                sessionStorage.setItem(GUEST_BASKET_KEY, JSON.stringify(basketData));
+            }
+        }
+        
+        function loadBasket() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            let basketData = null;
+            
+            if (isLoggedIn) {
+                const savedBasket = localStorage.getItem(BASKET_KEY);
+                if (savedBasket) basketData = JSON.parse(savedBasket);
+            } else {
+                const guestBasket = sessionStorage.getItem(GUEST_BASKET_KEY);
+                if (guestBasket) basketData = JSON.parse(guestBasket);
+            }
+            
+            if (basketData) {
+                selectedServices = basketData.selectedServices || [];
+                updateBasketCount();
+            }
+        }
+        
+        // Load basket on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBasket();
+        });
+        
+        // Save booking to both customer and business dashboards
+        function saveBookingToDashboards(bookingId, bookingData) {
+            console.log('Saving booking to dashboards:', bookingId, bookingData);
+            
+            // Create booking object with shared booking_id
+            const booking = {
+                bookingId: bookingId,
+                customerName: bookingData.customerName,
+                customerEmail: bookingData.customerEmail,
+                customerPhone: bookingData.customerPhone,
+                customerPostcode: bookingData.customerPostcode,
+                businessName: bookingData.businessName,
+                businessId: bookingData.businessId,
+                services: bookingData.services,
+                date: bookingData.date,
+                time: bookingData.time,
+                paymentMethod: bookingData.paymentMethod,
+                totalAmount: bookingData.totalAmount,
+                status: bookingData.status,
+                isGuest: bookingData.isGuest,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Save to customer dashboard (MyBookings[])
+            const customerId = bookingData.isGuest ? 'guest_' + Date.now() : localStorage.getItem('customerId') || 'customer_1';
+            const customerBookings = JSON.parse(localStorage.getItem(`customerBookings_${customerId}`) || '[]');
+            customerBookings.push(booking);
+            localStorage.setItem(`customerBookings_${customerId}`, JSON.stringify(customerBookings));
+            
+            // Save to business dashboard (Bookings[])
+            const businessBookings = JSON.parse(localStorage.getItem(`businessBookings_${bookingData.businessId}`) || '[]');
+            businessBookings.push(booking);
+            localStorage.setItem(`businessBookings_${bookingData.businessId}`, JSON.stringify(businessBookings));
+            
+            console.log('Booking saved to both dashboards successfully');
+        }
+        
+        // Update booking status when customer cancels (real-time sync)
+        function updateBookingStatus(bookingId, newStatus) {
+            console.log('Updating booking status:', bookingId, newStatus);
+            
+            // Update in customer dashboard
+            const customerId = localStorage.getItem('customerId') || 'customer_1';
+            const customerBookings = JSON.parse(localStorage.getItem(`customerBookings_${customerId}`) || '[]');
+            const customerBookingIndex = customerBookings.findIndex(b => b.bookingId === bookingId);
+            if (customerBookingIndex !== -1) {
+                customerBookings[customerBookingIndex].status = newStatus;
+                customerBookings[customerBookingIndex].updatedAt = new Date().toISOString();
+                localStorage.setItem(`customerBookings_${customerId}`, JSON.stringify(customerBookings));
+            }
+            
+            // Update in business dashboard
+            const businessBookings = JSON.parse(localStorage.getItem(`businessBookings_royal-hair-studio`) || '[]');
+            const businessBookingIndex = businessBookings.findIndex(b => b.bookingId === bookingId);
+            if (businessBookingIndex !== -1) {
+                businessBookings[businessBookingIndex].status = newStatus;
+                businessBookings[businessBookingIndex].updatedAt = new Date().toISOString();
+                localStorage.setItem(`businessBookings_royal-hair-studio`, JSON.stringify(businessBookings));
+            }
+            
+            console.log('Booking status updated in both dashboards:', newStatus);
+        }
+        
+        // Listen for booking cancellations (for real-time updates)
+        window.addEventListener('storage', function(e) {
+            if (e.key && e.key.startsWith('bookingCancelled_')) {
+                const bookingId = e.key.replace('bookingCancelled_', '');
+                updateBookingStatus(bookingId, 'Cancelled');
+            }
+        });
+        
+        // Function to cancel booking (called from customer dashboard)
+        window.cancelBooking = function(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                // Update booking status to cancelled
+                updateBookingStatus(bookingId, 'Cancelled');
+                
+                // Trigger storage event for real-time sync
+                localStorage.setItem(`bookingCancelled_${bookingId}`, Date.now().toString());
+                
+                alert('Booking cancelled successfully.');
+                
+                // Refresh the page or update UI
+                if (typeof updateBookingsDisplay === 'function') {
+                    updateBookingsDisplay();
+                }
+            }
+        };
     </script>
 
     <!-- Footer -->

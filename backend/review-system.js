@@ -86,6 +86,9 @@ class ReviewSystem {
             // Update business rating
             await this.updateBusinessRating(businessId);
 
+            // Link review to business dashboard
+            await this.linkReviewToBusinessDashboard(businessId, review);
+
             // Send notification to business
             await this.notifyBusinessOfReview(businessId, review);
 
@@ -117,6 +120,12 @@ class ReviewSystem {
 
             if (review.businessReply) {
                 throw new Error('Reply already exists for this review');
+            }
+
+            // Check if business has Professional plan to enable replies
+            const businessPlan = await this.getBusinessPlan(businessId);
+            if (businessPlan !== 'Professional') {
+                throw new Error('Reply feature is only available for Professional plan subscribers');
             }
 
             // Moderate reply content
@@ -254,6 +263,115 @@ class ReviewSystem {
      */
     moderateContent(content) {
         return this.profanityFilter.moderate(content);
+    }
+
+    // ========================================
+    // BUSINESS DASHBOARD INTEGRATION
+    // ========================================
+
+    /**
+     * Link review to business dashboard
+     */
+    async linkReviewToBusinessDashboard(businessId, review) {
+        try {
+            // Get business dashboard data
+            const businessDashboard = await this.getBusinessDashboard(businessId);
+            
+            // Add review to business dashboard reviews array
+            if (!businessDashboard.reviews) {
+                businessDashboard.reviews = [];
+            }
+            
+            // Create enhanced review object with booking reference
+            const booking = await this.getBooking(review.bookingId);
+            const enhancedReview = {
+                ...review,
+                bookingReference: booking.id,
+                serviceName: booking.service?.name || 'Service',
+                appointmentDate: booking.bookingTime,
+                customerName: this.maskCustomerName(booking.customer?.firstName || 'Customer')
+            };
+            
+            // Add to reviews array
+            businessDashboard.reviews.push(enhancedReview);
+            
+            // Update business dashboard
+            await this.updateBusinessDashboard(businessId, businessDashboard);
+            
+            console.log('Review linked to business dashboard:', businessId, enhancedReview);
+        } catch (error) {
+            console.error('Failed to link review to business dashboard:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get business plan for Professional plan check
+     */
+    async getBusinessPlan(businessId) {
+        try {
+            const business = await this.getBusiness(businessId);
+            return business?.plan || 'Basic';
+        } catch (error) {
+            console.error('Failed to get business plan:', error);
+            return 'Basic';
+        }
+    }
+
+    /**
+     * Check if business can reply to reviews (Professional plan only)
+     */
+    async canBusinessReply(businessId) {
+        try {
+            const plan = await this.getBusinessPlan(businessId);
+            return plan === 'Professional';
+        } catch (error) {
+            console.error('Failed to check business reply capability:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Get business dashboard data
+     */
+    async getBusinessDashboard(businessId) {
+        // Implementation would query database
+        return {
+            businessId,
+            reviews: [],
+            totalReviews: 0,
+            averageRating: 0,
+            pendingReplies: 0
+        };
+    }
+
+    /**
+     * Update business dashboard
+     */
+    async updateBusinessDashboard(businessId, dashboardData) {
+        // Implementation would update database
+        console.log('Updating business dashboard:', businessId, dashboardData);
+    }
+
+    /**
+     * Get business information
+     */
+    async getBusiness(businessId) {
+        // Implementation would query database
+        return {
+            id: businessId,
+            name: 'Glow Salon',
+            plan: 'Professional', // Sample plan
+            email: 'glow.salon@email.com'
+        };
+    }
+
+    /**
+     * Mask customer name for privacy
+     */
+    maskCustomerName(name) {
+        if (!name || name.length < 2) return 'C***';
+        return name.charAt(0) + '***';
     }
 
     // ========================================

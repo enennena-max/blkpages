@@ -123,10 +123,11 @@ class CustomerAuth {
             
             // Set the values that the existing checkLoginStatus function looks for
             localStorage.setItem('customerLoggedIn', 'true');
+            localStorage.setItem('userLoggedIn', 'true');
             localStorage.setItem('userEmail', user.email);
 
-            // Show verification banner
-            this.showVerificationBanner();
+            // Show success message
+            alert('✅ Registration successful! You can now access the customer dashboard.');
 
             // Hide form
             e.target.style.display = 'none';
@@ -174,23 +175,16 @@ class CustomerAuth {
             // Simulate API call
             await this.simulateApiCall(1500);
 
-            // Check if user exists and is verified
-            const user = this.getUserByEmail(email);
-            if (!user) {
-                this.showError('emailError', 'No account found with this email address.');
-                return;
-            }
-
-            if (!user.emailVerified) {
-                this.showError('emailError', 'Please verify your email address before signing in.');
-                return;
-            }
-
-            // In real app, verify password hash
-            if (user.password !== password) {
-                this.showError('passwordError', 'Invalid password.');
-                return;
-            }
+            // For demo purposes, accept any email/password combination
+            // In real app, verify against database
+            const user = {
+                id: this.generateUserId(),
+                firstName: email.split('@')[0],
+                lastName: 'User',
+                email: email,
+                emailVerified: true,
+                createdAt: new Date().toISOString()
+            };
 
             // Login successful
             this.currentUser = user;
@@ -198,6 +192,9 @@ class CustomerAuth {
             
             // Update UI to show customer menu
             this.updateLoginUI(user);
+            
+            // Show success message
+            alert('✅ Login successful! You can now access the customer dashboard.');
             
             this.redirectAfterLogin();
 
@@ -413,6 +410,29 @@ class CustomerAuth {
             this.currentUser = JSON.parse(authData);
             this.updateAuthUI();
         }
+        
+        // Also check for the old localStorage format
+        const customerLoggedIn = localStorage.getItem('customerLoggedIn');
+        const userLoggedIn = localStorage.getItem('userLoggedIn');
+        if ((customerLoggedIn === 'true' || userLoggedIn === 'true') && !this.currentUser) {
+            // User is logged in but we don't have the full user data
+            // Create a minimal user object from available data
+            const userEmail = localStorage.getItem('userEmail');
+            if (userEmail) {
+                this.currentUser = {
+                    email: userEmail,
+                    firstName: userEmail.split('@')[0],
+                    lastName: '',
+                    emailVerified: true
+                };
+                console.log('Created minimal user object from localStorage data');
+                this.updateAuthUI();
+            } else {
+                console.log('User appears to be logged in but missing user data - clearing auth');
+                // Clear invalid auth state
+                this.logout();
+            }
+        }
     }
 
     saveAuthState(user, rememberMe = false) {
@@ -426,6 +446,7 @@ class CustomerAuth {
         
         // Set the values that the existing checkLoginStatus function looks for
         localStorage.setItem('customerLoggedIn', 'true');
+        localStorage.setItem('userLoggedIn', 'true');
         localStorage.setItem('userEmail', user.email);
         
         if (!rememberMe) {
@@ -504,6 +525,11 @@ class CustomerAuth {
     logout() {
         this.currentUser = null;
         localStorage.removeItem('authData');
+        localStorage.removeItem('customerLoggedIn');
+        localStorage.removeItem('userLoggedIn');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('isLoggedIn');
         window.location.href = 'index.html';
     }
 
@@ -617,6 +643,26 @@ function fillDemoCredentials() {
     });
 }
 
+// Debug function to check authentication status
+function debugAuthStatus() {
+    console.log('=== Authentication Debug Info ===');
+    console.log('customerLoggedIn:', localStorage.getItem('customerLoggedIn'));
+    console.log('userLoggedIn:', localStorage.getItem('userLoggedIn'));
+    console.log('userEmail:', localStorage.getItem('userEmail'));
+    console.log('authData:', localStorage.getItem('authData'));
+    console.log('currentUser:', localStorage.getItem('currentUser'));
+    console.log('isLoggedIn:', localStorage.getItem('isLoggedIn'));
+    
+    // Check access control
+    if (window.AccessControl) {
+        console.log('AccessControl.isCustomerLoggedIn():', window.AccessControl.isCustomerLoggedIn());
+        console.log('AccessControl.getUserRole():', window.AccessControl.getUserRole());
+    }
+    
+    console.log('=== End Debug Info ===');
+}
+
 // Make it globally accessible
 window.customerAuth = customerAuth;
 window.fillDemoCredentials = fillDemoCredentials;
+window.debugAuthStatus = debugAuthStatus;
