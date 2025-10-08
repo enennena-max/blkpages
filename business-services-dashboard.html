@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services Management - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            line-height: 1.6; 
+            color: #ffffff; 
+            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%); 
+            min-height: 100vh; 
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Navigation */
+        .navbar { 
+            background: rgba(0, 0, 0, 0.95); 
+            box-shadow: 0 2px 10px rgba(255,255,255,0.1); 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000; 
+        }
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: #ffffff; text-decoration: none; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #ffffff; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #1E90FF; }
+        .btn-nav { background: #1E90FF; color: white !important; padding: 0.5rem 1.5rem; border-radius: 25px; transition: background 0.3s; text-decoration: none; }
+        .btn-nav:hover { background: #007bff; }
+        
+        /* Main Content */
+        .main-content { padding: 120px 0 80px; }
+        
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid #1E90FF;
+            color: #1E90FF;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        
+        .back-btn:hover {
+            background: #1E90FF;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, rgba(30, 144, 255, 0.1), rgba(0, 123, 255, 0.05));
+            border-radius: 20px;
+            border: 1px solid rgba(30, 144, 255, 0.2);
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .page-title i {
+            color: #1E90FF;
+            font-size: 2.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #1E90FF, #007bff);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: #1E90FF;
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #1E90FF;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1E90FF;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-description {
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .quick-actions-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .action-card {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .action-card:hover {
+            border-color: #1E90FF;
+            transform: translateY(-2px);
+        }
+        
+        .action-icon {
+            font-size: 2rem;
+            color: #1E90FF;
+            margin-bottom: 1rem;
+        }
+        
+        .action-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .action-description {
+            font-size: 0.9rem;
+            color: #cccccc;
+            margin-bottom: 1rem;
+        }
+        
+        .action-button {
+            background: linear-gradient(135deg, #1E90FF, #007bff);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 144, 255, 0.3);
+        }
+        
+        /* Services List */
+        .services-section {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .services-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .service-card {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover {
+            border-color: #1E90FF;
+            transform: translateY(-2px);
+        }
+        
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .service-info h3 {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-info p {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .service-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1E90FF;
+        }
+        
+        .service-details {
+            margin-bottom: 1rem;
+        }
+        
+        .service-detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #444;
+        }
+        
+        .service-detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .service-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid #1E90FF;
+            color: #1E90FF;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .action-btn:hover {
+            background: #1E90FF;
+            color: white;
+        }
+        
+        .action-btn.success {
+            background: rgba(40, 167, 69, 0.1);
+            border-color: #28A745;
+            color: #28A745;
+        }
+        
+        .action-btn.success:hover {
+            background: #28A745;
+            color: white;
+        }
+        
+        .action-btn.danger {
+            background: rgba(220, 53, 38, 0.1);
+            border-color: #DC3545;
+            color: #DC3545;
+        }
+        
+        .action-btn.danger:hover {
+            background: #DC3545;
+            color: white;
+        }
+        
+        .service-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28A745;
+        }
+        
+        .status-inactive {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6C757D;
+        }
+        
+        .status-featured {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+        }
+        
+        /* Category Section */
+        .category-section {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .category-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .category-card {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .category-card:hover {
+            border-color: #1E90FF;
+            transform: translateY(-2px);
+        }
+        
+        .category-icon {
+            font-size: 2rem;
+            color: #1E90FF;
+            margin-bottom: 1rem;
+        }
+        
+        .category-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-count {
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .page-title {
+                font-size: 2.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .category-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .service-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="business-dashboard.html" class="logo">BlkPages</a>
+                <ul class="nav-links">
+                    <li><a href="business-dashboard.html">Dashboard</a></li>
+                    <li><a href="business-profile.html">Profile</a></li>
+                    <li><a href="business-plan-management.html">Manage Plan</a></li>
+                    <li><a href="#" class="btn-nav">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <a href="business-dashboard.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+            
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-cogs"></i>
+                    Services Management
+                </h1>
+                <p class="page-subtitle">Manage all your business services that appear on your profile and in search results</p>
+            </div>
+            
+            <!-- Key Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Total Services</div>
+                    <div class="stat-description">Services offered by your business</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">Active Services</div>
+                    <div class="stat-description">Currently available services</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Featured Services</div>
+                    <div class="stat-description">Highlighted in search results</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-pound-sign"></i>
+                    </div>
+                    <div class="stat-number">£45</div>
+                    <div class="stat-label">Average Price</div>
+                    <div class="stat-description">Average service price</div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h2 class="quick-actions-title">Quick Actions</h2>
+                <div class="actions-grid">
+                    <div class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="action-title">Add New Service</div>
+                        <div class="action-description">Create a new service offering</div>
+                        <a href="#" class="action-button">Add Service</a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="action-title">Bulk Edit</div>
+                        <div class="action-description">Edit multiple services at once</div>
+                        <a href="#" class="action-button">Bulk Edit</a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="action-title">Featured Services</div>
+                        <div class="action-description">Manage featured service highlights</div>
+                        <a href="#" class="action-button">Manage Featured</a>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="action-title">Preview Profile</div>
+                        <div class="action-description">See how services appear to customers</div>
+                        <a href="business-profile.html" class="action-button">View Profile</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Service Categories -->
+            <div class="category-section">
+                <h2 class="category-title">Service Categories</h2>
+                <div class="category-grid">
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-cut"></i>
+                        </div>
+                        <div class="category-name">Hair Services</div>
+                        <div class="category-count">5 services</div>
+                    </div>
+                    
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <div class="category-name">Coloring</div>
+                        <div class="category-count">3 services</div>
+                    </div>
+                    
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <div class="category-name">Styling</div>
+                        <div class="category-count">2 services</div>
+                    </div>
+                    
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-spa"></i>
+                        </div>
+                        <div class="category-name">Treatments</div>
+                        <div class="category-count">2 services</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Services List -->
+            <div class="services-section">
+                <h2 class="services-title">All Services</h2>
+                <div class="services-grid">
+                    <!-- Service 1 -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <div class="service-info">
+                                <h3>Women's Haircut</h3>
+                                <p>Professional haircut and styling</p>
+                            </div>
+                            <div class="service-price">£35</div>
+                        </div>
+                        
+                        <div class="service-details">
+                            <div class="service-detail-item">
+                                <span class="detail-label">Duration:</span>
+                                <span class="detail-value">60 minutes</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Category:</span>
+                                <span class="detail-value">Hair Services</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Status:</span>
+                                <span class="service-status status-active">Active</span>
+                            </div>
+                        </div>
+                        
+                        <div class="service-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn success">
+                                <i class="fas fa-star"></i> Feature
+                            </button>
+                            <button class="action-btn danger">
+                                <i class="fas fa-times"></i> Deactivate
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Service 2 -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <div class="service-info">
+                                <h3>Men's Haircut</h3>
+                                <p>Classic men's haircut and styling</p>
+                            </div>
+                            <div class="service-price">£25</div>
+                        </div>
+                        
+                        <div class="service-details">
+                            <div class="service-detail-item">
+                                <span class="detail-label">Duration:</span>
+                                <span class="detail-value">45 minutes</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Category:</span>
+                                <span class="detail-value">Hair Services</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Status:</span>
+                                <span class="service-status status-featured">Featured</span>
+                            </div>
+                        </div>
+                        
+                        <div class="service-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-star"></i> Unfeature
+                            </button>
+                            <button class="action-btn danger">
+                                <i class="fas fa-times"></i> Deactivate
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Service 3 -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <div class="service-info">
+                                <h3>Hair Coloring</h3>
+                                <p>Full hair coloring service</p>
+                            </div>
+                            <div class="service-price">£85</div>
+                        </div>
+                        
+                        <div class="service-details">
+                            <div class="service-detail-item">
+                                <span class="detail-label">Duration:</span>
+                                <span class="detail-value">120 minutes</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Category:</span>
+                                <span class="detail-value">Coloring</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Status:</span>
+                                <span class="service-status status-featured">Featured</span>
+                            </div>
+                        </div>
+                        
+                        <div class="service-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-star"></i> Unfeature
+                            </button>
+                            <button class="action-btn danger">
+                                <i class="fas fa-times"></i> Deactivate
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Service 4 -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <div class="service-info">
+                                <h3>Hair Styling</h3>
+                                <p>Professional hair styling for special occasions</p>
+                            </div>
+                            <div class="service-price">£45</div>
+                        </div>
+                        
+                        <div class="service-details">
+                            <div class="service-detail-item">
+                                <span class="detail-label">Duration:</span>
+                                <span class="detail-value">90 minutes</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Category:</span>
+                                <span class="detail-value">Styling</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Status:</span>
+                                <span class="service-status status-active">Active</span>
+                            </div>
+                        </div>
+                        
+                        <div class="service-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn success">
+                                <i class="fas fa-star"></i> Feature
+                            </button>
+                            <button class="action-btn danger">
+                                <i class="fas fa-times"></i> Deactivate
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Service 5 -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <div class="service-info">
+                                <h3>Hair Treatment</h3>
+                                <p>Deep conditioning and hair treatment</p>
+                            </div>
+                            <div class="service-price">£55</div>
+                        </div>
+                        
+                        <div class="service-details">
+                            <div class="service-detail-item">
+                                <span class="detail-label">Duration:</span>
+                                <span class="detail-value">75 minutes</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Category:</span>
+                                <span class="detail-value">Treatments</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Status:</span>
+                                <span class="service-status status-featured">Featured</span>
+                            </div>
+                        </div>
+                        
+                        <div class="service-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-star"></i> Unfeature
+                            </button>
+                            <button class="action-btn danger">
+                                <i class="fas fa-times"></i> Deactivate
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Service 6 -->
+                    <div class="service-card">
+                        <div class="service-header">
+                            <div class="service-info">
+                                <h3>Beard Trim</h3>
+                                <p>Professional beard trimming and styling</p>
+                            </div>
+                            <div class="service-price">£20</div>
+                        </div>
+                        
+                        <div class="service-details">
+                            <div class="service-detail-item">
+                                <span class="detail-label">Duration:</span>
+                                <span class="detail-value">30 minutes</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Category:</span>
+                                <span class="detail-value">Hair Services</span>
+                            </div>
+                            <div class="service-detail-item">
+                                <span class="detail-label">Status:</span>
+                                <span class="service-status status-inactive">Inactive</span>
+                            </div>
+                        </div>
+                        
+                        <div class="service-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn success">
+                                <i class="fas fa-check"></i> Activate
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer style="background: #0F0F0F; color: #ffffff; padding: 2rem 0; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <div class="container">
+            <p>&copy; 2024 BLKPAGES. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Simple counter animation for stat numbers
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            
+            counters.forEach(counter => {
+                const target = counter.textContent;
+                const numericValue = parseFloat(target.replace(/[^\d.]/g, ''));
+                const suffix = target.replace(/[\d.]/g, '');
+                
+                if (numericValue) {
+                    let current = 0;
+                    const increment = numericValue / 50;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= numericValue) {
+                            counter.textContent = target;
+                            clearInterval(timer);
+                        } else {
+                            counter.textContent = Math.floor(current) + suffix;
+                        }
+                    }, 30);
+                }
+            });
+        }
+        
+        // Initialize animations when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(animateCounters, 500);
+        });
+    </script>
+</body>
+</html>

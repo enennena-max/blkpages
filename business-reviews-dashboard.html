@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews Management - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            line-height: 1.6; 
+            color: #ffffff; 
+            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%); 
+            min-height: 100vh; 
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Navigation */
+        .navbar { 
+            background: rgba(0, 0, 0, 0.95); 
+            box-shadow: 0 2px 10px rgba(255,255,255,0.1); 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000; 
+        }
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: #ffffff; text-decoration: none; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #ffffff; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #1E90FF; }
+        .btn-nav { background: #1E90FF; color: white !important; padding: 0.5rem 1.5rem; border-radius: 25px; transition: background 0.3s; text-decoration: none; }
+        .btn-nav:hover { background: #007bff; }
+        
+        /* Main Content */
+        .main-content { padding: 120px 0 80px; }
+        
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid #1E90FF;
+            color: #1E90FF;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        
+        .back-btn:hover {
+            background: #1E90FF;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, rgba(30, 144, 255, 0.1), rgba(0, 123, 255, 0.05));
+            border-radius: 20px;
+            border: 1px solid rgba(30, 144, 255, 0.2);
+        }
+        
+        .page-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .page-title i {
+            color: #1E90FF;
+            font-size: 2.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #1E90FF, #007bff);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: #1E90FF;
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #1E90FF;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1E90FF;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-description {
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+        
+        /* Filter Section */
+        .filter-section {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .filter-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1E90FF;
+        }
+        
+        .filter-select {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #1E90FF;
+        }
+        
+        /* Reviews List */
+        .reviews-section {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .reviews-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+        
+        .review-card {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .review-card:hover {
+            border-color: #1E90FF;
+            transform: translateY(-2px);
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .review-customer {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .customer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1E90FF, #007bff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .customer-info h4 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .customer-info p {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .review-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stars {
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .star {
+            color: #FFD700;
+            font-size: 1.2rem;
+        }
+        
+        .star.empty {
+            color: #444;
+        }
+        
+        .rating-number {
+            color: #1E90FF;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .review-date {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .review-content {
+            color: #ffffff;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .review-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .review-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-published {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28A745;
+        }
+        
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+        }
+        
+        .status-flagged {
+            background: rgba(220, 53, 38, 0.2);
+            color: #DC3545;
+        }
+        
+        .action-btn {
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid #1E90FF;
+            color: #1E90FF;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: #1E90FF;
+            color: white;
+        }
+        
+        .action-btn.danger {
+            background: rgba(220, 53, 38, 0.1);
+            border-color: #DC3545;
+            color: #DC3545;
+        }
+        
+        .action-btn.danger:hover {
+            background: #DC3545;
+            color: white;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .pagination-btn {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #ffffff;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-btn:hover {
+            background: #1E90FF;
+            border-color: #1E90FF;
+        }
+        
+        .pagination-btn.active {
+            background: #1E90FF;
+            border-color: #1E90FF;
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .page-title {
+                font-size: 2.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .filter-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .review-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .review-actions {
+                flex-wrap: wrap;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .review-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="business-dashboard.html" class="logo">BlkPages</a>
+                <ul class="nav-links">
+                    <li><a href="business-dashboard.html">Dashboard</a></li>
+                    <li><a href="business-profile.html">Profile</a></li>
+                    <li><a href="business-plan-management.html">Manage Plan</a></li>
+                    <li><a href="#" class="btn-nav">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <a href="business-dashboard.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+            
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-star"></i>
+                    Reviews Management
+                </h1>
+                <p class="page-subtitle">Monitor and manage all customer reviews for your business</p>
+            </div>
+            
+            <!-- Key Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-number">4.6</div>
+                    <div class="stat-label">Average Rating</div>
+                    <div class="stat-description">Based on 89 reviews</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-number">89</div>
+                    <div class="stat-label">Total Reviews</div>
+                    <div class="stat-description">All-time customer feedback</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                            <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">This Month</div>
+                    <div class="stat-description">New reviews this month</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <div class="stat-number">94%</div>
+                    <div class="stat-label">Positive</div>
+                    <div class="stat-description">4+ star reviews</div>
+                </div>
+            </div>
+            
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <h2 class="filter-title">Filter Reviews</h2>
+                <div class="filter-grid">
+                    <div class="filter-item">
+                        <label class="filter-label">Rating</label>
+                        <select class="filter-select" id="ratingFilter">
+                            <option value="">All Ratings</option>
+                            <option value="5">5 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="2">2 Stars</option>
+                            <option value="1">1 Star</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label class="filter-label">Status</label>
+                        <select class="filter-select" id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="published">Published</option>
+                            <option value="pending">Pending</option>
+                            <option value="flagged">Flagged</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label class="filter-label">Date Range</label>
+                        <select class="filter-select" id="dateFilter">
+                            <option value="">All Time</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="quarter">This Quarter</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-item">
+                        <label class="filter-label">Sort By</label>
+                        <select class="filter-select" id="sortFilter">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="rating-high">Highest Rating</option>
+                            <option value="rating-low">Lowest Rating</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews List -->
+            <div class="reviews-section">
+                <h2 class="reviews-title">Customer Reviews</h2>
+                
+                <!-- Review 1 -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-customer">
+                            <div class="customer-avatar">SJ</div>
+                            <div class="customer-info">
+                                <h4>Sarah Johnson</h4>
+                                <p>Verified Customer</p>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <div class="stars">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                            </div>
+                            <span class="rating-number">5.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="review-content">
+                        "Absolutely amazing service! The staff was professional and friendly. My hair looks fantastic and I'll definitely be coming back. Highly recommend to anyone looking for quality hair care."
+                    </div>
+                    
+                    <div class="review-actions">
+                        <span class="review-date">March 15, 2024</span>
+                        <span class="review-status status-published">Published</span>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-reply"></i> Reply
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-flag"></i> Flag
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Review 2 -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-customer">
+                            <div class="customer-avatar">MB</div>
+                            <div class="customer-info">
+                                <h4>Michael Brown</h4>
+                                <p>Verified Customer</p>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <div class="stars">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star empty"></i>
+                            </div>
+                            <span class="rating-number">4.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="review-content">
+                        "Great service overall. The stylist was very skilled and the atmosphere was relaxing. Only minor issue was the wait time, but the quality of work made up for it."
+                    </div>
+                    
+                    <div class="review-actions">
+                        <span class="review-date">March 12, 2024</span>
+                        <span class="review-status status-published">Published</span>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-reply"></i> Reply
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-flag"></i> Flag
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Review 3 -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-customer">
+                            <div class="customer-avatar">EW</div>
+                            <div class="customer-info">
+                                <h4>Emma Wilson</h4>
+                                <p>Verified Customer</p>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <div class="stars">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                            </div>
+                            <span class="rating-number">5.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="review-content">
+                        "Exceptional service from start to finish. The team was welcoming and the results exceeded my expectations. Will definitely be a regular customer!"
+                    </div>
+                    
+                    <div class="review-actions">
+                        <span class="review-date">March 10, 2024</span>
+                        <span class="review-status status-pending">Pending</span>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-check"></i> Approve
+                        </a>
+                        <a href="#" class="action-btn danger">
+                            <i class="fas fa-times"></i> Reject
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Review 4 -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-customer">
+                            <div class="customer-avatar">DL</div>
+                            <div class="customer-info">
+                                <h4>David Lee</h4>
+                                <p>Verified Customer</p>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <div class="stars">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star empty"></i>
+                                <i class="fas fa-star star empty"></i>
+                            </div>
+                            <span class="rating-number">3.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="review-content">
+                        "Service was okay but not exceptional. The stylist was friendly but seemed rushed. The final result was decent but not quite what I was hoping for."
+                    </div>
+                    
+                    <div class="review-actions">
+                        <span class="review-date">March 8, 2024</span>
+                        <span class="review-status status-flagged">Flagged</span>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-reply"></i> Reply
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-eye"></i> Review
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Review 5 -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-customer">
+                            <div class="customer-avatar">LT</div>
+                            <div class="customer-info">
+                                <h4>Lisa Taylor</h4>
+                                <p>Verified Customer</p>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            <div class="stars">
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                                <i class="fas fa-star star"></i>
+                            </div>
+                            <span class="rating-number">5.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="review-content">
+                        "Outstanding experience! The salon is beautiful, the staff is professional, and my hair has never looked better. I've already booked my next appointment!"
+                    </div>
+                    
+                    <div class="review-actions">
+                        <span class="review-date">March 5, 2024</span>
+                        <span class="review-status status-published">Published</span>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-reply"></i> Reply
+                        </a>
+                        <a href="#" class="action-btn">
+                            <i class="fas fa-flag"></i> Flag
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+                <a href="#" class="pagination-btn" disabled>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+                <a href="#" class="pagination-btn active">1</a>
+                <a href="#" class="pagination-btn">2</a>
+                <a href="#" class="pagination-btn">3</a>
+                <a href="#" class="pagination-btn">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer style="background: #0F0F0F; color: #ffffff; padding: 2rem 0; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <div class="container">
+            <p>&copy; 2024 BLKPAGES. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Simple counter animation for stat numbers
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            
+            counters.forEach(counter => {
+                const target = counter.textContent;
+                const numericValue = parseFloat(target.replace(/[^\d.]/g, ''));
+                const suffix = target.replace(/[\d.]/g, '');
+                
+                if (numericValue) {
+                    let current = 0;
+                    const increment = numericValue / 50;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= numericValue) {
+                            counter.textContent = target;
+                            clearInterval(timer);
+                        } else {
+                            counter.textContent = Math.floor(current) + suffix;
+                        }
+                    }, 30);
+                }
+            });
+        }
+        
+        // Initialize animations when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(animateCounters, 500);
+        });
+        
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const ratingFilter = document.getElementById('ratingFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const dateFilter = document.getElementById('dateFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            
+            function applyFilters() {
+                console.log('Applying filters:', {
+                    rating: ratingFilter.value,
+                    status: statusFilter.value,
+                    date: dateFilter.value,
+                    sort: sortFilter.value
+                });
+                // In a real implementation, this would filter the reviews
+            }
+            
+            ratingFilter.addEventListener('change', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+            dateFilter.addEventListener('change', applyFilters);
+            sortFilter.addEventListener('change', applyFilters);
+        });
+    </script>
+</body>
+</html>
