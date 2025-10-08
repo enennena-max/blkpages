@@ -2466,16 +2466,82 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
             paymentModelDetails.innerHTML = detailsHTML;
         }
         
+        // Load and update analytics data
+        function loadAnalyticsData() {
+            const businessId = 'royalHairStudio';
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (analyticsData[businessId]) {
+                const data = analyticsData[businessId];
+                const today = new Date().toISOString().split('T')[0];
+                const todayViews = data.dailyViews[today] || 0;
+                
+                // Update the stat cards on the dashboard
+                updateDashboardStat('Profile Views', data.totalViews || 0);
+                updateDashboardStat('Rating', '4.6'); // Keep static for now
+                updateDashboardStat('Reviews', '89'); // Keep static for now
+                updateDashboardStat('Bookings This Month', data.enquiries || 0); // Use real enquiries data
+                
+                console.log('Dashboard analytics updated:', {
+                    totalViews: data.totalViews,
+                    todayViews: todayViews
+                });
+            }
+        }
+        
+        function updateDashboardStat(label, value) {
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                const labelElement = card.querySelector('p');
+                if (labelElement && labelElement.textContent.trim() === label) {
+                    const numberElement = card.querySelector('h3');
+                    if (numberElement) {
+                        numberElement.textContent = value;
+                        console.log(`Dashboard updated ${label} to ${value}`);
+                    }
+                }
+            });
+        }
+        
+        // Listen for analytics updates
+        window.addEventListener('analyticsUpdated', function(e) {
+            console.log('Dashboard received analytics update:', e.detail);
+            loadAnalyticsData();
+        });
+        
+        // Listen for storage changes
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'businessAnalytics') {
+                loadAnalyticsData();
+            }
+        });
+        
         // Check if user is logged in
         document.addEventListener('DOMContentLoaded', function() {
             const isLoggedIn = localStorage.getItem('businessLoggedIn');
             console.log('Checking login status:', isLoggedIn);
             
+<<<<<<< HEAD
             // Load and display payment model
             updatePaymentModelDisplay();
             
             // Update cancellation policy based on current plan
             updateCancellationPolicy();
+=======
+<<<<<<< HEAD
+        // Load and display payment model
+        updatePaymentModelDisplay();
+        
+        // Update cancellation policy based on current plan
+        updateCancellationPolicy();
+        
+        // Load analytics data
+        loadAnalyticsData();
+            
+=======
+        // For testing purposes, allow access even if not logged in
+>>>>>>> 18da7bc0dddb0f27f1042fef820be421a312d272
+>>>>>>> b7f5d23 (Dashboard x 4)
         if (isLoggedIn !== 'true') {
             console.log('User not logged in, but allowing access for testing');
             // Set demo login status for testing

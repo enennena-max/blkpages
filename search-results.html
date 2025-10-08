@@ -1130,6 +1130,64 @@
             }
 
             displaySearchResults(filteredBusinesses);
+            
+            // Track search impressions for each business that appears in results
+            trackSearchImpressions(filteredBusinesses);
+        }
+        
+        // Track search impressions
+        function trackSearchImpressions(businesses) {
+            const currentDate = new Date().toISOString().split('T')[0];
+            const currentTime = new Date().toISOString();
+            
+            businesses.forEach(business => {
+                const businessId = business.id || 'royalHairStudio'; // Use business ID or default
+                
+                // Get existing analytics data
+                let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+                
+                // Initialize business analytics if not exists
+                if (!analyticsData[businessId]) {
+                    analyticsData[businessId] = {
+                        totalViews: 0,
+                        dailyViews: {},
+                        lastView: null,
+                        viewHistory: [],
+                        searchImpressions: 0,
+                        dailySearchImpressions: {},
+                        contactClicks: 0,
+                        dailyContactClicks: {},
+                        enquiries: 0,
+                        dailyEnquiries: {}
+                    };
+                }
+                
+                // Update search impressions
+                analyticsData[businessId].searchImpressions += 1;
+                
+                // Update daily search impressions
+                if (!analyticsData[businessId].dailySearchImpressions[currentDate]) {
+                    analyticsData[businessId].dailySearchImpressions[currentDate] = 0;
+                }
+                analyticsData[businessId].dailySearchImpressions[currentDate] += 1;
+                
+                // Save updated analytics
+                localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+                
+                console.log(`Search impression tracked for ${business.name}:`, {
+                    businessId: businessId,
+                    totalImpressions: analyticsData[businessId].searchImpressions,
+                    todayImpressions: analyticsData[businessId].dailySearchImpressions[currentDate]
+                });
+            });
+            
+            // Trigger analytics update event
+            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+                detail: { 
+                    type: 'searchImpressions',
+                    count: businesses.length
+                }
+            }));
         }
 
         // Near Me functionality

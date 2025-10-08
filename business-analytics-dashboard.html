@@ -704,8 +704,70 @@
             });
         }
         
+        // Load real analytics data
+        function loadAnalyticsData() {
+            const businessId = 'royalHairStudio';
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            console.log('Loading analytics data:', analyticsData);
+            
+            if (analyticsData[businessId]) {
+                const data = analyticsData[businessId];
+                const today = new Date().toISOString().split('T')[0];
+                const todayViews = data.dailyViews[today] || 0;
+                
+                console.log('Business analytics data found:', data);
+                
+                // Update the stat cards with real data
+                updateStatCard('Profile Views', data.totalViews || 0);
+                updateStatCard('Search Impressions', data.searchImpressions || 0);
+                updateStatCard('Contact Clicks', data.contactClicks || 0);
+                updateStatCard('Enquiries Received', data.enquiries || 0);
+                
+                console.log('Analytics data loaded:', {
+                    totalViews: data.totalViews,
+                    searchImpressions: data.searchImpressions,
+                    contactClicks: data.contactClicks,
+                    enquiries: data.enquiries,
+                    todayViews: todayViews,
+                    lastView: data.lastView
+                });
+            } else {
+                console.log('No analytics data found for business:', businessId);
+            }
+        }
+        
+        function updateStatCard(label, value) {
+            // Find the stat card by label and update the number
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                const labelElement = card.querySelector('.stat-label');
+                if (labelElement && labelElement.textContent.trim() === label) {
+                    const numberElement = card.querySelector('.stat-number');
+                    if (numberElement) {
+                        numberElement.textContent = value;
+                        console.log(`Updated ${label} to ${value}`);
+                    }
+                }
+            });
+        }
+        
+        // Listen for analytics updates
+        window.addEventListener('analyticsUpdated', function(e) {
+            console.log('Analytics updated event received:', e.detail);
+            loadAnalyticsData();
+        });
+        
+        // Listen for storage changes
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'businessAnalytics') {
+                loadAnalyticsData();
+            }
+        });
+        
         // Initialize animations when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            loadAnalyticsData();
             // Delay counter animation for better effect
             setTimeout(animateCounters, 500);
         });

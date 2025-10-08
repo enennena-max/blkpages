@@ -747,8 +747,79 @@
             });
         }
         
+        // Load real analytics data
+        function loadAnalyticsData() {
+            const businessId = 'royalHairStudio';
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (analyticsData[businessId]) {
+                const data = analyticsData[businessId];
+                const today = new Date().toISOString().split('T')[0];
+                const todayClicks = data.dailyContactClicks[today] || 0;
+                
+                // Update the stat cards with real data
+                updateStatCard('Total Clicks', data.contactClicks || 0);
+                updateStatCard('Today\'s Clicks', todayClicks);
+                updateStatCard('Growth Rate', calculateGrowthRate(data, 'contactClicks'));
+                updateStatCard('Conversion Rate', calculateConversionRate(data));
+                
+                console.log('Contact clicks analytics loaded:', {
+                    totalClicks: data.contactClicks,
+                    todayClicks: todayClicks,
+                    lastClick: data.lastContactClick
+                });
+            }
+        }
+        
+        function calculateGrowthRate(data, metric) {
+            const today = new Date().toISOString().split('T')[0];
+            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+            const todayValue = data[`daily${metric.charAt(0).toUpperCase() + metric.slice(1)}`][today] || 0;
+            const yesterdayValue = data[`daily${metric.charAt(0).toUpperCase() + metric.slice(1)}`][yesterday] || 0;
+            
+            if (yesterdayValue === 0) return '+100%';
+            const growth = ((todayValue - yesterdayValue) / yesterdayValue) * 100;
+            return growth > 0 ? `+${Math.round(growth)}%` : `${Math.round(growth)}%`;
+        }
+        
+        function calculateConversionRate(data) {
+            const totalViews = data.totalViews || 0;
+            const totalClicks = data.contactClicks || 0;
+            
+            if (totalViews === 0) return '0%';
+            const conversionRate = (totalClicks / totalViews) * 100;
+            return `${Math.round(conversionRate * 10) / 10}%`;
+        }
+        
+        function updateStatCard(label, value) {
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                const labelElement = card.querySelector('.stat-label');
+                if (labelElement && labelElement.textContent.includes(label)) {
+                    const numberElement = card.querySelector('.stat-number');
+                    if (numberElement) {
+                        numberElement.textContent = value;
+                    }
+                }
+            });
+        }
+        
+        // Listen for analytics updates
+        window.addEventListener('analyticsUpdated', function(e) {
+            console.log('Analytics updated event received:', e.detail);
+            loadAnalyticsData();
+        });
+        
+        // Listen for storage changes
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'businessAnalytics') {
+                loadAnalyticsData();
+            }
+        });
+        
         // Initialize animations when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            loadAnalyticsData();
             setTimeout(animateCounters, 500);
         });
     </script>

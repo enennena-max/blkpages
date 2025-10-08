@@ -566,6 +566,11 @@
             localStorage.setItem('businessPhotos', JSON.stringify(uploadedPhotos));
             // Also save to a business-specific key for the profile page
             localStorage.setItem('royalHairStudioPhotos', JSON.stringify(uploadedPhotos));
+            
+            // Trigger a custom event to notify other pages
+            window.dispatchEvent(new CustomEvent('photosUpdated', {
+                detail: { photos: uploadedPhotos }
+            }));
         }
         
         function deletePhoto(photoId) {
