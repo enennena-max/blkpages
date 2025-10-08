@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            line-height: 1.6; 
+            color: #ffffff; 
+            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%); 
+            min-height: 100vh; 
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Navigation */
+        .navbar { 
+            background: rgba(0, 0, 0, 0.95); 
+            box-shadow: 0 2px 10px rgba(255,255,255,0.1); 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000; 
+        }
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: #ffffff; text-decoration: none; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #ffffff; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #1E90FF; }
+        .btn-nav { background: #1E90FF; color: white !important; padding: 0.5rem 1.5rem; border-radius: 25px; transition: background 0.3s; text-decoration: none; }
+        .btn-nav:hover { background: #007bff; }
+        
+        /* Main Content */
+        .main-content { padding: 120px 0 80px; }
+        
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid #1E90FF;
+            color: #1E90FF;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        
+        .back-btn:hover {
+            background: #1E90FF;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Header */
+        .hero-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, rgba(30, 144, 255, 0.1), rgba(0, 123, 255, 0.05));
+            border-radius: 20px;
+            border: 1px solid rgba(30, 144, 255, 0.2);
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #1E90FF, #007bff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #cccccc;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .preview-btn {
+            background: linear-gradient(135deg, #1E90FF, #007bff);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+            max-width: 240px;
+            width: 100%;
+        }
+        
+        .preview-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(30, 144, 255, 0.3);
+        }
+        
+        /* Section Styling */
+        .section {
+            margin-bottom: 4rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #cccccc;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        /* Performance Overview Grid */
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #1E90FF, #007bff);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: #1E90FF;
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            color: #1E90FF;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1E90FF;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-description {
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+        
+        /* Audience Insights */
+        .audience-insights {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+        
+        .insights-visual {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chart-placeholder {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, rgba(30, 144, 255, 0.1), rgba(0, 123, 255, 0.05));
+            border: 2px dashed #1E90FF;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1E90FF;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .insights-content {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+        }
+        
+        .insights-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+        }
+        
+        .insights-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .insights-list li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #333;
+            color: #cccccc;
+        }
+        
+        .insights-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .insights-list li i {
+            color: #1E90FF;
+            font-size: 1.2rem;
+        }
+        
+        /* Growth Trends */
+        .growth-trends {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .trends-chart {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(30, 144, 255, 0.1), rgba(0, 123, 255, 0.05));
+            border: 2px dashed #1E90FF;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1E90FF;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .trends-caption {
+            text-align: center;
+            color: #cccccc;
+            font-size: 1rem;
+        }
+        
+        /* Engagement Highlights */
+        .engagement-highlights {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .highlight-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .highlight-card:hover {
+            transform: translateY(-3px);
+            border-color: #1E90FF;
+        }
+        
+        .highlight-icon {
+            font-size: 2rem;
+            color: #1E90FF;
+            margin-bottom: 1rem;
+        }
+        
+        .highlight-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        /* Export Reports */
+        .export-section {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .export-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+        
+        .export-description {
+            font-size: 1.1rem;
+            color: #cccccc;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #28A745, #20C997);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+        
+        /* Testimonial */
+        .testimonial {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .testimonial-quote {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #ffffff;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1E90FF, #007bff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .author-info {
+            text-align: left;
+        }
+        
+        .author-name {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+        
+        .author-business {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .performance-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .audience-insights {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .engagement-highlights {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .preview-btn,
+            .download-btn {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .stat-card,
+            .insights-visual,
+            .insights-content,
+            .growth-trends,
+            .highlight-card,
+            .export-section,
+            .testimonial {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .chart-placeholder,
+            .trends-chart {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="business-dashboard.html" class="logo">BlkPages</a>
+                <ul class="nav-links">
+                    <li><a href="business-dashboard.html">Dashboard</a></li>
+                    <li><a href="business-profile.html">Profile</a></li>
+                    <li><a href="business-plan-management.html">Manage Plan</a></li>
+                    <li><a href="#" class="btn-nav">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <a href="business-dashboard.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </a>
+            
+            <!-- Hero Header -->
+            <div class="hero-header">
+                <h1 class="hero-title">Analytics Dashboard</h1>
+                <p class="hero-subtitle">See how your business is performing — every click, view, and booking at a glance.</p>
+                <a href="#" class="preview-btn">
+                    <i class="fas fa-chart-line"></i> Preview Dashboard
+                </a>
+            </div>
+            
+            <!-- Performance Overview -->
+            <div class="section">
+                <h2 class="section-title">Performance Overview</h2>
+                <div class="performance-grid">
+                    <a href="analytics-profile-views.html" class="stat-card" style="text-decoration: none; color: inherit;">
+                        <div class="stat-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="stat-number">1.2K</div>
+                        <div class="stat-label">Profile Views</div>
+                        <div class="stat-description">How many people viewed your listing</div>
+                    </a>
+                    
+                    <a href="analytics-search-impressions.html" class="stat-card" style="text-decoration: none; color: inherit;">
+                        <div class="stat-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="stat-number">3.8K</div>
+                        <div class="stat-label">Search Impressions</div>
+                        <div class="stat-description">Times your business appeared in search results</div>
+                    </a>
+                    
+                    <a href="analytics-contact-clicks.html" class="stat-card" style="text-decoration: none; color: inherit;">
+                        <div class="stat-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">Contact Clicks</div>
+                        <div class="stat-description">Clicks on your call or message buttons</div>
+                    </a>
+                    
+                    <a href="analytics-enquiries-received.html" class="stat-card" style="text-decoration: none; color: inherit;">
+                        <div class="stat-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="stat-number">89</div>
+                        <div class="stat-label">Enquiries Received</div>
+                        <div class="stat-description">Number of new leads or messages</div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Audience Insights -->
+            <div class="section">
+                <h2 class="section-title">Audience Insights</h2>
+                <p class="section-subtitle">Understand who's viewing your business</p>
+                
+                <div class="audience-insights">
+                    <div class="insights-visual">
+                        <div class="chart-placeholder">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <span style="margin-left: 0.5rem;">Interactive Map</span>
+                        </div>
+                    </div>
+                    
+                    <div class="insights-content">
+                        <h3 class="insights-title">Visitor Analytics</h3>
+                        <ul class="insights-list">
+                            <li>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Top visitor areas by borough</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>Device usage: mobile vs desktop</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-clock"></i>
+                                <span>Most active days and times</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Growth Trends -->
+            <div class="section">
+                <h2 class="section-title">Growth Trends</h2>
+                <div class="growth-trends">
+                    <div class="trends-chart">
+                        <i class="fas fa-chart-line"></i>
+                        <span style="margin-left: 0.5rem;">Performance Chart</span>
+                    </div>
+                    <p class="trends-caption">Track your visibility and engagement over time</p>
+                </div>
+            </div>
+            
+            <!-- Engagement Highlights -->
+            <div class="section">
+                <h2 class="section-title">Engagement Highlights</h2>
+                <div class="engagement-highlights">
+                    <div class="highlight-card">
+                        <div class="highlight-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="highlight-text">Listings with photos get 2.3× more views</div>
+                    </div>
+                    
+                    <div class="highlight-card">
+                        <div class="highlight-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="highlight-text">Verified listings get 45% more enquiries</div>
+                    </div>
+                    
+                    <div class="highlight-card">
+                        <div class="highlight-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <div class="highlight-text">Adding social links boosts traffic by 30%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Export Reports -->
+            <div class="section">
+                <div class="export-section">
+                    <h2 class="export-title">Download Your Monthly Report</h2>
+                    <p class="export-description">Export your analytics with one click — perfect for tracking your marketing ROI.</p>
+                    <a href="#" class="download-btn">
+                        <i class="fas fa-download"></i> Download Report (PDF)
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Testimonial -->
+            <div class="section">
+                <div class="testimonial">
+                    <blockquote class="testimonial-quote">
+                        "BlkPages analytics helped me understand what works — now I get more bookings every week."
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SJ</div>
+                        <div class="author-info">
+                            <div class="author-name">Sarah Johnson</div>
+                            <div class="author-business">Elite Hair Studio</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer style="background: #0F0F0F; color: #ffffff; padding: 2rem 0; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <div class="container">
+            <p>&copy; 2024 BLKPAGES. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Simple counter animation for stat numbers
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            
+            counters.forEach(counter => {
+                const target = counter.textContent;
+                const numericValue = parseFloat(target.replace(/[^\d.]/g, ''));
+                const suffix = target.replace(/[\d.]/g, '');
+                
+                if (numericValue) {
+                    let current = 0;
+                    const increment = numericValue / 50;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= numericValue) {
+                            counter.textContent = target;
+                            clearInterval(timer);
+                        } else {
+                            counter.textContent = Math.floor(current) + suffix;
+                        }
+                    }, 30);
+                }
+            });
+        }
+        
+        // Initialize animations when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Delay counter animation for better effect
+            setTimeout(animateCounters, 500);
+        });
+        
+        // Add hover effects to cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.stat-card, .highlight-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

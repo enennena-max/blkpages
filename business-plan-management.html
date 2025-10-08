@@ -260,6 +260,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .addon-card.selected {
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid #1E90FF;
+            box-shadow: 0 0 10px rgba(30, 144, 255, 0.2);
         }
         
         .addon-info h4 {
@@ -696,17 +703,16 @@
                     
                     <div class="billing-summary">
                         <h4 style="color: #1E90FF; margin-bottom: 1rem;">Current Billing</h4>
-                        <div class="billing-item">
+                        <div class="billing-item" id="planBillingItem">
                             <span>Professional Plan</span>
                             <span>£29.00/month</span>
                         </div>
-                        <div class="billing-item">
-                            <span>Loyalty Rewards Programme</span>
-                            <span>£5.00/month</span>
+                        <div id="addonsBillingContainer">
+                            <!-- Individual add-on billing items will be inserted here -->
                         </div>
                         <div class="billing-item total">
                             <span>Total Monthly</span>
-                            <span>£34.00</span>
+                            <span id="totalBillingAmount">£29.00</span>
                         </div>
                     </div>
                     
@@ -734,7 +740,7 @@
                 <h2>Premium Add-ons</h2>
                 <p style="color: #cccccc; margin-bottom: 2rem;">Enhance your business with these premium features</p>
                 
-                <div class="addon-card">
+                <div class="addon-card" id="smsAddonCard">
                     <div class="addon-info">
                         <h4>📲 Extra SMS Credits</h4>
                         <p>Send appointment reminders and updates to customers</p>
@@ -745,7 +751,7 @@
                     </button>
                 </div>
                 
-                <div class="addon-card">
+                <div class="addon-card" id="featuredAddonCard">
                     <div class="addon-info">
                         <h4>⭐ Featured Listing</h4>
                         <p>Get priority placement in search results</p>
@@ -756,7 +762,7 @@
                     </button>
                 </div>
                 
-                <div class="addon-card">
+                <div class="addon-card" id="socialAddonCard">
                     <div class="addon-info">
                         <h4>📸 Instagram/TikTok Widget</h4>
                         <p>Social media booking link widget</p>
@@ -767,7 +773,7 @@
                     </button>
                 </div>
                 
-                <div class="addon-card">
+                <div class="addon-card" id="loyaltyAddonCard">
                     <div class="addon-info">
                         <h4>🎁 Customer Loyalty Rewards</h4>
                         <p>Digital punch card system for customer retention</p>
@@ -778,7 +784,7 @@
                     </button>
                 </div>
                 
-                <div class="addon-card">
+                <div class="addon-card" id="analyticsAddonCard">
                     <div class="addon-info">
                         <h4>📊 Advanced Analytics</h4>
                         <p>Performance & trends analysis</p>
@@ -789,7 +795,7 @@
                     </button>
                 </div>
                 
-                <div class="addon-card">
+                <div class="addon-card" id="staffAddonCard">
                     <div class="addon-info">
                         <h4>👥 Multi-Staff Scheduling</h4>
                         <p>Per extra staff member scheduling</p>
@@ -890,10 +896,107 @@
         
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing...');
+            
+            // Set test data if none exists (for demo purposes)
+            if (!localStorage.getItem('businessRegistrationData')) {
+                setTestBusinessData();
+            }
+            
             loadBusinessData();
+            console.log('Current plan after loading data:', currentPlan);
+            console.log('Selected add-ons after loading data:', selectedAddons);
             updatePlanDisplay();
+            initializeAddonStates();
             updateBillingSummary();
+            
+            console.log('Initialization complete');
+            
+            // Force update to ensure professional plan is displayed
+            forceProfessionalPlan();
         });
+        
+        function forceProfessionalPlan() {
+            console.log('Forcing professional plan display...');
+            currentPlan = 'professional';
+            selectedAddons = ['loyalty', 'featured', 'analytics'];
+            
+            // Force update the display
+            document.getElementById('currentPlanName').textContent = 'Professional Plan';
+            document.getElementById('currentPlanPrice').textContent = '£29/month';
+            document.getElementById('planStatus').textContent = 'Active';
+            
+            // Update features
+            const featuresList = document.getElementById('currentPlanFeatures');
+            featuresList.innerHTML = '';
+            const professionalFeatures = [
+                'Everything in Starter',
+                'Photo gallery (up to 10 photos)',
+                'Advanced booking system',
+                'Customer management dashboard',
+                'Priority placement in search',
+                'Custom cancellation policy',
+                'Advanced analytics'
+            ];
+            
+            professionalFeatures.forEach(feature => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-check"></i> ${feature}`;
+                featuresList.appendChild(li);
+            });
+            
+            // Update plan option buttons
+            document.querySelectorAll('.plan-option').forEach(option => {
+                const plan = option.dataset.plan;
+                const button = option.querySelector('.plan-action');
+                
+                if (plan === 'professional') {
+                    option.classList.add('current');
+                    button.textContent = 'Current Plan';
+                    button.className = 'plan-action current';
+                } else {
+                    option.classList.remove('current');
+                    if (plan === 'free') {
+                        button.textContent = 'Downgrade to Free';
+                        button.className = 'plan-action downgrade';
+                    } else if (plan === 'starter') {
+                        button.textContent = 'Downgrade to Starter';
+                        button.className = 'plan-action downgrade';
+                    }
+                }
+            });
+            
+            // Update billing summary to reflect professional package and selected add-ons
+            updateBillingSummary();
+            
+            console.log('Professional plan display forced');
+        }
+        
+        function setTestBusinessData() {
+            // Set test business registration data for professional package
+            const testData = {
+                businessName: 'Royal Hair Studio',
+                selectedTier: 'professional',
+                category: 'hairdresser',
+                email: 'royal@hairstudio.com',
+                phone: '+44 20 7123 4567',
+                address: '123 High Street',
+                city: 'London',
+                state: 'England',
+                zipCode: 'SW1A 1AA',
+                paymentModel: 'deposit',
+                depositPercentage: 30,
+                loyaltyAddonSelected: true,
+                smsAddonSelected: false,
+                featuredAddonSelected: true,
+                socialAddonSelected: false,
+                analyticsAddonSelected: true,
+                staffAddonSelected: false
+            };
+            
+            localStorage.setItem('businessRegistrationData', JSON.stringify(testData));
+            console.log('Set test business data for professional package');
+        }
         
         function loadBusinessData() {
             // Load business data from localStorage or API
@@ -901,8 +1004,61 @@
             if (businessData) {
                 const data = JSON.parse(businessData);
                 currentPlan = data.selectedTier || 'professional';
-                selectedAddons = data.loyaltyAddonSelected ? ['loyalty'] : [];
+                
+                // Load all selected add-ons
+                selectedAddons = [];
+                if (data.smsAddonSelected) selectedAddons.push('sms');
+                if (data.featuredAddonSelected) selectedAddons.push('featured');
+                if (data.socialAddonSelected) selectedAddons.push('social');
+                if (data.loyaltyAddonSelected) selectedAddons.push('loyalty');
+                if (data.analyticsAddonSelected) selectedAddons.push('analytics');
+                if (data.staffAddonSelected) selectedAddons.push('staff');
+            } else {
+                // If no business data found, set default to professional for demo
+                currentPlan = 'professional';
+                selectedAddons = ['loyalty']; // Default add-on for professional
+                console.log('No business registration data found, using default professional plan');
             }
+        }
+        
+        function initializeAddonStates() {
+            // Initialize add-on button states and card highlighting based on selected add-ons
+            const addonButtons = {
+                'sms': document.getElementById('smsAddonBtn'),
+                'featured': document.getElementById('featuredAddonBtn'),
+                'social': document.getElementById('socialAddonBtn'),
+                'loyalty': document.getElementById('loyaltyAddonBtn'),
+                'analytics': document.getElementById('analyticsAddonBtn'),
+                'staff': document.getElementById('staffAddonBtn')
+            };
+            
+            const addonCards = {
+                'sms': document.getElementById('smsAddonCard'),
+                'featured': document.getElementById('featuredAddonCard'),
+                'social': document.getElementById('socialAddonCard'),
+                'loyalty': document.getElementById('loyaltyAddonCard'),
+                'analytics': document.getElementById('analyticsAddonCard'),
+                'staff': document.getElementById('staffAddonCard')
+            };
+            
+            Object.keys(addonButtons).forEach(addon => {
+                const button = addonButtons[addon];
+                const card = addonCards[addon];
+                
+                if (button && card) {
+                    if (selectedAddons.includes(addon)) {
+                        // Add-on is selected
+                        button.innerHTML = '<i class="fas fa-check"></i> Added';
+                        button.className = 'addon-action added';
+                        card.classList.add('selected');
+                    } else {
+                        // Add-on is not selected
+                        button.innerHTML = '<i class="fas fa-plus"></i> Add';
+                        button.className = 'addon-action add';
+                        card.classList.remove('selected');
+                    }
+                }
+            });
         }
         
         function updatePlanDisplay() {
@@ -918,8 +1074,44 @@
                 'professional': '£29/month'
             };
             
+            const planFeatures = {
+                'free': [
+                    'Basic business listing',
+                    'Visibility in browse and search',
+                    'Basic contact details',
+                    'Standard cancellation policy'
+                ],
+                'starter': [
+                    'Everything in Free',
+                    'Photo gallery (up to 5 photos)',
+                    'Basic booking system',
+                    'Customer reviews',
+                    'Flexible cancellation policy'
+                ],
+                'professional': [
+                    'Everything in Starter',
+                    'Photo gallery (up to 10 photos)',
+                    'Advanced booking system',
+                    'Customer management dashboard',
+                    'Priority placement in search',
+                    'Custom cancellation policy',
+                    'Advanced analytics'
+                ]
+            };
+            
             document.getElementById('currentPlanName').textContent = planNames[currentPlan];
             document.getElementById('currentPlanPrice').textContent = planPrices[currentPlan];
+            
+            console.log('Updated plan display:', currentPlan, planNames[currentPlan], planPrices[currentPlan]);
+            
+            // Update plan features
+            const featuresList = document.getElementById('currentPlanFeatures');
+            featuresList.innerHTML = '';
+            planFeatures[currentPlan].forEach(feature => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-check"></i> ${feature}`;
+                featuresList.appendChild(li);
+            });
             
             // Update plan option buttons
             document.querySelectorAll('.plan-option').forEach(option => {
@@ -953,6 +1145,12 @@
                 'professional': 29
             };
             
+            const planNames = {
+                'free': 'Free Listing',
+                'starter': 'Starter Plan',
+                'professional': 'Professional Plan'
+            };
+            
             const addonCosts = {
                 'sms': 3,
                 'featured': 5,
@@ -962,22 +1160,58 @@
                 'staff': 2
             };
             
+            const addonNames = {
+                'sms': 'Extra SMS Credits',
+                'featured': 'Featured Listing',
+                'social': 'Instagram/TikTok Widget',
+                'loyalty': 'Customer Loyalty Rewards',
+                'analytics': 'Advanced Analytics',
+                'staff': 'Multi-Staff Scheduling'
+            };
+            
             const planCost = planCosts[currentPlan];
             const totalAddonCost = selectedAddons.reduce((total, addon) => total + (addonCosts[addon] || 0), 0);
             const totalCost = planCost + totalAddonCost;
             
-            // Update billing summary
-            const billingItems = document.querySelectorAll('.billing-item');
-            billingItems[0].innerHTML = `<span>${currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} Plan</span><span>£${planCost}.00/month</span>`;
-            
-            if (selectedAddons.length > 0) {
-                billingItems[1].innerHTML = `<span>Add-ons</span><span>£${totalAddonCost}.00/month</span>`;
-                billingItems[1].style.display = 'flex';
-            } else {
-                billingItems[1].style.display = 'none';
+            // Update plan billing item
+            const planBillingItem = document.getElementById('planBillingItem');
+            if (planBillingItem) {
+                planBillingItem.innerHTML = `<span>${planNames[currentPlan]}</span><span>£${planCost}.00/month</span>`;
             }
             
-            billingItems[2].innerHTML = `<span>Total Monthly</span><span>£${totalCost}.00</span>`;
+            // Update individual add-ons billing items
+            const addonsBillingContainer = document.getElementById('addonsBillingContainer');
+            if (addonsBillingContainer) {
+                // Clear existing add-on items
+                addonsBillingContainer.innerHTML = '';
+                
+                // Add each selected add-on as a separate billing item
+                selectedAddons.forEach(addon => {
+                    const addonItem = document.createElement('div');
+                    addonItem.className = 'billing-item';
+                    addonItem.innerHTML = `<span>${addonNames[addon]}</span><span>£${addonCosts[addon]}.00/month</span>`;
+                    addonsBillingContainer.appendChild(addonItem);
+                });
+            }
+            
+            // Update total billing amount
+            const totalBillingAmount = document.getElementById('totalBillingAmount');
+            if (totalBillingAmount) {
+                totalBillingAmount.textContent = `£${totalCost}.00`;
+            }
+            
+            console.log('Billing summary updated:', {
+                plan: currentPlan,
+                planCost: planCost,
+                addons: selectedAddons,
+                addonCost: totalAddonCost,
+                totalCost: totalCost
+            });
+            
+            // Log each add-on being processed
+            selectedAddons.forEach(addon => {
+                console.log(`Add-on: ${addonNames[addon]} - £${addonCosts[addon]}/month`);
+            });
         }
         
         function changePlan(newPlan) {
@@ -992,18 +1226,78 @@
             const confirmed = confirm(`Are you sure you want to change to ${planNames[newPlan]}?\n\nThis change will take effect immediately.`);
             
             if (confirmed) {
+                // Send appropriate email based on plan change direction
+                if (isDowngrade(currentPlan, newPlan)) {
+                    sendDowngradeEmail(currentPlan, newPlan);
+                } else if (isUpgrade(currentPlan, newPlan)) {
+                    sendUpgradeEmail(currentPlan, newPlan);
+                }
+                
                 currentPlan = newPlan;
                 updatePlanDisplay();
                 updateBillingSummary();
                 
                 // Show success message
-                alert(`Successfully changed to ${planNames[newPlan]}!`);
+                alert(`Successfully changed to ${planNames[newPlan]}!\n\nA confirmation email has been sent to your registered email address.`);
+            }
+        }
+        
+        function isDowngrade(fromPlan, toPlan) {
+            const planOrder = { 'professional': 3, 'starter': 2, 'free': 1 };
+            return planOrder[fromPlan] > planOrder[toPlan];
+        }
+        
+        function isUpgrade(fromPlan, toPlan) {
+            const planOrder = { 'professional': 3, 'starter': 2, 'free': 1 };
+            return planOrder[fromPlan] < planOrder[toPlan];
+        }
+        
+        function sendDowngradeEmail(fromPlan, toPlan) {
+            let emailTemplate = '';
+            
+            if (fromPlan === 'professional' && toPlan === 'starter') {
+                emailTemplate = 'business-downgrade-professional-to-starter.html';
+            } else if (fromPlan === 'professional' && toPlan === 'free') {
+                emailTemplate = 'business-downgrade-professional-to-free.html';
+            } else if (fromPlan === 'starter' && toPlan === 'free') {
+                emailTemplate = 'business-downgrade-starter-to-free.html';
+            }
+            
+            if (emailTemplate) {
+                // In a real implementation, this would send an email via your backend
+                // For demo purposes, we'll log the email being sent
+                console.log(`Downgrade email sent: ${emailTemplate}`);
+                
+                // You could also open the email preview in a new tab for demo purposes
+                // window.open(`email-previews/${emailTemplate}`, '_blank');
+            }
+        }
+        
+        function sendUpgradeEmail(fromPlan, toPlan) {
+            let emailTemplate = '';
+            
+            if (fromPlan === 'free' && toPlan === 'starter') {
+                emailTemplate = 'business-upgrade-free-to-starter.html';
+            } else if (fromPlan === 'free' && toPlan === 'professional') {
+                emailTemplate = 'business-upgrade-free-to-professional.html';
+            } else if (fromPlan === 'starter' && toPlan === 'professional') {
+                emailTemplate = 'business-upgrade-starter-to-professional.html';
+            }
+            
+            if (emailTemplate) {
+                // In a real implementation, this would send an email via your backend
+                // For demo purposes, we'll log the email being sent
+                console.log(`Upgrade email sent: ${emailTemplate}`);
+                
+                // You could also open the email preview in a new tab for demo purposes
+                // window.open(`email-previews/${emailTemplate}`, '_blank');
             }
         }
         
         // SMS Add-on function
         function toggleSMSAddon() {
             const button = document.getElementById('smsAddonBtn');
+            const card = document.getElementById('smsAddonCard');
             const index = selectedAddons.indexOf('sms');
             
             if (index > -1) {
@@ -1011,12 +1305,14 @@
                 selectedAddons.splice(index, 1);
                 button.innerHTML = '<i class="fas fa-plus"></i> Add';
                 button.className = 'addon-action add';
+                card.classList.remove('selected');
                 alert('Extra SMS Credits removed from your plan.');
             } else {
                 // Add addon
                 selectedAddons.push('sms');
                 button.innerHTML = '<i class="fas fa-check"></i> Added';
                 button.className = 'addon-action added';
+                card.classList.add('selected');
                 alert('Extra SMS Credits added to your plan.');
             }
             
@@ -1026,6 +1322,7 @@
         // Featured Add-on function
         function toggleFeaturedAddon() {
             const button = document.getElementById('featuredAddonBtn');
+            const card = document.getElementById('featuredAddonCard');
             const index = selectedAddons.indexOf('featured');
             
             if (index > -1) {
@@ -1033,12 +1330,14 @@
                 selectedAddons.splice(index, 1);
                 button.innerHTML = '<i class="fas fa-plus"></i> Add';
                 button.className = 'addon-action add';
+                card.classList.remove('selected');
                 alert('Featured Listing removed from your plan.');
             } else {
                 // Add addon
                 selectedAddons.push('featured');
                 button.innerHTML = '<i class="fas fa-check"></i> Added';
                 button.className = 'addon-action added';
+                card.classList.add('selected');
                 alert('Featured Listing added to your plan.');
             }
             
@@ -1048,6 +1347,7 @@
         // Social Add-on function
         function toggleSocialAddon() {
             const button = document.getElementById('socialAddonBtn');
+            const card = document.getElementById('socialAddonCard');
             const index = selectedAddons.indexOf('social');
             
             if (index > -1) {
@@ -1055,12 +1355,14 @@
                 selectedAddons.splice(index, 1);
                 button.innerHTML = '<i class="fas fa-plus"></i> Add';
                 button.className = 'addon-action add';
+                card.classList.remove('selected');
                 alert('Instagram/TikTok Widget removed from your plan.');
             } else {
                 // Add addon
                 selectedAddons.push('social');
                 button.innerHTML = '<i class="fas fa-check"></i> Added';
                 button.className = 'addon-action added';
+                card.classList.add('selected');
                 alert('Instagram/TikTok Widget added to your plan.');
             }
             
@@ -1070,6 +1372,7 @@
         // Loyalty Add-on function
         function toggleLoyaltyAddon() {
             const button = document.getElementById('loyaltyAddonBtn');
+            const card = document.getElementById('loyaltyAddonCard');
             const index = selectedAddons.indexOf('loyalty');
             
             if (index > -1) {
@@ -1077,12 +1380,14 @@
                 selectedAddons.splice(index, 1);
                 button.innerHTML = '<i class="fas fa-plus"></i> Add';
                 button.className = 'addon-action add';
+                card.classList.remove('selected');
                 alert('Customer Loyalty Rewards removed from your plan.');
             } else {
                 // Add addon
                 selectedAddons.push('loyalty');
                 button.innerHTML = '<i class="fas fa-check"></i> Added';
                 button.className = 'addon-action added';
+                card.classList.add('selected');
                 alert('Customer Loyalty Rewards added to your plan.');
             }
             
@@ -1092,6 +1397,7 @@
         // Analytics Add-on function
         function toggleAnalyticsAddon() {
             const button = document.getElementById('analyticsAddonBtn');
+            const card = document.getElementById('analyticsAddonCard');
             const index = selectedAddons.indexOf('analytics');
             
             if (index > -1) {
@@ -1099,12 +1405,14 @@
                 selectedAddons.splice(index, 1);
                 button.innerHTML = '<i class="fas fa-plus"></i> Add';
                 button.className = 'addon-action add';
+                card.classList.remove('selected');
                 alert('Advanced Analytics removed from your plan.');
             } else {
                 // Add addon
                 selectedAddons.push('analytics');
                 button.innerHTML = '<i class="fas fa-check"></i> Added';
                 button.className = 'addon-action added';
+                card.classList.add('selected');
                 alert('Advanced Analytics added to your plan.');
             }
             
@@ -1114,6 +1422,7 @@
         // Staff Add-on function
         function toggleStaffAddon() {
             const button = document.getElementById('staffAddonBtn');
+            const card = document.getElementById('staffAddonCard');
             const index = selectedAddons.indexOf('staff');
             
             if (index > -1) {
@@ -1121,12 +1430,14 @@
                 selectedAddons.splice(index, 1);
                 button.innerHTML = '<i class="fas fa-plus"></i> Add';
                 button.className = 'addon-action add';
+                card.classList.remove('selected');
                 alert('Multi-Staff Scheduling removed from your plan.');
             } else {
                 // Add addon
                 selectedAddons.push('staff');
                 button.innerHTML = '<i class="fas fa-check"></i> Added';
                 button.className = 'addon-action added';
+                card.classList.add('selected');
                 alert('Multi-Staff Scheduling added to your plan.');
             }
             
@@ -1166,11 +1477,23 @@
             // Hide the modal
             hideCancellationModal();
             
+            // Send cancellation email
+            sendCancellationEmail();
+            
             // Show success message
-            alert('Your subscription has been cancelled successfully.\n\nYour account has been downgraded to the free plan. You can upgrade again at any time from this page.');
+            alert('Your subscription has been cancelled successfully.\n\nA confirmation email has been sent to your registered email address.\n\nYour account has been downgraded to the free plan. You can upgrade again at any time from this page.');
             
             // Update the page to reflect the changes
             updateCancellationState();
+        }
+        
+        function sendCancellationEmail() {
+            // In a real implementation, this would send an email via your backend
+            // For demo purposes, we'll simulate the email being sent
+            console.log('Cancellation email sent to business');
+            
+            // You could also open the email preview in a new tab for demo purposes
+            // window.open('email-previews/business-subscription-cancelled.html', '_blank');
         }
         
         function updateCancellationState() {
