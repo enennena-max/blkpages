@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refund Flow Demo - Black Pages</title>
+    <link rel="stylesheet" href="css/refund-flow.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-header h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .demo-header p {
+            color: #999;
+            font-size: 1.1rem;
+        }
+        
+        .demo-section {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+        }
+        
+        .demo-section h2 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .booking-card {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+        }
+        
+        .booking-card:hover {
+            border-color: #4ade80;
+            transform: translateY(-2px);
+        }
+        
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .booking-title {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .booking-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-confirmed {
+            background: #065f46;
+            color: #10b981;
+        }
+        
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-item {
+            color: #ccc;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 4px;
+        }
+        
+        .detail-value {
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .booking-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-refund {
+            background: #f87171;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+        
+        .btn-refund:hover {
+            background: #ef4444;
+            transform: translateY(-1px);
+        }
+        
+        .btn-view {
+            background: #374151;
+            color: #fff;
+            border: 1px solid #4b5563;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+        
+        .btn-view:hover {
+            background: #4b5563;
+        }
+        
+        .policy-info {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .policy-info h4 {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        
+        .policy-info p {
+            color: #ccc;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .test-controls {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .test-controls h3 {
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-test {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+        
+        .btn-test:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Header -->
+        <div class="demo-header">
+            <h1>Refund Flow Demo</h1>
+            <p>Test the refund processing system with different cancellation policies</p>
+        </div>
+
+        <!-- Demo Bookings -->
+        <div class="demo-section">
+            <h2>📋 Sample Bookings</h2>
+            
+            <!-- Flexible Policy Booking -->
+            <div class="booking-card">
+                <div class="booking-header">
+                    <div class="booking-title">Haircut & Styling</div>
+                    <div class="booking-status status-confirmed">Confirmed</div>
+                </div>
+                
+                <div class="booking-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Business</div>
+                        <div class="detail-value">Hair Studio Pro</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Date & Time</div>
+                        <div class="detail-value">Jan 20, 2024 at 2:00 PM</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Amount</div>
+                        <div class="detail-value">£45.00</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">Confirmed</div>
+                    </div>
+                </div>
+                
+                <div class="policy-info">
+                    <h4>📋 Cancellation Policy: Flexible</h4>
+                    <p>Full refund up to 24 hours before booking</p>
+                </div>
+                
+                <div class="booking-actions">
+                    <button class="btn-refund" data-refund-trigger data-booking-id="booking_1">
+                        <i class="fas fa-undo"></i> Request Refund
+                    </button>
+                    <button class="btn-view">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                </div>
+            </div>
+
+            <!-- Moderate Policy Booking -->
+            <div class="booking-card">
+                <div class="booking-header">
+                    <div class="booking-title">Full Service Package</div>
+                    <div class="booking-status status-confirmed">Confirmed</div>
+                </div>
+                
+                <div class="booking-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Business</div>
+                        <div class="detail-value">Beauty Lounge</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Date & Time</div>
+                        <div class="detail-value">Jan 25, 2024 at 10:00 AM</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Amount</div>
+                        <div class="detail-value">£120.00</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">Confirmed</div>
+                    </div>
+                </div>
+                
+                <div class="policy-info">
+                    <h4>📋 Cancellation Policy: Moderate</h4>
+                    <p>Full refund up to 5 days before booking</p>
+                </div>
+                
+                <div class="booking-actions">
+                    <button class="btn-refund" data-refund-trigger data-booking-id="booking_2">
+                        <i class="fas fa-undo"></i> Request Refund
+                    </button>
+                    <button class="btn-view">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                </div>
+            </div>
+
+            <!-- Strict Policy Booking -->
+            <div class="booking-card">
+                <div class="booking-header">
+                    <div class="booking-title">VIP Treatment</div>
+                    <div class="booking-status status-confirmed">Confirmed</div>
+                </div>
+                
+                <div class="booking-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Business</div>
+                        <div class="detail-value">Luxury Spa</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Date & Time</div>
+                        <div class="detail-value">Jan 18, 2024 at 3:00 PM</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Amount</div>
+                        <div class="detail-value">£200.00</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">Confirmed</div>
+                    </div>
+                </div>
+                
+                <div class="policy-info">
+                    <h4>📋 Cancellation Policy: Strict</h4>
+                    <p>No refunds, but can reschedule up to 24 hours before</p>
+                </div>
+                
+                <div class="booking-actions">
+                    <button class="btn-refund" data-refund-trigger data-booking-id="booking_3">
+                        <i class="fas fa-undo"></i> Request Refund
+                    </button>
+                    <button class="btn-view">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                </div>
+            </div>
+
+            <!-- Non-Refundable Booking -->
+            <div class="booking-card">
+                <div class="booking-header">
+                    <div class="booking-title">Special Event Styling</div>
+                    <div class="booking-status status-confirmed">Confirmed</div>
+                </div>
+                
+                <div class="booking-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Business</div>
+                        <div class="detail-value">Event Stylists</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Date & Time</div>
+                        <div class="detail-value">Jan 22, 2024 at 1:00 PM</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Amount</div>
+                        <div class="detail-value">£80.00</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">Confirmed</div>
+                    </div>
+                </div>
+                
+                <div class="policy-info">
+                    <h4>📋 Cancellation Policy: Non-Refundable</h4>
+                    <p>No refunds or rescheduling allowed</p>
+                </div>
+                
+                <div class="booking-actions">
+                    <button class="btn-refund" data-refund-trigger data-booking-id="booking_4">
+                        <i class="fas fa-undo"></i> Request Refund
+                    </button>
+                    <button class="btn-view">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="demo-section">
+            <h2>🧪 Test Controls</h2>
+            <div class="test-controls">
+                <h3>Quick Test Actions</h3>
+                <div class="test-buttons">
+                    <button class="btn-test" onclick="testRefundable()">
+                        Test Refundable Booking
+                    </button>
+                    <button class="btn-test" onclick="testNonRefundable()">
+                        Test Non-Refundable Booking
+                    </button>
+                    <button class="btn-test" onclick="testStripeIntegration()">
+                        Test Stripe Integration
+                    </button>
+                    <button class="btn-test" onclick="testEmailSystem()">
+                        Test Email System
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Overview -->
+        <div class="demo-section">
+            <h2>✨ Refund Flow Features</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: #2a2a2a; padding: 20px; border-radius: 10px;">
+                    <h4 style="color: #4ade80; margin-bottom: 10px;">🔄 Policy-Based Logic</h4>
+                    <p style="color: #ccc; margin: 0;">Automatically checks business cancellation policies to determine refund eligibility</p>
+                </div>
+                <div style="background: #2a2a2a; padding: 20px; border-radius: 10px;">
+                    <h4 style="color: #3b82f6; margin-bottom: 10px;">💳 Stripe Integration</h4>
+                    <p style="color: #ccc; margin: 0;">Seamless refund processing through Stripe API with real-time status updates</p>
+                </div>
+                <div style="background: #2a2a2a; padding: 20px; border-radius: 10px;">
+                    <h4 style="color: #f59e0b; margin-bottom: 10px;">📧 Email Notifications</h4>
+                    <p style="color: #ccc; margin: 0;">Automatic email confirmations for successful refunds with processing timelines</p>
+                </div>
+                <div style="background: #2a2a2a; padding: 20px; border-radius: 10px;">
+                    <h4 style="color: #ef4444; margin-bottom: 10px;">❌ Non-Refundable Handling</h4>
+                    <p style="color: #ccc; margin: 0;">Clear messaging for non-refundable bookings with alternative options</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/refund-flow.js"></script>
+    <script>
+        // Test functions
+        function testRefundable() {
+            const bookingData = {
+                id: 'test_1',
+                businessId: 'biz_123',
+                businessName: 'Test Studio',
+                serviceName: 'Test Service',
+                amount: 50.00,
+                currency: 'GBP',
+                bookingDate: '2024-01-15',
+                serviceDate: '2024-01-25',
+                policy: 'flexible',
+                customerEmail: 'test@example.com',
+                stripePaymentIntentId: 'pi_test123'
+            };
+            refundFlow.processRefundRequest(bookingData);
+        }
+
+        function testNonRefundable() {
+            const bookingData = {
+                id: 'test_2',
+                businessId: 'biz_456',
+                businessName: 'Test Studio',
+                serviceName: 'Test Service',
+                amount: 50.00,
+                currency: 'GBP',
+                bookingDate: '2024-01-15',
+                serviceDate: '2024-01-25',
+                policy: 'non-refundable',
+                customerEmail: 'test@example.com',
+                stripePaymentIntentId: 'pi_test456'
+            };
+            refundFlow.processRefundRequest(bookingData);
+        }
+
+        function testStripeIntegration() {
+            alert('Stripe integration test would process a real refund via Stripe API');
+        }
+
+        function testEmailSystem() {
+            alert('Email system test would send a refund confirmation email');
+        }
+    </script>
+</body>
+</html>

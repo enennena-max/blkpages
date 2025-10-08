@@ -354,9 +354,18 @@
                 localStorage.setItem('userPhone', phone);
                 localStorage.setItem('userLoggedIn', 'true');
                 
-                // Redirect back to booking page after 2 seconds
+                // Check for return URL and redirect accordingly
                 setTimeout(() => {
-                    window.location.href = 'business-profile.html';
+                    const returnUrl = localStorage.getItem('returnUrl');
+                    if (returnUrl) {
+                        // Clear the return URL
+                        localStorage.removeItem('returnUrl');
+                        // Redirect back to original page
+                        window.location.href = returnUrl;
+                    } else {
+                        // Default redirect to dashboard
+                        window.location.href = 'customer-dashboard.html';
+                    }
                 }, 2000);
             }, 1500);
         });

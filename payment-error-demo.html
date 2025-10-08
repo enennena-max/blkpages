@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Error Handling Demo - Black Pages</title>
+    <link rel="stylesheet" href="css/payment-error-handling.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-header h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .demo-header p {
+            color: #999;
+            font-size: 1.1rem;
+        }
+        
+        .demo-section {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+        }
+        
+        .demo-section h2 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .feature-card {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+        
+        .feature-card h3 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-card p {
+            color: #ccc;
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        .test-controls {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-controls h3 {
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-test {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-test:hover {
+            background: #2563eb;
+        }
+        
+        .btn-test.danger {
+            background: #ef4444;
+        }
+        
+        .btn-test.danger:hover {
+            background: #dc2626;
+        }
+        
+        .btn-test.warning {
+            background: #f59e0b;
+            color: #000;
+        }
+        
+        .btn-test.warning:hover {
+            background: #d97706;
+        }
+        
+        .error-scenarios {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .error-scenarios h4 {
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .scenario-list {
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .scenario-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .scenario-list li {
+            margin-bottom: 8px;
+        }
+        
+        .integration-info {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .integration-info h4 {
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .integration-steps {
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .integration-steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .integration-steps li {
+            margin-bottom: 8px;
+        }
+        
+        .code-block {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            color: #4ade80;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Header -->
+        <div class="demo-header">
+            <h1>Payment Error Handling Demo</h1>
+            <p>Test comprehensive error handling for payment failures, abandoned payments, and disputes</p>
+        </div>
+
+        <!-- Features Overview -->
+        <div class="demo-section">
+            <h2>🛡️ Error Handling Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Payment Failures</h3>
+                    <p>Comprehensive handling of payment failures with clear error messages, retry options, and alternative payment methods.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fas fa-clock"></i> Abandoned Payments</h3>
+                    <p>Automatic detection of abandoned payment sessions with timeout handling and no fund capture for incomplete payments.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fas fa-exclamation-circle"></i> Dispute Management</h3>
+                    <p>Real-time dispute notifications with evidence submission workflows and business dashboard integration.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fas fa-ban"></i> Chargeback Handling</h3>
+                    <p>Automated chargeback notifications with evidence collection and business support for dispute resolution.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fas fa-envelope"></i> Business Notifications</h3>
+                    <p>Instant email notifications for disputes and chargebacks with detailed information and action requirements.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fas fa-chart-line"></i> Error Analytics</h3>
+                    <p>Comprehensive error tracking and analytics to identify patterns and improve payment success rates.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="demo-section">
+            <h2>🧪 Test Error Scenarios</h2>
+            <div class="test-controls">
+                <h3>Simulate Error Conditions</h3>
+                <div class="test-buttons">
+                    <button class="btn-test danger" onclick="testPaymentFailure()">
+                        <i class="fas fa-exclamation-triangle"></i> Test Payment Failure
+                    </button>
+                    <button class="btn-test warning" onclick="testPaymentAbandonment()">
+                        <i class="fas fa-clock"></i> Test Payment Abandonment
+                    </button>
+                    <button class="btn-test warning" onclick="testDispute()">
+                        <i class="fas fa-exclamation-circle"></i> Test Dispute
+                    </button>
+                    <button class="btn-test danger" onclick="testChargeback()">
+                        <i class="fas fa-ban"></i> Test Chargeback
+                    </button>
+                    <button class="btn-test" onclick="viewBusinessDashboard()">
+                        <i class="fas fa-chart-line"></i> View Business Dashboard
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Scenarios -->
+        <div class="demo-section">
+            <h2>📋 Error Scenarios Handled</h2>
+            <div class="error-scenarios">
+                <h4>Payment Failures</h4>
+                <div class="scenario-list">
+                    <ul>
+                        <li><strong>Card Declined:</strong> "❌ Your card was declined. Please try a different payment method."</li>
+                        <li><strong>Insufficient Funds:</strong> "❌ Insufficient funds. Please check your account balance or use a different card."</li>
+                        <li><strong>Expired Card:</strong> "❌ Your card has expired. Please use a different payment method."</li>
+                        <li><strong>Network Error:</strong> "❌ Network error occurred. Please check your connection and try again."</li>
+                        <li><strong>Generic Failure:</strong> "❌ Payment could not be completed. Please try again or use another card."</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Abandoned Payment Handling -->
+        <div class="demo-section">
+            <h2>⏰ Abandoned Payment Handling</h2>
+            <div class="error-scenarios">
+                <h4>Timeout Protection</h4>
+                <div class="scenario-list">
+                    <ul>
+                        <li><strong>Session Timeout:</strong> Automatic detection after 10 minutes of inactivity</li>
+                        <li><strong>No Fund Capture:</strong> Abandoned payments do not capture funds or confirm bookings</li>
+                        <li><strong>User Notification:</strong> "⏰ Payment session expired. Please start a new booking."</li>
+                        <li><strong>Cleanup Process:</strong> Automatic cleanup of pending payment sessions</li>
+                        <li><strong>Retry Mechanism:</strong> Users can start fresh booking process</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dispute Management -->
+        <div class="demo-section">
+            <h2>⚖️ Dispute & Chargeback Management</h2>
+            <div class="error-scenarios">
+                <h4>Business Notifications</h4>
+                <div class="scenario-list">
+                    <ul>
+                        <li><strong>Dispute Alert:</strong> "⚠️ A payment dispute has been raised for booking #[ID]. Please provide supporting evidence."</li>
+                        <li><strong>Chargeback Alert:</strong> "⚠️ A chargeback has been raised for booking #[ID]. Please provide supporting evidence."</li>
+                        <li><strong>Email Notifications:</strong> Instant email alerts to business owners</li>
+                        <li><strong>Dashboard Integration:</strong> Real-time updates in business dashboard</li>
+                        <li><strong>Evidence Submission:</strong> Easy evidence upload and submission workflow</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integration Information -->
+        <div class="demo-section">
+            <h2>🔧 Integration & Implementation</h2>
+            <div class="integration-info">
+                <h4>Error Handling Implementation</h4>
+                <div class="integration-steps">
+                    <ol>
+                        <li>Monitor payment events and detect failures</li>
+                        <li>Implement timeout detection for abandoned payments</li>
+                        <li>Set up dispute and chargeback webhooks</li>
+                        <li>Configure business notification system</li>
+                        <li>Create evidence submission workflow</li>
+                        <li>Implement error analytics and reporting</li>
+                    </ol>
+                    
+                    <div class="code-block">
+// Error Handling Implementation
+document.addEventListener('paymentFailed', (e) => {
+    paymentErrorHandling.handlePaymentFailure(e.detail);
+});
+
+document.addEventListener('paymentAbandoned', (e) => {
+    paymentErrorHandling.handlePaymentAbandonment(e.detail);
+});
+
+document.addEventListener('disputeRaised', (e) => {
+    paymentErrorHandling.handleDispute(e.detail);
+});
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Dashboard Features -->
+        <div class="demo-section">
+            <h2>📊 Business Dashboard Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3><i class="fas fa-chart-bar"></i> Error Statistics</h3>
+                    <p>Real-time statistics on payment failures, abandonments, disputes, and chargebacks with trend analysis.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fas fa-bell"></i> Alert Management</h3>
+                    <p>Centralized alert system for all payment issues with priority levels and action requirements.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fas fa-file-upload"></i> Evidence Submission</h3>
+                    <p>Easy evidence upload system for disputes and chargebacks with file management and tracking.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fas fa-envelope"></i> Notification Center</h3>
+                    <p>Comprehensive notification system with email alerts, dashboard updates, and mobile notifications.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/payment-error-handling.js"></script>
+    <script>
+        // Test functions
+        function testPaymentFailure() {
+            paymentErrorHandling.testPaymentFailure();
+        }
+
+        function testPaymentAbandonment() {
+            paymentErrorHandling.testPaymentAbandonment();
+        }
+
+        function testDispute() {
+            paymentErrorHandling.testDispute();
+        }
+
+        function testChargeback() {
+            paymentErrorHandling.testChargeback();
+        }
+
+        function viewBusinessDashboard() {
+            window.open('business-dashboard-errors.html', '_blank');
+        }
+    </script>
+</body>
+</html>

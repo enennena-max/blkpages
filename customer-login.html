@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - BlkPages</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/suppress-tailwind-warning.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -267,9 +268,21 @@
                     localStorage.setItem('userPhone', '07123456789');
                     localStorage.setItem('userLoggedIn', 'true');
                     
-                    // Redirect to dashboard after 2 seconds
+                    // Check for return URL and redirect accordingly
                     setTimeout(() => {
-                        window.location.href = 'customer-dashboard.html';
+                        const returnUrl = localStorage.getItem('returnUrl');
+                        console.log('Return URL found:', returnUrl);
+                        if (returnUrl) {
+                            // Clear the return URL
+                            localStorage.removeItem('returnUrl');
+                            console.log('Redirecting back to:', returnUrl);
+                            // Redirect back to original page
+                            window.location.href = returnUrl;
+                        } else {
+                            console.log('No return URL found, redirecting to dashboard');
+                            // Default redirect to dashboard
+                            window.location.href = 'customer-dashboard.html';
+                        }
                     }, 2000);
                 } else {
                     showError('Invalid email or password. Please try again.');

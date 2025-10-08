@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlkPages - Find Black-owned Businesses Near You</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/suppress-tailwind-warning.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -49,8 +50,8 @@
                             '50%': { opacity: '0.8' }
                         }
                     }
-                }
-            }
+                },
+            },
         }
     </script>
     <style>
@@ -366,9 +367,11 @@
                     <a href="index.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Home</a>
                     <a href="search-results.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Browse</a>
                     <a href="offers.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Offers</a>
-                    <a href="why-list-with-us.html#pricing" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Plans</a>
                     <a href="preview-test.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
                         <i class="fas fa-flask mr-1"></i>Preview Test
+                    </a>
+                    <a href="demo-hub.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                        <i class="fas fa-cogs mr-1"></i>Demo Hub
                     </a>
                     </div>
                 
@@ -380,11 +383,15 @@
                         <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
                     </div>
                     
-                    <!-- Sign In / Customer Menu -->
+                    <!-- Sign In / Sign Up (for signed out users) -->
                     <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal(event)">
+                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
                             <i class="fas fa-sign-in-alt mr-1"></i>Sign In
                     </button>
+                        <span class="text-text-secondary">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
                     </div>
                     
                     <!-- Customer Menu (for logged-in users) -->
@@ -394,8 +401,12 @@
                     </button>
                         <div class="customer-dropdown" id="customerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
                             <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                                <i class="fas fa-user"></i>
-                                Account
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
                             </a>
                             <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -424,9 +435,9 @@
                         <span class="basket-count" id="mobileBasketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
                     </div>
                     
-                    <!-- Account Icon -->
+                    <!-- Sign In / Sign Up (Mobile) -->
                     <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal(event)">
+                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
                         <i class="fas fa-sign-in-alt"></i>
                     </button>
                     </div>
@@ -438,8 +449,12 @@
                     </button>
                         <div class="customer-dropdown" id="mobileCustomerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
                             <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                                <i class="fas fa-user"></i>
-                                Account
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
                             </a>
                             <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
                                 <i class="fas fa-sign-out-alt"></i>
@@ -497,7 +512,7 @@
                     </button>
                 </form>
                 <div class="mt-4 text-center">
-                    <p class="text-white/70 text-sm">Don't have an account? <a href="customer-register.html" class="text-neon-pink hover:text-neon-purple transition-colors duration-300">Sign up</a></p>
+                    <p class="text-white/70 text-sm">Don't have an account? <a href="#" onclick="redirectToRegister()" class="text-neon-pink hover:text-neon-purple transition-colors duration-300">Sign up</a></p>
                 </div>
             </div>
         </div>
@@ -1593,15 +1608,17 @@
         }
         
         function signOut() {
-            // Hide customer menu, show login
-            document.getElementById('authLinks').style.display = 'flex';
-            document.getElementById('mobileAuthLinks').style.display = 'flex';
-            document.getElementById('customerMenu').style.display = 'none';
-            document.getElementById('mobileCustomerMenu').style.display = 'none';
+            // Clear all login data
+            localStorage.removeItem('customerLoggedIn');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userLoggedIn');
             
             // Close any open dropdowns
             document.getElementById('customerDropdown').style.display = 'none';
             document.getElementById('mobileCustomerDropdown').style.display = 'none';
+            
+            // Update UI
+            checkLoginStatus();
             
             alert('Signed out successfully!');
         }
@@ -1632,6 +1649,60 @@
                 // Redirect to booking page for the specific business
                 window.location.href = `booking.html?business=${businessId}`;
             }
+        }
+
+        // Check login status and update UI
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('customerLoggedIn') === 'true';
+            const userEmail = localStorage.getItem('userEmail');
+            
+            if (isLoggedIn && userEmail) {
+                // User is logged in - show customer menu, hide sign in/up
+                document.getElementById('authLinks').style.display = 'none';
+                document.getElementById('mobileAuthLinks').style.display = 'none';
+                document.getElementById('customerMenu').style.display = 'block';
+                document.getElementById('mobileCustomerMenu').style.display = 'block';
+                
+                // Update initials
+                const initials = userEmail.charAt(0).toUpperCase();
+                document.getElementById('customerInitialText').textContent = initials;
+                document.getElementById('mobileCustomerInitialText').textContent = initials;
+            } else {
+                // User is not logged in - show sign in/up, hide customer menu
+                document.getElementById('authLinks').style.display = 'flex';
+                document.getElementById('mobileAuthLinks').style.display = 'flex';
+                document.getElementById('customerMenu').style.display = 'none';
+                document.getElementById('mobileCustomerMenu').style.display = 'none';
+            }
+        }
+
+        // Initialize login state on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+        });
+
+        // Redirect to account tab in customer dashboard
+        function redirectToAccountTab() {
+            // Set a flag to indicate we want to go to the account tab
+            localStorage.setItem('redirectToAccount', 'true');
+            // Navigate to customer dashboard
+            window.location.href = 'customer-dashboard.html';
+        }
+
+        // Redirect to login page with return URL
+        function redirectToLogin() {
+            // Store current page URL for redirect after login
+            localStorage.setItem('returnUrl', window.location.href);
+            // Navigate to login page
+            window.location.href = 'customer-login.html';
+        }
+
+        // Redirect to register page with return URL
+        function redirectToRegister() {
+            // Store current page URL for redirect after registration
+            localStorage.setItem('returnUrl', window.location.href);
+            // Navigate to register page
+            window.location.href = 'customer-register.html';
         }
 
     </script>

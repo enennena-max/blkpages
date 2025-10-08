@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Royal Hair Studio - BlkPages</title>
     <script src="https://cdn.tailwindcss.com?v=2"></script>
+    <script src="js/suppress-tailwind-warning.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -2182,7 +2183,7 @@
                     
                     <!-- Sign In / Customer Menu -->
                     <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal(event)">
+                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
                             <i class="fas fa-sign-in-alt mr-1"></i>Sign In
                         </button>
                     </div>
@@ -2292,7 +2293,7 @@
                     </button>
                 </form>
                 <div class="mt-4 text-center">
-                    <p class="text-white/70 text-sm">Don't have an account? <a href="customer-register.html" class="text-neon-pink hover:text-neon-purple transition-colors duration-300">Sign up</a></p>
+                    <p class="text-white/70 text-sm">Don't have an account? <a href="#" onclick="redirectToRegister()" class="text-neon-pink hover:text-neon-purple transition-colors duration-300">Sign up</a></p>
                 </div>
             </div>
         </div>
@@ -2571,7 +2572,7 @@
                     <div class="checkout-options-simple">
                         <p class="checkout-text">
                             <a href="#" class="checkout-link" onclick="saveBasketContents(); toggleLoginModal(event);">Sign in</a> or 
-                            <a href="customer-register.html" class="checkout-link" onclick="saveBasketContents()">sign up</a> 
+                            <a href="#" class="checkout-link" onclick="saveBasketContents(); redirectToRegister();">sign up</a> 
                             to save your details, or 
                             <span class="guest-text">continue as guest</span>
                         </p>
@@ -5770,6 +5771,22 @@ This policy is set by ${businessName}. BlkPages processes payments via Stripe on
                 document.getElementById('mobileCustomerDropdown').style.display = 'none';
             }
         });
+
+        // Redirect to login page with return URL
+        function redirectToLogin() {
+            // Store current page URL for redirect after login
+            localStorage.setItem('returnUrl', window.location.href);
+            // Navigate to login page
+            window.location.href = 'customer-login.html';
+        }
+
+        // Redirect to register page with return URL
+        function redirectToRegister() {
+            // Store current page URL for redirect after registration
+            localStorage.setItem('returnUrl', window.location.href);
+            // Navigate to register page
+            window.location.href = 'customer-register.html';
+        }
     </script>
 
     <!-- Footer -->

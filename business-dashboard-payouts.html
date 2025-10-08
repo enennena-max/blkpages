@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Dashboard - Payouts | Black Pages</title>
+    <link rel="stylesheet" href="css/payout-flow.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .dashboard-title {
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .dashboard-subtitle {
+            color: #999;
+            font-size: 1rem;
+            margin: 5px 0 0 0;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+        
+        .stat-value {
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .stat-card.total .stat-value {
+            color: #059669;
+        }
+        
+        .stat-card.pending .stat-value {
+            color: #f59e0b;
+        }
+        
+        .stat-card.completed .stat-value {
+            color: #10b981;
+        }
+        
+        .stat-card.failed .stat-value {
+            color: #ef4444;
+        }
+        
+        .payouts-section {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
+        }
+        
+        .payouts-section h2 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .payouts-section h2 i {
+            color: #059669;
+        }
+        
+        .test-controls {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-controls h3 {
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-test {
+            background: #059669;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-test:hover {
+            background: #047857;
+        }
+        
+        .btn-test.warning {
+            background: #f59e0b;
+            color: #000;
+        }
+        
+        .btn-test.warning:hover {
+            background: #d97706;
+        }
+        
+        .btn-test.danger {
+            background: #ef4444;
+        }
+        
+        .btn-test.danger:hover {
+            background: #dc2626;
+        }
+        
+        .payout-filters {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .payout-filters h3 {
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .filters-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .filter-label {
+            color: #ccc;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .filter-input,
+        .filter-select {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .filter-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        
+        .btn-filter {
+            background: #059669;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-filter:hover {
+            background: #047857;
+        }
+        
+        .btn-process-payout {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-process-payout:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Payout Management</h1>
+                <p class="dashboard-subtitle">Track your payouts and earnings</p>
+            </div>
+            <button class="btn-process-payout" onclick="processNewPayout()">
+                <i class="fas fa-plus"></i> Process New Payout
+            </button>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="dashboard-stats">
+            <div class="stat-card total">
+                <div class="stat-value">£5,180.50</div>
+                <div class="stat-label">Total Payouts</div>
+            </div>
+            <div class="stat-card pending">
+                <div class="stat-value">£2,100.75</div>
+                <div class="stat-label">Pending Payouts</div>
+            </div>
+            <div class="stat-card completed">
+                <div class="stat-value">£3,079.75</div>
+                <div class="stat-label">Completed Payouts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">112</div>
+                <div class="stat-label">Total Bookings</div>
+            </div>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="test-controls">
+            <h3>🧪 Test Payout Scenarios</h3>
+            <div class="test-buttons">
+                <button class="btn-test" onclick="testPayoutProcessing()">
+                    <i class="fas fa-cog"></i> Test Payout Processing
+                </button>
+                <button class="btn-test warning" onclick="testPayoutCompleted()">
+                    <i class="fas fa-check"></i> Test Payout Completed
+                </button>
+                <button class="btn-test danger" onclick="testPayoutFailed()">
+                    <i class="fas fa-times"></i> Test Payout Failed
+                </button>
+                <button class="btn-test" onclick="viewPayoutAnalytics()">
+                    <i class="fas fa-chart-line"></i> View Analytics
+                </button>
+            </div>
+        </div>
+
+        <!-- Payout Filters -->
+        <div class="payout-filters">
+            <h3>Filter Payouts</h3>
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label class="filter-label">Date Range</label>
+                    <input type="date" class="filter-input" id="startDate">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">to</label>
+                    <input type="date" class="filter-input" id="endDate">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">All</option>
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Amount Range</label>
+                    <input type="number" class="filter-input" placeholder="Min" id="minAmount">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">&nbsp;</label>
+                    <input type="number" class="filter-input" placeholder="Max" id="maxAmount">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">&nbsp;</label>
+                    <button class="btn-filter" onclick="filterPayouts()">
+                        <i class="fas fa-search"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payouts Section -->
+        <div class="payouts-section">
+            <h2><i class="fas fa-receipt"></i> Payout History</h2>
+            <div id="payoutHistory">
+                <!-- Payouts will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Payout Analytics -->
+        <div class="payouts-section">
+            <h2><i class="fas fa-chart-bar"></i> Payout Analytics</h2>
+            <div class="payout-stats">
+                <div class="payout-stat-card total">
+                    <div class="payout-stat-value">£5,180.50</div>
+                    <div class="payout-stat-label">Total Earnings</div>
+                </div>
+                <div class="payout-stat-card pending">
+                    <div class="payout-stat-value">£2,100.75</div>
+                    <div class="payout-stat-label">Pending Amount</div>
+                </div>
+                <div class="payout-stat-card completed">
+                    <div class="payout-stat-value">£3,079.75</div>
+                    <div class="payout-stat-label">Paid Amount</div>
+                </div>
+                <div class="payout-stat-card">
+                    <div class="payout-stat-value">4</div>
+                    <div class="payout-stat-label">Total Payouts</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/payout-flow.js"></script>
+    <script>
+        // Test functions
+        function testPayoutProcessing() {
+            payoutFlow.testPayoutProcessing();
+        }
+
+        function testPayoutCompleted() {
+            payoutFlow.testPayoutCompleted();
+        }
+
+        function testPayoutFailed() {
+            const payoutData = {
+                id: 'test_payout_' + Date.now(),
+                businessId: 'biz_123',
+                amount: 1500.00,
+                currency: 'GBP',
+                bookingCount: 25,
+                status: 'failed',
+                method: 'bank_transfer',
+                reference: 'TEST-PAYOUT-' + Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                businessEmail: 'business@example.com'
+            };
+            
+            payoutFlow.handlePayoutFailed(payoutData);
+        }
+
+        function viewPayoutAnalytics() {
+            alert('Payout analytics would show detailed charts and trends');
+        }
+
+        function processNewPayout() {
+            const businessId = 'biz_123';
+            payoutFlow.processPayout(businessId);
+        }
+
+        function filterPayouts() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const status = document.getElementById('statusFilter').value;
+            const minAmount = document.getElementById('minAmount').value;
+            const maxAmount = document.getElementById('maxAmount').value;
+            
+            console.log('Filtering payouts:', { startDate, endDate, status, minAmount, maxAmount });
+            // Filter logic would be implemented here
+        }
+
+        // Listen for payout events
+        document.addEventListener('payoutAdded', (e) => {
+            console.log('New payout added:', e.detail);
+            // Reload payout history
+            payoutFlow.loadPayoutHistory();
+        });
+
+        // Initialize payout history on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            payoutFlow.loadPayoutHistory();
+        });
+    </script>
+</body>
+</html>

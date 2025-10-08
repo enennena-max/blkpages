@@ -140,7 +140,7 @@
                         
                         <!-- Sign In Link (for guests) -->
                         <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                            <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="toggleLoginModal(event)">
+                            <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
                                 <i class="fas fa-sign-in-alt mr-1"></i>Sign In
                             </button>
                         </div>
@@ -186,7 +186,7 @@
                     <!-- Action Buttons -->
                     <div class="pt-4 border-t border-white/10 space-y-3">
                         <a href="business-register.html" class="block text-text-secondary hover:text-green-400 transition-colors duration-300 font-medium py-2 text-center list-business-btn" onclick="closeMobileMenu()">+ List Business</a>
-                        <button class="block w-full py-3 rounded-xl border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 text-center" onclick="saveBasket(); window.location.href='customer-login.html'; closeMobileMenu();">
+                        <button class="block w-full py-3 rounded-xl border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 text-center" onclick="saveBasket(); redirectToLogin(); closeMobileMenu();">
                             <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                         </button>
                         <button id="mobileSignOutBtn" class="block w-full py-3 rounded-xl border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-all duration-300 text-center hidden" onclick="signOut(); closeMobileMenu();">
@@ -754,6 +754,22 @@
             updateCountdown();
             setInterval(updateCountdown, 1000);
         });
+
+        // Redirect to login page with return URL
+        function redirectToLogin() {
+            // Store current page URL for redirect after login
+            localStorage.setItem('returnUrl', window.location.href);
+            // Navigate to login page
+            window.location.href = 'customer-login.html';
+        }
+
+        // Redirect to register page with return URL
+        function redirectToRegister() {
+            // Store current page URL for redirect after registration
+            localStorage.setItem('returnUrl', window.location.href);
+            // Navigate to register page
+            window.location.href = 'customer-register.html';
+        }
     </script>
     
     <!-- Footer -->

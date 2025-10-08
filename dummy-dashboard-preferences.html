@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Preferences Demo - BlkPages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/suppress-tailwind-warning.js"></script>
+    <script src="js/unsubscribe-redirects.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'charcoal': '#1A1A1A',
+                        'charcoal-light': '#2A2A2A',
+                        'neon-pink': '#ff6b6b',
+                        'neon-purple': '#9c27b0',
+                        'neon-blue': '#2196f3',
+                        'neon-green': '#4caf50',
+                        'text-primary': '#ffffff',
+                        'text-secondary': '#e5e5e5',
+                        'text-muted': '#b3b3b3',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background: linear-gradient(135deg, #ff6b6b, #9c27b0);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen py-8 px-4">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-white mb-2">Marketing Preferences Demo</h1>
+                <p class="text-text-secondary">Toggle marketing preferences to see redirect functionality</p>
+            </div>
+
+            <!-- Customer Preferences -->
+            <div class="bg-charcoal-light rounded-2xl p-6 border border-white/10 mb-6">
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+                    <i class="fas fa-user mr-3 text-neon-blue"></i>
+                    Customer Preferences
+                </h2>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-charcoal rounded-lg">
+                        <div>
+                            <h3 class="text-white font-semibold">Marketing Emails</h3>
+                            <p class="text-text-secondary text-sm">Receive updates about new features and promotions</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="customerMarketing" onchange="handleCustomerToggle()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-charcoal rounded-lg">
+                        <div>
+                            <h3 class="text-white font-semibold">SMS Notifications</h3>
+                            <p class="text-text-secondary text-sm">Receive text messages about special offers</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="customerSMS" onchange="handleCustomerToggle()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Preferences -->
+            <div class="bg-charcoal-light rounded-2xl p-6 border border-white/10 mb-6">
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+                    <i class="fas fa-briefcase mr-3 text-neon-purple"></i>
+                    Business Preferences
+                </h2>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-charcoal rounded-lg">
+                        <div>
+                            <h3 class="text-white font-semibold">Marketing Updates</h3>
+                            <p class="text-text-secondary text-sm">Receive information about new features and opportunities</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="businessMarketing" onchange="handleBusinessToggle()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-4 bg-charcoal rounded-lg">
+                        <div>
+                            <h3 class="text-white font-semibold">Business Tips</h3>
+                            <p class="text-text-secondary text-sm">Get tips to grow your business on BlkPages</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="businessTips" onchange="handleBusinessToggle()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email Examples -->
+            <div class="bg-charcoal-light rounded-2xl p-6 border border-white/10">
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+                    <i class="fas fa-envelope mr-3 text-neon-green"></i>
+                    Marketing Email Examples
+                </h2>
+                
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-charcoal rounded-lg p-4">
+                        <h3 class="text-white font-semibold mb-2">Customer Email</h3>
+                        <p class="text-text-secondary text-sm mb-3">Example marketing email with unsubscribe link</p>
+                        <a href="email-templates/marketing-customer-example.html" 
+                           class="text-neon-blue hover:underline text-sm" 
+                           target="_blank">
+                            View Customer Email Template →
+                        </a>
+                    </div>
+                    
+                    <div class="bg-charcoal rounded-lg p-4">
+                        <h3 class="text-white font-semibold mb-2">Business Email</h3>
+                        <p class="text-text-secondary text-sm mb-3">Example marketing email with unsubscribe link</p>
+                        <a href="email-templates/marketing-business-example.html" 
+                           class="text-neon-blue hover:underline text-sm" 
+                           target="_blank">
+                            View Business Email Template →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize toggles based on current preferences (demo purposes)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate current preferences
+            document.getElementById('customerMarketing').checked = true;
+            document.getElementById('customerSMS').checked = false;
+            document.getElementById('businessMarketing').checked = true;
+            document.getElementById('businessTips').checked = false;
+        });
+
+        function handleCustomerToggle() {
+            const marketingToggle = document.getElementById('customerMarketing');
+            const smsToggle = document.getElementById('customerSMS');
+            
+            if (marketingToggle.checked) {
+                // User is subscribing to marketing emails
+                window.UnsubscribeRedirects.handleCustomerSubscribe();
+            } else {
+                // User is unsubscribing from marketing emails
+                window.UnsubscribeRedirects.handleCustomerUnsubscribe();
+            }
+        }
+
+        function handleBusinessToggle() {
+            const marketingToggle = document.getElementById('businessMarketing');
+            const tipsToggle = document.getElementById('businessTips');
+            
+            if (marketingToggle.checked) {
+                // User is subscribing to marketing updates
+                window.UnsubscribeRedirects.handleBusinessSubscribe();
+            } else {
+                // User is unsubscribing from marketing updates
+                window.UnsubscribeRedirects.handleBusinessUnsubscribe();
+            }
+        }
+    </script>
+</body>
+</html>
