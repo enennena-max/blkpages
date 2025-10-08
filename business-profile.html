@@ -2641,7 +2641,7 @@
                 <div class="card">
                     <h2>Quick Actions</h2>
                         <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <button style="width: 100%; background: transparent; color: #FF3CAC; border: 2px solid #FF3CAC; padding: 1rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#FF3CAC'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#FF3CAC'">
+                        <button style="width: 100%; background: transparent; color: #FF3CAC; border: 2px solid #FF3CAC; padding: 1rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#FF3CAC'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#FF3CAC'" onclick="trackContactClick('call')">
                                 <i class="fas fa-phone"></i> Call Now
                         </button>
                         <button style="width: 100%; background: transparent; color: #FF3CAC; border: 2px solid #FF3CAC; padding: 1rem; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#FF3CAC'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='#FF3CAC'">
@@ -4255,8 +4255,9 @@
         
         // Gallery functionality
         let currentSlideIndex = 0;
-        const slides = document.querySelectorAll('.gallery-slide');
-        const dots = document.querySelectorAll('.gallery-dot');
+        let slides = document.querySelectorAll('.gallery-slide');
+        let dots = document.querySelectorAll('.gallery-dot');
+        let uploadedPhotos = []; // Added this line
         
         function showSlide(index) {
             const slidesContainer = document.getElementById('gallerySlides');
@@ -5741,6 +5742,9 @@
                     // Save customer details for future autofill
                     saveCustomerDetails();
                     
+                    // Track enquiry/booking submission
+                    trackEnquiry('booking');
+                    
                     // Small delay to show loading state
                     setTimeout(() => {
                         window.location.href = confirmationUrl;
@@ -6172,8 +6176,311 @@
             
         });
         
+        // Load uploaded photos
+        function loadUploadedPhotos() {
+            const savedPhotos = localStorage.getItem('royalHairStudioPhotos');
+            if (savedPhotos) {
+                uploadedPhotos = JSON.parse(savedPhotos);
+                updateGalleryWithPhotos();
+            }
+        }
+        
+        function updateGalleryWithPhotos() {
+            const gallerySlides = document.getElementById('gallerySlides');
+            const galleryDots = document.querySelector('.gallery-dots');
+            
+            if (uploadedPhotos.length === 0) {
+                // Keep default placeholder slides if no photos uploaded
+                // Re-add default slides if they were removed
+                if (gallerySlides.children.length === 0 || !gallerySlides.children[0].style.backgroundImage) {
+                    gallerySlides.innerHTML = `
+                        <div class="gallery-slide"></div>
+                        <div class="gallery-slide"></div>
+                        <div class="gallery-slide"></div>
+                    `;
+                    galleryDots.innerHTML = `
+                        <button class="gallery-dot active" onclick="currentSlide(1)"></button>
+                        <button class="gallery-dot" onclick="currentSlide(2)"></button>
+                        <button class="gallery-dot" onclick="currentSlide(3)"></button>
+                    `;
+                }
+                slides = document.querySelectorAll('.gallery-slide');
+                dots = document.querySelectorAll('.gallery-dot');
+                currentSlideIndex = 0;
+                showSlide(0);
+                return;
+            }
+            
+            // Clear existing slides and dots
+            gallerySlides.innerHTML = '';
+            galleryDots.innerHTML = '';
+            
+            // Create new slides from uploaded photos
+            uploadedPhotos.forEach((photo, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'gallery-slide';
+                slide.style.backgroundImage = `url(${photo.url})`;
+                slide.style.backgroundSize = 'cover';
+                slide.style.backgroundPosition = 'center';
+                gallerySlides.appendChild(slide);
+                
+                // Create corresponding dot
+                const dot = document.createElement('button');
+                dot.className = `gallery-dot ${index === 0 ? 'active' : ''}`;
+                dot.onclick = () => currentSlide(index + 1);
+                galleryDots.appendChild(dot);
+            });
+            
+            // Update slides and dots references
+            slides = document.querySelectorAll('.gallery-slide');
+            dots = document.querySelectorAll('.gallery-dot');
+            currentSlideIndex = 0;
+            
+            // Reset gallery to first slide
+            showSlide(0);
+        }
+        
         // Initialize gallery
         showSlide(0);
+        
+        // Load uploaded photos when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUploadedPhotos();
+        });
+        
+        // Profile View Tracking
+        function trackProfileView() {
+            const businessId = 'royalHairStudio'; // Business identifier
+            const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            const currentTime = new Date().toISOString(); // Full timestamp
+            
+            // Get existing analytics data
+            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            // Initialize business analytics if not exists
+            if (!analyticsData[businessId]) {
+                analyticsData[businessId] = {
+                    totalViews: 0,
+                    dailyViews: {},
+                    lastView: null,
+                    viewHistory: []
+                };
+            }
+            
+            // Update view counts
+            analyticsData[businessId].totalViews += 1;
+            analyticsData[businessId].lastView = currentTime;
+            
+            // Update daily views
+            if (!analyticsData[businessId].dailyViews[currentDate]) {
+                analyticsData[businessId].dailyViews[currentDate] = 0;
+            }
+            analyticsData[businessId].dailyViews[currentDate] += 1;
+            
+            // Add to view history (keep last 100 views)
+            analyticsData[businessId].viewHistory.push({
+                timestamp: currentTime,
+                date: currentDate,
+                userAgent: navigator.userAgent,
+                referrer: document.referrer || 'Direct'
+            });
+            
+            // Keep only last 100 views to prevent localStorage from getting too large
+            if (analyticsData[businessId].viewHistory.length > 100) {
+                analyticsData[businessId].viewHistory = analyticsData[businessId].viewHistory.slice(-100);
+            }
+            
+            // Save updated analytics
+            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+            
+            // Trigger analytics update event
+            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+                detail: { 
+                    businessId: businessId,
+                    totalViews: analyticsData[businessId].totalViews,
+                    dailyViews: analyticsData[businessId].dailyViews[currentDate] || 0
+                }
+            }));
+            
+            console.log('Profile view tracked:', {
+                businessId: businessId,
+                totalViews: analyticsData[businessId].totalViews,
+                todayViews: analyticsData[businessId].dailyViews[currentDate]
+            });
+        }
+        
+        // Track view when page loads (only for public views, not business dashboard)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Only track if this is a public view (not from business dashboard)
+            const isBusinessDashboard = window.location.search.includes('dashboard=true') || 
+                                       document.referrer.includes('business-dashboard');
+            
+            if (!isBusinessDashboard) {
+                // Small delay to ensure page is fully loaded
+                setTimeout(trackProfileView, 1000);
+            }
+        });
+        
+        // Track contact clicks (call, message, etc.)
+        function trackContactClick(action) {
+            const businessId = 'royalHairStudio';
+            const currentDate = new Date().toISOString().split('T')[0];
+            const currentTime = new Date().toISOString();
+            
+            // Get existing analytics data
+            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            // Initialize business analytics if not exists
+            if (!analyticsData[businessId]) {
+                analyticsData[businessId] = {
+                    totalViews: 0,
+                    dailyViews: {},
+                    lastView: null,
+                    viewHistory: [],
+                    searchImpressions: 0,
+                    dailySearchImpressions: {},
+                    contactClicks: 0,
+                    dailyContactClicks: {},
+                    enquiries: 0,
+                    dailyEnquiries: {}
+                };
+            }
+            
+            // Update contact clicks
+            analyticsData[businessId].contactClicks += 1;
+            
+            // Update daily contact clicks
+            if (!analyticsData[businessId].dailyContactClicks[currentDate]) {
+                analyticsData[businessId].dailyContactClicks[currentDate] = 0;
+            }
+            analyticsData[businessId].dailyContactClicks[currentDate] += 1;
+            
+            // Save updated analytics
+            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+            
+            // Trigger analytics update event
+            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+                detail: { 
+                    businessId: businessId,
+                    type: 'contactClick',
+                    action: action,
+                    totalClicks: analyticsData[businessId].contactClicks,
+                    todayClicks: analyticsData[businessId].dailyContactClicks[currentDate]
+                }
+            }));
+            
+            console.log(`Contact click tracked (${action}):`, {
+                businessId: businessId,
+                totalClicks: analyticsData[businessId].contactClicks,
+                todayClicks: analyticsData[businessId].dailyContactClicks[currentDate]
+            });
+            
+            // Show success message
+            showContactClickSuccess(action);
+        }
+        
+        // Show success message for contact clicks
+        function showContactClickSuccess(action) {
+            const actionText = action === 'call' ? 'Call' : 'Message';
+            const message = document.createElement('div');
+            message.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(30, 144, 255, 0.95);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                font-weight: 600;
+                z-index: 10000;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                animation: slideIn 0.3s ease;
+            `;
+            message.innerHTML = `<i class="fas fa-phone"></i> ${actionText} action tracked!`;
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 3000);
+        }
+        
+        // Track enquiries (bookings, messages, etc.)
+        function trackEnquiry(type) {
+            const businessId = 'royalHairStudio';
+            const currentDate = new Date().toISOString().split('T')[0];
+            const currentTime = new Date().toISOString();
+            
+            // Get existing analytics data
+            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            // Initialize business analytics if not exists
+            if (!analyticsData[businessId]) {
+                analyticsData[businessId] = {
+                    totalViews: 0,
+                    dailyViews: {},
+                    lastView: null,
+                    viewHistory: [],
+                    searchImpressions: 0,
+                    dailySearchImpressions: {},
+                    contactClicks: 0,
+                    dailyContactClicks: {},
+                    enquiries: 0,
+                    dailyEnquiries: {}
+                };
+            }
+            
+            // Update enquiries
+            analyticsData[businessId].enquiries += 1;
+            
+            // Update daily enquiries
+            if (!analyticsData[businessId].dailyEnquiries[currentDate]) {
+                analyticsData[businessId].dailyEnquiries[currentDate] = 0;
+            }
+            analyticsData[businessId].dailyEnquiries[currentDate] += 1;
+            
+            // Save updated analytics
+            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+            
+            // Trigger analytics update event
+            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+                detail: { 
+                    businessId: businessId,
+                    type: 'enquiry',
+                    enquiryType: type,
+                    totalEnquiries: analyticsData[businessId].enquiries,
+                    todayEnquiries: analyticsData[businessId].dailyEnquiries[currentDate]
+                }
+            }));
+            
+            console.log(`Enquiry tracked (${type}):`, {
+                businessId: businessId,
+                totalEnquiries: analyticsData[businessId].enquiries,
+                todayEnquiries: analyticsData[businessId].dailyEnquiries[currentDate]
+            });
+        }
+        
+        // Listen for storage changes to update gallery when photos are uploaded
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'royalHairStudioPhotos') {
+                loadUploadedPhotos();
+            }
+        });
+        
+        // Listen for custom photo update events
+        window.addEventListener('photosUpdated', function(e) {
+            loadUploadedPhotos();
+        });
+        
+        // Also refresh when page becomes visible (user returns from upload page)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                loadUploadedPhotos();
+            }
+        });
+        
+        window.addEventListener('focus', function() {
+            loadUploadedPhotos();
+        });
         
         // Test function to check validation
         function testButtonUpdate() {

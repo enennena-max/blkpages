@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Analytics - BLKPAGES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem;
+        }
+        .debug-section {
+            background: #2a2a2a;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+        button {
+            background: #1E90FF;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        button:hover {
+            background: #00BFFF;
+        }
+        pre {
+            background: #000;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Analytics Debug Tool</h1>
+    
+    <div class="debug-section">
+        <h2>Current Analytics Data</h2>
+        <button onclick="loadAnalyticsData()">Load Analytics Data</button>
+        <button onclick="simulateAllActions()">Simulate All Actions</button>
+        <button onclick="clearAnalytics()">Clear Analytics</button>
+        <pre id="analyticsOutput">Click "Load Analytics Data" to see current data</pre>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Test Actions</h2>
+        <button onclick="testProfileView()">Test Profile View</button>
+        <button onclick="testSearchImpression()">Test Search Impression</button>
+        <button onclick="testContactClick()">Test Contact Click</button>
+        <button onclick="testEnquiry()">Test Enquiry</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Console Output</h2>
+        <pre id="consoleOutput">Ready to test...</pre>
+    </div>
+
+    <script>
+        const businessId = 'royalHairStudio';
+        
+        function loadAnalyticsData() {
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            document.getElementById('analyticsOutput').textContent = JSON.stringify(analyticsData, null, 2);
+            logToConsole('Analytics data loaded');
+        }
+        
+        function testProfileView() {
+            const currentDate = new Date().toISOString().split('T')[0];
+            const currentTime = new Date().toISOString();
+            
+            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (!analyticsData[businessId]) {
+                analyticsData[businessId] = {
+                    totalViews: 0,
+                    dailyViews: {},
+                    lastView: null,
+                    viewHistory: [],
+                    searchImpressions: 0,
+                    dailySearchImpressions: {},
+                    contactClicks: 0,
+                    dailyContactClicks: {},
+                    enquiries: 0,
+                    dailyEnquiries: {}
+                };
+            }
+            
+            analyticsData[businessId].totalViews += 1;
+            analyticsData[businessId].lastView = currentTime;
+            
+            if (!analyticsData[businessId].dailyViews[currentDate]) {
+                analyticsData[businessId].dailyViews[currentDate] = 0;
+            }
+            analyticsData[businessId].dailyViews[currentDate] += 1;
+            
+            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+            logToConsole('Profile view tracked');
+            loadAnalyticsData();
+        }
+        
+        function testSearchImpression() {
+            const currentDate = new Date().toISOString().split('T')[0];
+            
+            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (!analyticsData[businessId]) {
+                analyticsData[businessId] = {
+                    totalViews: 0,
+                    dailyViews: {},
+                    lastView: null,
+                    viewHistory: [],
+                    searchImpressions: 0,
+                    dailySearchImpressions: {},
+                    contactClicks: 0,
+                    dailyContactClicks: {},
+                    enquiries: 0,
+                    dailyEnquiries: {}
+                };
+            }
+            
+            analyticsData[businessId].searchImpressions += 1;
+            
+            if (!analyticsData[businessId].dailySearchImpressions[currentDate]) {
+                analyticsData[businessId].dailySearchImpressions[currentDate] = 0;
+            }
+            analyticsData[businessId].dailySearchImpressions[currentDate] += 1;
+            
+            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+            logToConsole('Search impression tracked');
+            loadAnalyticsData();
+        }
+        
+        function testContactClick() {
+            const currentDate = new Date().toISOString().split('T')[0];
+            
+            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (!analyticsData[businessId]) {
+                analyticsData[businessId] = {
+                    totalViews: 0,
+                    dailyViews: {},
+                    lastView: null,
+                    viewHistory: [],
+                    searchImpressions: 0,
+                    dailySearchImpressions: {},
+                    contactClicks: 0,
+                    dailyContactClicks: {},
+                    enquiries: 0,
+                    dailyEnquiries: {}
+                };
+            }
+            
+            analyticsData[businessId].contactClicks += 1;
+            
+            if (!analyticsData[businessId].dailyContactClicks[currentDate]) {
+                analyticsData[businessId].dailyContactClicks[currentDate] = 0;
+            }
+            analyticsData[businessId].dailyContactClicks[currentDate] += 1;
+            
+            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+            logToConsole('Contact click tracked');
+            loadAnalyticsData();
+        }
+        
+        function testEnquiry() {
+            const currentDate = new Date().toISOString().split('T')[0];
+            
+            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (!analyticsData[businessId]) {
+                analyticsData[businessId] = {
+                    totalViews: 0,
+                    dailyViews: {},
+                    lastView: null,
+                    viewHistory: [],
+                    searchImpressions: 0,
+                    dailySearchImpressions: {},
+                    contactClicks: 0,
+                    dailyContactClicks: {},
+                    enquiries: 0,
+                    dailyEnquiries: {}
+                };
+            }
+            
+            analyticsData[businessId].enquiries += 1;
+            
+            if (!analyticsData[businessId].dailyEnquiries[currentDate]) {
+                analyticsData[businessId].dailyEnquiries[currentDate] = 0;
+            }
+            analyticsData[businessId].dailyEnquiries[currentDate] += 1;
+            
+            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+            logToConsole('Enquiry tracked');
+            loadAnalyticsData();
+        }
+        
+        function simulateAllActions() {
+            testProfileView();
+            testSearchImpression();
+            testContactClick();
+            testEnquiry();
+            logToConsole('All actions simulated');
+        }
+        
+        function clearAnalytics() {
+            localStorage.removeItem('businessAnalytics');
+            logToConsole('Analytics cleared');
+            loadAnalyticsData();
+        }
+        
+        function logToConsole(message) {
+            const output = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+        }
+        
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAnalyticsData();
+        });
+    </script>
+</body>
+</html>

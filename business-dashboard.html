@@ -1117,6 +1117,116 @@
             font-weight: 600;
             color: #333;
             margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .position-badge {
+            background: #007bff;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .privacy-notice {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .privacy-notice i {
+            color: #28a745;
+        }
+
+        /* Notification Status Styles */
+        .notification-status {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.5rem;
+        }
+
+        .notification-header i {
+            color: #007bff;
+        }
+
+        .notification-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+        }
+
+        .notification-label {
+            font-weight: 500;
+            color: #666;
+        }
+
+        .notification-status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .notification-status-badge.sent {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .notification-status-badge.failed {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .notification-status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .notification-status .privacy-notice {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #dee2e6;
+            font-size: 0.8rem;
+            color: #666;
         }
 
         .customer-details {
@@ -1664,6 +1774,71 @@
         .payment-model-breakdown li i {
             color: #28a745;
             font-size: 0.8rem;
+        }
+
+        /* Business Notification Styles */
+        .business-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: slideInRight 0.3s ease;
+            max-width: 400px;
+        }
+
+        .business-notification-success {
+            border-left: 4px solid #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .business-notification-error {
+            border-left: 4px solid #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .business-notification-info {
+            border-left: 4px solid #007bff;
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .business-notification .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .business-notification .notification-content i {
+            font-size: 1.2rem;
+        }
+
+        .business-notification-success .notification-content i {
+            color: #28a745;
+        }
+
+        .business-notification-error .notification-content i {
+            color: #dc3545;
+        }
+
+        .business-notification-info .notification-content i {
+            color: #007bff;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
     </style>
 </head>
@@ -2699,6 +2874,56 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
             paymentModelDetails.innerHTML = detailsHTML;
         }
         
+        // Load and update analytics data
+        function loadAnalyticsData() {
+            const businessId = 'royalHairStudio';
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (analyticsData[businessId]) {
+                const data = analyticsData[businessId];
+                const today = new Date().toISOString().split('T')[0];
+                const todayViews = data.dailyViews[today] || 0;
+                
+                // Update the stat cards on the dashboard
+                updateDashboardStat('Profile Views', data.totalViews || 0);
+                updateDashboardStat('Rating', '4.6'); // Keep static for now
+                updateDashboardStat('Reviews', '89'); // Keep static for now
+                updateDashboardStat('Bookings This Month', data.enquiries || 0); // Use real enquiries data
+                
+                console.log('Dashboard analytics updated:', {
+                    totalViews: data.totalViews,
+                    todayViews: todayViews
+                });
+            }
+        }
+        
+        function updateDashboardStat(label, value) {
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach(card => {
+                const labelElement = card.querySelector('p');
+                if (labelElement && labelElement.textContent.trim() === label) {
+                    const numberElement = card.querySelector('h3');
+                    if (numberElement) {
+                        numberElement.textContent = value;
+                        console.log(`Dashboard updated ${label} to ${value}`);
+                    }
+                }
+            });
+        }
+        
+        // Listen for analytics updates
+        window.addEventListener('analyticsUpdated', function(e) {
+            console.log('Dashboard received analytics update:', e.detail);
+            loadAnalyticsData();
+        });
+        
+        // Listen for storage changes
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'businessAnalytics') {
+                loadAnalyticsData();
+            }
+        });
+        
         // Check if user is logged in
         document.addEventListener('DOMContentLoaded', function() {
             const isLoggedIn = localStorage.getItem('businessLoggedIn');
@@ -2709,6 +2934,9 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
             
             // Update cancellation policy based on current plan
             updateCancellationPolicy();
+            
+            // Load analytics data
+            loadAnalyticsData();
             
             // Setup booking event listeners
             setupBusinessBookingEventListeners();
@@ -3775,6 +4003,7 @@ Refunds are returned to your original payment method within 5–10 business days
                                 <span class="value">${booking.bookingId}</span>
                             </div>
                             ${generateRefundInfo(booking)}
+                            ${generateNotificationStatus(booking)}
                         </div>
                     </div>
                 `).join('');
@@ -3831,6 +4060,91 @@ Refunds are returned to your original payment method within 5–10 business days
             }
             return '';
         }
+
+        // Generate notification status for business dashboard
+        function generateNotificationStatus(booking) {
+            // Get notification status for this booking
+            const notificationStatus = getBookingNotificationStatus(booking.id);
+            
+            return `
+                <div class="notification-status">
+                    <div class="notification-header">
+                        <i class="fas fa-bell"></i>
+                        <span>Communication Status</span>
+                    </div>
+                    <div class="notification-details">
+                        <div class="notification-item">
+                            <span class="notification-label">Confirmation Email:</span>
+                            <span class="notification-status-badge ${notificationStatus.confirmation_email ? 'sent' : 'failed'}">
+                                <i class="fas fa-${notificationStatus.confirmation_email ? 'check' : 'times'}"></i>
+                                ${notificationStatus.confirmation_email ? 'Sent' : 'Failed'}
+                            </span>
+                        </div>
+                        ${notificationStatus.confirmation_sms !== undefined ? `
+                            <div class="notification-item">
+                                <span class="notification-label">Confirmation SMS:</span>
+                                <span class="notification-status-badge ${notificationStatus.confirmation_sms ? 'sent' : 'failed'}">
+                                    <i class="fas fa-${notificationStatus.confirmation_sms ? 'check' : 'times'}"></i>
+                                    ${notificationStatus.confirmation_sms ? 'Sent' : 'Failed'}
+                                </span>
+                            </div>
+                        ` : ''}
+                        <div class="notification-item">
+                            <span class="notification-label">Reminder Email:</span>
+                            <span class="notification-status-badge ${notificationStatus.reminder_email ? 'sent' : 'pending'}">
+                                <i class="fas fa-${notificationStatus.reminder_email ? 'check' : 'clock'}"></i>
+                                ${notificationStatus.reminder_email ? 'Sent' : 'Pending'}
+                            </span>
+                        </div>
+                        ${notificationStatus.reminder_sms !== undefined ? `
+                            <div class="notification-item">
+                                <span class="notification-label">Reminder SMS:</span>
+                                <span class="notification-status-badge ${notificationStatus.reminder_sms ? 'sent' : 'pending'}">
+                                    <i class="fas fa-${notificationStatus.reminder_sms ? 'check' : 'clock'}"></i>
+                                    ${notificationStatus.reminder_sms ? 'Sent' : 'Pending'}
+                                </span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="privacy-notice">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Only delivery status is shown. Message contents and customer details are protected.</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Get notification status for a booking
+        function getBookingNotificationStatus(bookingId) {
+            try {
+                const notificationLogs = JSON.parse(localStorage.getItem('notification_logs') || '{}');
+                const bookingLogs = {};
+                
+                // Find all logs for this booking
+                Object.keys(notificationLogs).forEach(key => {
+                    if (key.startsWith(`${bookingId}_`)) {
+                        const log = notificationLogs[key];
+                        const statusKey = `${log.notificationType}_${log.method}`;
+                        bookingLogs[statusKey] = log.sent;
+                    }
+                });
+                
+                return {
+                    confirmation_email: bookingLogs.confirmation_email || false,
+                    confirmation_sms: bookingLogs.confirmation_sms || false,
+                    reminder_email: bookingLogs.reminder_email || false,
+                    reminder_sms: bookingLogs.reminder_sms || false
+                };
+            } catch (error) {
+                console.error('Failed to get notification status:', error);
+                return {
+                    confirmation_email: false,
+                    confirmation_sms: false,
+                    reminder_email: false,
+                    reminder_sms: false
+                };
+            }
+        }
         
         // Update booking status in business dashboard
         function updateBusinessBookingStatus(bookingId, newStatus) {
@@ -3867,6 +4181,63 @@ Refunds are returned to your original payment method within 5–10 business days
                 // Refresh business bookings display
                 loadBusinessBookings();
             });
+
+            // Listen for booking.cancel events
+            window.addEventListener('booking.cancel', function(event) {
+                console.log('Business received booking cancel event:', event.detail);
+                // Refresh business bookings display
+                loadBusinessBookings();
+                // Show cancellation notification
+                showBusinessNotification('Booking cancelled by customer', 'info');
+            });
+
+            // Listen for waitinglist.join events
+            window.addEventListener('waitinglist.join', function(event) {
+                console.log('Business received waitinglist.join event:', event.detail);
+                // Refresh waiting list display
+                loadWaitingList();
+                // Show notification
+                showBusinessNotification(`New customer joined waiting list: ${event.detail.customerFirstName}`, 'info');
+            });
+
+            // Listen for waitinglist.offer.accept events
+            window.addEventListener('waitinglist.offer.accept', function(event) {
+                console.log('Business received waitinglist.offer.accept event:', event.detail);
+                // Refresh waiting list display
+                loadWaitingList();
+                // Show notification
+                showBusinessNotification('Customer accepted offer - booking created!', 'success');
+            });
+
+            // Listen for notification status updates
+            window.addEventListener('notification.status.update', function(event) {
+                console.log('Business received notification status update:', event.detail);
+                // Refresh business bookings display to show updated notification status
+                loadBusinessBookings();
+                // Show notification status update
+                const { notificationType, method, sent } = event.detail;
+                const statusText = sent ? 'sent successfully' : 'failed to send';
+                showBusinessNotification(`${notificationType} ${method} ${statusText}`, sent ? 'success' : 'error');
+            });
+        }
+
+        // Show business notification
+        function showBusinessNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `business-notification business-notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
         }
 
         // Initialize bookings on page load
@@ -3932,13 +4303,20 @@ Refunds are returned to your original payment method within 5–10 business days
             container.innerHTML = filteredList.map(item => `
                 <div class="waiting-list-item ${item.status}">
                     <div class="customer-info">
-                        <div class="customer-name">${item.customerName || 'Customer'}</div>
+                        <div class="customer-name">
+                            ${item.customerName || 'Customer'}
+                            <span class="position-badge">Position #${item.position || 'N/A'}</span>
+                        </div>
                         <div class="customer-details">
                             <div>Joined: ${new Date(item.joinedAt).toLocaleDateString()}</div>
                             <div>Priority: ${item.priority || 0}</div>
                         </div>
                         <div class="service-info">
                             <strong>${item.serviceData.name}</strong> - £${item.serviceData.price}
+                        </div>
+                        <div class="privacy-notice">
+                            <i class="fas fa-shield-alt"></i>
+                            ${item.privacyNotice || 'Contact details are securely stored by BlkPages'}
                         </div>
                     </div>
                     <div class="waiting-list-actions-item">
