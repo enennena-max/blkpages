@@ -3,412 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join BlkPages - Create Your Account</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Join BlkPages - Customer Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'inter': ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'charcoal': '#1A1A1A',
-                        'charcoal-light': '#2A2A2A',
-                        'neon-pink': '#ff6b6b',
-                        'neon-purple': '#9c27b0',
-                        'neon-blue': '#2196f3',
-                        'neon-green': '#4caf50',
-                        'text-primary': '#ffffff',
-                        'text-secondary': '#e5e5e5',
-                        'text-muted': '#b3b3b3',
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.8s ease-in-out',
-                        'slide-up': 'slideUp 0.6s ease-out',
-                        'glow': 'glow 2s ease-in-out infinite alternate',
-                        'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(30px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        },
-                        glow: {
-                            '0%': { boxShadow: '0 0 20px rgba(255, 107, 107, 0.2)' },
-                            '100%': { boxShadow: '0 0 30px rgba(255, 107, 107, 0.4)' }
-                        },
-                        pulseSubtle: {
-                            '0%, 100%': { opacity: '1' },
-                            '50%': { opacity: '0.8' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
-            min-height: 100vh;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #ffffff; background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%); min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Navigation */
+        .navbar { background: rgba(0, 0, 0, 0.95); box-shadow: 0 2px 10px rgba(255,255,255,0.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: #ffffff; text-decoration: none; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: #ffffff; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #8b5cf6; }
+        .btn-nav { background: linear-gradient(135deg, #8b5cf6, #a855f7); color: white !important; padding: 0.5rem 1.5rem; border-radius: 25px; transition: all 0.3s; text-decoration: none; }
+        .btn-nav:hover { background: linear-gradient(135deg, #a855f7, #8b5cf6); transform: translateY(-2px); }
+        
+        /* Main Content */
+        .main-content { padding: 120px 0 80px; }
+        .page-title { font-size: 3rem; font-weight: 700; margin-bottom: 1rem; text-align: center; color: #ffffff; }
+        .page-subtitle { text-align: center; color: #cccccc; margin-bottom: 3rem; font-size: 1.1rem; }
+        
+        /* Registration Container */
+        .registration-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+        
+        /* Benefits Section */
+        .benefits-section { background: linear-gradient(135deg, #1a1a1a, #2a2a2a); padding: 3rem; border-radius: 15px; border: 1px solid #333; }
+        .benefits-section h2 { font-size: 2rem; font-weight: 600; margin-bottom: 2rem; color: #ffffff; }
+        .benefit-item { display: flex; align-items: center; margin-bottom: 2rem; padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 10px; border-left: 4px solid #8b5cf6; }
+        .benefit-icon { font-size: 2rem; color: #8b5cf6; margin-right: 1rem; }
+        .benefit-content h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; color: #ffffff; }
+        .benefit-content p { color: #cccccc; font-size: 0.95rem; }
+        
+        /* Registration Form */
+        .registration-form { background: #1a1a1a; padding: 3rem; border-radius: 15px; border: 1px solid #333; }
+        .registration-form h2 { font-size: 2rem; font-weight: 600; margin-bottom: 2rem; color: #ffffff; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: #ffffff; }
+        .form-group input { 
+            width: 100%; 
+            padding: 0.75rem; 
+            border: 2px solid #333; 
+            border-radius: 8px; 
+            font-size: 1rem; 
+            background: #2a2a2a; 
+            color: #ffffff; 
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+        .required { color: #ff6b6b; }
+        .form-help { color: #888; font-size: 0.9rem; margin-top: 0.5rem; }
+        
+        /* Submit Button */
+        .btn-submit { 
+            width: 100%; 
+            background: linear-gradient(135deg, #8b5cf6, #a855f7); 
+            color: white; 
+            padding: 1rem; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        .btn-submit:hover { 
+            background: linear-gradient(135deg, #a855f7, #8b5cf6); 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
         }
         
-        .gradient-text {
-            background: linear-gradient(135deg, #ff6b6b, #9c27b0, #2196f3, #4caf50);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 3s ease-in-out infinite;
+        /* Login Link */
+        .login-link { text-align: center; margin-top: 2rem; color: #cccccc; }
+        .login-link a { color: #8b5cf6; text-decoration: none; font-weight: 500; }
+        .login-link a:hover { text-decoration: underline; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .registration-container { grid-template-columns: 1fr; gap: 2rem; }
+            .page-title { font-size: 2rem; }
+            .benefits-section, .registration-form { padding: 2rem; }
         }
         
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        .search-glow:focus {
-            box-shadow: 0 0 30px rgba(33, 150, 243, 0.6);
-            border-color: #2196f3;
-        }
-        
-        .list-business-btn:hover { 
-            box-shadow: 0 0 16px rgba(16,185,129,0.6); 
-        }
-        
-        .register-container {
-            background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .form-input:focus {
-            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
-            border-color: #ff6b6b;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-        
-        .back-btn:hover {
-            background: rgba(255, 107, 107, 0.2);
-            border-color: rgba(255, 107, 107, 0.4);
-            transform: translateX(-2px);
-        }
-        
-        .benefit-item {
-            transition: all 0.3s ease;
-        }
-        
-        .benefit-item:hover {
-            transform: translateY(-4px);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 107, 107, 0.3);
-        }
+        /* Error Messages */
+        .error-message { color: #ff6b6b; font-size: 0.875rem; margin-top: 0.5rem; }
+        .success-message { color: #4ade80; font-size: 0.875rem; margin-top: 0.5rem; }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-charcoal/95 backdrop-blur-lg border-b border-white/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <a href="index.html" class="text-2xl font-bold gradient-text">
-                    BlkPages
-                </a>
-                
-                <!-- Back Button -->
-                <a href="#" onclick="goBack()" class="back-btn flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm transition-all duration-300">
-                    <i class="fas fa-arrow-left"></i>
-                    <span>Back</span>
-                </a>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="index.html" class="logo">BlkPages</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="search-results.html">Browse</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <a href="customer-login.html" class="btn-nav">Sign In</a>
             </div>
         </div>
     </nav>
 
-    <!-- Main Container -->
-    <div class="min-h-screen flex items-center justify-center px-4 pt-20 pb-8">
-        <div class="w-full max-w-4xl">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <!-- Left Side - Benefits -->
-                <div class="space-y-8 animate-slide-up">
-                    <div>
-                        <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4">
-                            Join the <span class="gradient-text">Community</span>
-                        </h1>
-                        <p class="text-xl text-text-muted">
-                            Connect with amazing Black-owned businesses and enjoy exclusive member benefits
-                        </p>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h1 class="page-title">Join BlkPages Today</h1>
+            <p class="page-subtitle">Discover amazing Black-owned businesses and book services with ease</p>
+            
+            <div class="registration-container">
+                <!-- Benefits Section -->
+                <div class="benefits-section">
+                    <h2>Why Join BlkPages?</h2>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="benefit-content">
+                            <h3>Discover Amazing Businesses</h3>
+                            <p>Find and support Black-owned businesses in your area. From beauty salons to restaurants, discover services you'll love.</p>
+                        </div>
                     </div>
                     
-                    <div class="space-y-6">
-                        <div class="benefit-item flex items-start gap-4 p-6 bg-white/5 border border-white/10 rounded-xl">
-                            <div class="w-12 h-12 bg-gradient-to-r from-neon-pink to-neon-purple rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-bolt text-white text-lg"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-white mb-2">Lightning Fast Booking</h3>
-                                <p class="text-text-muted">Save your details for instant bookings with your favorite businesses</p>
-                            </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-calendar-check"></i>
                         </div>
-                        
-                        <div class="benefit-item flex items-start gap-4 p-6 bg-white/5 border border-white/10 rounded-xl">
-                            <div class="w-12 h-12 bg-gradient-to-r from-neon-blue to-neon-green rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-calendar-check text-white text-lg"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-white mb-2">Smart Appointment Tracking</h3>
-                                <p class="text-text-muted">Never miss an appointment with our intelligent calendar system</p>
-                            </div>
+                        <div class="benefit-content">
+                            <h3>Easy Online Booking</h3>
+                            <p>Book appointments instantly with our simple booking system. No more phone calls or waiting for callbacks.</p>
                         </div>
-                        
-                        <div class="benefit-item flex items-start gap-4 p-6 bg-white/5 border border-white/10 rounded-xl">
-                            <div class="w-12 h-12 bg-gradient-to-r from-neon-green to-neon-blue rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-gift text-white text-lg"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-white mb-2">Exclusive Member Offers</h3>
-                                <p class="text-text-muted">Get access to special discounts and promotions from our partner businesses</p>
-                            </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-star"></i>
                         </div>
-                        
-                        <div class="benefit-item flex items-start gap-4 p-6 bg-white/5 border border-white/10 rounded-xl">
-                            <div class="w-12 h-12 bg-gradient-to-r from-neon-purple to-neon-pink rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-shield-alt text-white text-lg"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-white mb-2">Secure & Private</h3>
-                                <p class="text-text-muted">Your data is protected with enterprise-grade security and privacy controls</p>
-                            </div>
+                        <div class="benefit-content">
+                            <h3>Verified Reviews</h3>
+                            <p>Read authentic reviews from real customers and share your own experiences to help others make informed decisions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="benefit-content">
+                            <h3>Mobile Friendly</h3>
+                            <p>Access BlkPages anywhere, anytime. Our platform works perfectly on all devices for seamless booking.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="benefit-content">
+                            <h3>Support Your Community</h3>
+                            <p>Join thousands of customers who are actively supporting Black-owned businesses and strengthening their communities.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Side - Form -->
-                <div class="register-container rounded-2xl p-8 shadow-2xl animate-fade-in">
-                    <!-- Header -->
-                    <div class="text-center mb-8">
-                        <h2 class="text-3xl font-bold text-white mb-2">Create Your Account</h2>
-                        <p class="text-text-muted">Get started in less than 2 minutes</p>
-                    </div>
-                    
-                    <!-- Error/Success Messages -->
-                    <div id="errorMessage" class="hidden bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6 text-red-300 text-sm"></div>
-                    <div id="successMessage" class="hidden bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-6 text-green-300 text-sm"></div>
-                    
-                    <!-- Registration Form -->
-                    <form id="registerForm" class="space-y-6">
-                        <div>
-                            <label class="block text-white font-medium mb-2 text-sm">Full Name</label>
-                            <input type="text" id="fullName" class="form-input w-full px-4 py-3 bg-charcoal border border-white/20 rounded-xl text-white placeholder-text-muted focus:outline-none transition-all duration-300" placeholder="Enter your full name" required>
+                <!-- Registration Form -->
+                <div class="registration-form">
+                    <h2>Create Your Account</h2>
+                    <form id="registrationForm" onsubmit="handleRegistration(event)">
+                        <div class="form-group">
+                            <label for="firstName">First Name <span class="required">*</span></label>
+                            <input type="text" id="firstName" name="firstName" required placeholder="Enter your first name">
+                            <div id="firstNameError" class="error-message"></div>
                         </div>
                         
-                        <div>
-                            <label class="block text-white font-medium mb-2 text-sm">Email Address</label>
-                            <input type="email" id="email" class="form-input w-full px-4 py-3 bg-charcoal border border-white/20 rounded-xl text-white placeholder-text-muted focus:outline-none transition-all duration-300" placeholder="Enter your email address" required>
+                        <div class="form-group">
+                            <label for="lastName">Last Name <span class="required">*</span></label>
+                            <input type="text" id="lastName" name="lastName" required placeholder="Enter your last name">
+                            <div id="lastNameError" class="error-message"></div>
                         </div>
                         
-                        <div>
-                            <label class="block text-white font-medium mb-2 text-sm">Phone Number</label>
-                            <input type="tel" id="phone" class="form-input w-full px-4 py-3 bg-charcoal border border-white/20 rounded-xl text-white placeholder-text-muted focus:outline-none transition-all duration-300" placeholder="Enter your phone number" required>
+                        <div class="form-group">
+                            <label for="email">Email Address <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                            <div id="emailError" class="error-message"></div>
                         </div>
                         
-                        <div>
-                            <label class="block text-white font-medium mb-2 text-sm">Create Password</label>
-                            <input type="password" id="password" class="form-input w-full px-4 py-3 bg-charcoal border border-white/20 rounded-xl text-white placeholder-text-muted focus:outline-none transition-all duration-300" placeholder="Create a secure password" required>
-                            <p class="text-xs text-text-muted mt-2">Password must be at least 8 characters long</p>
+                        <div class="form-group">
+                            <label for="password">Password <span class="required">*</span></label>
+                            <input type="password" id="password" name="password" required placeholder="Create a strong password">
+                            <div class="form-help">Password must be at least 8 characters with uppercase, lowercase, and number</div>
+                            <div id="passwordError" class="error-message"></div>
                         </div>
                         
-                        <div>
-                            <label class="block text-white font-medium mb-2 text-sm">Confirm Password</label>
-                            <input type="password" id="confirmPassword" class="form-input w-full px-4 py-3 bg-charcoal border border-white/20 rounded-xl text-white placeholder-text-muted focus:outline-none transition-all duration-300" placeholder="Confirm your password" required>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm your password">
+                            <div id="confirmPasswordError" class="error-message"></div>
                         </div>
                         
-                        <button type="submit" class="btn-primary w-full bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg relative">
-                            <span class="btn-text">Create Account</span>
-                            <div class="loading hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <div class="form-group">
+                            <label for="mobile">Mobile Number (Optional)</label>
+                            <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number">
+                            <div id="mobileError" class="error-message"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                                <input type="checkbox" id="acceptTerms" name="acceptTerms" required style="margin-right: 0.5rem;">
+                                <label for="acceptTerms" style="color: #cccccc; font-size: 0.9rem;">
+                                    I agree to the <a href="#" style="color: #8b5cf6;">Terms of Service</a> and <a href="#" style="color: #8b5cf6;">Privacy Policy</a>
+                                </label>
+                            </div>
+                            <div id="termsError" class="error-message"></div>
+                        </div>
+                        
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-user-plus"></i> Create Account
                         </button>
                     </form>
                     
-                    <!-- Demo Credentials -->
-                    <div class="mt-8 p-6 bg-neon-green/10 border border-neon-green/30 rounded-xl text-center">
-                        <h4 class="text-neon-green font-semibold mb-3">Quick Demo</h4>
-                        <div class="space-y-2 text-sm text-text-muted">
-                            <p><strong class="text-white">Name:</strong> Demo User</p>
-                            <p><strong class="text-white">Email:</strong> demo@blkpages.com</p>
-                            <p><strong class="text-white">Phone:</strong> 07123456789</p>
-                            <p><strong class="text-white">Password:</strong> password123</p>
-                        </div>
-                        <button type="button" class="btn-secondary w-full mt-4 bg-white/10 border border-white/20 text-white py-2 px-4 rounded-lg text-sm transition-all duration-300" onclick="fillDemoCredentials()">
-                            Fill Demo Details
-                        </button>
+                    <div class="login-link">
+                        <p>Already have an account? <a href="customer-login.html">Sign in here</a></p>
                     </div>
                     
-                    <!-- Sign In Link -->
-                    <div class="text-center mt-8">
-                    <p class="text-text-muted text-sm">
-                        Already have an account? 
-                        <a href="customer-login.html" class="text-neon-pink hover:underline">Sign in</a>
-                    </p>
+                    <!-- Demo Credentials -->
+                    <div style="margin-top: 2rem; padding: 1rem; background: rgba(139, 92, 246, 0.1); border-radius: 8px; border: 1px solid #8b5cf6;">
+                        <h4 style="color: #ffffff; font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem;">
+                            <i class="fas fa-info-circle" style="color: #8b5cf6; margin-right: 0.5rem;"></i>
+                            Demo Credentials:
+                        </h4>
+                        <p style="color: #cccccc; font-size: 0.9rem; margin-bottom: 0.5rem;">First Name: John</p>
+                        <p style="color: #cccccc; font-size: 0.9rem; margin-bottom: 0.5rem;">Last Name: Doe</p>
+                        <p style="color: #cccccc; font-size: 0.9rem; margin-bottom: 0.5rem;">Email: customer@example.com</p>
+                        <p style="color: #cccccc; font-size: 0.9rem; margin-bottom: 1rem;">Password: Password123</p>
+                        <button type="button" onclick="fillDemoCredentials()" style="background: linear-gradient(135deg, #8b5cf6, #a855f7); color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; font-size: 0.9rem; cursor: pointer; transition: all 0.3s;">
+                            <i class="fas fa-magic" style="margin-right: 0.5rem;"></i>
+                            Use Demo Credentials
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.classList.remove('hidden');
-            document.getElementById('successMessage').classList.add('hidden');
-        }
-        
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.classList.remove('hidden');
-            document.getElementById('errorMessage').classList.add('hidden');
-        }
-
-        function showLoading() {
-            const btn = document.querySelector('.btn-primary');
-            const btnText = btn.querySelector('.btn-text');
-            const loading = btn.querySelector('.loading');
-            
-            btn.disabled = true;
-            btnText.style.opacity = '0';
-            loading.classList.remove('hidden');
-        }
-
-        function hideLoading() {
-            const btn = document.querySelector('.btn-primary');
-            const btnText = btn.querySelector('.btn-text');
-            const loading = btn.querySelector('.loading');
-            
-            btn.disabled = false;
-            btnText.style.opacity = '1';
-            loading.classList.add('hidden');
-        }
-        
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const fullName = document.getElementById('fullName').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (!fullName || !email || !phone || !password || !confirmPassword) {
-                showError('Please fill in all fields');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                showError('Passwords do not match');
-                return;
-            }
-            
-            if (password.length < 8) {
-                showError('Password must be at least 8 characters long');
-                return;
-            }
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showError('Please enter a valid email address');
-                return;
-            }
-            
-            // Show loading state
-            showLoading();
-            
-            // Simulate registration (in real app, this would call an API)
-            console.log('Creating account for:', email);
-            
-            // Simulate API delay
-            setTimeout(() => {
-                hideLoading();
-                
-                // Show success message
-                showSuccess('Account created successfully! Redirecting to booking...');
-                
-                // Store user session (in real app, this would be handled by backend)
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userName', fullName);
-                localStorage.setItem('userPhone', phone);
-                localStorage.setItem('userLoggedIn', 'true');
-                
-                // Check for return URL and redirect accordingly
-                setTimeout(() => {
-                    const returnUrl = localStorage.getItem('returnUrl');
-                    if (returnUrl) {
-                        // Clear the return URL
-                        localStorage.removeItem('returnUrl');
-                        // Redirect back to original page
-                        window.location.href = returnUrl;
-                    } else {
-                        // Default redirect to dashboard
-                        window.location.href = 'customer-dashboard.html';
-                    }
-                }, 2000);
-            }, 1500);
-        });
-
-        // Back button function
-        function goBack() {
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                // If no history, go to homepage
-                window.location.href = 'index.html';
-            }
-        }
-
-        function fillDemoCredentials() {
-            document.getElementById('fullName').value = 'Demo User';
-            document.getElementById('email').value = 'demo@blkpages.com';
-            document.getElementById('phone').value = '07123456789';
-            document.getElementById('password').value = 'password123';
-            document.getElementById('confirmPassword').value = 'password123';
-        }
-
-        // Add some interactive effects
-        document.querySelectorAll('.benefit-item').forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px)';
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(-2px)';
-            });
-        });
-
-        // Form input focus effects
-        document.querySelectorAll('.form-input').forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'scale(1.02)';
-            });
-            
-            input.addEventListener('blur', function() {
-                this.parentElement.style.transform = 'scale(1)';
-            });
-        });
-    </script>
+    <script src="js/customer-auth.js"></script>
 </body>
 </html>

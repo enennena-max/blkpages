@@ -1535,20 +1535,23 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
-            font-weight: 500;
-            color: #cccccc;
+            font-weight: 600;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
         
         .calendar-day:hover {
-            background: rgba(43, 134, 197, 0.2);
-            border-color: #2B86C5;
+            background: rgba(255, 60, 172, 0.2);
+            border-color: #FF3CAC;
+            transform: translateY(-2px);
         }
         
         .calendar-day.selected {
-            background: #2B86C5;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
             color: white;
-            border: 2px solid #2B86C5;
-            box-shadow: 0 0 8px rgba(43, 134, 197, 0.4);
+            border: 2px solid #FF3CAC;
+            box-shadow: 0 4px 12px rgba(255, 60, 172, 0.4);
             transform: scale(1.05);
         }
         
@@ -1576,14 +1579,16 @@
         }
         
         .calendar-day.available {
-            background: rgba(43, 134, 197, 0.1);
-            color: #2B86C5;
-            border: 1px solid rgba(43, 134, 197, 0.2);
+            background: rgba(255, 60, 172, 0.1);
+            color: #FF3CAC;
+            border: 2px solid rgba(255, 60, 172, 0.3);
         }
         
         .calendar-day.unavailable {
             color: #666666;
             cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.1);
         }
         
         .time-slots {
@@ -1595,31 +1600,36 @@
         
         .time-slot {
             padding: 1rem;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
-            font-weight: 500;
-            background: #1A1A1A;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
             color: #ffffff;
         }
         
         .time-slot:hover {
             border-color: #FF3CAC;
-            background: rgba(255, 60, 172, 0.1);
+            background: rgba(255, 60, 172, 0.2);
+            transform: translateY(-2px);
         }
         
         .time-slot.selected {
             border-color: #FF3CAC;
             background: linear-gradient(135deg, #FF3CAC, #784BA0);
             color: white;
+            box-shadow: 0 4px 12px rgba(255, 60, 172, 0.4);
+            transform: scale(1.05);
         }
         
         .time-slot.unavailable {
-            background: #0F0F0F;
+            background: rgba(255, 255, 255, 0.02);
             color: #666666;
             cursor: not-allowed;
+            border-color: rgba(255, 255, 255, 0.1);
+            opacity: 0.5;
         }
         
         @media (max-width: 768px) {
@@ -2923,6 +2933,9 @@
             // Add service to selection
             selectedServices.push({ name, price, duration });
             
+            // Clear services error if any
+            clearServicesError();
+            
             // Update button appearance
             const buttons = document.querySelectorAll('.add-service-btn');
             buttons.forEach(button => {
@@ -2977,7 +2990,7 @@
                         <div class="selected-service-name">${service.name}</div>
                         <div class="selected-service-price">£${service.price}</div>
                     </div>
-                    <button class="remove-service-btn" onclick="removeService('${service.name}')">
+                    <button class="remove-service-btn" onclick="event.stopPropagation(); removeService('${service.name}')">
                         <i class="fas fa-times"></i>
                     </button>
                 `;
@@ -3005,6 +3018,7 @@
             
             summaryServicesList.innerHTML = '';
             let totalPrice = 0;
+            let totalDuration = 0;
             
             selectedServices.forEach(service => {
                 const serviceItem = document.createElement('div');
@@ -3015,10 +3029,17 @@
                 `;
                 summaryServicesList.appendChild(serviceItem);
                 totalPrice += service.price;
+                totalDuration += service.duration;
             });
             
             if (summaryTotalPrice) {
                 summaryTotalPrice.textContent = totalPrice;
+            }
+            
+            // Update duration in the booking summary
+            const summaryDuration = document.getElementById('summaryDuration');
+            if (summaryDuration) {
+                summaryDuration.textContent = `${totalDuration} min`;
             }
         }
         
@@ -3039,12 +3060,15 @@
             // Update display
             updateSelectedServicesDisplay();
             
-            // Hide booking section if no services
+            // Hide booking section if no services and clear date/time
             if (selectedServices.length === 0) {
                 const bookingSection = document.getElementById('booking-section');
                 if (bookingSection) {
                     bookingSection.style.display = 'none';
                 }
+                
+                // Clear date and time selections when basket is empty
+                clearDateAndTime();
             }
         }
         
@@ -3054,6 +3078,9 @@
             document.querySelectorAll('.calendar-day').forEach(el => el.classList.remove('selected'));
             event.target.classList.add('selected');
             
+            // Clear date error if any
+            clearDateError();
+            
             // Generate time slots for selected date
             generateTimeSlots();
         }
@@ -3062,6 +3089,9 @@
             selectedTime = time;
             document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
             event.target.classList.add('selected');
+            
+            // Clear time error if any
+            clearTimeError();
         }
         
         function generateTimeSlots() {
@@ -3116,29 +3146,32 @@
                 return;
             }
             
-            // Step 4: Check customer details one by one
+            // Step 4: Check customer details one by one with UK-specific validation
             const fullName = document.getElementById('fullName').value.trim();
-            if (!fullName) {
-                showFieldError('fullName', 'Please enter your full name.');
+            const nameValidation = validateName(fullName);
+            if (!nameValidation.isValid) {
+                showFieldError('fullName', nameValidation.message);
                 return;
             }
             
             const email = document.getElementById('email').value.trim();
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!email || !emailRegex.test(email)) {
-                showFieldError('email', 'Please enter a valid email address.');
+            const emailValidation = validateEmail(email);
+            if (!emailValidation.isValid) {
+                showFieldError('email', emailValidation.message);
                 return;
             }
             
             const phone = document.getElementById('phone').value.trim();
-            if (!phone) {
-                showFieldError('phone', 'Please enter your phone number.');
+            const phoneValidation = validatePhone(phone);
+            if (!phoneValidation.isValid) {
+                showFieldError('phone', phoneValidation.message);
                 return;
             }
             
             const postcode = document.getElementById('postcode').value.trim();
-            if (!postcode) {
-                showFieldError('postcode', 'Please enter your postcode.');
+            const postcodeValidation = validatePostcode(postcode);
+            if (!postcodeValidation.isValid) {
+                showFieldError('postcode', postcodeValidation.message);
                 return;
             }
             
@@ -3161,6 +3194,73 @@
             document.querySelectorAll('.services-error').forEach(el => el.remove());
         }
         
+        // UK-specific validation functions
+        function validateName(name) {
+            if (!name) {
+                return { isValid: false, message: 'Please enter your full name.' };
+            }
+            
+            // Check if only one word (no space)
+            if (!name.includes(' ')) {
+                return { isValid: false, message: 'Please enter your first and last name.' };
+            }
+            
+            // Check for invalid characters (only letters, hyphens, apostrophes, and spaces)
+            const nameRegex = /^[a-zA-Z\s\-']+$/;
+            if (!nameRegex.test(name)) {
+                return { isValid: false, message: 'Names can only include letters, hyphens, or apostrophes.' };
+            }
+            
+            return { isValid: true };
+        }
+        
+        function validateEmail(email) {
+            if (!email) {
+                return { isValid: false, message: 'Please enter a valid email address (e.g., name@example.com).' };
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return { isValid: false, message: 'Please enter a valid email address (e.g., name@example.com).' };
+            }
+            
+            return { isValid: true };
+        }
+        
+        function validatePhone(phone) {
+            if (!phone) {
+                return { isValid: false, message: 'Please enter a valid UK mobile or landline number.' };
+            }
+            
+            // Remove all spaces, hyphens, and parentheses for validation
+            const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+            
+            // UK phone number patterns
+            const ukMobileRegex = /^(\+44|0)7[0-9]{9}$/; // Mobile numbers starting with 07
+            const ukLandlineRegex = /^(\+44|0)[1-9][0-9]{8,9}$/; // Landline numbers
+            
+            if (!ukMobileRegex.test(cleanPhone) && !ukLandlineRegex.test(cleanPhone)) {
+                return { isValid: false, message: 'Please enter a valid UK mobile or landline number.' };
+            }
+            
+            return { isValid: true };
+        }
+        
+        function validatePostcode(postcode) {
+            if (!postcode) {
+                return { isValid: false, message: 'Please enter a valid UK postcode (e.g., SW1A 1AA).' };
+            }
+            
+            // UK postcode regex pattern
+            const ukPostcodeRegex = /^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][A-Z]{2}$/i;
+            
+            if (!ukPostcodeRegex.test(postcode)) {
+                return { isValid: false, message: 'Please enter a valid UK postcode (e.g., SW1A 1AA).' };
+            }
+            
+            return { isValid: true };
+        }
+
         // Individual error functions
         function showServicesError() {
             const servicesSection = document.querySelector('.services-section') || document.getElementById('services-section');
@@ -3193,7 +3293,7 @@
                 // Add new error message
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'field-error date-error';
-                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please select a date.';
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please select a date to continue.';
                 
                 const calendarContainer = bookingSection.querySelector('.booking-calendar');
                 if (calendarContainer) {
@@ -3215,7 +3315,7 @@
                 // Add new error message
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'field-error time-error';
-                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please select a time.';
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please select a time to continue.';
                 
                 const timeSlotsContainer = bookingSection.querySelector('.time-slots');
                 if (timeSlotsContainer) {
@@ -3303,6 +3403,86 @@
             if (termsCheckbox) {
                 const error = termsCheckbox.parentNode.querySelector('.field-error');
                 if (error) error.remove();
+            }
+        }
+        
+        // Update booking button state
+        function updateCompleteBookingButton() {
+            // This function can be used to update the booking button state
+            // For now, it's a placeholder to prevent the error
+        }
+        
+        // Update booking button when terms are accepted
+        function updateBookingButton() {
+            // This function is called when the terms checkbox changes
+            // For now, it's a placeholder to prevent the error
+        }
+        
+        // Scroll to booking section (without scrolling to end of page)
+        function scrollToBooking() {
+            const bookingSection = document.getElementById('booking-section');
+            if (bookingSection) {
+                bookingSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        }
+        
+        // Real-time validation - clear errors when user corrects input
+        function setupRealTimeValidation() {
+            // Name field validation
+            const nameField = document.getElementById('fullName');
+            if (nameField) {
+                nameField.addEventListener('input', function() {
+                    const nameValidation = validateName(this.value.trim());
+                    if (nameValidation.isValid) {
+                        clearFieldError('fullName');
+                    }
+                });
+            }
+            
+            // Email field validation
+            const emailField = document.getElementById('email');
+            if (emailField) {
+                emailField.addEventListener('input', function() {
+                    const emailValidation = validateEmail(this.value.trim());
+                    if (emailValidation.isValid) {
+                        clearFieldError('email');
+                    }
+                });
+            }
+            
+            // Phone field validation
+            const phoneField = document.getElementById('phone');
+            if (phoneField) {
+                phoneField.addEventListener('input', function() {
+                    const phoneValidation = validatePhone(this.value.trim());
+                    if (phoneValidation.isValid) {
+                        clearFieldError('phone');
+                    }
+                });
+            }
+            
+            // Postcode field validation
+            const postcodeField = document.getElementById('postcode');
+            if (postcodeField) {
+                postcodeField.addEventListener('input', function() {
+                    const postcodeValidation = validatePostcode(this.value.trim());
+                    if (postcodeValidation.isValid) {
+                        clearFieldError('postcode');
+                    }
+                });
+            }
+            
+            // Terms checkbox validation
+            const termsCheckbox = document.getElementById('acceptTerms');
+            if (termsCheckbox) {
+                termsCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        clearTermsError();
+                    }
+                });
             }
         }
         
@@ -3809,7 +3989,7 @@
                         <div class="selected-service-name">${service.name}</div>
                         <div class="selected-service-price">£${service.price}</div>
                     </div>
-                    <button class="remove-service-btn" onclick="removeService('${service.name}')">
+                    <button class="remove-service-btn" onclick="event.stopPropagation(); removeService('${service.name}')">
                         <i class="fas fa-times"></i>
                         </button>
                 `;
@@ -3999,7 +4179,7 @@
                                     <i class="fas fa-credit-card"></i>
                                 </div>
                                 <div>
-                                    <div class="payment-title">Pay Now</div>
+                                    <div class="payment-title">Complete Booking</div>
                                     <div class="payment-description">Secure payment with card or digital wallet</div>
                                 </div>
                             </div>
@@ -4031,7 +4211,7 @@
                                     <i class="fas fa-credit-card"></i>
                                 </div>
                                 <div>
-                                    <div class="payment-title">Pay Deposit Now</div>
+                                    <div class="payment-title">Complete Booking</div>
                                     <div class="payment-description">Pay £${depositAmount} deposit online</div>
                                 </div>
                             </div>
@@ -4057,7 +4237,7 @@
                                     <i class="fas fa-store"></i>
                                 </div>
                                 <div>
-                                    <div class="payment-title">Pay at Venue</div>
+                                    <div class="payment-title">Complete Booking</div>
                                     <div class="payment-description">No payment required now - pay £${total} at the venue</div>
                                 </div>
                             </div>
@@ -4077,6 +4257,9 @@
             
             // Initialize payment method info
             updatePaymentMethodInfo();
+            
+            // Setup real-time validation
+            setupRealTimeValidation();
             
             // Initialize payment model display
             updatePaymentModelDisplay();
@@ -4484,38 +4667,6 @@
             });
         }
 
-        function bookAppointment() {
-            // Clear any existing error states
-            clearAllErrors();
-            
-            // Step 1: Check if services are selected
-            if (selectedServices.length === 0) {
-                scrollToServicesAndShowError();
-                return;
-            }
-            
-            // Step 2: Check if date and time are selected
-            if (!selectedDate || !selectedTime) {
-                scrollToDateAndShowError();
-                return;
-            }
-            
-            // Step 3: Check required customer details
-            const validationResult = validateCustomerDetails();
-            if (!validationResult.isValid) {
-                scrollToFieldAndShowError(validationResult.field, validationResult.message);
-                return;
-            }
-            
-            // Step 4: Check terms acceptance
-            if (!document.getElementById('acceptTerms').checked) {
-                scrollToTermsAndShowError();
-                return;
-            }
-            
-            // All validations passed - show booking summary
-            showBookingSummary();
-        }
         
         function showBookingPopup(missingItems) {
             // Store missing items for later use
@@ -4693,11 +4844,7 @@
                 }
             }
             
-            // Fallback: scroll to booking section if no specific field found
-            const bookingSection = document.getElementById('booking-section');
-            if (bookingSection) {
-                bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            // No fallback scroll - let user stay where they are
         }
         
         function updateBookingServicesList() {
@@ -4712,7 +4859,7 @@
                         <div class="selected-service-name">${service.name}</div>
                         <div class="selected-service-price">£${service.price}</div>
                         </div>
-                    <button class="remove-service-btn" onclick="removeService('${service.name}')">
+                    <button class="remove-service-btn" onclick="event.stopPropagation(); removeService('${service.name}')">
                         <i class="fas fa-times"></i>
                     </button>
                 `;
@@ -4875,11 +5022,69 @@
             selectedTime = time;
             document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
             event.target.classList.add('selected');
+            
+            // Clear time error if any
+            clearTimeError();
+            
             updateBookingSummary();
             updateProgressIndicator();
         }
         
         function selectPayment(type) {
+            // Step-by-step validation - guide customer one error at a time
+            // Clear any existing errors first
+            clearAllErrors();
+            
+            // Step 1: Check if services are selected
+            if (selectedServices.length === 0) {
+                showServicesError();
+                return;
+            }
+            
+            // Step 2: Check if date is selected
+            if (!selectedDate) {
+                showDateError();
+                return;
+            }
+            
+            // Step 3: Check if time is selected
+            if (!selectedTime) {
+                showTimeError();
+                return;
+            }
+            
+            // Step 4: Check required customer details one by one
+            const fullName = document.getElementById('fullName').value.trim();
+            if (!fullName) {
+                showFieldError('fullName', 'This field is required.');
+                return;
+            }
+            
+            const email = document.getElementById('email').value.trim();
+            if (!email) {
+                showFieldError('email', 'This field is required.');
+                return;
+            }
+            
+            const phone = document.getElementById('phone').value.trim();
+            if (!phone) {
+                showFieldError('phone', 'This field is required.');
+                return;
+            }
+            
+            const postcode = document.getElementById('postcode').value.trim();
+            if (!postcode) {
+                showFieldError('postcode', 'This field is required.');
+                return;
+            }
+            
+            // Step 5: Check terms acceptance
+            if (!document.getElementById('acceptTerms').checked) {
+                showTermsError();
+                return;
+            }
+            
+            // All validations passed - proceed with payment selection
             selectedPayment = type;
             
             // Update UI
@@ -4923,7 +5128,7 @@
                     serviceItem.innerHTML = `
                         <div class="summary-service-name">${service.name}</div>
                         <div class="summary-service-price">£${service.price}</div>
-                        <button class="summary-remove-btn" onclick="removeService('${service.name}')">
+                        <button class="summary-remove-btn" onclick="event.stopPropagation(); removeService('${service.name}')">
                             <i class="fas fa-times"></i>
                         </button>
                     `;

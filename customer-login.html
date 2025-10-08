@@ -4,317 +4,198 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - BlkPages</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?v=2"></script>
     <script src="js/suppress-tailwind-warning.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'inter': ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'charcoal': '#1A1A1A',
-                        'charcoal-light': '#2A2A2A',
-                        'neon-pink': '#ff6b6b',
-                        'neon-purple': '#9c27b0',
-                        'neon-blue': '#2196f3',
-                        'neon-green': '#4caf50',
-                        'text-primary': '#ffffff',
-                        'text-secondary': '#e5e5e5',
-                        'text-muted': '#b3b3b3',
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.8s ease-in-out',
-                        'slide-up': 'slideUp 0.6s ease-out',
-                        'glow': 'glow 2s ease-in-out infinite alternate',
-                        'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(30px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        },
-                        glow: {
-                            '0%': { boxShadow: '0 0 20px rgba(255, 107, 107, 0.2)' },
-                            '100%': { boxShadow: '0 0 30px rgba(255, 107, 107, 0.4)' }
-                        },
-                        pulseSubtle: {
-                            '0%, 100%': { opacity: '1' },
-                            '50%': { opacity: '0.8' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    
     <style>
+        :root {
+            --charcoal: #1a1a1a;
+            --neon-pink: #FF3CAC;
+            --neon-purple: #784BA0;
+            --neon-blue: #2B86C5;
+            --text-secondary: #cccccc;
+        }
+        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             min-height: 100vh;
+            font-family: 'Inter', sans-serif;
         }
         
-        .gradient-text {
-            background: linear-gradient(135deg, #ff6b6b, #9c27b0, #2196f3, #4caf50);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 3s ease-in-out infinite;
-        }
-        
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        .search-glow:focus {
-            box-shadow: 0 0 30px rgba(33, 150, 243, 0.6);
-            border-color: #2196f3;
-        }
-        
-        .list-business-btn:hover { 
-            box-shadow: 0 0 16px rgba(16,185,129,0.6); 
-        }
-        
-        .login-container {
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(20px);
+        .auth-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
+        .form-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
         .form-input:focus {
-            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
-            border-color: #ff6b6b;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 0 3px rgba(255, 60, 172, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            transition: all 0.3s ease;
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 60, 172, 0.3);
         }
         
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
         }
         
-        .back-btn:hover {
-            background: rgba(255, 107, 107, 0.2);
-            border-color: rgba(255, 107, 107, 0.4);
-            transform: translateX(-2px);
+        .success-message {
+            color: #51cf66;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        .forgot-password-link {
+            color: var(--neon-pink);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+        
+        .forgot-password-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-charcoal/95 backdrop-blur-lg border-b border-white/10">
+    <nav class="fixed top-0 w-full z-50 bg-charcoal/95 backdrop-blur-md border-b border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <a href="index.html" class="text-2xl font-bold gradient-text">
-                    BlkPages
-                </a>
-                
-                <!-- Back Button -->
-                <a href="#" onclick="goBack()" class="back-btn flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm transition-all duration-300">
-                    <i class="fas fa-arrow-left"></i>
-                    <span>Back</span>
-                </a>
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="customer-register.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300">Sign Up</a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Container -->
-    <div class="min-h-screen flex items-center justify-center px-4 pt-20 pb-8">
-        <div class="w-full max-w-md">
-            <!-- Login Container -->
-            <div class="login-container rounded-2xl p-8 shadow-2xl animate-fade-in">
+    <!-- Main Content -->
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div class="auth-container rounded-2xl p-8">
                 <!-- Header -->
-                <div class="text-center mb-8">
-                    <h1 class="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-                    <p class="text-text-muted">Sign in to your BlkPages account</p>
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+                    <p class="text-text-secondary">Sign in to your BlkPages account</p>
                 </div>
-                
-                <!-- Error/Success Messages -->
-                <div id="errorMessage" class="hidden bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6 text-red-300 text-sm"></div>
-                <div id="successMessage" class="hidden bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-6 text-green-300 text-sm"></div>
-                
+
                 <!-- Login Form -->
-                <form id="loginForm" class="space-y-6">
+                <form id="loginForm" class="mt-8 space-y-6">
                     <div>
-                        <label class="block text-white/70 mb-2">Email</label>
-                        <input type="email" id="email" class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="customer@example.com" required>
+                        <label for="email" class="block text-sm font-medium text-white mb-2">Email Address</label>
+                        <input id="email" name="email" type="email" required 
+                               class="form-input w-full px-4 py-3 rounded-lg text-white placeholder-white/50 focus:outline-none"
+                               placeholder="Enter your email address">
+                        <div id="emailError" class="error-message"></div>
                     </div>
-                    
+
                     <div>
-                        <label class="block text-white/70 mb-2">Password</label>
-                        <input type="password" id="password" class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="password123" required>
+                        <label for="password" class="block text-sm font-medium text-white mb-2">Password</label>
+                        <div class="relative">
+                            <input id="password" name="password" type="password" required 
+                                   class="form-input w-full px-4 py-3 rounded-lg text-white placeholder-white/50 focus:outline-none pr-12"
+                                   placeholder="Enter your password">
+                            <button type="button" id="togglePassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/50 hover:text-white">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div id="passwordError" class="error-message"></div>
                     </div>
-                    
+
                     <div class="flex items-center justify-between">
-                        <label class="flex items-center">
-                            <input type="checkbox" class="w-4 h-4 text-neon-pink bg-charcoal border-white/20 rounded focus:ring-neon-pink/50 focus:ring-2">
-                            <span class="ml-2 text-text-muted text-sm">Remember me</span>
-                        </label>
-                        <a href="#" class="text-neon-pink hover:text-neon-pink/80 text-sm font-medium transition-colors">Forgot password?</a>
+                        <div class="flex items-center">
+                            <input id="rememberMe" name="rememberMe" type="checkbox" 
+                                   class="h-4 w-4 text-neon-pink focus:ring-neon-pink border-gray-300 rounded">
+                            <label for="rememberMe" class="ml-2 block text-sm text-text-secondary">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" id="forgotPasswordLink" class="forgot-password-link">
+                            Forgot password?
+                        </a>
                     </div>
-                    
-                    <button type="submit" class="btn-primary w-full bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg">
-                        <span class="btn-text">Sign In</span>
-                        <div class="loading hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+
+                    <button type="submit" class="btn-primary w-full py-3 px-4 rounded-lg text-white font-semibold">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                     </button>
                 </form>
-                
-                <!-- Demo Credentials -->
-                <div class="mt-8 p-6 bg-neon-green/10 border border-neon-green/30 rounded-xl text-center">
-                    <h4 class="text-neon-green font-semibold mb-3">Quick Demo</h4>
-                    <div class="space-y-2 text-sm text-text-muted">
-                        <p><strong class="text-white">Email:</strong> demo@blkpages.com</p>
-                        <p><strong class="text-white">Password:</strong> password123</p>
-                    </div>
-                    <button type="button" class="btn-secondary w-full mt-4 bg-white/10 border border-white/20 text-white py-2 px-4 rounded-lg text-sm transition-all duration-300" onclick="fillDemoCredentials()">
-                        Fill Demo Details
-                    </button>
+
+                <!-- Sign Up Link -->
+                <div class="mt-6 text-center">
+                    <p class="text-text-secondary">
+                        Don't have an account? 
+                        <a href="customer-register.html" class="text-neon-pink hover:underline font-medium">Sign Up</a>
+                    </p>
                 </div>
                 
-                <!-- Sign Up Link -->
-                <div class="text-center mt-8">
-                    <p class="text-text-muted text-sm">
-                        Don't have an account? 
-                        <a href="customer-register.html" class="text-neon-pink hover:underline">Sign up</a>
-                    </p>
+                <!-- Demo Credentials -->
+                <div class="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
+                    <h4 class="text-white font-semibold mb-2">
+                        <i class="fas fa-info-circle text-neon-pink mr-2"></i>
+                        Demo Credentials:
+                    </h4>
+                    <p class="text-text-secondary text-sm mb-1">Email: customer@example.com</p>
+                    <p class="text-text-secondary text-sm mb-3">Password: Password123</p>
+                    <button type="button" onclick="fillDemoCredentials()" class="text-neon-pink hover:underline text-sm">
+                        <i class="fas fa-magic mr-1"></i>
+                        Use Demo Credentials
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.classList.remove('hidden');
-            document.getElementById('successMessage').classList.add('hidden');
-        }
-        
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.classList.remove('hidden');
-            document.getElementById('errorMessage').classList.add('hidden');
-        }
-
-        function showLoading() {
-            const btn = document.querySelector('.btn-primary');
-            const btnText = btn.querySelector('.btn-text');
-            const loading = btn.querySelector('.loading');
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+        <div class="auth-container rounded-2xl p-8 max-w-md w-full mx-4">
+            <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold text-white mb-2">Reset Password</h3>
+                <p class="text-text-secondary">Enter your email to receive a reset link</p>
+            </div>
             
-            btn.disabled = true;
-            btnText.style.opacity = '0';
-            loading.classList.remove('hidden');
-        }
-
-        function hideLoading() {
-            const btn = document.querySelector('.btn-primary');
-            const btnText = btn.querySelector('.btn-text');
-            const loading = btn.querySelector('.loading');
-            
-            btn.disabled = false;
-            btnText.style.opacity = '1';
-            loading.classList.add('hidden');
-        }
-        
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            if (!email || !password) {
-                showError('Please fill in all fields');
-                return;
-            }
-            
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showError('Please enter a valid email address');
-                return;
-            }
-            
-            // Show loading state
-            showLoading();
-            
-            // Simulate login (in real app, this would call an API)
-            console.log('Logging in:', email);
-            
-            // Simulate API delay
-            setTimeout(() => {
-                hideLoading();
+            <form id="forgotPasswordForm">
+                <div class="mb-6">
+                    <label for="resetEmail" class="block text-sm font-medium text-white mb-2">Email Address</label>
+                    <input id="resetEmail" name="resetEmail" type="email" required 
+                           class="form-input w-full px-4 py-3 rounded-lg text-white placeholder-white/50 focus:outline-none"
+                           placeholder="Enter your email address">
+                    <div id="resetEmailError" class="error-message"></div>
+                </div>
                 
-                // Check for demo credentials
-                if (email === 'demo@blkpages.com' && password === 'password123') {
-                    // Show success message
-                    showSuccess('Login successful! Redirecting to dashboard...');
-                    
-                    // Store user session (in real app, this would be handled by backend)
-                    localStorage.setItem('userEmail', email);
-                    localStorage.setItem('userName', 'Demo User');
-                    localStorage.setItem('userPhone', '07123456789');
-                    localStorage.setItem('userLoggedIn', 'true');
-                    
-                    // Check for return URL and redirect accordingly
-                    setTimeout(() => {
-                        const returnUrl = localStorage.getItem('returnUrl');
-                        console.log('Return URL found:', returnUrl);
-                        if (returnUrl) {
-                            // Clear the return URL
-                            localStorage.removeItem('returnUrl');
-                            console.log('Redirecting back to:', returnUrl);
-                            // Redirect back to original page
-                            window.location.href = returnUrl;
-                        } else {
-                            console.log('No return URL found, redirecting to dashboard');
-                            // Default redirect to dashboard
-                            window.location.href = 'customer-dashboard.html';
-                        }
-                    }, 2000);
-                } else {
-                    showError('Invalid email or password. Please try again.');
-                }
-            }, 1500);
-        });
+                <div class="flex space-x-4">
+                    <button type="button" id="cancelReset" class="flex-1 py-3 px-4 rounded-lg border border-white/20 text-white hover:bg-white/10 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-primary flex-1 py-3 px-4 rounded-lg text-white font-semibold">
+                        Send Reset Link
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        // Back button function
-        function goBack() {
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                // If no history, go to homepage
-                window.location.href = 'index.html';
-            }
-        }
-
-        function fillDemoCredentials() {
-            document.getElementById('email').value = 'demo@blkpages.com';
-            document.getElementById('password').value = 'password123';
-        }
-
-        // Add some interactive effects
-        document.querySelectorAll('.form-input').forEach(input => {
-            input.addEventListener('focus', function() {
-                this.parentElement.style.transform = 'scale(1.02)';
-            });
-            
-            input.addEventListener('blur', function() {
-                this.parentElement.style.transform = 'scale(1)';
-            });
-        });
-    </script>
+    <script src="js/customer-auth.js"></script>
 </body>
 </html>
