@@ -54,7 +54,7 @@
         }
     </script>
     <style>
-        .list-business-btn:hover { box-shadow: 0 0 16px rgba(16,185,129,0.6); }
+        .list-buwhsiness-btn:hover { box-shadow: 0 0 16px rgba(16,185,129,0.6); }
     </style>
     <style>
         body {
@@ -748,7 +748,7 @@
                                 <i class="fas fa-star text-sm"></i>
                                 <span class="ml-2 text-sm text-light-grey">4.8 (89 reviews)</span>
                             </div>
-                            <button class="w-full py-2 rounded-xl bg-gradient-to-r from-neon-green to-green-500 text-white font-semibold hover:from-green-500 hover:to-neon-green transition-all duration-300 neon-glow">
+                            <button class="w-full py-2 rounded-xl bg-gradient-to-r from-neon-green to-green-500 text-white font-semibold hover:from-green-500 hover:to-neon-green transition-all duration-300 neon-glow" onclick="event.stopPropagation(); bookBusiness('elite-beauty')">
                                 Book Now
                             </button>
                             </div>
@@ -1618,6 +1618,21 @@
                 document.getElementById('mobileCustomerDropdown').style.display = 'none';
             }
         });
+
+        // Handle Book Now button clicks
+        function bookBusiness(businessId) {
+            // Check if user is logged in
+            const isLoggedIn = localStorage.getItem('customerLoggedIn') === 'true';
+            
+            if (!isLoggedIn) {
+                // Redirect to customer login with booking intent
+                localStorage.setItem('bookingIntent', businessId);
+                window.location.href = 'customer-login.html';
+            } else {
+                // Redirect to booking page for the specific business
+                window.location.href = `booking.html?business=${businessId}`;
+            }
+        }
 
     </script>
     
