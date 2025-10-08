@@ -1728,15 +1728,15 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
                 <a href="business-profile.html" class="btn-action">
                     <i class="fas fa-eye"></i> View Public Profile
                 </a>
-                <button class="btn-action secondary" onclick="viewAnalytics()">
+                <a href="business-analytics-dashboard.html" class="btn-action secondary">
                     <i class="fas fa-chart-bar"></i> View Analytics
-                </button>
+                </a>
                 <button class="btn-action secondary" onclick="manageBookings()">
                     <i class="fas fa-calendar"></i> Manage Bookings
                 </button>
-                <button class="btn-action secondary" onclick="uploadPhotos()">
+                <a href="business-photo-upload.html" class="btn-action secondary">
                     <i class="fas fa-camera"></i> Upload Photos
-                </button>
+                </a>
             </div>
         </div>
         
@@ -2351,10 +2351,12 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
             if (toggle.checked) {
                 disclaimer.style.display = 'flex';
                 localStorage.setItem('payAtVenueEnabled', 'true');
+                localStorage.setItem('royalHairStudioPayAtVenue', 'true');
                 console.log('Pay at Venue enabled');
             } else {
                 disclaimer.style.display = 'none';
                 localStorage.setItem('payAtVenueEnabled', 'false');
+                localStorage.setItem('royalHairStudioPayAtVenue', 'false');
                 console.log('Pay at Venue disabled');
             }
         }
@@ -2432,17 +2434,11 @@ Refunds are returned to your original payment method within 5–10 business days
             alert('Redirecting to subscription management page...\n\nThis would normally take you to a payment portal where you can:\n- Update payment method\n- Change subscription plan\n- View billing history\n- Cancel subscription');
         }
         
-        function viewAnalytics() {
-            alert('Opening analytics dashboard...\n\nThis would show:\n- Profile view statistics\n- Search result appearances\n- Customer demographics\n- Booking trends');
-        }
         
         function manageBookings() {
             alert('Opening booking management...\n\nThis would allow you to:\n- View upcoming appointments\n- Manage availability\n- Process bookings\n- Send customer communications');
         }
         
-        function uploadPhotos() {
-            alert('Opening photo upload...\n\nThis would allow you to:\n- Upload business photos\n- Manage photo gallery\n- Set profile picture\n- Organize photos by category');
-        }
         
         // Navigation functionality
         function showSection(sectionId) {
@@ -2576,7 +2572,22 @@ Refunds are returned to your original payment method within 5–10 business days
         // Initialize reviews badge
         document.addEventListener('DOMContentLoaded', function() {
             updatePendingCount();
+            loadBookingOptions();
         });
+        
+        function loadBookingOptions() {
+            const payAtVenueEnabled = localStorage.getItem('royalHairStudioPayAtVenue');
+            const toggle = document.getElementById('payAtVenueToggle');
+            const disclaimer = document.getElementById('payAtVenueDisclaimer');
+            
+            if (payAtVenueEnabled === 'true') {
+                toggle.checked = true;
+                disclaimer.style.display = 'flex';
+            } else {
+                toggle.checked = false;
+                disclaimer.style.display = 'none';
+            }
+        }
         
         // Loyalty Rewards Modal Functions
         function openLoyaltyModal() {

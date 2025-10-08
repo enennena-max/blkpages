@@ -908,6 +908,24 @@
             color: #FF3CAC;
         }
         
+        /* Venue Payment Notice */
+        .venue-payment-notice {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #28A745;
+            font-weight: 500;
+        }
+        
+        .venue-payment-notice i {
+            font-size: 1.2rem;
+        }
+        
         /* Disclaimer Styles */
         .staff-allocation-disclaimer, .venue-payment-disclaimer {
             background: #1A1A1A;
@@ -2338,6 +2356,10 @@
                         <div class="payment-model-info" id="paymentModelInfo">
                             <!-- Payment model information will be populated by JavaScript -->
                         </div>
+                        <div id="payAtVenueNotice" class="venue-payment-notice" style="display: none;">
+                            <i class="fas fa-store"></i>
+                            <span>This business accepts payment at the venue - no online payment required!</span>
+                        </div>
                         <div class="payment-options" id="paymentOptions">
                             <!-- Payment options will be populated based on business model -->
                         </div>
@@ -2613,8 +2635,9 @@
     <script>
         // Gallery functionality
         let currentSlideIndex = 0;
-        const slides = document.querySelectorAll('.gallery-slide');
-        const dots = document.querySelectorAll('.gallery-dot');
+        let slides = document.querySelectorAll('.gallery-slide');
+        let dots = document.querySelectorAll('.gallery-dot');
+        let uploadedPhotos = [];
         
         function showSlide(index) {
             const slidesContainer = document.getElementById('gallerySlides');
@@ -2641,6 +2664,72 @@
         setInterval(() => {
             changeSlide(1);
         }, 5000);
+        
+        // Load uploaded photos and update gallery
+        function loadUploadedPhotos() {
+            const savedPhotos = localStorage.getItem('royalHairStudioPhotos');
+            if (savedPhotos) {
+                uploadedPhotos = JSON.parse(savedPhotos);
+                updateGalleryWithPhotos();
+            }
+        }
+        
+        function updateGalleryWithPhotos() {
+            const gallerySlides = document.getElementById('gallerySlides');
+            const galleryDots = document.querySelector('.gallery-dots');
+            
+            if (uploadedPhotos.length === 0) {
+                // Keep default placeholder slides if no photos uploaded
+                return;
+            }
+            
+            // Clear existing slides and dots
+            gallerySlides.innerHTML = '';
+            galleryDots.innerHTML = '';
+            
+            // Create new slides from uploaded photos
+            uploadedPhotos.forEach((photo, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'gallery-slide';
+                slide.style.backgroundImage = `url(${photo.url})`;
+                slide.style.backgroundSize = 'cover';
+                slide.style.backgroundPosition = 'center';
+                gallerySlides.appendChild(slide);
+                
+                // Create corresponding dot
+                const dot = document.createElement('button');
+                dot.className = `gallery-dot ${index === 0 ? 'active' : ''}`;
+                dot.onclick = () => currentSlide(index + 1);
+                galleryDots.appendChild(dot);
+            });
+            
+            // Update slides and dots references
+            slides = document.querySelectorAll('.gallery-slide');
+            dots = document.querySelectorAll('.gallery-dot');
+            currentSlideIndex = 0;
+            
+            // Reset gallery to first slide
+            showSlide(0);
+        }
+        
+        // Initialize gallery with uploaded photos when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUploadedPhotos();
+        });
+        
+        // Refresh gallery when page becomes visible (e.g., returning from photo upload)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                loadUploadedPhotos();
+                updatePaymentModelDisplay(); // Also refresh payment options
+            }
+        });
+        
+        // Also refresh when window gains focus
+        window.addEventListener('focus', function() {
+            loadUploadedPhotos();
+            updatePaymentModelDisplay(); // Also refresh payment options
+        });
         
         // Service selection and booking functionality
         let selectedServices = [];
@@ -2931,6 +3020,15 @@
             const businessPaymentModel = 'deposit-balance'; // Options: 'full-online', 'deposit-balance', 'full-venue'
             const depositPercentage = 30; // In real implementation, this would come from business data
             
+            // Check if Pay at Venue option is enabled by the business
+            const payAtVenueEnabled = localStorage.getItem('royalHairStudioPayAtVenue') === 'true';
+            
+            // Show/hide venue payment notice
+            const venueNotice = document.getElementById('payAtVenueNotice');
+            if (venueNotice) {
+                venueNotice.style.display = payAtVenueEnabled ? 'flex' : 'none';
+            }
+            
             let paymentModelHTML = '';
             let paymentOptionsHTML = '';
             
@@ -2969,6 +3067,23 @@
                             </div>
                         </div>
                     `;
+                    
+                    // Add Pay at Venue option if enabled by business
+                    if (payAtVenueEnabled) {
+                        paymentOptionsHTML += `
+                            <div class="payment-option" onclick="selectPayment('payAtVenue')">
+                                <div class="payment-header">
+                                    <div class="payment-icon">
+                                        <i class="fas fa-store"></i>
+                                    </div>
+                                    <div>
+                                        <div class="payment-title">Pay at Venue</div>
+                                        <div class="payment-description">No payment required now - pay £${total} at the venue</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
                     break;
                     
                 case 'deposit-balance':
@@ -3001,6 +3116,23 @@
                             </div>
                         </div>
                     `;
+                    
+                    // Add Pay at Venue option if enabled by business
+                    if (payAtVenueEnabled) {
+                        paymentOptionsHTML += `
+                            <div class="payment-option" onclick="selectPayment('payAtVenue')">
+                                <div class="payment-header">
+                                    <div class="payment-icon">
+                                        <i class="fas fa-store"></i>
+                                    </div>
+                                    <div>
+                                        <div class="payment-title">Pay at Venue</div>
+                                        <div class="payment-description">No payment required now - pay £${total} at the venue</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
                     break;
                     
                 case 'full-venue':

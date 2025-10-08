@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Dashboard - Elite Hair Studio (Starter Package) - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            color: #ffffff; 
+        }
+        
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        /* Navigation */
+        .navbar { 
+            background: rgba(0, 0, 0, 0.95); 
+            backdrop-filter: blur(10px);
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-wrapper { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 1rem 0;
+        }
+        
+        .logo { 
+            font-size: 1.8rem; 
+            font-weight: 700; 
+            color: #ffffff; 
+            text-decoration: none; 
+            background: linear-gradient(135deg, #10B981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links { 
+            display: flex; 
+            list-style: none; 
+            gap: 2rem; 
+        }
+        
+        .nav-links a { 
+            text-decoration: none; 
+            color: #ffffff; 
+            font-weight: 500; 
+            transition: color 0.3s; 
+        }
+        
+        .nav-links a:hover {
+            color: #10B981;
+        }
+        
+        .user-menu { 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        
+        .user-info { 
+            color: #cccccc; 
+            font-size: 0.9rem; 
+        }
+        
+        .btn-logout { 
+            background: #dc3545;
+            color: white; 
+            border: none; 
+            padding: 0.5rem 1rem; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            transition: background 0.3s;
+        }
+        
+        .btn-logout:hover { 
+            background: #c82333;
+        }
+        
+        /* Main Content */
+        .main-content { 
+            padding: 120px 0 80px; 
+        }
+        
+        .main-content-inner {
+            margin-left: 250px;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .dashboard-header { 
+            margin-bottom: 3rem; 
+        }
+        
+        .dashboard-title { 
+            font-size: 2.5rem; 
+            font-weight: 700; 
+            margin-bottom: 1rem; 
+            background: linear-gradient(135deg, #10B981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .dashboard-subtitle { 
+            color: #cccccc; 
+            font-size: 1.1rem; 
+        }
+        
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #1A1A1A;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            position: fixed;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-menu li {
+            margin: 0;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: #ffffff; 
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #10B981;
+        }
+        
+        .sidebar-menu a i {
+            margin-right: 0.75rem;
+            width: 20px;
+        }
+        
+        .sidebar-menu .badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        /* Stats Cards */
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 2rem; 
+            margin-bottom: 3rem; 
+        }
+        
+        .stat-card { 
+            background: #1A1A1A;
+            padding: 2rem; 
+            border-radius: 15px; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center; 
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card h3 { 
+            font-size: 2rem; 
+            font-weight: 700; 
+            color: #10B981;
+            margin-bottom: 0.5rem; 
+        }
+        
+        .stat-card p { 
+            color: #cccccc; 
+            font-size: 0.9rem; 
+        }
+        
+        /* Booking Options Section */
+        .booking-options-section {
+            background: #1A1A1A;
+            padding: 2rem; 
+            border-radius: 15px; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 3rem; 
+        }
+        
+        .booking-options-section h3 {
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            margin-bottom: 1.5rem; 
+            color: #ffffff; 
+        }
+        
+        .booking-options-card {
+            background: #2A2A2A;
+            padding: 1.5rem; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-info {
+            flex: 1;
+        }
+        
+        .setting-title {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+        
+        .setting-description {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+        
+        .setting-control {
+            margin-left: 1rem;
+        }
+        
+        /* Action Buttons */
+        .action-buttons { 
+            display: flex; 
+            gap: 1rem; 
+            flex-wrap: wrap; 
+            margin-bottom: 3rem;
+        }
+        
+        .btn-action { 
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white; 
+            border: none; 
+            padding: 0.8rem 1.5rem; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-weight: 500; 
+            text-decoration: none; 
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .btn-action:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); 
+        }
+        
+        .btn-action.secondary { 
+            background: rgba(255, 255, 255, 0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+        }
+        
+        .btn-action.secondary:hover { 
+            background: rgba(255, 255, 255, 0.2); 
+        }
+        
+        /* Package Status */
+        .package-status { 
+            background: linear-gradient(135deg, #10B981, #059669); 
+            border: 1px solid #10B981; 
+            border-radius: 8px; 
+            padding: 1rem; 
+            margin-bottom: 1.5rem; 
+        }
+        
+        .package-status h4 { 
+            color: white; 
+            margin-bottom: 0.5rem; 
+            font-size: 1.1rem; 
+        }
+        
+        .package-status p { 
+            color: rgba(255, 255, 255, 0.9); 
+            font-size: 0.9rem; 
+            margin-bottom: 1rem; 
+        }
+        
+        .upgrade-features { 
+            list-style: none; 
+            padding: 0; 
+            margin: 1rem 0; 
+        }
+        
+        .upgrade-features li { 
+            color: white; 
+            margin: 0.5rem 0; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+            font-size: 0.9rem; 
+        }
+        
+        .upgrade-features i { 
+            color: #28a745; 
+            font-size: 0.8rem; 
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) { 
+            .stats-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+            }
+            
+            .nav-links { 
+                display: none; 
+            }
+            
+            .dashboard-title { 
+                font-size: 2rem; 
+            }
+            
+            .action-buttons { 
+                flex-direction: column; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="index.html" class="logo">BlkPages</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="search-results.html">Browse</a></li>
+                    <li><a href="offers.html">Offers</a></li>
+                    <li><a href="why-list-with-us.html#pricing">Plans</a></li>
+                </ul>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <i class="fas fa-building"></i> Elite Hair Studio
+                    </div>
+                    <button class="btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="dashboard-container">
+            <!-- Sidebar Navigation -->
+            <aside class="sidebar">
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active" onclick="showSection('overview')">
+                        <i class="fas fa-tachometer-alt"></i> Overview
+                    </a></li>
+                    <li><a href="#" onclick="showSection('bookings')">
+                        <i class="fas fa-calendar-alt"></i> Bookings
+                    </a></li>
+                    <li><a href="#" onclick="showSection('profile')">
+                        <i class="fas fa-building"></i> Business Profile
+                    </a></li>
+                    <li><a href="#" onclick="showSection('settings')">
+                        <i class="fas fa-cog"></i> Settings
+                    </a></li>
+                    <li><a href="#" onclick="showSection('analytics')">
+                        <i class="fas fa-chart-bar"></i> Analytics
+                    </a></li>
+                    <li><a href="#" onclick="showSection('loyalty')">
+                        <i class="fas fa-gift"></i> Loyalty Rewards
+                    </a></li>
+                    <li><a href="business-plan-management.html">
+                        <i class="fas fa-credit-card"></i> Manage Plan
+                    </a></li>
+                </ul>
+            </aside>
+
+            <!-- Dashboard Content -->
+            <div class="main-content-inner">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Business Dashboard</h1>
+                    <p class="dashboard-subtitle">Manage your Elite Hair Studio business listing and track your performance</p>
+                </div>
+
+                <!-- Overview Section -->
+                <div id="overview" class="content-section active">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>127</h3>
+                            <p>Total Reviews</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>4.8</h3>
+                            <p>Average Rating</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>1,234</h3>
+                            <p>Profile Views</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>45</h3>
+                            <p>Bookings This Month</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <a href="demo-business-starter.html" class="btn-action">
+                            <i class="fas fa-eye"></i> View Public Profile
+                        </a>
+                        <button class="btn-action secondary" onclick="viewAnalytics()">
+                            <i class="fas fa-chart-bar"></i> View Analytics
+                        </button>
+                        <button class="btn-action secondary" onclick="manageBookings()">
+                            <i class="fas fa-calendar"></i> Manage Bookings
+                        </button>
+                        <button class="btn-action secondary" onclick="uploadPhotos()">
+                            <i class="fas fa-camera"></i> Upload Photos
+                        </button>
+                    </div>
+                    
+                    <!-- Package Status Section -->
+                    <div class="booking-options-section">
+                        <h3>Current Package</h3>
+                        <div class="booking-options-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-title">Starter Package</div>
+                                    <div class="setting-description">You're currently on the Starter package with enhanced features. Upgrade to Professional for advanced capabilities.</div>
+                                </div>
+                                <div class="setting-control">
+                                    <a href="why-list-with-us.html#pricing" class="btn-action">
+                                        <i class="fas fa-arrow-up"></i> Upgrade to Professional
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Model Configuration -->
+                    <div class="booking-options-section">
+                        <h3>Payment Model Configuration</h3>
+                        <div class="booking-options-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-title">Current Payment Model</div>
+                                    <div class="setting-description">How customers pay for your services</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; border-radius: 8px; padding: 1rem;">
+                                        <h4 style="color: #10B981; margin-bottom: 0.5rem; font-size: 1rem;">Deposit + Balance</h4>
+                                        <p style="color: #9CA3AF; font-size: 0.9rem; margin: 0;">Customers pay 30% deposit online, balance at venue.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cancellation Policy -->
+                    <div class="booking-options-section">
+                        <h3>Cancellation Policy</h3>
+                        <div class="booking-options-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-title">Cancellation Terms</div>
+                                    <div class="setting-description">Define your cancellation and refund policy for customers</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; border-radius: 8px; padding: 1rem;">
+                                        <h4 style="color: #10B981; margin-bottom: 0.5rem; font-size: 1rem;">Flexible Policy</h4>
+                                        <p style="color: #9CA3AF; font-size: 0.9rem; margin: 0;">24h notice for full refund. Custom policies available with Professional package.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Loyalty Rewards -->
+                    <div class="booking-options-section">
+                        <h3>Loyalty Rewards</h3>
+                        <div class="booking-options-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-title">Customer Loyalty Programme</div>
+                                    <div class="setting-description">Create loyalty programs to encourage repeat bookings and reward your customers</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div style="color: #9CA3AF; text-align: center; padding: 1rem;">
+                                        <i class="fas fa-lock" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #10B981;"></i>
+                                        <p style="font-size: 0.9rem; margin: 0;">Available as premium add-on</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bookings Section -->
+                <div id="bookings" class="content-section">
+                    <div class="booking-options-section">
+                        <h3>Recent Bookings</h3>
+                        <div class="booking-options-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-title">Online Booking System</div>
+                                    <div class="setting-description">Manage your customer appointments and bookings</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; border-radius: 8px; padding: 1rem;">
+                                        <h4 style="color: #10B981; margin-bottom: 0.5rem; font-size: 1rem;">Active</h4>
+                                        <p style="color: #9CA3AF; font-size: 0.9rem; margin: 0;">Online booking system is enabled for your business.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Section -->
+                <div id="profile" class="content-section">
+                    <div class="booking-options-section">
+                        <h3>Business Profile</h3>
+                        <div class="booking-options-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-title">Profile Management</div>
+                                    <div class="setting-description">Edit your business information, photos, and services</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; border-radius: 8px; padding: 1rem;">
+                                        <h4 style="color: #10B981; margin-bottom: 0.5rem; font-size: 1rem;">Editable</h4>
+                                        <p style="color: #9CA3AF; font-size: 0.9rem; margin: 0;">You can edit your business profile with Starter package.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="settings" class="content-section">
+                    <div class="booking-options-section">
+                        <h3>Settings</h3>
+                        <div class="booking-options-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-title">Business Settings</div>
+                                    <div class="setting-description">Configure your business preferences and settings</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; border-radius: 8px; padding: 1rem;">
+                                        <h4 style="color: #10B981; margin-bottom: 0.5rem; font-size: 1rem;">Available</h4>
+                                        <p style="color: #9CA3AF; font-size: 0.9rem; margin: 0;">Basic settings available with Starter package.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Section -->
+                <div id="analytics" class="content-section">
+                    <div class="booking-options-section">
+                        <h3>Analytics</h3>
+                        <div class="booking-options-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-title">Business Analytics</div>
+                                    <div class="setting-description">Track your business performance and customer insights</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; border-radius: 8px; padding: 1rem;">
+                                        <h4 style="color: #10B981; margin-bottom: 0.5rem; font-size: 1rem;">Basic Analytics</h4>
+                                        <p style="color: #9CA3AF; font-size: 0.9rem; margin: 0;">Basic analytics available. Advanced analytics with Professional package.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loyalty Section -->
+                <div id="loyalty" class="content-section">
+                    <div class="booking-options-section">
+                        <h3>Loyalty Rewards</h3>
+                        <div class="booking-options-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-title">Customer Loyalty Programme</div>
+                                    <div class="setting-description">Create loyalty programs to encourage repeat bookings and reward your customers</div>
+                                </div>
+                                <div class="setting-control">
+                                    <div style="color: #9CA3AF; text-align: center; padding: 1rem;">
+                                        <i class="fas fa-lock" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #10B981;"></i>
+                                        <p style="font-size: 0.9rem; margin: 0;">Available as premium add-on</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: #0F0F0F; padding: 2rem 0; margin-top: 3rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <div class="container">
+            <div style="text-align: center; color: #9CA3AF;">
+                <p>&copy; 2025 BlkPages – Supporting Black-owned Businesses</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sidebar navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update active menu item
+            const menuItems = document.querySelectorAll('.sidebar-menu a');
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Find and activate the clicked menu item
+            const activeMenuItem = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
+            if (activeMenuItem) {
+                activeMenuItem.classList.add('active');
+            }
+        }
+        
+        // Action button functions
+        function viewAnalytics() {
+            alert('Basic analytics are available with your Starter package. Upgrade to Professional for advanced analytics and detailed insights.');
+        }
+        
+        function manageBookings() {
+            alert('Online booking management is available with your Starter package. You can manage appointments and view booking details.');
+        }
+        
+        function uploadPhotos() {
+            alert('Photo gallery is available with your Starter package. You can upload and manage your business photos.');
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('businessLoggedIn');
+            localStorage.removeItem('businessEmail');
+            localStorage.removeItem('businessLoginTime');
+            localStorage.removeItem('businessRegistrationData');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

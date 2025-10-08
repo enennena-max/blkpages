@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Hair Studio - Starter Package Demo - BlkPages</title>
+    <script src="https://cdn.tailwindcss.com?v=2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .demo-banner {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            text-align: center;
+            padding: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .demo-banner i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Hero Section */
+        .hero-banner {
+            background: linear-gradient(135deg, #1A1A1A, #2D2D2D);
+            padding: 3rem 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .business-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .business-info h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+        
+        .business-category {
+            color: #9CA3AF;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .business-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stars {
+            color: #FFD700;
+            font-size: 1.2rem;
+        }
+        
+        .rating-text {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+        
+        .business-description {
+            color: #CCCCCC;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Photo Gallery */
+        .photo-gallery {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gallery-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+        
+        .gallery-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        
+        .gallery-slides {
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-slide {
+            min-width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 1rem;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 1.2rem;
+        }
+        
+        .gallery-prev {
+            left: 1rem;
+        }
+        
+        .gallery-next {
+            right: 1rem;
+        }
+        
+        .gallery-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .gallery-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .gallery-dot.active {
+            background: #10B981;
+        }
+        
+        /* Content Layout */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+        
+        .content-main {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .content-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background: #1A1A1A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+        
+        .card p {
+            color: #CCCCCC;
+            line-height: 1.6;
+        }
+        
+        /* Services Section */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .service-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .service-info {
+            flex: 1;
+        }
+        
+        .service-name {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+        
+        .service-price {
+            color: #10B981;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .service-description {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+        
+        .add-service-btn {
+            background: #10B981;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .add-service-btn:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+        
+        /* Contact Information */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .contact-icon {
+            font-size: 1.2rem;
+            color: #10B981;
+            margin-top: 0.2rem;
+        }
+        
+        .contact-details h4 {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+        }
+        
+        .contact-details p {
+            color: #CCCCCC;
+            font-size: 0.9rem;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Location Map */
+        .map-container {
+            height: 200px;
+            background: linear-gradient(135deg, #1A1A1A, #2D2D2D);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9CA3AF;
+            font-size: 1.1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Reviews Section */
+        .reviews-summary {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .review-rating {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #10B981;
+        }
+        
+        .review-stars {
+            color: #FFD700;
+            font-size: 1.2rem;
+        }
+        
+        .review-count {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+        
+        .review-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .reviewer-name {
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .review-date {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+        
+        .review-text {
+            color: #CCCCCC;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .business-info h1 {
+                font-size: 2rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo Banner -->
+    <div class="demo-banner">
+        <i class="fas fa-star"></i>
+        Starter Package Demo - Enhanced Features
+    </div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">BlkPages</div>
+                <div style="color: #9CA3AF; font-size: 0.9rem;">
+                    <i class="fas fa-star"></i> Starter Package Demo
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+        <div class="container">
+            <div class="business-logo">
+                <i class="fas fa-cut"></i>
+            </div>
+            <div class="business-info">
+                <h1>Elite Hair Studio</h1>
+                <div class="business-category">Hair Salon</div>
+                <div class="business-rating">
+                    <div class="stars">★★★★★</div>
+                    <div class="rating-text">4.8 (127 reviews)</div>
+                </div>
+                <p class="business-description">
+                    Professional hair salon specializing in natural hair care, styling, and treatments for all hair types. 
+                    Our experienced stylists provide personalized service in a welcoming, modern environment.
+                </p>
+                <div style="margin-top: 1.5rem;">
+                    <a href="demo-business-dashboard-starter.html" class="btn-primary" onclick="setBusinessLogin()">
+                        <i class="fas fa-cog"></i> Manage Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Photo Gallery -->
+    <div class="container">
+        <div class="photo-gallery">
+            <h2 class="gallery-title">Gallery</h2>
+            <div class="gallery-container">
+                <div class="gallery-slides" id="gallerySlides">
+                    <div class="gallery-slide">Salon Interior</div>
+                    <div class="gallery-slide">Styling Work</div>
+                    <div class="gallery-slide">Hair Treatments</div>
+                </div>
+                <button class="gallery-nav gallery-prev" onclick="changeSlide(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="gallery-nav gallery-next" onclick="changeSlide(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="gallery-dots">
+                    <button class="gallery-dot active" onclick="currentSlide(1)"></button>
+                    <button class="gallery-dot" onclick="currentSlide(2)"></button>
+                    <button class="gallery-dot" onclick="currentSlide(3)"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <div class="content-wrapper">
+            <div class="content-main">
+                <!-- About Section -->
+                <div class="card">
+                    <h2>About Elite Hair Studio</h2>
+                    <p>
+                        With over 10 years of experience in the hair industry, Elite Hair Studio has become a trusted name 
+                        in London's beauty scene. We specialize in natural hair care, protective styling, and modern cuts 
+                        that enhance your natural beauty.
+                    </p>
+                    <p>
+                        Our team of certified stylists stays up-to-date with the latest techniques and trends, ensuring 
+                        you receive the highest quality service. We use premium products and maintain the highest standards 
+                        of hygiene and professionalism.
+                    </p>
+                </div>
+                
+                <!-- Services Section -->
+                <div class="card">
+                    <h2>Services & Prices</h2>
+                    <div class="services-grid">
+                        <div class="service-item">
+                            <div class="service-info">
+                                <div class="service-name">Haircut & Style</div>
+                                <div class="service-price">£35</div>
+                                <div class="service-description">Professional haircut and styling</div>
+                            </div>
+                            <button class="add-service-btn" onclick="addService('Haircut & Style', 35, 60)">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        
+                        <div class="service-item">
+                            <div class="service-info">
+                                <div class="service-name">Hair Color</div>
+                                <div class="service-price">£85</div>
+                                <div class="service-description">Full hair coloring service</div>
+                            </div>
+                            <button class="add-service-btn" onclick="addService('Hair Color', 85, 120)">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        
+                        <div class="service-item">
+                            <div class="service-info">
+                                <div class="service-name">Deep Conditioning</div>
+                                <div class="service-price">£45</div>
+                                <div class="service-description">Intensive treatment for damaged hair</div>
+                            </div>
+                            <button class="add-service-btn" onclick="addService('Deep Conditioning', 45, 30)">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        
+                        <div class="service-item">
+                            <div class="service-info">
+                                <div class="service-name">Bridal Package</div>
+                                <div class="service-price">£150</div>
+                                <div class="service-description">Complete bridal hair styling package</div>
+                            </div>
+                            <button class="add-service-btn" onclick="addService('Bridal Package', 150, 120)">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reviews Section -->
+                <div class="card">
+                    <h2>Customer Reviews</h2>
+                    <div class="reviews-summary">
+                        <div class="review-rating">4.8</div>
+                        <div class="review-stars">★★★★★</div>
+                        <div class="review-count">Based on 127 reviews</div>
+                    </div>
+                    
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-name">Sarah Johnson</div>
+                            <div class="review-date">2 days ago</div>
+                        </div>
+                        <div class="review-text">
+                            Amazing service! The stylist really listened to what I wanted and delivered exactly that. 
+                            The salon is clean and professional. Highly recommend!
+                        </div>
+                    </div>
+                    
+                    <div class="review-item">
+                        <div class="review-header">
+                            <div class="reviewer-name">Michael Brown</div>
+                            <div class="review-date">1 week ago</div>
+                        </div>
+                        <div class="review-text">
+                            Great haircut and friendly staff. The booking process was smooth and the service was excellent. 
+                            Will definitely be back!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-sidebar">
+                <!-- Contact Information -->
+                <div class="card">
+                    <h2>Contact Information</h2>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div class="contact-details">
+                                <h4>Address</h4>
+                                <p>123 Beauty Street<br>London SW1A 1AA</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div class="contact-details">
+                                <h4>Phone</h4>
+                                <p>+44 20 7123 4567</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">🌐</div>
+                            <div class="contact-details">
+                                <h4>Website</h4>
+                                <p>www.elitehairstudio.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">⏰</div>
+                            <div class="contact-details">
+                                <h4>Opening Hours</h4>
+                                <p>Mon-Fri: 9:00 AM - 6:00 PM<br>Sat: 9:00 AM - 5:00 PM<br>Sun: Closed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="card">
+                    <h2>Quick Actions</h2>
+                    <div class="quick-actions">
+                        <a href="#" class="action-btn" onclick="bookAppointment()">
+                            <i class="fas fa-calendar-plus"></i> Book Appointment
+                        </a>
+                        <a href="tel:+442071234567" class="action-btn secondary">
+                            <i class="fas fa-phone"></i> Call Now
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Location -->
+                <div class="card">
+                    <h2>Location</h2>
+                    <div class="map-container">
+                        <i class="fas fa-map-marker-alt"></i> Interactive Map
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer style="background: #0F0F0F; padding: 2rem 0; margin-top: 3rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <div class="container">
+            <div style="text-align: center; color: #9CA3AF;">
+                <p>&copy; 2025 BlkPages – Supporting Black-owned Businesses</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Gallery functionality
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.gallery-slide');
+        const dots = document.querySelectorAll('.gallery-dot');
+        
+        function showSlide(index) {
+            const slidesContainer = document.getElementById('gallerySlides');
+            slidesContainer.style.transform = `translateX(-${index * 100}%)`;
+            
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+        
+        function changeSlide(direction) {
+            currentSlideIndex += direction;
+            if (currentSlideIndex >= slides.length) currentSlideIndex = 0;
+            if (currentSlideIndex < 0) currentSlideIndex = slides.length - 1;
+            showSlide(currentSlideIndex);
+        }
+        
+        function currentSlide(index) {
+            currentSlideIndex = index - 1;
+            showSlide(currentSlideIndex);
+        }
+        
+        // Auto-advance slides
+        setInterval(() => {
+            changeSlide(1);
+        }, 5000);
+        
+        // Service booking functionality
+        function addService(name, price, duration) {
+            alert(`Added ${name} to booking cart!\nPrice: £${price}\nDuration: ${duration} minutes`);
+        }
+        
+        function bookAppointment() {
+            alert('Redirecting to booking system...\nThis would open the full booking interface.');
+        }
+        
+        // Set business login data for demo
+        function setBusinessLogin() {
+            localStorage.setItem('businessLoggedIn', 'true');
+            localStorage.setItem('businessEmail', 'elite@hairstudio.com');
+            localStorage.setItem('businessLoginTime', new Date().toISOString());
+            localStorage.setItem('businessRegistrationData', JSON.stringify({
+                businessName: 'Elite Hair Studio',
+                selectedTier: 'starter',
+                category: 'hairdresser',
+                email: 'elite@hairstudio.com',
+                phone: '+44 20 7123 4567',
+                address: '123 High Street',
+                city: 'London',
+                state: 'England',
+                zipCode: 'SW1A 1AA',
+                paymentModel: 'deposit',
+                depositPercentage: 30
+            }));
+        }
+    </script>
+</body>
+</html>
