@@ -1236,6 +1236,152 @@
             background: #cccccc;
             color: #121212;
         }
+
+        /* Business Status Modal Styles */
+        .business-status-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+        }
+
+        .business-status-modal .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .business-status-modal .modal-content {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .business-status-modal .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .business-status-modal .modal-header h3 {
+            color: #ffffff;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .business-status-modal .modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .business-status-modal .modal-close:hover {
+            background: #333;
+            color: #ffffff;
+        }
+
+        .business-status-modal .modal-body {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .business-status-modal .status-icon {
+            font-size: 3rem;
+            color: #ffc107;
+            margin-bottom: 1rem;
+        }
+
+        .business-status-modal .modal-body p {
+            color: #cccccc;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 2rem;
+        }
+
+        .business-status-modal .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .business-status-modal .btn-primary,
+        .business-status-modal .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 120px;
+        }
+
+        .business-status-modal .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .business-status-modal .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .business-status-modal .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .business-status-modal .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .business-status-modal .modal-content {
+                margin: 1rem;
+                max-width: none;
+            }
+            
+            .business-status-modal .modal-actions {
+                flex-direction: column;
+            }
+            
+            .business-status-modal .btn-primary,
+            .business-status-modal .btn-secondary {
+                width: 100%;
+            }
+        }
         
         @media (max-width: 768px) {
             .booking-actions {
@@ -3131,10 +3277,157 @@
         }
         
         
+        // Check business status before allowing bookings
+        function checkBusinessStatus() {
+            try {
+                // Get business ID from URL or page data
+                const businessId = getBusinessIdFromPage();
+                if (!businessId) {
+                    console.error('Business ID not found');
+                    return true; // Allow booking if ID not found (fallback)
+                }
+
+                // Get business data
+                const businesses = JSON.parse(localStorage.getItem('blkpages_businesses') || '[]');
+                const business = businesses.find(b => b.id === businessId);
+                
+                if (!business) {
+                    console.error('Business not found');
+                    return true; // Allow booking if business not found (fallback)
+                }
+
+                // Check if business is active
+                if (business.status !== 'active') {
+                    showBusinessStatusError(business.status);
+                    return false;
+                }
+
+                // Check if bookings are disabled
+                if (business.bookingsDisabled) {
+                    showBookingsDisabledError();
+                    return false;
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Error checking business status:', error);
+                return true; // Allow booking on error (fallback)
+            }
+        }
+
+        // Get business ID from page
+        function getBusinessIdFromPage() {
+            // Try to get from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const businessId = urlParams.get('businessId');
+            if (businessId) return businessId;
+
+            // Try to get from page data
+            const businessIdElement = document.querySelector('[data-business-id]');
+            if (businessIdElement) {
+                return businessIdElement.getAttribute('data-business-id');
+            }
+
+            // Try to get from localStorage (for demo purposes)
+            return localStorage.getItem('currentBusinessId') || 'business_1';
+        }
+
+        // Show business status error
+        function showBusinessStatusError(status) {
+            let message = '';
+            let title = '';
+
+            switch (status) {
+                case 'suspended':
+                    title = 'Business Temporarily Suspended';
+                    message = 'This business is currently suspended and not accepting new bookings. Please check back later or contact the business directly.';
+                    break;
+                case 'deactivated':
+                    title = 'Business No Longer Available';
+                    message = 'This business is no longer accepting bookings. Please try another business.';
+                    break;
+                case 'pending':
+                    title = 'Business Under Review';
+                    message = 'This business is currently under review and not accepting bookings yet. Please check back later.';
+                    break;
+                default:
+                    title = 'Booking Not Available';
+                    message = 'This business is currently not accepting new bookings.';
+            }
+
+            // Create and show modal
+            showBusinessStatusModal(title, message);
+        }
+
+        // Show bookings disabled error
+        function showBookingsDisabledError() {
+            const title = 'Bookings Temporarily Disabled';
+            const message = 'This business has temporarily disabled new bookings. Please check back later or contact the business directly.';
+            showBusinessStatusModal(title, message);
+        }
+
+        // Show business status modal
+        function showBusinessStatusModal(title, message) {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('businessStatusModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Create modal
+            const modal = document.createElement('div');
+            modal.id = 'businessStatusModal';
+            modal.className = 'business-status-modal';
+            modal.innerHTML = `
+                <div class="modal-overlay" onclick="closeBusinessStatusModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="modal-header">
+                            <h3>${title}</h3>
+                            <button class="modal-close" onclick="closeBusinessStatusModal()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="status-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <p>${message}</p>
+                            <div class="modal-actions">
+                                <button class="btn-secondary" onclick="closeBusinessStatusModal()">Close</button>
+                                <button class="btn-primary" onclick="findAlternativeBusiness()">Find Alternative</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+        }
+
+        // Close business status modal
+        function closeBusinessStatusModal() {
+            const modal = document.getElementById('businessStatusModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Find alternative business
+        function findAlternativeBusiness() {
+            closeBusinessStatusModal();
+            // Redirect to search page or show alternatives
+            window.location.href = 'search-results.html';
+        }
+
         // Book appointment function with step-by-step validation
         function bookAppointment() {
             // Clear any existing errors
             clearAllErrors();
+            
+            // Step 0: Check business status before proceeding
+            if (!checkBusinessStatus()) {
+                return;
+            }
             
             // Step 1: Check if services are selected
             if (selectedServices.length === 0) {
@@ -6192,42 +6485,99 @@ This policy is set by ${businessName}. BlkPages processes payments via Stripe on
             loadBasket();
         });
         
-        // Save booking to both customer and business dashboards
+        // Save booking to both customer and business dashboards with privacy protection
         function saveBookingToDashboards(bookingId, bookingData) {
             console.log('Saving booking to dashboards:', bookingId, bookingData);
             
-            // Create booking object with shared booking_id
-            const booking = {
-                bookingId: bookingId,
+            // Create customer booking object (full details)
+            const customerBooking = {
+                id: bookingId,
+                customerId: bookingData.isGuest ? 'guest_' + Date.now() : localStorage.getItem('customerId') || 'customer_1',
+                businessId: bookingData.businessId,
+                businessName: bookingData.businessName,
                 customerName: bookingData.customerName,
                 customerEmail: bookingData.customerEmail,
                 customerPhone: bookingData.customerPhone,
                 customerPostcode: bookingData.customerPostcode,
-                businessName: bookingData.businessName,
-                businessId: bookingData.businessId,
-                services: bookingData.services,
-                date: bookingData.date,
-                time: bookingData.time,
-                paymentMethod: bookingData.paymentMethod,
+                serviceName: bookingData.services.map(s => s.name).join(', '),
+                servicePrice: bookingData.totalAmount,
+                bookingDate: bookingData.date,
+                bookingTime: bookingData.time,
                 totalAmount: bookingData.totalAmount,
-                status: bookingData.status,
+                paymentMethod: bookingData.paymentMethod,
+                status: 'Confirmed',
                 isGuest: bookingData.isGuest,
                 createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+                updatedAt: new Date().toISOString(),
+                source: 'booking_form'
+            };
+            
+            // Create business booking object (privacy-protected)
+            const businessBooking = {
+                id: bookingId,
+                customerId: customerBooking.customerId,
+                businessId: bookingData.businessId,
+                businessName: bookingData.businessName,
+                // Privacy-protected customer details
+                customerFirstName: bookingData.customerName.split(' ')[0],
+                customerLastName: bookingData.customerName.split(' ').slice(1).join(' '),
+                serviceName: bookingData.services.map(s => s.name).join(', '),
+                servicePrice: bookingData.totalAmount,
+                bookingDate: bookingData.date,
+                bookingTime: bookingData.time,
+                totalAmount: bookingData.totalAmount,
+                paymentMethod: bookingData.paymentMethod,
+                status: 'Confirmed',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                source: 'booking_form',
+                privacyNotice: 'Customer contact details are protected for privacy'
             };
             
             // Save to customer dashboard (MyBookings[])
-            const customerId = bookingData.isGuest ? 'guest_' + Date.now() : localStorage.getItem('customerId') || 'customer_1';
+            const customerId = customerBooking.customerId;
             const customerBookings = JSON.parse(localStorage.getItem(`customerBookings_${customerId}`) || '[]');
-            customerBookings.push(booking);
+            customerBookings.push(customerBooking);
             localStorage.setItem(`customerBookings_${customerId}`, JSON.stringify(customerBookings));
             
             // Save to business dashboard (Bookings[])
             const businessBookings = JSON.parse(localStorage.getItem(`businessBookings_${bookingData.businessId}`) || '[]');
-            businessBookings.push(booking);
+            businessBookings.push(businessBooking);
             localStorage.setItem(`businessBookings_${bookingData.businessId}`, JSON.stringify(businessBookings));
             
+            // Trigger booking.confirmed event
+            triggerBookingConfirmedEvent(customerBooking, businessBooking);
+            
             console.log('Booking saved to both dashboards successfully');
+        }
+
+        // Trigger booking.confirmed event
+        function triggerBookingConfirmedEvent(customerBooking, businessBooking) {
+            try {
+                // Create booking confirmed event data
+                const bookingConfirmedData = {
+                    bookingId: customerBooking.id,
+                    customerId: customerBooking.customerId,
+                    businessId: customerBooking.businessId,
+                    customerName: customerBooking.customerName,
+                    businessName: customerBooking.businessName,
+                    serviceName: customerBooking.serviceName,
+                    bookingDate: customerBooking.bookingDate,
+                    bookingTime: customerBooking.bookingTime,
+                    totalAmount: customerBooking.totalAmount,
+                    status: 'Confirmed',
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Dispatch custom event
+                window.dispatchEvent(new CustomEvent('booking.confirmed', {
+                    detail: bookingConfirmedData
+                }));
+                
+                console.log('Booking.confirmed event triggered:', bookingConfirmedData);
+            } catch (error) {
+                console.error('Failed to trigger booking.confirmed event:', error);
+            }
         }
         
         // Update booking status when customer cancels (real-time sync)

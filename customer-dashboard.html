@@ -617,6 +617,162 @@
             color: #10B981;
             font-weight: 600;
         }
+
+        /* Business Status Information Styles */
+        .business-status-info {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .business-status-warning {
+            border-left-color: #ffc107;
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        .business-status-error {
+            border-left-color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .business-status-info .detail-row {
+            margin-bottom: 0.25rem;
+        }
+
+        .business-status-info .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .business-status-info .detail-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Waiting List Styles */
+        .waiting-list-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .waiting-list-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .waiting-list-item.waiting {
+            border-left: 4px solid #ffc107;
+        }
+
+        .waiting-list-item.offered {
+            border-left: 4px solid #17a2b8;
+        }
+
+        .waiting-list-item.accepted {
+            border-left: 4px solid #28a745;
+        }
+
+        .business-info {
+            flex: 1;
+        }
+
+        .business-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .business-details {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-info {
+            background: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .waiting-list-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .waiting-list-empty {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .waiting-list-empty i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ddd;
+        }
+
+        .tab-badge {
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
         
         /* Notification System */
         .notification {
@@ -1290,6 +1446,10 @@
             <button class="nav-tab" onclick="showTab('loyalty')">
                 <i class="fas fa-gift"></i> Loyalty Rewards
             </button>
+            <button class="nav-tab" onclick="showTab('waiting-list')">
+                <i class="fas fa-clock"></i> Waiting List
+                <span class="tab-badge" id="waitingListTabBadge" style="display: none;">0</span>
+            </button>
             <button class="nav-tab" onclick="showTab('account')">
                 <i class="fas fa-user"></i> Account
             </button>
@@ -1925,6 +2085,33 @@
                             </button>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Waiting List Tab -->
+            <div class="tab-content" id="waitingListTab">
+                <div class="section-header">
+                    <h2>My Waiting Lists</h2>
+                    <p>Track your waiting list positions and manage offers</p>
+                </div>
+                
+                <div class="waiting-list-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalWaitingList">0</div>
+                        <div class="stat-label">Total Waiting</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="offersReceived">0</div>
+                        <div class="stat-label">Offers Received</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="offersAccepted">0</div>
+                        <div class="stat-label">Offers Accepted</div>
+                    </div>
+                </div>
+                
+                <div id="waitingListContent">
+                    <!-- Waiting list items will be loaded here -->
                 </div>
             </div>
 
@@ -2600,6 +2787,8 @@
             checkLoginStatus();
             loadBasket();
             checkCancellationEligibility();
+            loadCustomerWaitingList();
+            setupBookingEventListeners();
             
             // Check if user came from Account Settings link
             if (localStorage.getItem('redirectToAccount') === 'true') {
@@ -2609,6 +2798,30 @@
                 showTab('account');
             }
         });
+
+        // Setup booking event listeners
+        function setupBookingEventListeners() {
+            // Listen for booking.confirmed events
+            window.addEventListener('booking.confirmed', function(event) {
+                console.log('Booking confirmed event received:', event.detail);
+                // Refresh customer bookings display
+                loadCustomerBookings();
+            });
+
+            // Listen for booking.cancelled events
+            window.addEventListener('booking.cancelled', function(event) {
+                console.log('Booking cancelled event received:', event.detail);
+                // Refresh customer bookings display
+                loadCustomerBookings();
+            });
+
+            // Listen for booking updates
+            window.addEventListener('bookingUpdated', function(event) {
+                console.log('Booking updated event received:', event.detail);
+                // Refresh customer bookings display
+                loadCustomerBookings();
+            });
+        }
         
         // Loyalty FAQ toggle function
         function toggleLoyaltyFAQ(element) {
@@ -2641,10 +2854,19 @@
             
             if (!bookingsGrid) return;
             
+            // Check business status for each booking
+            const bookingsWithStatus = customerBookings.map(booking => {
+                const businessStatus = getBusinessStatus(booking.businessId);
+                return {
+                    ...booking,
+                    businessStatus: businessStatus
+                };
+            });
+            
             // Clear existing bookings
             bookingsGrid.innerHTML = '';
             
-            if (customerBookings.length === 0) {
+            if (bookingsWithStatus.length === 0) {
                 bookingsGrid.innerHTML = `
                     <div class="no-bookings">
                         <div class="no-bookings-icon">📅</div>
@@ -2657,12 +2879,24 @@
             }
             
             // Display each booking
-            customerBookings.forEach(booking => {
+            bookingsWithStatus.forEach(booking => {
                 const bookingCard = createBookingCard(booking);
                 bookingsGrid.appendChild(bookingCard);
             });
         }
         
+        // Get business status
+        function getBusinessStatus(businessId) {
+            try {
+                const businesses = JSON.parse(localStorage.getItem('blkpages_businesses') || '[]');
+                const business = businesses.find(b => b.id === businessId);
+                return business ? business.status : 'unknown';
+            } catch (error) {
+                console.error('Error getting business status:', error);
+                return 'unknown';
+            }
+        }
+
         // Create booking card HTML
         function createBookingCard(booking) {
             const card = document.createElement('div');
@@ -2675,6 +2909,9 @@
             
             // Generate refund information if applicable
             const refundInfo = generateRefundInfo(booking);
+            
+            // Generate business status information
+            const businessStatusInfo = generateBusinessStatusInfo(booking);
             
             card.innerHTML = `
                 <div class="booking-header">
@@ -2712,6 +2949,7 @@
                         <span class="detail-value">${booking.bookingId}</span>
                     </div>
                     ${refundInfo}
+                    ${businessStatusInfo}
                 </div>
                 
                 <div class="services-list">
@@ -2775,6 +3013,45 @@
             }
             return '';
         }
+
+        // Generate business status information
+        function generateBusinessStatusInfo(booking) {
+            const businessStatus = booking.businessStatus || 'unknown';
+            
+            if (businessStatus === 'active') {
+                return '';
+            }
+
+            let statusMessage = '';
+            let statusClass = 'business-status-info';
+            
+            switch (businessStatus) {
+                case 'suspended':
+                    statusMessage = '⚠️ This business is currently suspended. Your booking remains valid.';
+                    statusClass += ' business-status-warning';
+                    break;
+                case 'deactivated':
+                    statusMessage = '❌ This business is no longer active. Your booking remains valid.';
+                    statusClass += ' business-status-error';
+                    break;
+                case 'pending':
+                    statusMessage = '⏳ This business is under review. Your booking remains valid.';
+                    statusClass += ' business-status-info';
+                    break;
+                default:
+                    statusMessage = 'ℹ️ Business status unknown. Your booking remains valid.';
+                    statusClass += ' business-status-info';
+            }
+
+            return `
+                <div class="${statusClass}">
+                    <div class="detail-row">
+                        <span class="detail-label">Business Status:</span>
+                        <span class="detail-value">${statusMessage}</span>
+                    </div>
+                </div>
+            `;
+        }
         
         // Enhanced cancel booking function with API integration
         async function cancelBooking(bookingId) {
@@ -2799,22 +3076,25 @@
                     const result = await response.json();
                     
                     if (result.success) {
-                        // Update booking status to cancelled
-                        updateBookingStatus(bookingId, 'Cancelled');
+                // Update booking status to cancelled
+                updateBookingStatus(bookingId, 'Cancelled');
                         
                         // Add refund information if applicable
                         if (result.refundAmount > 0) {
                             updateBookingRefundInfo(bookingId, result.refundAmount, result.refundId);
                         }
-                        
-                        // Trigger storage event for real-time sync
-                        localStorage.setItem(`bookingCancelled_${bookingId}`, Date.now().toString());
-                        
+                
+                // Trigger booking.cancelled event
+                triggerBookingCancelledEvent(bookingId, result);
+                
+                // Trigger storage event for real-time sync
+                localStorage.setItem(`bookingCancelled_${bookingId}`, Date.now().toString());
+                
                         // Show success notification
                         showNotification(result.message, 'success');
-                        
-                        // Reload bookings display
-                        loadCustomerBookings();
+                
+                // Reload bookings display
+                loadCustomerBookings();
                     } else {
                         showNotification(result.message || 'Failed to cancel booking', 'error');
                     }
@@ -2822,6 +3102,47 @@
                     console.error('Cancellation failed:', error);
                     showNotification('Failed to cancel booking. Please try again.', 'error');
                 }
+            }
+        }
+
+        // Trigger booking.cancelled event
+        function triggerBookingCancelledEvent(bookingId, cancellationResult) {
+            try {
+                // Get booking details
+                const customerId = localStorage.getItem('customerId') || 'customer_1';
+                const customerBookings = JSON.parse(localStorage.getItem(`customerBookings_${customerId}`) || '[]');
+                const booking = customerBookings.find(b => b.id === bookingId);
+                
+                if (!booking) {
+                    console.error('Booking not found for cancellation event');
+                    return;
+                }
+                
+                // Create booking cancelled event data
+                const bookingCancelledData = {
+                    bookingId: bookingId,
+                    customerId: customerId,
+                    businessId: booking.businessId,
+                    customerName: booking.customerName,
+                    businessName: booking.businessName,
+                    serviceName: booking.serviceName,
+                    bookingDate: booking.bookingDate,
+                    bookingTime: booking.bookingTime,
+                    status: 'Cancelled',
+                    cancellationReason: 'Customer cancelled',
+                    refundAmount: cancellationResult.refundAmount || 0,
+                    refundId: cancellationResult.refundId || null,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Dispatch custom event
+                window.dispatchEvent(new CustomEvent('booking.cancelled', {
+                    detail: bookingCancelledData
+                }));
+                
+                console.log('Booking.cancelled event triggered:', bookingCancelledData);
+            } catch (error) {
+                console.error('Failed to trigger booking.cancelled event:', error);
             }
         }
         
@@ -2889,6 +3210,218 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadCustomerBookings();
         });
+        // ========================================
+        // CUSTOMER WAITING LIST FUNCTIONS
+        // ========================================
+
+        /**
+         * Load and display customer waiting list
+         */
+        function loadCustomerWaitingList() {
+            const customerId = localStorage.getItem('customerId') || 'customer_1';
+            const waitingList = JSON.parse(localStorage.getItem(`customerWaitingList_${customerId}`) || '[]');
+            
+            updateCustomerWaitingListStats(waitingList);
+            displayCustomerWaitingList(waitingList);
+        }
+
+        /**
+         * Update customer waiting list statistics
+         */
+        function updateCustomerWaitingListStats(waitingList) {
+            const totalWaiting = waitingList.filter(item => item.status === 'waiting').length;
+            const offersReceived = waitingList.filter(item => item.status === 'offered').length;
+            const offersAccepted = waitingList.filter(item => item.status === 'accepted').length;
+
+            document.getElementById('totalWaitingList').textContent = totalWaiting;
+            document.getElementById('offersReceived').textContent = offersReceived;
+            document.getElementById('offersAccepted').textContent = offersAccepted;
+
+            // Update tab badge
+            const badge = document.getElementById('waitingListTabBadge');
+            if (offersReceived > 0) {
+                badge.textContent = offersReceived;
+                badge.style.display = 'inline';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        /**
+         * Display customer waiting list items
+         */
+        function displayCustomerWaitingList(waitingList) {
+            const container = document.getElementById('waitingListContent');
+            
+            if (waitingList.length === 0) {
+                container.innerHTML = `
+                    <div class="waiting-list-empty">
+                        <i class="fas fa-clock"></i>
+                        <h3>No waiting lists</h3>
+                        <p>When you join waiting lists for businesses, they'll appear here.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = waitingList.map(item => `
+                <div class="waiting-list-item ${item.status}">
+                    <div class="business-info">
+                        <div class="business-name">${item.businessName || 'Business'}</div>
+                        <div class="business-details">
+                            <div>Joined: ${new Date(item.joinedAt).toLocaleDateString()}</div>
+                            <div>Priority: ${item.priority || 0}</div>
+                            ${item.availableSlot ? `
+                                <div>Available: ${item.availableSlot.date} at ${item.availableSlot.time}</div>
+                            ` : ''}
+                        </div>
+                        <div class="service-info">
+                            <strong>${item.serviceData.name}</strong> - £${item.serviceData.price}
+                        </div>
+                    </div>
+                    <div class="waiting-list-actions">
+                        ${item.status === 'waiting' ? `
+                            <button class="btn-sm btn-secondary" onclick="leaveWaitingList('${item.id}')">
+                                <i class="fas fa-times"></i> Leave List
+                            </button>
+                        ` : item.status === 'offered' ? `
+                            <button class="btn-sm btn-success" onclick="acceptOffer('${item.id}')">
+                                <i class="fas fa-check"></i> Accept Offer
+                            </button>
+                            <button class="btn-sm btn-danger" onclick="rejectOffer('${item.id}')">
+                                <i class="fas fa-times"></i> Decline
+                            </button>
+                        ` : `
+                            <span class="status-badge">Accepted</span>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * Accept offer from waiting list
+         */
+        function acceptOffer(waitingListId) {
+            if (!confirm('Are you sure you want to accept this offer? This will create a booking.')) {
+                return;
+            }
+
+            const customerId = localStorage.getItem('customerId') || 'customer_1';
+            const waitingList = JSON.parse(localStorage.getItem(`customerWaitingList_${customerId}`) || '[]');
+            const item = waitingList.find(item => item.id === waitingListId);
+            
+            if (!item) {
+                showNotification('Offer not found', 'error');
+                return;
+            }
+
+            // Create booking from offer
+            const booking = {
+                id: `booking_${Date.now()}`,
+                customerId: customerId,
+                businessId: item.businessId,
+                businessName: item.businessName,
+                services: [item.serviceData],
+                date: item.availableSlot.date,
+                time: item.availableSlot.time,
+                totalAmount: item.serviceData.price,
+                status: 'Confirmed',
+                paymentMethod: 'payNow',
+                source: 'waiting_list',
+                createdAt: new Date().toISOString()
+            };
+
+            // Save to customer bookings
+            const customerBookings = JSON.parse(localStorage.getItem(`customerBookings_${customerId}`) || '[]');
+            customerBookings.push(booking);
+            localStorage.setItem(`customerBookings_${customerId}`, JSON.stringify(customerBookings));
+
+            // Save to business bookings
+            const businessBookings = JSON.parse(localStorage.getItem(`businessBookings_${item.businessId}`) || '[]');
+            businessBookings.push(booking);
+            localStorage.setItem(`businessBookings_${item.businessId}`, JSON.stringify(businessBookings));
+
+            // Remove from waiting lists
+            const updatedWaitingList = waitingList.filter(waitingItem => waitingItem.id !== waitingListId);
+            localStorage.setItem(`customerWaitingList_${customerId}`, JSON.stringify(updatedWaitingList));
+
+            // Remove from business waiting list
+            const businessWaitingList = JSON.parse(localStorage.getItem(`businessWaitingList_${item.businessId}`) || '[]');
+            const updatedBusinessWaitingList = businessWaitingList.filter(businessItem => businessItem.id !== waitingListId);
+            localStorage.setItem(`businessWaitingList_${item.businessId}`, JSON.stringify(updatedBusinessWaitingList));
+
+            showNotification('Offer accepted! Booking created successfully.', 'success');
+            loadCustomerWaitingList();
+        }
+
+        /**
+         * Reject offer from waiting list
+         */
+        function rejectOffer(waitingListId) {
+            if (!confirm('Are you sure you want to decline this offer?')) {
+                return;
+            }
+
+            const customerId = localStorage.getItem('customerId') || 'customer_1';
+            const waitingList = JSON.parse(localStorage.getItem(`customerWaitingList_${customerId}`) || '[]');
+            const item = waitingList.find(item => item.id === waitingListId);
+            
+            if (!item) {
+                showNotification('Offer not found', 'error');
+                return;
+            }
+
+            // Update status back to waiting
+            item.status = 'waiting';
+            item.availableSlot = null;
+            item.offerSentAt = null;
+            
+            localStorage.setItem(`customerWaitingList_${customerId}`, JSON.stringify(waitingList));
+
+            // Also update business waiting list
+            const businessWaitingList = JSON.parse(localStorage.getItem(`businessWaitingList_${item.businessId}`) || '[]');
+            const businessItem = businessWaitingList.find(businessItem => businessItem.id === waitingListId);
+            if (businessItem) {
+                businessItem.status = 'waiting';
+                businessItem.availableSlot = null;
+                businessItem.offerSentAt = null;
+                localStorage.setItem(`businessWaitingList_${item.businessId}`, JSON.stringify(businessWaitingList));
+            }
+
+            showNotification('Offer declined', 'info');
+            loadCustomerWaitingList();
+        }
+
+        /**
+         * Leave waiting list
+         */
+        function leaveWaitingList(waitingListId) {
+            if (!confirm('Are you sure you want to leave this waiting list?')) {
+                return;
+            }
+
+            const customerId = localStorage.getItem('customerId') || 'customer_1';
+            const waitingList = JSON.parse(localStorage.getItem(`customerWaitingList_${customerId}`) || '[]');
+            const item = waitingList.find(item => item.id === waitingListId);
+            
+            if (!item) {
+                showNotification('Waiting list item not found', 'error');
+                return;
+            }
+
+            // Remove from customer waiting list
+            const updatedWaitingList = waitingList.filter(waitingItem => waitingItem.id !== waitingListId);
+            localStorage.setItem(`customerWaitingList_${customerId}`, JSON.stringify(updatedWaitingList));
+
+            // Remove from business waiting list
+            const businessWaitingList = JSON.parse(localStorage.getItem(`businessWaitingList_${item.businessId}`) || '[]');
+            const updatedBusinessWaitingList = businessWaitingList.filter(businessItem => businessItem.id !== waitingListId);
+            localStorage.setItem(`businessWaitingList_${item.businessId}`, JSON.stringify(updatedBusinessWaitingList));
+
+            showNotification('Left waiting list successfully', 'success');
+            loadCustomerWaitingList();
+        }
     </script>
 </body>
 </html>

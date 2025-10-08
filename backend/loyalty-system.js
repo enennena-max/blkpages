@@ -295,6 +295,95 @@ class LoyaltySystem {
     // ========================================
 
     /**
+     * Increment loyalty progress for customer and business
+     */
+    async increment(customerId, businessId, bookingData) {
+        try {
+            // Get business loyalty program
+            const loyaltyProgram = await this.getLoyaltyProgram(businessId);
+            if (!loyaltyProgram || !loyaltyProgram.isActive) {
+                console.log('No active loyalty program for business:', businessId);
+                return;
+            }
+
+            // Get customer's current progress
+            const currentProgress = await this.getCustomerLoyaltyProgress(customerId, businessId);
+            
+            // Calculate new progress based on loyalty program type
+            const newProgress = this.calculateProgressIncrement(currentProgress, loyaltyProgram, bookingData);
+            
+            // Update customer loyalty progress
+            await this.updateCustomerLoyaltyProgress(customerId, businessId, newProgress);
+            
+            // Check if reward is newly unlocked
+            if (newProgress.isRewardUnlocked && !currentProgress.isRewardUnlocked) {
+                // Send reward notification to customer
+                await this.sendRewardNotification(customerId, businessId, loyaltyProgram);
+            }
+            
+            // Check if customer is close to unlocking reward (for "almost unlocked" emails)
+            if (this.isAlmostUnlocked(newProgress, loyaltyProgram)) {
+                await this.sendAlmostUnlockedNotification(customerId, businessId, loyaltyProgram, newProgress);
+            }
+
+            console.log('Loyalty progress updated for customer:', customerId, 'business:', businessId);
+            return newProgress;
+        } catch (error) {
+            console.error('Failed to increment loyalty progress:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Calculate progress increment based on loyalty program type
+     */
+    calculateProgressIncrement(currentProgress, loyaltyProgram, bookingData) {
+        const newProgress = { ...currentProgress };
+        
+        switch (loyaltyProgram.type) {
+            case 'visit_based':
+                newProgress.visitCount = (currentProgress.visitCount || 0) + 1;
+                newProgress.isRewardUnlocked = newProgress.visitCount >= loyaltyProgram.threshold;
+                break;
+                
+            case 'spend_based':
+                newProgress.totalSpent = (currentProgress.totalSpent || 0) + bookingData.totalAmount;
+                newProgress.isRewardUnlocked = newProgress.totalSpent >= loyaltyProgram.threshold;
+                break;
+                
+            case 'time_limited':
+                newProgress.visitCount = (currentProgress.visitCount || 0) + 1;
+                const timeLimitExpired = this.isTimeLimitExpired(loyaltyProgram.timeLimit, currentProgress.firstVisitDate);
+                newProgress.isRewardUnlocked = !timeLimitExpired && newProgress.visitCount >= loyaltyProgram.threshold;
+                break;
+        }
+        
+        // Update timestamps
+        newProgress.lastVisit = new Date().toISOString();
+        if (!newProgress.firstVisit) {
+            newProgress.firstVisit = new Date().toISOString();
+        }
+        
+        return newProgress;
+    }
+
+    /**
+     * Check if customer is almost unlocked (for notifications)
+     */
+    isAlmostUnlocked(progress, loyaltyProgram) {
+        switch (loyaltyProgram.type) {
+            case 'visit_based':
+                return progress.visitCount === loyaltyProgram.threshold - 1;
+            case 'spend_based':
+                return progress.totalSpent >= loyaltyProgram.threshold * 0.8; // 80% of threshold
+            case 'time_limited':
+                return progress.visitCount === loyaltyProgram.threshold - 1;
+            default:
+                return false;
+        }
+    }
+
+    /**
      * Update loyalty progress when booking is completed
      */
     async updateLoyaltyProgress(bookingId) {
@@ -306,22 +395,82 @@ class LoyaltySystem {
 
             const { customerId, businessId } = booking;
             
-            // Check if business has loyalty program
-            const loyaltyProgram = await this.getLoyaltyProgram(businessId);
-            if (!loyaltyProgram || !loyaltyProgram.isActive) {
-                return;
-            }
-
-            // Get customer's current progress
-            const progress = await this.getCustomerLoyaltyProgress(customerId, businessId);
-            
-            // Check if reward is newly unlocked
-            if (progress && progress.isRewardUnlocked && !progress.isRewardUsed) {
-                // Send reward notification to customer
-                await this.sendRewardNotification(customerId, businessId, loyaltyProgram);
-            }
+            // Use the new increment method
+            await this.increment(customerId, businessId, {
+                bookingId: bookingId,
+                totalAmount: booking.totalAmount,
+                services: booking.services,
+                completedAt: new Date()
+            });
         } catch (error) {
             console.error('Failed to update loyalty progress:', error);
+        }
+    }
+
+    // ========================================
+    // HELPER METHODS
+    // ========================================
+
+    /**
+     * Update customer loyalty progress in database
+     */
+    async updateCustomerLoyaltyProgress(customerId, businessId, progress) {
+        // Implementation would update database
+        const key = `loyalty_${customerId}_${businessId}`;
+        localStorage.setItem(key, JSON.stringify(progress));
+        console.log('Updated loyalty progress:', key, progress);
+    }
+
+    /**
+     * Check if time limit has expired
+     */
+    isTimeLimitExpired(timeLimitDays, firstVisitDate) {
+        if (!firstVisitDate) return false;
+        const firstVisit = new Date(firstVisitDate);
+        const now = new Date();
+        const daysDiff = (now - firstVisit) / (1000 * 60 * 60 * 24);
+        return daysDiff > timeLimitDays;
+    }
+
+    /**
+     * Send almost unlocked notification
+     */
+    async sendAlmostUnlockedNotification(customerId, businessId, loyaltyProgram, progress) {
+        try {
+            const customer = await this.getCustomer(customerId);
+            const business = await this.getBusiness(businessId);
+            
+            // Calculate progress percentage
+            const progressPercentage = this.calculateProgressPercentage(progress, loyaltyProgram);
+            
+            // Send notification
+            await this.emailService.sendAlmostUnlockedNotification({
+                to: customer.email,
+                customerName: customer.firstName,
+                businessName: business.name,
+                progressPercentage: progressPercentage,
+                loyaltyProgram: loyaltyProgram
+            });
+            
+            console.log('Almost unlocked notification sent to customer:', customerId);
+        } catch (error) {
+            console.error('Failed to send almost unlocked notification:', error);
+        }
+    }
+
+    /**
+     * Calculate progress percentage
+     */
+    calculateProgressPercentage(progress, loyaltyProgram) {
+        switch (loyaltyProgram.type) {
+            case 'visit_based':
+                return Math.round((progress.visitCount / loyaltyProgram.threshold) * 100);
+            case 'spend_based':
+                return Math.round((progress.totalSpent / loyaltyProgram.threshold) * 100);
+            case 'time_limited':
+                return Math.round((progress.visitCount / loyaltyProgram.threshold) * 100);
+            default:
+                return 0;
         }
     }
 

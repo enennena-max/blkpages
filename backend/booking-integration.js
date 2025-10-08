@@ -4,10 +4,12 @@
  */
 
 const CommunicationSystem = require('./communication-system');
+const LoyaltySystem = require('./loyalty-system');
 
 class BookingIntegration {
     constructor() {
         this.communicationSystem = new CommunicationSystem();
+        this.loyaltySystem = new LoyaltySystem();
     }
 
     // ========================================
@@ -44,6 +46,9 @@ class BookingIntegration {
                 ...bookingData,
                 bookingId: booking.id
             });
+            
+            // 6. Trigger loyalty program increment
+            await this.triggerLoyaltyIncrement(booking.id, bookingData.customerId, bookingData.businessId);
             
             return booking;
         } catch (error) {
@@ -270,6 +275,58 @@ class BookingIntegration {
             success: true,
             amount: refundAmount,
             refundId: `re_${Date.now()}`
+        };
+    }
+
+    // ========================================
+    // LOYALTY PROGRAM INTEGRATION
+    // ========================================
+
+    /**
+     * Trigger loyalty program increment when booking is completed
+     */
+    async triggerLoyaltyIncrement(bookingId, customerId, businessId) {
+        try {
+            // Get booking details
+            const booking = await this.getBooking(bookingId);
+            if (!booking || booking.status !== 'completed') {
+                return;
+            }
+
+            // Check if business has active loyalty program
+            const loyaltyProgram = await this.loyaltySystem.getLoyaltyProgram(businessId);
+            if (!loyaltyProgram || !loyaltyProgram.isActive) {
+                console.log('No active loyalty program for business:', businessId);
+                return;
+            }
+
+            // Increment loyalty progress
+            await this.loyaltySystem.increment(customerId, businessId, {
+                bookingId: bookingId,
+                totalAmount: booking.totalAmount,
+                services: booking.services,
+                completedAt: new Date()
+            });
+
+            console.log('Loyalty program incremented for customer:', customerId, 'business:', businessId);
+        } catch (error) {
+            console.error('Failed to trigger loyalty increment:', error);
+            // Don't throw error to avoid breaking booking completion
+        }
+    }
+
+    /**
+     * Get booking details
+     */
+    async getBooking(bookingId) {
+        // Implementation would query database
+        return {
+            id: bookingId,
+            customerId: 'customer_123',
+            businessId: 'business_456',
+            totalAmount: 45.00,
+            services: [{ name: 'Haircut', price: 45.00 }],
+            status: 'completed'
         };
     }
 }
