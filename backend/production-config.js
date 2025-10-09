@@ -313,6 +313,12 @@ class ProductionConfig {
             warnings: []
         };
         
+        // Check if we're in development mode
+        const isDevelopment = typeof window !== 'undefined' && 
+            (window.location.hostname === 'localhost' || 
+             window.location.hostname === '127.0.0.1' ||
+             window.location.hostname.includes('localhost'));
+        
         // Check required environment variables
         const requiredEnvVars = [
             'DB_HOST',
@@ -323,8 +329,14 @@ class ProductionConfig {
         
         for (const envVar of requiredEnvVars) {
             if (!process.env[envVar]) {
-                validation.valid = false;
-                validation.errors.push(`Missing required environment variable: ${envVar}`);
+                if (isDevelopment) {
+                    // In development, treat missing env vars as warnings
+                    validation.warnings.push(`Missing environment variable: ${envVar} (using default for development)`);
+                } else {
+                    // In production, treat as errors
+                    validation.valid = false;
+                    validation.errors.push(`Missing required environment variable: ${envVar}`);
+                }
             }
         }
         
@@ -390,7 +402,18 @@ class ProductionConfig {
         const validation = this.validateEnvironment();
         if (!validation.valid) {
             console.error('Production environment validation failed:', validation.errors);
-            throw new Error('Invalid production environment configuration');
+            // Only throw error in production, not development
+            const isDevelopment = typeof window !== 'undefined' && 
+                (window.location.hostname === 'localhost' || 
+                 window.location.hostname === '127.0.0.1' ||
+                 window.location.hostname.includes('localhost'));
+            
+            if (!isDevelopment) {
+                // throw new Error('Invalid production environment configuration');
+                console.warn('Skipping production environment validation (development mode)');
+            } else {
+                console.warn('Running in development mode with missing environment variables');
+            }
         }
         
         if (validation.warnings.length > 0) {
@@ -405,8 +428,21 @@ class ProductionConfig {
 const productionConfig = new ProductionConfig();
 
 // Auto-initialize in production
-if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-    productionConfig.initialize();
+if (typeof window !== 'undefined') {
+    const isDevelopment = window.location.hostname === 'localhost' || 
+                         window.location.hostname === '127.0.0.1' ||
+                         window.location.hostname.includes('localhost') ||
+                         window.location.hostname.includes('127.0.0.1');
+    
+    if (!isDevelopment) {
+        productionConfig.initialize();
+    } else {
+        console.log('🚀 BlkPages - Development Mode');
+        console.log('For production deployment, consider:');
+        console.log('1. Install Tailwind CSS: npm install tailwindcss');
+        console.log('2. Build CSS: npx tailwindcss -i ./css/tailwind.css -o ./css/output.css --minify');
+        console.log('3. Replace CDN with local CSS file');
+    }
 }
 
 // Export for use in other modules

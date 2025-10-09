@@ -88,7 +88,7 @@ class CustomerAuth {
             firstName: formData.get('firstName').trim(),
             lastName: formData.get('lastName').trim(),
             email: formData.get('email').trim().toLowerCase(),
-            mobile: formData.get('mobile').trim(),
+            phone: formData.get('phone').trim(),
             password: formData.get('password'),
             confirmPassword: formData.get('confirmPassword'),
             acceptTerms: formData.get('acceptTerms')
@@ -285,8 +285,11 @@ class CustomerAuth {
             isValid = false;
         }
 
-        // Mobile validation (optional)
-        if (userData.mobile && !this.validateMobile(userData.mobile)) {
+        // Phone validation (required)
+        if (!userData.phone) {
+            this.showError('phoneError', 'Mobile number is required.');
+            isValid = false;
+        } else if (!this.validatePhone(userData.phone)) {
             isValid = false;
         }
 
@@ -364,6 +367,23 @@ class CustomerAuth {
             return false;
         }
         this.clearError('mobileError');
+        return true;
+    }
+
+    validatePhone(phone) {
+        if (!phone) {
+            this.showError('phoneError', 'Mobile number is required.');
+            return false;
+        }
+        
+        const phoneRegex = /^(\+44|0)7[0-9]{9}$/;
+        const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+        
+        if (!phoneRegex.test(cleanPhone)) {
+            this.showError('phoneError', 'Please enter a valid UK mobile number.');
+            return false;
+        }
+        this.clearError('phoneError');
         return true;
     }
 

@@ -24,9 +24,6 @@
     <script src="js/persistent-basket-system.js"></script>
     <script src="backend/basket-merge-api.js"></script>
     
-    <!-- Basket Count Sync Fix -->
-    <script src="assets/js/basket.js"></script>
-    
     <!-- Security & GDPR Features -->
     <script>
         // Polyfill for process object in browser environment
@@ -36,11 +33,7 @@
                     NODE_ENV: 'development',
                     API_BASE_URL: 'https://api.blkpages.com',
                     STRIPE_PUBLISHABLE_KEY: 'pk_test_...',
-                    GOOGLE_MAPS_API_KEY: 'AIza...',
-                    DB_HOST: 'localhost',
-                    DB_PASSWORD: 'dev_password_123',
-                    STRIPE_SECRET_KEY: 'sk_test_development_key',
-                    SMTP_PASSWORD: 'dev_smtp_password'
+                    GOOGLE_MAPS_API_KEY: 'AIza...'
                 }
             };
         }
@@ -49,7 +42,6 @@
     <script src="js/cookie-consent.js"></script>
     <script src="backend/secure-auth-api.js"></script>
     <script src="backend/gdpr-compliance-api.js"></script>
-    <script src="backend/development-config.js"></script>
     <script src="backend/production-config.js"></script>
     <script src="backend/customer-phone-verification.js"></script>
     
@@ -674,13 +666,6 @@
             border: 2px solid white;
         }
         
-        .calendar-day.selected {
-            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
-            color: white;
-            border: 2px solid #3B82F6;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
-        }
-        
         .calendar-day.closed {
             background: #555;
             color: #AAA;
@@ -701,10 +686,9 @@
         }
         
         .time-slot.selected {
-            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            background: #FF007F;
             color: white;
-            border: 2px solid #3B82F6;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+            border: 2px solid white;
         }
         
         .time-slot.booked {
@@ -3517,12 +3501,7 @@
                     <div class="basket-dropdown" id="basketDropdown">
                         <h4>Your Basket</h4>
                         <div id="basketItems"></div>
-                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-                            <button id="viewBasketBtn" style="flex: 1;">View Basket</button>
-                            <button id="emptyBasketBtn" onclick="clearBasketWithConfirmation()" style="flex: 1; background: #EF4444; font-size: 0.8rem; padding: 6px;">
-                                Empty
-                            </button>
-                        </div>
+                        <button id="viewBasketBtn">View Basket</button>
                     </div>
                     
                     <!-- Sign In / Customer Menu -->
@@ -4489,12 +4468,12 @@
             console.log('Selected time:', selectedTime);
         }
         
-        // Load booking data from localStorage
+        // Load booking data from sessionStorage
         function loadBookingData() {
-            const savedServices = localStorage.getItem('booking_services');
-            const savedDate = localStorage.getItem('booking_date');
-            const savedTime = localStorage.getItem('booking_time');
-            const savedCustomer = localStorage.getItem('booking_customer');
+            const savedServices = sessionStorage.getItem('booking_services');
+            const savedDate = sessionStorage.getItem('booking_date');
+            const savedTime = sessionStorage.getItem('booking_time');
+            const savedCustomer = sessionStorage.getItem('booking_customer');
             
             if (savedServices) {
                 try {
@@ -4525,11 +4504,11 @@
             }
         }
         
-        // Save booking data to localStorage
+        // Save booking data to sessionStorage
         function saveBookingData() {
-            localStorage.setItem('booking_services', JSON.stringify(selectedServices));
-            if (selectedDate) localStorage.setItem('booking_date', selectedDate);
-            if (selectedTime) localStorage.setItem('booking_time', selectedTime);
+            sessionStorage.setItem('booking_services', JSON.stringify(selectedServices));
+            if (selectedDate) sessionStorage.setItem('booking_date', selectedDate);
+            if (selectedTime) sessionStorage.setItem('booking_time', selectedTime);
         }
         
         // Setup event listeners for booking flow
@@ -4649,36 +4628,17 @@
             // Add selection to clicked date
             dateEl.classList.add('selected');
             
-            // Extract date value properly
-            const day = parseInt(dateEl.textContent);
-            const currentMonthEl = document.getElementById('currentMonth');
-            const currentText = currentMonthEl.textContent;
-            const currentDate = new Date(currentText + ' 1, 2024');
-            const month = currentDate.getMonth();
-            const year = currentDate.getFullYear();
-            
-            // Create proper date string
-            const dateString = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-            
             // Save selected date
-            selectedDate = dateString;
+            selectedDate = dateEl.dataset.date;
             saveBookingData();
             
             // Load time slots for selected date
             loadTimeSlots(selectedDate);
             
-            // Show booking section
-            const bookingSection = document.getElementById('booking-section');
-            if (bookingSection) {
-                bookingSection.style.display = 'block';
-            }
-            
             // Update UI
             updateBookingSummary();
             updateStickyCTA();
             updateBookingButton();
-            
-            console.log('Date selected:', dateString);
         }
         
         // Select time with visual feedback
@@ -4691,25 +4651,14 @@
             // Add selection to clicked time
             timeEl.classList.add('selected');
             
-            // Extract time value properly
-            const time = timeEl.dataset.time || timeEl.textContent.trim();
-            
             // Save selected time
-            selectedTime = time;
+            selectedTime = timeEl.dataset.time;
             saveBookingData();
-            
-            // Show booking section
-            const bookingSection = document.getElementById('booking-section');
-            if (bookingSection) {
-                bookingSection.style.display = 'block';
-            }
             
             // Update UI
             updateBookingSummary();
             updateStickyCTA();
             updateBookingButton();
-            
-            console.log('Time selected:', time);
         }
         
         // Load time slots for selected date
@@ -4735,11 +4684,6 @@
                     const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
                     const isBooked = Math.random() < 0.3; // 30% chance of being booked
                     
-                    // Check if this slot is in the basket and remove it if booked
-                    if (isBooked) {
-                        checkAndRemoveUnavailableSlot(date, time);
-                    }
-                    
                     slots.push({
                         time: time,
                         booked: isBooked
@@ -4748,18 +4692,6 @@
             }
             
             return slots;
-        }
-        
-        // Check for unavailable slots in basket and remove them
-        function checkAndRemoveUnavailableSlot(date, time) {
-            const basket = getBasket();
-            const slotInfo = `${date}-${time}`;
-            
-            basket.forEach(item => {
-                if (item.slotInfo === slotInfo) {
-                    removeUnavailableSlot(item.id, slotInfo);
-                }
-            });
         }
         
         // Update booking services list
@@ -5140,7 +5072,7 @@
                 notes: document.getElementById('bookingNotes')?.value || ''
             };
             
-            localStorage.setItem('booking_customer', JSON.stringify(customerData));
+            sessionStorage.setItem('booking_customer', JSON.stringify(customerData));
         }
         
         // Populate customer form
@@ -5372,7 +5304,7 @@
         }
         
         function renderBasketPreview() {
-            const items = JSON.parse(localStorage.getItem('basket') || '[]');
+            const items = JSON.parse(sessionStorage.getItem('basket') || '[]');
             const container = document.getElementById('basketItems');
             
             if (!container) return;
@@ -5393,9 +5325,9 @@
         }
         
         function removeFromBasket(itemId) {
-            let basket = JSON.parse(localStorage.getItem('basket') || '[]');
+            let basket = JSON.parse(sessionStorage.getItem('basket') || '[]');
             basket = basket.filter(item => item.id !== itemId);
-            localStorage.setItem('basket', JSON.stringify(basket));
+            sessionStorage.setItem('basket', JSON.stringify(basket));
             
             // Update basket count
             updateBasketBadge();
@@ -5415,7 +5347,7 @@
         }
         
         function addToBasket(newItem) {
-            let basket = JSON.parse(localStorage.getItem('basket') || '[]');
+            let basket = JSON.parse(sessionStorage.getItem('basket') || '[]');
             
             // Single-business basket rule
             if (basket.length && basket[0].business_id !== newItem.business_id) {
@@ -5424,15 +5356,15 @@
                 }
                 basket = [];
             }
-
+            
             basket.push(newItem);
-            localStorage.setItem('basket', JSON.stringify(basket));
+            sessionStorage.setItem('basket', JSON.stringify(basket));
             updateBasketBadge();
             return true;
         }
         
         function updateBasketBadge() {
-            const basket = JSON.parse(localStorage.getItem('basket') || '[]');
+            const basket = JSON.parse(sessionStorage.getItem('basket') || '[]');
             const badge = document.getElementById('basketCount');
             if (badge) {
                 badge.textContent = basket.length;
@@ -8731,17 +8663,11 @@
                 }
             });
             
-            // Save to localStorage
-            localStorage.setItem('booking_date', dateString);
+            // Save to sessionStorage
+            sessionStorage.setItem('booking_date', dateString);
             
             // Load time slots for selected date
             loadTimeSlots(dateString);
-            
-            // Show booking section
-            const bookingSection = document.getElementById('booking-section');
-            if (bookingSection) {
-                bookingSection.style.display = 'block';
-            }
             
             // Update UI
             updateBookingSummary();
@@ -8820,14 +8746,8 @@
                 }
             });
             
-            // Save to localStorage
-            localStorage.setItem('booking_time', time);
-            
-            // Show booking section
-            const bookingSection = document.getElementById('booking-section');
-            if (bookingSection) {
-                bookingSection.style.display = 'block';
-            }
+            // Save to sessionStorage
+            sessionStorage.setItem('booking_time', time);
             
             // Update UI
             updateBookingSummary();
@@ -8961,14 +8881,7 @@
             
             // Update date
             if (selectedDate) {
-                const dateObj = new Date(selectedDate);
-                const formattedDate = dateObj.toLocaleDateString('en-GB', { 
-                    weekday: 'short', 
-                    day: 'numeric', 
-                    month: 'short',
-                    year: 'numeric'
-                });
-                document.getElementById('summaryDate').textContent = formattedDate;
+                document.getElementById('summaryDate').textContent = selectedDate.toLocaleDateString();
             }
             
             // Update time
@@ -10982,11 +10895,6 @@ This policy is set by ${businessName}. BlkPages processes payments via Stripe on
         }
         
         function signOut() {
-            // Clear basket on logout
-            if (typeof clearBasketOnLogout === 'function') {
-                clearBasketOnLogout();
-            }
-            
             // Hide customer menu, show login
             document.getElementById('authLinks').style.display = 'flex';
             document.getElementById('mobileAuthLinks').style.display = 'flex';
@@ -11240,11 +11148,6 @@ This policy is set by ${businessName}. BlkPages processes payments via Stripe on
         // Trigger booking.confirmed event
         function triggerBookingConfirmedEvent(customerBooking, businessBooking) {
             try {
-                // Clear basket after successful booking
-                if (typeof clearBasketAfterCheckout === 'function') {
-                    clearBasketAfterCheckout();
-                }
-                
                 // Create booking confirmed event data
                 const bookingConfirmedData = {
                     bookingId: customerBooking.id,

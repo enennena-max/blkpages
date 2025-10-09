@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - BlkPages</title>
+    <script src="https://cdn.tailwindcss.com?v=2"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 50%, #121212 100%);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .payment-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .payment-header h1 {
+            color: #FF007F;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .payment-header p {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+        
+        .payment-summary {
+            background: #111;
+            border-radius: 8px;
+            padding: 16px;
+            color: #FFF;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+        
+        .payment-summary h3 {
+            color: #FF007F;
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+        
+        .payment-summary p {
+            margin: 8px 0;
+            font-size: 1rem;
+        }
+        
+        .payment-summary p strong {
+            color: #FF007F;
+        }
+        
+        .stripe-form {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 24px;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+        }
+        
+        .stripe-form h3 {
+            color: #FF007F;
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            color: #cccccc;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #222;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            border-color: #FF007F;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 0, 127, 0.2);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #FF007F, #C20056);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #e6006b, #a0004a);
+            transform: translateY(-1px);
+        }
+        
+        .btn-primary:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #FF007F;
+        }
+        
+        .error-message {
+            color: #ff4444;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        
+        .success-message {
+            color: #28a745;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="payment-header">
+            <h1>💳 Complete Your Payment</h1>
+            <p>Secure payment powered by Stripe</p>
+        </div>
+        
+        <!-- Payment Summary -->
+        <div class="payment-summary" id="paymentSummary">
+            <h3>💳 Payment Summary</h3>
+            <p><strong>Service:</strong> <span id="serviceName">Loading...</span></p>
+            <p><strong>Date:</strong> <span id="bookingDate">Loading...</span></p>
+            <p><strong>Time:</strong> <span id="bookingTime">Loading...</span></p>
+            <p><strong>Total:</strong> <span id="totalAmount">Loading...</span></p>
+            <p><strong>Deposit to Pay Now:</strong> <span id="depositAmount">Loading...</span></p>
+        </div>
+        
+        <!-- Stripe Form -->
+        <div class="stripe-form">
+            <h3>💳 Card Details</h3>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label class="form-label" for="cardholder-name">Name on Card</label>
+                    <input type="text" id="cardholder-name" class="form-input" placeholder="John Doe" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="card-element">Card Number</label>
+                    <div id="card-element" class="form-input">
+                        <!-- Stripe Elements will create form elements here -->
+                    </div>
+                    <div id="card-errors" class="error-message"></div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="card-expiry">Expiry Date</label>
+                        <input type="text" id="card-expiry" class="form-input" placeholder="MM/YY" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="card-cvc">CVC</label>
+                        <input type="text" id="card-cvc" class="form-input" placeholder="123" required>
+                    </div>
+                </div>
+                
+                <button type="submit" id="submit-payment" class="btn-primary">
+                    <span id="button-text">Confirm & Pay <span id="payment-amount">£0</span></span>
+                </button>
+                
+                <div class="loading" id="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Processing payment...
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Stripe
+        const stripe = Stripe('pk_test_51234567890abcdef'); // Replace with your publishable key
+        
+        // Load booking data from localStorage
+        function loadBookingData() {
+            const bookingData = localStorage.getItem('pending_booking');
+            if (bookingData) {
+                try {
+                    const booking = JSON.parse(bookingData);
+                    displayBookingSummary(booking);
+                    return booking;
+                } catch (e) {
+                    console.error('Error loading booking data:', e);
+                    return null;
+                }
+            }
+            return null;
+        }
+        
+        // Display booking summary
+        function displayBookingSummary(booking) {
+            const serviceName = document.getElementById('serviceName');
+            const bookingDate = document.getElementById('bookingDate');
+            const bookingTime = document.getElementById('bookingTime');
+            const totalAmount = document.getElementById('totalAmount');
+            const depositAmount = document.getElementById('depositAmount');
+            const paymentAmount = document.getElementById('payment-amount');
+            
+            if (serviceName && booking.services && booking.services.length > 0) {
+                serviceName.textContent = booking.services.map(s => s.name).join(', ');
+            }
+            
+            if (bookingDate && booking.date) {
+                const date = new Date(booking.date);
+                bookingDate.textContent = date.toLocaleDateString('en-GB', { 
+                    weekday: 'long', 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+            }
+            
+            if (bookingTime && booking.time) {
+                bookingTime.textContent = booking.time;
+            }
+            
+            if (totalAmount && booking.total) {
+                totalAmount.textContent = `£${booking.total}`;
+            }
+            
+            if (depositAmount && booking.total) {
+                const deposit = Math.round(booking.total * 0.3); // 30% deposit
+                depositAmount.textContent = `£${deposit}`;
+                if (paymentAmount) {
+                    paymentAmount.textContent = `£${deposit}`;
+                }
+            }
+        }
+        
+        // Setup Stripe Elements
+        function setupStripeElements() {
+            const elements = stripe.elements();
+            
+            const cardElement = elements.create('card', {
+                style: {
+                    base: {
+                        fontSize: '16px',
+                        color: '#ffffff',
+                        '::placeholder': {
+                            color: '#cccccc',
+                        },
+                    },
+                },
+            });
+            
+            cardElement.mount('#card-element');
+            
+            cardElement.on('change', function(event) {
+                const displayError = document.getElementById('card-errors');
+                if (event.error) {
+                    displayError.textContent = event.error.message;
+                } else {
+                    displayError.textContent = '';
+                }
+            });
+            
+            return { elements, cardElement };
+        }
+        
+        // Handle form submission
+        function handlePaymentSubmission(booking, cardElement) {
+            const form = document.getElementById('payment-form');
+            const submitButton = document.getElementById('submit-payment');
+            const loading = document.getElementById('loading');
+            const buttonText = document.getElementById('button-text');
+            
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                
+                // Show loading state
+                submitButton.disabled = true;
+                loading.style.display = 'block';
+                buttonText.textContent = 'Processing...';
+                
+                try {
+                    // Create payment intent
+                    const response = await fetch('/api/create-payment-intent', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            amount: Math.round(booking.total * 0.3 * 100), // 30% deposit in pence
+                            currency: 'gbp',
+                            booking: booking
+                        }),
+                    });
+                    
+                    const { client_secret } = await response.json();
+                    
+                    // Confirm payment
+                    const { error, paymentIntent } = await stripe.confirmCardPayment(client_secret, {
+                        payment_method: {
+                            card: cardElement,
+                            billing_details: {
+                                name: document.getElementById('cardholder-name').value,
+                            },
+                        },
+                    });
+                    
+                    if (error) {
+                        throw new Error(error.message);
+                    }
+                    
+                    // Payment successful
+                    console.log('Payment successful:', paymentIntent);
+                    
+                    // Redirect to confirmation page
+                    window.location.href = '/booking-confirmed';
+                    
+                } catch (error) {
+                    console.error('Payment error:', error);
+                    
+                    // Show error message
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-message';
+                    errorDiv.textContent = error.message || 'Payment failed. Please try again.';
+                    form.appendChild(errorDiv);
+                    
+                    // Reset button state
+                    submitButton.disabled = false;
+                    loading.style.display = 'none';
+                    buttonText.textContent = `Confirm & Pay £${Math.round(booking.total * 0.3)}`;
+                }
+            });
+        }
+        
+        // Initialize payment page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Payment page loaded');
+            
+            // Load booking data
+            const booking = loadBookingData();
+            if (!booking) {
+                console.error('No booking data found');
+                // Redirect back to booking page
+                window.location.href = '/business-profile.html';
+                return;
+            }
+            
+            // Setup Stripe Elements
+            const { elements, cardElement } = setupStripeElements();
+            
+            // Setup payment form
+            handlePaymentSubmission(booking, cardElement);
+            
+            console.log('Payment page initialized');
+        });
+    </script>
+</body>
+</html>

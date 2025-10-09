@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - BlkPages</title>
+    <script src="https://cdn.tailwindcss.com?v=2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #FF007F;
+            --secondary-color: #C20056;
+            --background-dark: #0F0F0F;
+            --background-medium: #1A1A1A;
+            --background-light: #222;
+            --text-primary: #FFFFFF;
+            --text-secondary: #CCCCCC;
+            --text-muted: #AAAAAA;
+            --border-color: #333;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --error-color: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--background-dark) 0%, var(--background-medium) 50%, var(--background-dark) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .booking-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .booking-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .booking-header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .booking-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            gap: 1rem;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            background: var(--background-light);
+            border: 2px solid var(--border-color);
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .progress-step.completed {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+
+        .booking-section {
+            background: var(--background-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .booking-section.hidden {
+            display: none;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .service-card {
+            background: var(--background-medium);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .service-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .service-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(255, 0, 127, 0.1);
+        }
+
+        .service-card h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-card p {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .service-price {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .service-duration {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .calendar-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .calendar-main {
+            background: var(--background-medium);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-nav {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-nav:hover {
+            background: var(--secondary-color);
+        }
+
+        .calendar-month {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .calendar-day.available {
+            background: var(--background-light);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .calendar-day.available:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-day.selected {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-day.unavailable {
+            background: var(--background-dark);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .time-slot {
+            padding: 0.75rem 1rem;
+            background: var(--background-light);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .time-slot:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .time-slot.selected {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .time-slot.unavailable {
+            background: var(--background-dark);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .booking-summary {
+            background: var(--background-medium);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .summary-title {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .customer-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-label.required::after {
+            content: " *";
+            color: var(--error-color);
+        }
+
+        .form-input {
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--background-medium);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 0, 127, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--error-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.75rem 2rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .waiting-list-form {
+            background: var(--background-medium);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-top: 1rem;
+        }
+
+        .waiting-list-form.hidden {
+            display: none;
+        }
+
+        .map-container {
+            background: var(--background-medium);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .map-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .map-link:hover {
+            text-decoration: underline;
+        }
+
+        .session-timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--background-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            z-index: 1000;
+        }
+
+        .timer-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .timer-expired {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert.success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .alert.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+        }
+
+        .alert.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--warning-color);
+            color: var(--warning-color);
+        }
+
+        @media (max-width: 768px) {
+            .booking-container {
+                padding: 1rem;
+            }
+
+            .calendar-container {
+                grid-template-columns: 1fr;
+            }
+
+            .customer-form {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-indicator {
+                flex-wrap: wrap;
+            }
+
+            .progress-step {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="booking-container">
+        <!-- Header -->
+        <div class="booking-header">
+            <h1>Book Your Appointment</h1>
+            <p>Royal Hair Studio - Professional Hair Services</p>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-step active" id="step1">
+                <i class="fas fa-check"></i>
+                <span>1. Service</span>
+            </div>
+            <div class="progress-step" id="step2">
+                <i class="fas fa-calendar"></i>
+                <span>2. Date & Time</span>
+            </div>
+            <div class="progress-step" id="step3">
+                <i class="fas fa-user"></i>
+                <span>3. Details</span>
+            </div>
+            <div class="progress-step" id="step4">
+                <i class="fas fa-credit-card"></i>
+                <span>4. Payment</span>
+            </div>
+            <div class="progress-step" id="step5">
+                <i class="fas fa-check-circle"></i>
+                <span>5. Confirmation</span>
+            </div>
+        </div>
+
+        <!-- Session Timer -->
+        <div class="session-timer" id="sessionTimer">
+            <i class="fas fa-clock"></i>
+            <span id="timerText">30:00</span>
+        </div>
+
+        <!-- Step 1: Service Selection -->
+        <div class="booking-section" id="serviceSection">
+            <h2 class="section-title">
+                <i class="fas fa-cut"></i>
+                Select Your Service
+            </h2>
+            
+            <div class="services-grid" id="servicesGrid">
+                <!-- Services will be loaded dynamically -->
+            </div>
+
+            <div class="waiting-list-form hidden" id="waitingListForm">
+                <h3>Join Waiting List</h3>
+                <p>This service is currently fully booked. Join the waiting list to be notified when a slot becomes available.</p>
+                <div class="customer-form">
+                    <div class="form-group">
+                        <label class="form-label required">First Name</label>
+                        <input type="text" class="form-input" id="waitingFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required">Last Name</label>
+                        <input type="text" class="form-input" id="waitingLastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required">Email</label>
+                        <input type="email" class="form-input" id="waitingEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-input" id="waitingPhone">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="waitingConsent" required>
+                        I agree to receive notifications about available slots for this service.
+                    </label>
+                </div>
+                <button class="btn-primary" onclick="joinWaitingList()">Join Waiting List</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Date & Time Selection -->
+        <div class="booking-section hidden" id="calendarSection">
+            <h2 class="section-title">
+                <i class="fas fa-calendar-alt"></i>
+                Choose Date & Time
+            </h2>
+            
+            <div class="calendar-container">
+                <div class="calendar-main">
+                    <div class="calendar-header">
+                        <button class="calendar-nav" onclick="changeMonth(-1)">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="calendar-month" id="calendarMonth">January 2024</div>
+                        <button class="calendar-nav" onclick="changeMonth(1)">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar days will be generated dynamically -->
+                    </div>
+                    <div class="time-slots" id="timeSlots">
+                        <!-- Time slots will be loaded dynamically -->
+                    </div>
+                </div>
+                
+                <div class="booking-summary">
+                    <h3 class="summary-title">Booking Summary</h3>
+                    <div class="summary-item">
+                        <span>Service:</span>
+                        <span id="summaryService">Not selected</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Date:</span>
+                        <span id="summaryDate">Not selected</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Time:</span>
+                        <span id="summaryTime">Not selected</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Duration:</span>
+                        <span id="summaryDuration">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Price:</span>
+                        <span id="summaryPrice">£0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <h4><i class="fas fa-map-marker-alt"></i> Location</h4>
+                <p>Royal Hair Studio</p>
+                <p>123 High Street, London, SW1A 1AA</p>
+                <a href="https://maps.google.com?q=123+High+Street+London+SW1A+1AA" target="_blank" class="map-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    View on Google Maps
+                </a>
+            </div>
+        </div>
+
+        <!-- Step 3: Customer Details -->
+        <div class="booking-section hidden" id="detailsSection">
+            <h2 class="section-title">
+                <i class="fas fa-user"></i>
+                Your Details
+            </h2>
+            
+            <div class="customer-form">
+                <div class="form-group">
+                    <label class="form-label required">First Name</label>
+                    <input type="text" class="form-input" id="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">Last Name</label>
+                    <input type="text" class="form-input" id="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">Email Address</label>
+                    <input type="email" class="form-input" id="email" required>
+                    <small class="text-muted">Your contact details are used only for booking confirmations and reminders.</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">Mobile Number</label>
+                    <input type="tel" class="form-input" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Special Notes (Optional)</label>
+                    <textarea class="form-input" id="notes" rows="3" placeholder="Any special requests or notes for your appointment..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Payment -->
+        <div class="booking-section hidden" id="paymentSection">
+            <h2 class="section-title">
+                <i class="fas fa-credit-card"></i>
+                Payment
+            </h2>
+            
+            <div class="alert success">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Payment Summary:</strong>
+                    <div id="paymentSummary">Loading payment details...</div>
+                </div>
+            </div>
+
+            <div class="customer-form">
+                <div class="form-group">
+                    <label class="form-label required">Payment Method</label>
+                    <select class="form-input" id="paymentMethod" required>
+                        <option value="">Select payment method</option>
+                        <option value="deposit">Pay Deposit (30%)</option>
+                        <option value="full">Pay Full Amount</option>
+                        <option value="venue">Pay at Venue</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="stripeContainer" class="hidden">
+                <div class="form-group">
+                    <label class="form-label required">Card Number</label>
+                    <input type="text" class="form-input" id="cardNumber" placeholder="1234 5678 9012 3456">
+                </div>
+                <div class="customer-form">
+                    <div class="form-group">
+                        <label class="form-label required">Expiry Date</label>
+                        <input type="text" class="form-input" id="cardExpiry" placeholder="MM/YY">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required">CVC</label>
+                        <input type="text" class="form-input" id="cardCVC" placeholder="123">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Confirmation -->
+        <div class="booking-section hidden" id="confirmationSection">
+            <h2 class="section-title">
+                <i class="fas fa-check-circle"></i>
+                Booking Confirmed!
+            </h2>
+            
+            <div class="alert success">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    <strong>Your booking is confirmed!</strong>
+                    <p>A confirmation email and SMS have been sent to you.</p>
+                </div>
+            </div>
+
+            <div class="booking-summary">
+                <h3 class="summary-title">Booking Details</h3>
+                <div class="summary-item">
+                    <span>Service:</span>
+                    <span id="confirmService">-</span>
+                </div>
+                <div class="summary-item">
+                    <span>Date & Time:</span>
+                    <span id="confirmDateTime">-</span>
+                </div>
+                <div class="summary-item">
+                    <span>Business:</span>
+                    <span>Royal Hair Studio</span>
+                </div>
+                <div class="summary-item">
+                    <span>Address:</span>
+                    <span>123 High Street, London, SW1A 1AA</span>
+                </div>
+                <div class="summary-item">
+                    <span>Payment:</span>
+                    <span id="confirmPayment">-</span>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn-secondary" onclick="addToCalendar()">
+                    <i class="fas fa-calendar-plus"></i>
+                    Add to Calendar
+                </button>
+                <button class="btn-primary" onclick="manageBooking()">
+                    <i class="fas fa-cog"></i>
+                    Manage Booking
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="navigation-buttons" id="navigationButtons">
+            <button class="btn-secondary" id="backBtn" onclick="previousStep()" style="display: none;">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </button>
+            <button class="btn-primary" id="nextBtn" onclick="nextStep()">
+                Next
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global booking state
+        const bookingState = {
+            currentStep: 1,
+            selectedService: null,
+            selectedDate: null,
+            selectedTime: null,
+            customerDetails: {},
+            paymentMethod: null,
+            sessionStartTime: Date.now(),
+            sessionDuration: 30 * 60 * 1000, // 30 minutes
+            timerInterval: null
+        };
+
+        // Sample services data
+        const services = [
+            {
+                id: 'haircut',
+                name: 'Haircut & Style',
+                duration: 60,
+                price: 45,
+                deposit: 13.50,
+                available: true
+            },
+            {
+                id: 'coloring',
+                name: 'Hair Coloring',
+                duration: 120,
+                price: 85,
+                deposit: 25.50,
+                available: true
+            },
+            {
+                id: 'styling',
+                name: 'Hair Styling',
+                duration: 90,
+                price: 65,
+                deposit: 19.50,
+                available: false
+            },
+            {
+                id: 'treatment',
+                name: 'Hair Treatment',
+                duration: 45,
+                price: 35,
+                deposit: 10.50,
+                available: true
+            }
+        ];
+
+        // Initialize booking system
+        function initBookingSystem() {
+            loadServices();
+            startSessionTimer();
+            updateProgressIndicator();
+            loadBookingData();
+        }
+
+        // Load services into the grid
+        function loadServices() {
+            const grid = document.getElementById('servicesGrid');
+            grid.innerHTML = '';
+
+            services.forEach(service => {
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.onclick = () => selectService(service);
+                
+                card.innerHTML = `
+                    <h3>${service.name}</h3>
+                    <p class="service-duration">${service.duration} minutes</p>
+                    <p class="service-price">£${service.price}</p>
+                    <p>Deposit: £${service.deposit}</p>
+                    ${!service.available ? '<p style="color: var(--error-color);">Fully Booked</p>' : ''}
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Select a service
+        function selectService(service) {
+            if (!service.available) {
+                showWaitingListForm(service);
+                return;
+            }
+
+            // Remove previous selection
+            document.querySelectorAll('.service-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selection to clicked card
+            event.currentTarget.classList.add('selected');
+            
+            bookingState.selectedService = service;
+            updateBookingSummary();
+            saveBookingData();
+        }
+
+        // Show waiting list form
+        function showWaitingListForm(service) {
+            const form = document.getElementById('waitingListForm');
+            form.classList.remove('hidden');
+            form.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Join waiting list
+        function joinWaitingList() {
+            const firstName = document.getElementById('waitingFirstName').value;
+            const lastName = document.getElementById('waitingLastName').value;
+            const email = document.getElementById('waitingEmail').value;
+            const phone = document.getElementById('waitingPhone').value;
+            const consent = document.getElementById('waitingConsent').checked;
+
+            if (!firstName || !lastName || !email || !consent) {
+                alert('Please fill in all required fields and accept the terms.');
+                return;
+            }
+
+            // Simulate waiting list join
+            alert('You have been added to the waiting list. We will notify you when a slot becomes available.');
+            
+            // Reset form
+            document.getElementById('waitingListForm').reset();
+            document.getElementById('waitingListForm').classList.add('hidden');
+        }
+
+        // Calendar functions
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        function generateCalendar() {
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            document.getElementById('calendarMonth').textContent = 
+                `${monthNames[currentMonth]} ${currentYear}`;
+
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            // Add day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const header = document.createElement('div');
+                header.textContent = day;
+                header.style.fontWeight = '600';
+                header.style.color = 'var(--text-muted)';
+                grid.appendChild(header);
+            });
+
+            // Generate calendar days
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const today = new Date();
+
+            for (let i = 0; i < firstDay; i++) {
+                const empty = document.createElement('div');
+                grid.appendChild(empty);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                const date = new Date(currentYear, currentMonth, day);
+                const isPast = date < today;
+                const isAvailable = Math.random() > 0.3; // Simulate availability
+                
+                if (isPast) {
+                    dayElement.classList.add('unavailable');
+                } else if (isAvailable) {
+                    dayElement.classList.add('available');
+                    dayElement.onclick = () => selectDate(day);
+                } else {
+                    dayElement.classList.add('unavailable');
+                }
+                
+                grid.appendChild(dayElement);
+            }
+        }
+
+        function changeMonth(direction) {
+            currentMonth += direction;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        }
+
+        function selectDate(day) {
+            // Remove previous selection
+            document.querySelectorAll('.calendar-day').forEach(dayEl => {
+                dayEl.classList.remove('selected');
+            });
+
+            // Add selection to clicked day
+            event.currentTarget.classList.add('selected');
+            
+            const date = new Date(currentYear, currentMonth, day);
+            bookingState.selectedDate = date;
+            
+            loadTimeSlots(date);
+            updateBookingSummary();
+            saveBookingData();
+        }
+
+        function loadTimeSlots(date) {
+            const slots = [
+                '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+                '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
+                '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'
+            ];
+
+            const container = document.getElementById('timeSlots');
+            container.innerHTML = '';
+
+            slots.forEach(slot => {
+                const slotElement = document.createElement('div');
+                slotElement.className = 'time-slot';
+                slotElement.textContent = slot;
+                
+                const isAvailable = Math.random() > 0.2; // Simulate availability
+                
+                if (isAvailable) {
+                    slotElement.onclick = () => selectTime(slot);
+                } else {
+                    slotElement.classList.add('unavailable');
+                }
+                
+                container.appendChild(slotElement);
+            });
+        }
+
+        function selectTime(time) {
+            // Remove previous selection
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+
+            // Add selection to clicked slot
+            event.currentTarget.classList.add('selected');
+            
+            bookingState.selectedTime = time;
+            updateBookingSummary();
+            saveBookingData();
+        }
+
+        // Update booking summary
+        function updateBookingSummary() {
+            if (bookingState.selectedService) {
+                document.getElementById('summaryService').textContent = bookingState.selectedService.name;
+                document.getElementById('summaryDuration').textContent = `${bookingState.selectedService.duration} minutes`;
+                document.getElementById('summaryPrice').textContent = `£${bookingState.selectedService.price}`;
+            }
+
+            if (bookingState.selectedDate) {
+                const dateStr = bookingState.selectedDate.toLocaleDateString('en-GB', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                document.getElementById('summaryDate').textContent = dateStr;
+            }
+
+            if (bookingState.selectedTime) {
+                document.getElementById('summaryTime').textContent = bookingState.selectedTime;
+            }
+        }
+
+        // Form validation
+        function validateCurrentStep() {
+            switch (bookingState.currentStep) {
+                case 1:
+                    if (!bookingState.selectedService) {
+                        showError('Please select a service to continue.');
+                        return false;
+                    }
+                    break;
+                case 2:
+                    if (!bookingState.selectedDate || !bookingState.selectedTime) {
+                        showError('Please select a date and time to continue.');
+                        return false;
+                    }
+                    break;
+                case 3:
+                    const firstName = document.getElementById('firstName').value;
+                    const lastName = document.getElementById('lastName').value;
+                    const email = document.getElementById('email').value;
+                    const phone = document.getElementById('phone').value;
+
+                    if (!firstName || !lastName || !email || !phone) {
+                        showError('Please fill in all required fields.');
+                        highlightErrors();
+                        return false;
+                    }
+
+                    if (!isValidEmail(email)) {
+                        showError('Please enter a valid email address.');
+                        return false;
+                    }
+                    break;
+                case 4:
+                    const paymentMethod = document.getElementById('paymentMethod').value;
+                    if (!paymentMethod) {
+                        showError('Please select a payment method.');
+                        return false;
+                    }
+                    break;
+            }
+            return true;
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function highlightErrors() {
+            const requiredFields = ['firstName', 'lastName', 'email', 'phone'];
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value) {
+                    field.classList.add('error');
+                } else {
+                    field.classList.remove('error');
+                }
+            });
+        }
+
+        function showError(message) {
+            // Remove existing alerts
+            document.querySelectorAll('.alert').forEach(alert => {
+                if (alert.classList.contains('error')) {
+                    alert.remove();
+                }
+            });
+
+            const alert = document.createElement('div');
+            alert.className = 'alert error';
+            alert.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            
+            const currentSection = document.querySelector('.booking-section:not(.hidden)');
+            currentSection.insertBefore(alert, currentSection.firstChild);
+        }
+
+        // Navigation functions
+        function nextStep() {
+            if (!validateCurrentStep()) {
+                return;
+            }
+
+            if (bookingState.currentStep < 5) {
+                bookingState.currentStep++;
+                updateProgressIndicator();
+                showCurrentStep();
+                updateNavigationButtons();
+            } else {
+                completeBooking();
+            }
+        }
+
+        function previousStep() {
+            if (bookingState.currentStep > 1) {
+                bookingState.currentStep--;
+                updateProgressIndicator();
+                showCurrentStep();
+                updateNavigationButtons();
+            }
+        }
+
+        function showCurrentStep() {
+            // Hide all sections
+            document.querySelectorAll('.booking-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show current section
+            const sections = ['serviceSection', 'calendarSection', 'detailsSection', 'paymentSection', 'confirmationSection'];
+            const currentSection = document.getElementById(sections[bookingState.currentStep - 1]);
+            if (currentSection) {
+                currentSection.classList.remove('hidden');
+                currentSection.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Special handling for payment section
+            if (bookingState.currentStep === 4) {
+                updatePaymentSummary();
+            }
+
+            // Special handling for confirmation section
+            if (bookingState.currentStep === 5) {
+                showConfirmationDetails();
+            }
+        }
+
+        function updateProgressIndicator() {
+            for (let i = 1; i <= 5; i++) {
+                const step = document.getElementById(`step${i}`);
+                step.classList.remove('active', 'completed');
+                
+                if (i < bookingState.currentStep) {
+                    step.classList.add('completed');
+                } else if (i === bookingState.currentStep) {
+                    step.classList.add('active');
+                }
+            }
+        }
+
+        function updateNavigationButtons() {
+            const backBtn = document.getElementById('backBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            backBtn.style.display = bookingState.currentStep > 1 ? 'inline-flex' : 'none';
+            
+            if (bookingState.currentStep === 5) {
+                nextBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'inline-flex';
+            }
+        }
+
+        // Payment functions
+        function updatePaymentSummary() {
+            if (!bookingState.selectedService) return;
+
+            const service = bookingState.selectedService;
+            const deposit = service.deposit;
+            const balance = service.price - deposit;
+
+            const summary = `
+                <div>Service: ${service.name} - £${service.price}</div>
+                <div>Deposit: £${deposit}</div>
+                <div>Balance due at venue: £${balance}</div>
+            `;
+
+            document.getElementById('paymentSummary').innerHTML = summary;
+        }
+
+        // Complete booking
+        function completeBooking() {
+            // Simulate booking completion
+            console.log('Booking completed:', bookingState);
+            
+            // Show confirmation
+            bookingState.currentStep = 5;
+            updateProgressIndicator();
+            showCurrentStep();
+            updateNavigationButtons();
+        }
+
+        function showConfirmationDetails() {
+            if (bookingState.selectedService) {
+                document.getElementById('confirmService').textContent = bookingState.selectedService.name;
+            }
+
+            if (bookingState.selectedDate && bookingState.selectedTime) {
+                const dateStr = bookingState.selectedDate.toLocaleDateString('en-GB', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                document.getElementById('confirmDateTime').textContent = `${dateStr} at ${bookingState.selectedTime}`;
+            }
+
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            if (paymentMethod) {
+                const paymentText = {
+                    'deposit': `Deposit paid: £${bookingState.selectedService.deposit}`,
+                    'full': `Full amount paid: £${bookingState.selectedService.price}`,
+                    'venue': 'Pay at venue'
+                };
+                document.getElementById('confirmPayment').textContent = paymentText[paymentMethod];
+            }
+        }
+
+        // Session timer
+        function startSessionTimer() {
+            bookingState.timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const elapsed = Date.now() - bookingState.sessionStartTime;
+            const remaining = bookingState.sessionDuration - elapsed;
+            
+            if (remaining <= 0) {
+                clearInterval(bookingState.timerInterval);
+                showSessionExpired();
+                return;
+            }
+
+            const minutes = Math.floor(remaining / 60000);
+            const seconds = Math.floor((remaining % 60000) / 1000);
+            
+            const timerText = document.getElementById('timerText');
+            const timer = document.getElementById('sessionTimer');
+            
+            timerText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (remaining <= 120000) { // 2 minutes
+                timer.classList.add('timer-warning');
+            }
+        }
+
+        function showSessionExpired() {
+            const timer = document.getElementById('sessionTimer');
+            timer.classList.add('timer-expired');
+            timer.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Session Expired';
+            
+            alert('Your booking session has expired. Please start again.');
+            location.reload();
+        }
+
+        // Utility functions
+        function addToCalendar() {
+            // Generate .ics file
+            const icsContent = generateICS();
+            const blob = new Blob([icsContent], { type: 'text/calendar' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'appointment.ics';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        function generateICS() {
+            const startDate = new Date(bookingState.selectedDate);
+            const [hours, minutes] = bookingState.selectedTime.split(':');
+            startDate.setHours(parseInt(hours), parseInt(minutes));
+            
+            const endDate = new Date(startDate);
+            endDate.setMinutes(endDate.getMinutes() + bookingState.selectedService.duration);
+            
+            const formatDate = (date) => {
+                return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            };
+            
+            return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//BlkPages//Booking System//EN
+BEGIN:VEVENT
+UID:${Date.now()}@blkpages.com
+DTSTAMP:${formatDate(new Date())}
+DTSTART:${formatDate(startDate)}
+DTEND:${formatDate(endDate)}
+SUMMARY:${bookingState.selectedService.name} at Royal Hair Studio
+DESCRIPTION:Your appointment is confirmed.
+LOCATION:123 High Street, London, SW1A 1AA
+END:VEVENT
+END:VCALENDAR`;
+        }
+
+        function manageBooking() {
+            // Redirect to customer dashboard
+            window.location.href = '/customer-dashboard.html';
+        }
+
+        // Data persistence
+        function saveBookingData() {
+            sessionStorage.setItem('bookingState', JSON.stringify(bookingState));
+        }
+
+        function loadBookingData() {
+            const saved = sessionStorage.getItem('bookingState');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.assign(bookingState, data);
+                
+                // Restore UI state
+                if (bookingState.selectedService) {
+                    updateBookingSummary();
+                }
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initBookingSystem();
+            generateCalendar();
+        });
+    </script>
+</body>
+</html>

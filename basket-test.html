@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basket Page Testing - BlkPages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/js/basket.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 50%, #121212 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .test-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #FF007F, #C20056);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-section {
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #333;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .test-section h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #FF007F;
+        }
+        
+        .test-button {
+            background: #0D9488;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .test-button:hover {
+            background: #0F766E;
+            transform: translateY(-1px);
+        }
+        
+        .test-button.danger {
+            background: #EF4444;
+        }
+        
+        .test-button.danger:hover {
+            background: #DC2626;
+        }
+        
+        .test-button.warning {
+            background: #F59E0B;
+        }
+        
+        .test-button.warning:hover {
+            background: #D97706;
+        }
+        
+        .test-button.info {
+            background: #3B82F6;
+        }
+        
+        .test-button.info:hover {
+            background: #2563EB;
+        }
+        
+        .basket-preview {
+            background: #222;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid #333;
+        }
+        
+        .basket-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .basket-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .item-details {
+            font-size: 0.9rem;
+            color: #999;
+        }
+        
+        .item-price {
+            font-weight: 600;
+            color: #FF007F;
+        }
+        
+        .log {
+            background: #111;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-indicator.success { background: #10B981; }
+        .status-indicator.warning { background: #F59E0B; }
+        .status-indicator.error { background: #EF4444; }
+        .status-indicator.info { background: #3B82F6; }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .test-card {
+            background: #222;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #333;
+        }
+        
+        .test-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #FF007F;
+        }
+        
+        .test-card p {
+            color: #ccc;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .test-card .test-button {
+            width: 100%;
+            margin: 0.25rem 0;
+        }
+        
+        .basket-link {
+            display: inline-block;
+            background: linear-gradient(90deg, #FF007F, #C20056);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 1rem 0;
+        }
+        
+        .basket-link:hover {
+            background: linear-gradient(90deg, #C20056, #FF007F);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <!-- Test Header -->
+        <div class="test-header">
+            <h1>🧪 Basket Page Testing</h1>
+            <p>Comprehensive testing system for the BlkPages Customer Basket page</p>
+        </div>
+
+        <!-- Current Basket Status -->
+        <div class="test-section">
+            <h2>📊 Current Basket Status</h2>
+            <div class="basket-preview" id="basketPreview">
+                <div style="text-align: center; color: #666; padding: 2rem;">
+                    Loading basket status...
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <a href="basket.html" class="basket-link">
+                    <i class="fas fa-shopping-basket"></i>
+                    Open Basket Page
+                </a>
+            </div>
+        </div>
+
+        <!-- Test Scenarios -->
+        <div class="test-section">
+            <h2>🧪 Test Scenarios</h2>
+            
+            <div class="test-grid">
+                <!-- Session Timer Tests -->
+                <div class="test-card">
+                    <h3>⏰ Session Timer Tests</h3>
+                    <p>Test session timeout and warning functionality</p>
+                    <button class="test-button warning" onclick="testSessionWarning()">
+                        Simulate 2-Min Warning
+                    </button>
+                    <button class="test-button danger" onclick="testSessionTimeout()">
+                        Simulate Session Expired
+                    </button>
+                    <button class="test-button" onclick="testSessionReset()">
+                        Reset Session Timer
+                    </button>
+                </div>
+
+                <!-- Basket Content Tests -->
+                <div class="test-card">
+                    <h3>🛒 Basket Content Tests</h3>
+                    <p>Test basket items and summary calculations</p>
+                    <button class="test-button" onclick="addTestItems()">
+                        Add Test Items
+                    </button>
+                    <button class="test-button warning" onclick="testUnavailableSlot()">
+                        Simulate Unavailable Slot
+                    </button>
+                    <button class="test-button danger" onclick="clearTestBasket()">
+                        Clear Basket
+                    </button>
+                </div>
+
+                <!-- Business Rules Tests -->
+                <div class="test-card">
+                    <h3>🏪 Business Rules Tests</h3>
+                    <p>Test multi-business rule enforcement</p>
+                    <button class="test-button" onclick="testSameBusiness()">
+                        Add Same Business Item
+                    </button>
+                    <button class="test-button warning" onclick="testDifferentBusiness()">
+                        Add Different Business Item
+                    </button>
+                    <button class="test-button info" onclick="testBusinessSwitch()">
+                        Test Business Switch Modal
+                    </button>
+                </div>
+
+                <!-- Checkout Tests -->
+                <div class="test-card">
+                    <h3>💳 Checkout Tests</h3>
+                    <p>Test checkout flow and basket clearing</p>
+                    <button class="test-button" onclick="testSuccessfulCheckout()">
+                        Simulate Successful Checkout
+                    </button>
+                    <button class="test-button" onclick="testPayAtVenue()">
+                        Simulate "Pay at Venue"
+                    </button>
+                    <button class="test-button warning" onclick="testCheckoutWithEmptyBasket()">
+                        Test Empty Basket Checkout
+                    </button>
+                </div>
+
+                <!-- Manual Clearing Tests -->
+                <div class="test-card">
+                    <h3>🗑️ Manual Clearing Tests</h3>
+                    <p>Test manual basket clearing functionality</p>
+                    <button class="test-button danger" onclick="testEmptyBasketModal()">
+                        Test Empty Basket Modal
+                    </button>
+                    <button class="test-button" onclick="testRemoveIndividualItem()">
+                        Remove Individual Item
+                    </button>
+                    <button class="test-button info" onclick="testBasketConfirmation()">
+                        Test Confirmation Dialogs
+                    </button>
+                </div>
+
+                <!-- Accessibility Tests -->
+                <div class="test-card">
+                    <h3>♿ Accessibility Tests</h3>
+                    <p>Test screen reader and keyboard navigation</p>
+                    <button class="test-button" onclick="testScreenReader()">
+                        Test Screen Reader Support
+                    </button>
+                    <button class="test-button" onclick="testKeyboardNavigation()">
+                        Test Keyboard Navigation
+                    </button>
+                    <button class="test-button" onclick="testHighContrast()">
+                        Test High Contrast Mode
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Log -->
+        <div class="test-section">
+            <h2>📋 Event Log</h2>
+            <div id="eventLog" class="log">Waiting for events...</div>
+            <div style="text-align: center; margin-top: 1rem;">
+                <button class="test-button" onclick="clearEventLog()">
+                    <i class="fas fa-trash"></i>
+                    Clear Log
+                </button>
+            </div>
+        </div>
+
+        <!-- Test Instructions -->
+        <div class="test-section">
+            <h2>📖 Test Instructions</h2>
+            <div class="space-y-2 text-sm">
+                <p><span class="status-indicator success"></span><strong>Session Timer:</strong> Test 30-minute countdown, 2-minute warning, and session expiry</p>
+                <p><span class="status-indicator info"></span><strong>Basket Content:</strong> Test item display, pricing calculations, and summary updates</p>
+                <p><span class="status-indicator warning"></span><strong>Business Rules:</strong> Test single-business enforcement and switching</p>
+                <p><span class="status-indicator success"></span><strong>Checkout Flow:</strong> Test successful payment and "pay at venue" scenarios</p>
+                <p><span class="status-indicator error"></span><strong>Manual Clearing:</strong> Test "Empty Basket" button and confirmation dialogs</p>
+                <p><span class="status-indicator info"></span><strong>Accessibility:</strong> Test screen reader support and keyboard navigation</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testItemCounter = 1;
+        let businessCounter = 1;
+        
+        // Initialize test data
+        function initializeTestData() {
+            // Add some test items to basket
+            const testItems = [
+                {
+                    id: 'test-item-1',
+                    name: 'Hair Cut & Style',
+                    price: 45,
+                    duration: 30,
+                    business_id: 'business-1',
+                    business: 'Royal Hair Studio',
+                    date: '2024-01-15',
+                    time: '10:00',
+                    slotInfo: '2024-01-15-10:00'
+                },
+                {
+                    id: 'test-item-2',
+                    name: 'Deep Conditioning',
+                    price: 35,
+                    duration: 45,
+                    business_id: 'business-1',
+                    business: 'Royal Hair Studio',
+                    date: '2024-01-15',
+                    time: '11:00',
+                    slotInfo: '2024-01-15-11:00'
+                }
+            ];
+            
+            // Clear existing basket
+            clearBasket();
+            
+            // Add test items
+            testItems.forEach(item => {
+                addToBasket(item);
+            });
+            
+            updateBasketPreview();
+            logEvent('Test data initialized with 2 items from Royal Hair Studio');
+        }
+        
+        // Session Timer Tests
+        function testSessionWarning() {
+            logEvent('Testing 2-minute warning...');
+            showSessionWarning();
+        }
+        
+        function testSessionTimeout() {
+            logEvent('Testing session timeout...');
+            handleSessionTimeout();
+        }
+        
+        function testSessionReset() {
+            logEvent('Testing session reset...');
+            startSessionTimer();
+            showSuccessMessage('Session timer reset to 30 minutes');
+        }
+        
+        // Basket Content Tests
+        function addTestItems() {
+            const newItem = {
+                id: `test-item-${testItemCounter}`,
+                name: `Test Service ${testItemCounter}`,
+                price: Math.floor(Math.random() * 50) + 20,
+                duration: 30,
+                business_id: 'business-1',
+                business: 'Royal Hair Studio',
+                date: '2024-01-15',
+                time: '14:00',
+                slotInfo: `2024-01-15-14:00-${testItemCounter}`
+            };
+            
+            addToBasket(newItem);
+            testItemCounter++;
+            updateBasketPreview();
+            logEvent(`Added test item: ${newItem.name} (£${newItem.price})`);
+        }
+        
+        function testUnavailableSlot() {
+            const basket = getBasket();
+            if (basket.length === 0) {
+                logEvent('No items in basket to test slot unavailability');
+                return;
+            }
+            
+            const firstItem = basket[0];
+            logEvent(`Testing slot unavailability for: ${firstItem.name}`);
+            removeUnavailableSlot(firstItem.id, firstItem.slotInfo);
+            updateBasketPreview();
+        }
+        
+        function clearTestBasket() {
+            clearBasket();
+            updateBasketPreview();
+            logEvent('Test basket cleared');
+        }
+        
+        // Business Rules Tests
+        function testSameBusiness() {
+            const sameBusinessItem = {
+                id: `test-item-same-${testItemCounter}`,
+                name: `Same Business Service ${testItemCounter}`,
+                price: 40,
+                duration: 30,
+                business_id: 'business-1',
+                business: 'Royal Hair Studio',
+                date: '2024-01-15',
+                time: '15:00',
+                slotInfo: `2024-01-15-15:00-${testItemCounter}`
+            };
+            
+            addToBasket(sameBusinessItem);
+            testItemCounter++;
+            updateBasketPreview();
+            logEvent(`Added same business item: ${sameBusinessItem.name}`);
+        }
+        
+        function testDifferentBusiness() {
+            const differentBusinessItem = {
+                id: `test-item-different-${testItemCounter}`,
+                name: `Different Business Service ${testItemCounter}`,
+                price: 60,
+                duration: 45,
+                business_id: 'business-2',
+                business: 'Wellness Spa',
+                date: '2024-01-16',
+                time: '14:00',
+                slotInfo: `2024-01-16-14:00-${testItemCounter}`
+            };
+            
+            addToBasketWithBusinessCheck(differentBusinessItem);
+            testItemCounter++;
+            updateBasketPreview();
+            logEvent(`Attempted to add different business item: ${differentBusinessItem.name}`);
+        }
+        
+        function testBusinessSwitch() {
+            logEvent('Testing business switch modal...');
+            showBusinessSwitchModal();
+        }
+        
+        // Checkout Tests
+        function testSuccessfulCheckout() {
+            const basket = getBasket();
+            if (basket.length === 0) {
+                logEvent('Cannot test checkout with empty basket');
+                return;
+            }
+            
+            logEvent('Testing successful checkout...');
+            clearBasketAfterCheckout();
+            updateBasketPreview();
+        }
+        
+        function testPayAtVenue() {
+            const basket = getBasket();
+            if (basket.length === 0) {
+                logEvent('Cannot test "pay at venue" with empty basket');
+                return;
+            }
+            
+            logEvent('Testing "pay at venue" booking...');
+            clearBasketAfterCheckout();
+            updateBasketPreview();
+        }
+        
+        function testCheckoutWithEmptyBasket() {
+            clearBasket();
+            logEvent('Testing checkout with empty basket (should show alert)');
+            // This would trigger the empty basket alert in the actual basket page
+        }
+        
+        // Manual Clearing Tests
+        function testEmptyBasketModal() {
+            logEvent('Testing empty basket modal...');
+            showEmptyBasketModal();
+        }
+        
+        function testRemoveIndividualItem() {
+            const basket = getBasket();
+            if (basket.length === 0) {
+                logEvent('No items to remove');
+                return;
+            }
+            
+            const firstItem = basket[0];
+            removeFromBasket(firstItem.id);
+            updateBasketPreview();
+            logEvent(`Removed individual item: ${firstItem.name}`);
+        }
+        
+        function testBasketConfirmation() {
+            logEvent('Testing basket confirmation dialogs...');
+            // This would show the confirmation dialog in the actual basket page
+        }
+        
+        // Accessibility Tests
+        function testScreenReader() {
+            logEvent('Testing screen reader support...');
+            const timerScreenReader = document.getElementById('timerScreenReader');
+            if (timerScreenReader) {
+                timerScreenReader.textContent = 'Screen reader test: Timer is working correctly';
+            }
+        }
+        
+        function testKeyboardNavigation() {
+            logEvent('Testing keyboard navigation...');
+            // Simulate keyboard navigation
+            const buttons = document.querySelectorAll('.test-button');
+            if (buttons.length > 0) {
+                buttons[0].focus();
+            }
+        }
+        
+        function testHighContrast() {
+            logEvent('Testing high contrast mode...');
+            document.body.style.filter = 'contrast(150%) brightness(120%)';
+            setTimeout(() => {
+                document.body.style.filter = 'none';
+            }, 2000);
+        }
+        
+        // Utility Functions
+        function updateBasketPreview() {
+            const basket = getBasket();
+            const preview = document.getElementById('basketPreview');
+            
+            if (basket.length === 0) {
+                preview.innerHTML = '<div style="text-align: center; color: #666; padding: 2rem;">Basket is empty</div>';
+            } else {
+                preview.innerHTML = basket.map(item => `
+                    <div class="basket-item">
+                        <div class="item-info">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-details">${item.business} • ${item.date} ${item.time}</div>
+                        </div>
+                        <div class="item-price">£${item.price}</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function logEvent(message) {
+            const log = document.getElementById('eventLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span style="color: #666;">[${timestamp}]</span> ${message}`;
+            log.appendChild(logEntry);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function clearEventLog() {
+            document.getElementById('eventLog').innerHTML = 'Event log cleared...';
+        }
+        
+        function showSuccessMessage(message) {
+            // Create temporary success message
+            const successEl = document.createElement('div');
+            successEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10B981;
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 4px;
+                font-weight: 600;
+                z-index: 9999;
+                max-width: 300px;
+            `;
+            successEl.textContent = message;
+            document.body.appendChild(successEl);
+            
+            setTimeout(() => {
+                if (successEl.parentNode) {
+                    successEl.remove();
+                }
+            }, 3000);
+        }
+        
+        // Listen for basket events
+        window.addEventListener('basketUpdated', function(e) {
+            logEvent(`Basket updated: ${e.detail.action} - ${e.detail.basket.length} items remaining`);
+            updateBasketPreview();
+        });
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTestData();
+            logEvent('Basket testing page loaded');
+        });
+    </script>
+</body>
+</html>

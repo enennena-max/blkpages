@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - Booking Changes | BlkPages</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-header h1 {
+            color: #2D3748;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .booking-changes-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            color: #2D3748;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .booking-card {
+            background: #F7FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .booking-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .booking-card.cancelled {
+            background: #FED7D7;
+            border-color: #F56565;
+        }
+
+        .booking-card.amendment-request {
+            background: #FEF5E7;
+            border-color: #F6AD55;
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .booking-info h3 {
+            color: #2D3748;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-info p {
+            color: #718096;
+            margin-bottom: 0.25rem;
+        }
+
+        .booking-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .booking-status.confirmed {
+            background: #C6F6D5;
+            color: #22543D;
+        }
+
+        .booking-status.cancelled {
+            background: #FED7D7;
+            color: #742A2A;
+        }
+
+        .booking-status.amendment-requested {
+            background: #FEF5E7;
+            color: #744210;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            color: #718096;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            color: #2D3748;
+            font-weight: 600;
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #4299E1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3182CE;
+        }
+
+        .btn-success {
+            background: #48BB78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38A169;
+        }
+
+        .btn-danger {
+            background: #F56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #E53E3E;
+        }
+
+        .btn-secondary {
+            background: #A0AEC0;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #718096;
+        }
+
+        .notification-banner {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notification-banner i {
+            font-size: 1.5rem;
+        }
+
+        .notification-banner.cancellation {
+            background: linear-gradient(135deg, #F56565, #E53E3E);
+        }
+
+        .notification-banner.amendment {
+            background: linear-gradient(135deg, #F6AD55, #ED8936);
+        }
+
+        .refund-info {
+            background: #E6FFFA;
+            border: 1px solid #81E6D9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .refund-info h4 {
+            color: #234E52;
+            margin-bottom: 0.5rem;
+        }
+
+        .refund-info p {
+            color: #234E52;
+            margin: 0;
+        }
+
+        .amendment-request {
+            background: #FEF5E7;
+            border: 1px solid #F6AD55;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .amendment-request h4 {
+            color: #744210;
+            margin-bottom: 0.5rem;
+        }
+
+        .amendment-request p {
+            color: #744210;
+            margin-bottom: 1rem;
+        }
+
+        .amendment-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .amendment-detail {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid #F6AD55;
+        }
+
+        .amendment-detail .label {
+            color: #744210;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .amendment-detail .value {
+            color: #2D3748;
+            font-weight: 600;
+        }
+
+        .amendment-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #718096;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #CBD5E0;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+            color: #4A5568;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+
+            .booking-details {
+                grid-template-columns: 1fr;
+            }
+
+            .amendment-details {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-actions {
+                flex-direction: column;
+            }
+
+            .amendment-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-calendar-alt"></i> My Bookings</h1>
+            <p>Manage your appointments and view booking changes</p>
+        </div>
+
+        <!-- Notification Banners -->
+        <div class="notification-banner cancellation" id="cancellationBanner" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <h4>Booking Cancelled</h4>
+                <p>One of your bookings has been cancelled by the business. A refund has been processed if payment was made.</p>
+            </div>
+        </div>
+
+        <div class="notification-banner amendment" id="amendmentBanner" style="display: none;">
+            <i class="fas fa-edit"></i>
+            <div>
+                <h4>Booking Change Request</h4>
+                <p>The business has requested to change one of your bookings. Please review and respond.</p>
+            </div>
+        </div>
+
+        <div class="booking-changes-section">
+            <div class="section-header">
+                <h2>My Bookings</h2>
+                <button class="btn btn-secondary" onclick="refreshBookings()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+
+            <div id="bookingsList">
+                <!-- Bookings will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="backend/booking-cancellation-system.js"></script>
+    <script>
+        // Customer bookings data
+        const customerBookings = [
+            {
+                id: 'booking_001',
+                businessName: 'Royal Hair Studio',
+                service: 'Haircut & Style',
+                date: '2024-12-20',
+                time: '14:00',
+                status: 'cancelled',
+                cancellationReason: 'Staff illness',
+                cancellationExplanation: 'Our stylist is unwell and unable to provide the service',
+                refundAmount: 45,
+                refundStatus: 'processed',
+                cancelledAt: '2024-12-16T14:30:00Z'
+            },
+            {
+                id: 'booking_002',
+                businessName: 'Royal Hair Studio',
+                service: 'Hair Treatment',
+                date: '2024-12-18',
+                time: '16:30',
+                status: 'amendment_requested',
+                amendmentRequest: {
+                    newDate: '2024-12-19',
+                    newTime: '15:00',
+                    reason: 'Equipment maintenance required',
+                    requestedAt: '2024-12-17T10:00:00Z'
+                }
+            },
+            {
+                id: 'booking_003',
+                businessName: 'Royal Hair Studio',
+                service: 'Haircut & Style',
+                date: '2024-12-25',
+                time: '11:00',
+                status: 'confirmed',
+                businessName: 'Royal Hair Studio'
+            }
+        ];
+
+        function loadCustomerBookings() {
+            console.log('Loading customer bookings');
+            
+            const bookingsList = document.getElementById('bookingsList');
+            bookingsList.innerHTML = '';
+
+            if (customerBookings.length === 0) {
+                bookingsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>No Bookings Found</h3>
+                        <p>You don't have any bookings at the moment.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            customerBookings.forEach(booking => {
+                const bookingCard = createBookingCard(booking);
+                bookingsList.appendChild(bookingCard);
+            });
+
+            // Show notification banners
+            showNotificationBanners();
+        }
+
+        function createBookingCard(booking) {
+            const card = document.createElement('div');
+            card.className = `booking-card ${booking.status}`;
+
+            let statusClass = 'confirmed';
+            let statusText = 'Confirmed';
+            let statusIcon = 'fas fa-check-circle';
+
+            switch(booking.status) {
+                case 'cancelled':
+                    statusClass = 'cancelled';
+                    statusText = 'Cancelled';
+                    statusIcon = 'fas fa-times-circle';
+                    break;
+                case 'amendment_requested':
+                    statusClass = 'amendment-requested';
+                    statusText = 'Change Requested';
+                    statusIcon = 'fas fa-edit';
+                    break;
+            }
+
+            card.innerHTML = `
+                <div class="booking-header">
+                    <div class="booking-info">
+                        <h3>${booking.service}</h3>
+                        <p><strong>Business:</strong> ${booking.businessName}</p>
+                        <p><strong>Date & Time:</strong> ${booking.date} at ${booking.time}</p>
+                    </div>
+                    <div class="booking-status ${statusClass}">
+                        <i class="${statusIcon}"></i> ${statusText}
+                    </div>
+                </div>
+
+                <div class="booking-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Service</div>
+                        <div class="detail-value">${booking.service}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Date</div>
+                        <div class="detail-value">${booking.date}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Time</div>
+                        <div class="detail-value">${booking.time}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Business</div>
+                        <div class="detail-value">${booking.businessName}</div>
+                    </div>
+                </div>
+
+                ${booking.status === 'cancelled' ? createCancellationDetails(booking) : ''}
+                ${booking.status === 'amendment_requested' ? createAmendmentRequest(booking) : ''}
+                ${booking.status === 'confirmed' ? createBookingActions(booking) : ''}
+            `;
+
+            return card;
+        }
+
+        function createCancellationDetails(booking) {
+            return `
+                <div class="refund-info">
+                    <h4><i class="fas fa-info-circle"></i> Cancellation Details</h4>
+                    <p><strong>Reason:</strong> ${booking.cancellationReason}</p>
+                    <p><strong>Explanation:</strong> ${booking.cancellationExplanation}</p>
+                    <p><strong>Cancelled:</strong> ${new Date(booking.cancelledAt).toLocaleString()}</p>
+                    ${booking.refundAmount ? `
+                        <p><strong>Refund Amount:</strong> £${booking.refundAmount}</p>
+                        <p><strong>Refund Status:</strong> ${booking.refundStatus}</p>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function createAmendmentRequest(booking) {
+            return `
+                <div class="amendment-request">
+                    <h4><i class="fas fa-edit"></i> Change Request</h4>
+                    <p>The business has requested to change your booking:</p>
+                    
+                    <div class="amendment-details">
+                        <div class="amendment-detail">
+                            <div class="label">Current Date & Time</div>
+                            <div class="value">${booking.date} at ${booking.time}</div>
+                        </div>
+                        <div class="amendment-detail">
+                            <div class="label">New Date & Time</div>
+                            <div class="value">${booking.amendmentRequest.newDate} at ${booking.amendmentRequest.newTime}</div>
+                        </div>
+                    </div>
+                    
+                    <p><strong>Reason:</strong> ${booking.amendmentRequest.reason}</p>
+                    
+                    <div class="amendment-actions">
+                        <button class="btn btn-success" onclick="respondToAmendment('${booking.id}', true)">
+                            <i class="fas fa-check"></i> Accept Change
+                        </button>
+                        <button class="btn btn-danger" onclick="respondToAmendment('${booking.id}', false)">
+                            <i class="fas fa-times"></i> Decline Change
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createBookingActions(booking) {
+            return `
+                <div class="booking-actions">
+                    <button class="btn btn-primary" onclick="viewBookingDetails('${booking.id}')">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                    <button class="btn btn-secondary" onclick="contactBusiness('${booking.businessName}')">
+                        <i class="fas fa-phone"></i> Contact Business
+                    </button>
+                </div>
+            `;
+        }
+
+        function showNotificationBanners() {
+            const hasCancellations = customerBookings.some(b => b.status === 'cancelled');
+            const hasAmendmentRequests = customerBookings.some(b => b.status === 'amendment_requested');
+
+            if (hasCancellations) {
+                document.getElementById('cancellationBanner').style.display = 'flex';
+            }
+
+            if (hasAmendmentRequests) {
+                document.getElementById('amendmentBanner').style.display = 'flex';
+            }
+        }
+
+        function respondToAmendment(bookingId, accepted) {
+            console.log('Responding to amendment:', bookingId, 'accepted:', accepted);
+            
+            const result = BookingCancellationSystem.respondToAmendment(bookingId, 'customer_123', accepted);
+            
+            if (result.success) {
+                if (accepted) {
+                    alert('✅ Amendment accepted! Your booking has been updated.');
+                } else {
+                    alert('❌ Amendment declined. Your booking remains unchanged.');
+                }
+                
+                // Update the booking in our local data
+                const booking = customerBookings.find(b => b.id === bookingId);
+                if (booking) {
+                    if (accepted) {
+                        booking.date = result.newDate;
+                        booking.time = result.newTime;
+                        booking.status = 'confirmed';
+                    } else {
+                        booking.status = 'confirmed';
+                    }
+                    delete booking.amendmentRequest;
+                }
+                
+                loadCustomerBookings();
+            } else {
+                alert('Error: ' + result.error);
+            }
+        }
+
+        function viewBookingDetails(bookingId) {
+            const booking = customerBookings.find(b => b.id === bookingId);
+            if (booking) {
+                alert(`Booking Details:\n\nService: ${booking.service}\nDate: ${booking.date}\nTime: ${booking.time}\nBusiness: ${booking.businessName}`);
+            }
+        }
+
+        function contactBusiness(businessName) {
+            alert(`Contacting ${businessName}...\n\nPhone: 020 7123 4567\nEmail: info@${businessName.toLowerCase().replace(/\s+/g, '')}.com`);
+        }
+
+        function refreshBookings() {
+            console.log('Refreshing bookings');
+            loadCustomerBookings();
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCustomerBookings();
+        });
+    </script>
+</body>
+</html>
+

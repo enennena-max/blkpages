@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Waiting List Demo - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .demo-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #10B981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .demo-header p {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+
+        .demo-controls {
+            background: #2A2A2A;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .demo-controls h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .control-btn.secondary {
+            background: linear-gradient(135deg, #6B7280, #4B5563);
+        }
+
+        .control-btn.warning {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+        }
+
+        .control-btn.danger {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+        }
+
+        /* Dashboard Styles */
+        .dashboard-demo {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h2 {
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: #cccccc;
+            font-size: 1rem;
+        }
+
+        /* Access Banner */
+        .access-banner {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .access-banner.hidden {
+            display: none;
+        }
+
+        .banner-icon {
+            font-size: 2.5rem;
+        }
+
+        .banner-content h3 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .banner-content p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+        }
+
+        .banner-actions {
+            margin-left: auto;
+        }
+
+        .btn-upgrade {
+            background: #ffffff;
+            color: #F59E0B;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-upgrade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Summary Stats */
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #cccccc;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Service Cards */
+        .services-section {
+            margin-bottom: 2rem;
+        }
+
+        .services-section h3 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .service-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .service-card-title {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .service-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .service-toggle input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #10B981;
+        }
+
+        .service-toggle label {
+            color: #cccccc;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .service-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .service-stat {
+            text-align: center;
+        }
+
+        .service-stat-number {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .service-stat-label {
+            color: #cccccc;
+            font-size: 0.8rem;
+        }
+
+        /* Waiting List Table */
+        .waiting-list-table {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-header h3 {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action.primary {
+            background: #10B981;
+            color: white;
+        }
+
+        .btn-action.secondary {
+            background: transparent;
+            color: #cccccc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container th,
+        .table-container td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table-container th {
+            color: #ffffff;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .table-container td {
+            color: #cccccc;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-badge.active {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22C55E;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-badge.notified {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .status-badge.booked {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Hidden sections */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1><i class="fas fa-clock"></i> Business Waiting List Demo</h1>
+            <p>Interactive demo of the business dashboard waiting list management system</p>
+        </div>
+
+        <div class="demo-controls">
+            <h3>Demo Controls</h3>
+            <div class="control-buttons">
+                <button class="control-btn" onclick="showPremiumDemo()">
+                    <i class="fas fa-crown"></i> Premium Business Demo
+                </button>
+                <button class="control-btn secondary" onclick="showBasicDemo()">
+                    <i class="fas fa-user"></i> Basic Business Demo
+                </button>
+                <button class="control-btn warning" onclick="addWaitingCustomers()">
+                    <i class="fas fa-user-plus"></i> Add Waiting Customers
+                </button>
+                <button class="control-btn danger" onclick="createOffer()">
+                    <i class="fas fa-bell"></i> Create Offer
+                </button>
+                <button class="control-btn secondary" onclick="resetDemo()">
+                    <i class="fas fa-refresh"></i> Reset Demo
+                </button>
+            </div>
+        </div>
+
+        <div class="dashboard-demo">
+            <!-- Access Banner (for basic businesses) -->
+            <div id="accessBanner" class="access-banner hidden">
+                <div class="banner-icon">💡</div>
+                <div class="banner-content">
+                    <h3>Upgrade to Premium for Waiting List Features</h3>
+                    <p>Offer cancelled slots automatically to customers on your waiting list — available with the £29/month plan.</p>
+                </div>
+                <div class="banner-actions">
+                    <button class="btn-upgrade" onclick="upgradeToPremium()">Upgrade Now</button>
+                </div>
+            </div>
+
+            <!-- Premium Content -->
+            <div id="premiumContent">
+                <div class="dashboard-header">
+                    <h2>Waiting List Management</h2>
+                    <p>Manage customer waiting lists and automated slot offers</p>
+                </div>
+
+                <!-- Summary Stats -->
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalWaiting">12</div>
+                        <div class="stat-label">Total Waiting</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="activeOffers">2</div>
+                        <div class="stat-label">Active Offers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="accepted">8</div>
+                        <div class="stat-label">Accepted</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="expired">3</div>
+                        <div class="stat-label">Expired</div>
+                    </div>
+                </div>
+
+                <!-- Service Waiting Lists -->
+                <div class="services-section">
+                    <h3>Service Waiting Lists</h3>
+                    <div class="services-grid">
+                        <div class="service-card">
+                            <div class="service-card-header">
+                                <div class="service-card-title">Haircut & Style</div>
+                                <div class="service-toggle">
+                                    <input type="checkbox" id="toggle-haircut" checked onchange="toggleService('haircut')">
+                                    <label for="toggle-haircut">Enable waiting list</label>
+                                </div>
+                            </div>
+                            <div class="service-stats">
+                                <div class="service-stat">
+                                    <div class="service-stat-number">5</div>
+                                    <div class="service-stat-label">Waiting</div>
+                                </div>
+                                <div class="service-stat">
+                                    <div class="service-stat-number">1</div>
+                                    <div class="service-stat-label">Notified</div>
+                                </div>
+                                <div class="service-stat">
+                                    <div class="service-stat-number">3</div>
+                                    <div class="service-stat-label">Booked</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="service-card-header">
+                                <div class="service-card-title">Hair Treatment</div>
+                                <div class="service-toggle">
+                                    <input type="checkbox" id="toggle-treatment" onchange="toggleService('treatment')">
+                                    <label for="toggle-treatment">Enable waiting list</label>
+                                </div>
+                            </div>
+                            <div class="service-stats">
+                                <div class="service-stat">
+                                    <div class="service-stat-number">0</div>
+                                    <div class="service-stat-label">Waiting</div>
+                                </div>
+                                <div class="service-stat">
+                                    <div class="service-stat-number">0</div>
+                                    <div class="service-stat-label">Notified</div>
+                                </div>
+                                <div class="service-stat">
+                                    <div class="service-stat-number">0</div>
+                                    <div class="service-stat-label">Booked</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Waiting List Table -->
+                <div class="waiting-list-table">
+                    <div class="table-header">
+                        <h3>Waiting List Customers</h3>
+                        <div class="table-actions">
+                            <button class="btn-action secondary" onclick="exportWaitingList()">
+                                <i class="fas fa-download"></i> Export CSV
+                            </button>
+                            <button class="btn-action primary" onclick="refreshWaitingList()">
+                                <i class="fas fa-sync"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Service</th>
+                                    <th>Date Added</th>
+                                    <th>Status</th>
+                                    <th>Last Notification</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="waitingListTable">
+                                <tr>
+                                    <td>Sarah J.</td>
+                                    <td>Haircut & Style</td>
+                                    <td>14 Dec 2024</td>
+                                    <td><span class="status-badge active">active</span></td>
+                                    <td>Never</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-action secondary" onclick="viewCustomer('sarah')">View</button>
+                                            <button class="btn-action primary" onclick="removeCustomer('sarah')">Remove</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Mike R.</td>
+                                    <td>Haircut & Style</td>
+                                    <td>13 Dec 2024</td>
+                                    <td><span class="status-badge notified">notified</span></td>
+                                    <td>14 Dec 2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-action secondary" onclick="viewCustomer('mike')">View</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Emma L.</td>
+                                    <td>Haircut & Style</td>
+                                    <td>12 Dec 2024</td>
+                                    <td><span class="status-badge booked">booked</span></td>
+                                    <td>13 Dec 2024</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-action secondary" onclick="viewCustomer('emma')">View</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'premium';
+        let waitingCustomers = 12;
+        let activeOffers = 2;
+        let accepted = 8;
+        let expired = 3;
+
+        function showPremiumDemo() {
+            currentMode = 'premium';
+            document.getElementById('accessBanner').classList.add('hidden');
+            document.getElementById('premiumContent').classList.remove('hidden');
+            updateStats();
+        }
+
+        function showBasicDemo() {
+            currentMode = 'basic';
+            document.getElementById('accessBanner').classList.remove('hidden');
+            document.getElementById('premiumContent').classList.add('hidden');
+        }
+
+        function addWaitingCustomers() {
+            if (currentMode === 'basic') {
+                alert('Waiting list features are only available for premium businesses. Upgrade to access this feature.');
+                return;
+            }
+            
+            waitingCustomers += 2;
+            updateStats();
+            addTableRow();
+            alert('Added 2 new customers to waiting list!');
+        }
+
+        function createOffer() {
+            if (currentMode === 'basic') {
+                alert('Waiting list features are only available for premium businesses. Upgrade to access this feature.');
+                return;
+            }
+            
+            activeOffers += 1;
+            updateStats();
+            alert('Created new waiting list offer! Customer will be notified via email and SMS.');
+        }
+
+        function toggleService(serviceId) {
+            if (currentMode === 'basic') {
+                alert('Waiting list features are only available for premium businesses. Upgrade to access this feature.');
+                return;
+            }
+            
+            const checkbox = document.getElementById(`toggle-${serviceId}`);
+            const message = checkbox.checked ? 'Waiting list enabled' : 'Waiting list disabled';
+            alert(`${message} for ${serviceId === 'haircut' ? 'Haircut & Style' : 'Hair Treatment'}`);
+        }
+
+        function updateStats() {
+            document.getElementById('totalWaiting').textContent = waitingCustomers;
+            document.getElementById('activeOffers').textContent = activeOffers;
+            document.getElementById('accepted').textContent = accepted;
+            document.getElementById('expired').textContent = expired;
+        }
+
+        function addTableRow() {
+            const table = document.getElementById('waitingListTable');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>New Customer</td>
+                <td>Haircut & Style</td>
+                <td>${new Date().toLocaleDateString()}</td>
+                <td><span class="status-badge active">active</span></td>
+                <td>Never</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-action secondary" onclick="viewCustomer('new')">View</button>
+                        <button class="btn-action primary" onclick="removeCustomer('new')">Remove</button>
+                    </div>
+                </td>
+            `;
+            table.appendChild(newRow);
+        }
+
+        function viewCustomer(customerId) {
+            alert(`Viewing customer details for ${customerId} (masked for privacy)`);
+        }
+
+        function removeCustomer(customerId) {
+            if (confirm('Are you sure you want to remove this customer from the waiting list?')) {
+                alert(`Customer ${customerId} removed from waiting list`);
+                waitingCustomers--;
+                updateStats();
+            }
+        }
+
+        function exportWaitingList() {
+            alert('Waiting list exported to CSV (with masked customer data)');
+        }
+
+        function refreshWaitingList() {
+            alert('Waiting list refreshed');
+        }
+
+        function upgradeToPremium() {
+            alert('Redirecting to upgrade page...');
+        }
+
+        function resetDemo() {
+            waitingCustomers = 12;
+            activeOffers = 2;
+            accepted = 8;
+            expired = 3;
+            updateStats();
+            alert('Demo reset to initial state');
+        }
+
+        // Initialize demo
+        updateStats();
+    </script>
+</body>
+</html>
+

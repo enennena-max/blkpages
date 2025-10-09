@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contextual Dashboard Banners Demo - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #10B981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .demo-title {
+            text-align: center;
+            padding: 3rem 0 2rem;
+        }
+        
+        .demo-title h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #10B981, #3B82F6, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .demo-title p {
+            font-size: 1.2rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Demo Controls */
+        .demo-controls {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .controls-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .controls-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .controls-header p {
+            color: #cccccc;
+        }
+        
+        .control-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #3B82F6, #2563EB);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .control-btn.warning {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+        }
+        
+        .control-btn.warning:hover {
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);
+        }
+        
+        .control-btn.danger {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+        }
+        
+        .control-btn.danger:hover {
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+        }
+        
+        .control-btn.success {
+            background: linear-gradient(135deg, #10B981, #059669);
+        }
+        
+        .control-btn.success:hover {
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .control-btn.purple {
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+        }
+        
+        .control-btn.purple:hover {
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+        }
+        
+        .clear-all-btn {
+            background: linear-gradient(135deg, #6B7280, #4B5563);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .clear-all-btn:hover {
+            background: linear-gradient(135deg, #4B5563, #374151);
+        }
+        
+        /* Dashboard Demo */
+        .dashboard-demo {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .demo-header p {
+            color: #cccccc;
+        }
+        
+        /* Contextual Dashboard Banners */
+        .contextual-banners-container {
+            margin-bottom: 2rem;
+        }
+        
+        .contextual-banner {
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid;
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .banner-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .banner-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .banner-text {
+            flex: 1;
+        }
+        
+        .banner-text h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .banner-text p {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+        
+        .btn-dismiss {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-dismiss:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        /* Banner Types */
+        .banner-waiting-list {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .banner-waiting-list .banner-text h3 {
+            color: #3b82f6;
+        }
+        
+        .banner-waiting-list .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        .banner-sms-credits {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        
+        .banner-sms-credits .banner-text h3 {
+            color: #f59e0b;
+        }
+        
+        .banner-sms-credits .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        .banner-payment-failure {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        
+        .banner-payment-failure .banner-text h3 {
+            color: #ef4444;
+        }
+        
+        .banner-payment-failure .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        .banner-review-request {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .banner-review-request .banner-text h3 {
+            color: #10b981;
+        }
+        
+        .banner-review-request .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        .banner-privacy-reminder {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+        
+        .banner-privacy-reminder .banner-text h3 {
+            color: #8b5cf6;
+        }
+        
+        .banner-privacy-reminder .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        /* Button Styles */
+        .btn-accept {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-accept:hover {
+            background: #059669;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e5e7eb;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .demo-title h1 {
+                font-size: 2rem;
+            }
+            
+            .banner-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .banner-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .contextual-banner {
+                padding: 1rem;
+            }
+            
+            .banner-text h3 {
+                font-size: 1rem;
+            }
+            
+            .banner-text p {
+                font-size: 0.9rem;
+            }
+            
+            .control-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">BlkPages</div>
+                <div>
+                    <a href="../index.html" style="color: #10B981; text-decoration: none; font-weight: 600;">
+                        <i class="fas fa-home"></i> Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Demo Title -->
+        <div class="demo-title">
+            <h1>Contextual Dashboard Banners</h1>
+            <p>Interactive demo showcasing smart notification banners for customer and business dashboards. SMS credits warnings appear only on business dashboards.</p>
+        </div>
+
+        <!-- Demo Controls -->
+        <div class="demo-controls">
+            <div class="controls-header">
+                <h2>Banner Controls</h2>
+                <p>Click buttons to show different banner types and test interactions</p>
+            </div>
+            
+            <div class="control-buttons">
+                <button class="control-btn" onclick="showBanner('waitingListBanner')">
+                    <i class="fas fa-clock"></i> Waiting List Offer
+                </button>
+                <button class="control-btn warning" onclick="showBanner('smsCreditsBanner')">
+                    <i class="fas fa-mobile-alt"></i> Low SMS Credits (Business Only)
+                </button>
+                <button class="control-btn danger" onclick="showBanner('paymentFailureBanner')">
+                    <i class="fas fa-credit-card"></i> Payment Failed
+                </button>
+                <button class="control-btn success" onclick="showBanner('reviewRequestBanner')">
+                    <i class="fas fa-star"></i> Review Request
+                </button>
+                <button class="control-btn purple" onclick="showBanner('privacyReminderBanner')">
+                    <i class="fas fa-shield-alt"></i> Privacy Reminder
+                </button>
+            </div>
+            
+            <button class="clear-all-btn" onclick="clearAllBanners()">
+                <i class="fas fa-trash"></i> Clear All Banners
+            </button>
+        </div>
+
+        <!-- Dashboard Demo -->
+        <div class="dashboard-demo">
+            <div class="demo-header">
+                <h2>Live Banner Demo</h2>
+                <p>Banners appear below with smooth animations and interactive controls</p>
+            </div>
+            
+            <!-- Contextual Dashboard Banners -->
+            <div id="contextualBanners" class="contextual-banners-container">
+                <!-- Waiting List Offer Banner -->
+                <div class="contextual-banner banner-waiting-list" id="waitingListBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">💬</div>
+                        <div class="banner-text">
+                            <h3>Waiting List Offer</h3>
+                            <p>A slot opened at <strong>Royal Hair Studio</strong> for <strong>Haircut & Style</strong> on <strong>Friday, 15 Dec at 2:00 PM</strong>. This offer expires in <strong>1h 23m</strong>.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-accept" onclick="acceptWaitingListOffer()">Accept Offer</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('waitingListBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Low SMS Credits Banner -->
+                <div class="contextual-banner banner-sms-credits" id="smsCreditsBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">⚠️</div>
+                        <div class="banner-text">
+                            <h3>Low SMS Credits</h3>
+                            <p>You have <strong>8 SMS credits</strong> remaining (16% of monthly allowance). Consider purchasing add-ons to avoid service interruptions.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-primary" onclick="purchaseSMSCredits()">Buy Credits</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('smsCreditsBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Failure Banner -->
+                <div class="contextual-banner banner-payment-failure" id="paymentFailureBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">❌</div>
+                        <div class="banner-text">
+                            <h3>Payment Failed</h3>
+                            <p>Your payment for <strong>£29.00</strong> failed on <strong>12 Dec 2024</strong>. Please update your payment method to avoid service interruption.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-primary" onclick="updatePaymentMethod()">Update Payment</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('paymentFailureBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Review Request Banner -->
+                <div class="contextual-banner banner-review-request" id="reviewRequestBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">💬</div>
+                        <div class="banner-text">
+                            <h3>Leave a Review</h3>
+                            <p>How was your experience at <strong>Royal Hair Studio</strong>? Your feedback helps other customers and supports local businesses.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-primary" onclick="writeReview()">Write Review</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('reviewRequestBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Privacy Reminder Banner -->
+                <div class="contextual-banner banner-privacy-reminder" id="privacyReminderBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">🔐</div>
+                        <div class="banner-text">
+                            <h3>Privacy Reminder</h3>
+                            <p>Your personal data is protected. You can download your data or delete your account anytime in <strong>Account Settings</strong>.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-secondary" onclick="openAccountSettings()">Account Settings</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('privacyReminderBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3>Smart Notifications</h3>
+                <p>Contextual banners appear based on user status, events, and system conditions. Each banner is tailored to the specific user type and situation.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Responsive Design</h3>
+                <p>Banners adapt perfectly to desktop and mobile devices with optimized layouts, touch-friendly buttons, and appropriate sizing for all screen sizes.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h3>Visual Design</h3>
+                <p>Color-coded banners with clear icons, smooth animations, and consistent styling that matches the existing dashboard design language.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h3>Interactive Controls</h3>
+                <p>Dismissible banners with action buttons, smooth animations, and user-friendly interactions that enhance the overall dashboard experience.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Banner Management Functions
+        function showBanner(bannerId) {
+            const banner = document.getElementById(bannerId);
+            if (banner) {
+                banner.style.display = 'block';
+                banner.style.animation = 'slideIn 0.3s ease-out';
+            }
+        }
+        
+        function dismissBanner(bannerId) {
+            const banner = document.getElementById(bannerId);
+            if (banner) {
+                banner.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                }, 300);
+            }
+        }
+        
+        function clearAllBanners() {
+            const banners = document.querySelectorAll('.contextual-banner');
+            banners.forEach(banner => {
+                banner.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                }, 300);
+            });
+        }
+        
+        // Banner Action Functions
+        function acceptWaitingListOffer() {
+            console.log('Accepting waiting list offer...');
+            alert('✅ Waiting list offer accepted! Redirecting to booking...');
+            dismissBanner('waitingListBanner');
+        }
+        
+        function purchaseSMSCredits() {
+            console.log('Opening SMS credits purchase...');
+            alert('💳 Opening SMS credits purchase page...');
+            dismissBanner('smsCreditsBanner');
+        }
+        
+        function updatePaymentMethod() {
+            console.log('Opening payment method update...');
+            alert('💳 Opening payment method update...');
+            dismissBanner('paymentFailureBanner');
+        }
+        
+        function writeReview() {
+            console.log('Opening review form...');
+            alert('⭐ Opening review form...');
+            dismissBanner('reviewRequestBanner');
+        }
+        
+        function openAccountSettings() {
+            console.log('Opening account settings...');
+            alert('⚙️ Opening account settings...');
+            dismissBanner('privacyReminderBanner');
+        }
+        
+        // Add slideOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOut {
+                from {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Contextual Banners Demo Loaded');
+            
+            // Show welcome message
+            setTimeout(() => {
+                console.log('Demo ready! Click the control buttons to test different banner types.');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

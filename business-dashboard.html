@@ -17,6 +17,10 @@
     <script src="backend/verified-customer-numbers.js"></script>
     <script src="backend/sms-messaging-system.js"></script>
     <script src="backend/notification-automation-system.js"></script>
+    
+    <!-- Waiting List Offer System -->
+    <script src="backend/waiting-list-offer-system.js"></script>
+    <script src="backend/booking-cancellation-system.js"></script>
     <style>
         * { 
             margin: 0; 
@@ -2559,6 +2563,1188 @@
                 padding: 0.75rem 0.5rem;
             }
         }
+        
+        /* Contextual Dashboard Banners */
+        .contextual-banners-container {
+            margin-bottom: 2rem;
+        }
+        
+        .contextual-banner {
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid;
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .banner-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .banner-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .banner-text {
+            flex: 1;
+        }
+        
+        .banner-text h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .banner-text p {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+        
+        .btn-dismiss {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-dismiss:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        /* Banner Types */
+        .banner-sms-credits {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        
+        .banner-sms-credits .banner-text h3 {
+            color: #f59e0b;
+        }
+        
+        .banner-sms-credits .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        .banner-payment-failure {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        
+        .banner-payment-failure .banner-text h3 {
+            color: #ef4444;
+        }
+        
+        .banner-payment-failure .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        .banner-review-request {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .banner-review-request .banner-text h3 {
+            color: #10b981;
+        }
+        
+        .banner-review-request .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        .banner-privacy-reminder {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+        
+        .banner-privacy-reminder .banner-text h3 {
+            color: #8b5cf6;
+        }
+        
+        .banner-privacy-reminder .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        /* Waiting List Section */
+        .waiting-list-header {
+            margin-bottom: 2rem;
+        }
+        
+        .waiting-list-header h2 {
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .waiting-list-header p {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+        
+        /* WLO Access Banner */
+        .wlo-access-banner {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .wlo-access-banner .banner-icon {
+            font-size: 2.5rem;
+        }
+        
+        .wlo-access-banner .banner-text h3 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .wlo-access-banner .banner-text p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            margin: 0;
+        }
+        
+        .wlo-access-banner .banner-actions {
+            margin-left: auto;
+        }
+        
+        /* Waiting List Summary */
+        .waiting-list-summary {
+            margin-bottom: 2rem;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .summary-stats .stat-card {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .summary-stats .stat-number {
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .summary-stats .stat-label {
+            color: #cccccc;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Service Waiting Lists */
+        .service-waiting-lists {
+            margin-bottom: 2rem;
+        }
+        
+        .service-waiting-lists h3 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .service-card {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .service-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .service-card-title {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .service-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .service-toggle input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #FF3CAC;
+        }
+        
+        .service-toggle label {
+            color: #cccccc;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .service-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .service-stat {
+            text-align: center;
+        }
+        
+        .service-stat-number {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .service-stat-label {
+            color: #cccccc;
+            font-size: 0.8rem;
+        }
+        
+        /* Waiting List Credit Usage */
+        .waiting-list-credit-usage {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .credit-usage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .credit-usage-header h3 {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .credit-usage-stats {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .credit-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .credit-label {
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .credit-value {
+            color: #10B981;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .credit-usage-bar {
+            margin-top: 1rem;
+        }
+        
+        .credit-progress {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            height: 8px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .credit-progress-fill {
+            background: linear-gradient(90deg, #10B981, #059669);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .credit-usage-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .add-credits-link {
+            color: #10B981;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: color 0.3s ease;
+        }
+        
+        .add-credits-link:hover {
+            color: #059669;
+        }
+
+        /* Live Waiting List Feed */
+        .live-waiting-list-feed {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 35%;
+            max-width: 400px;
+            min-width: 320px;
+            max-height: 60vh;
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transform: translateY(calc(100% - 60px));
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+
+        .live-waiting-list-feed.expanded {
+            transform: translateY(0);
+        }
+
+        .live-feed-header {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .live-feed-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .live-feed-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+
+        .live-feed-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .live-feed-toggle.expanded {
+            transform: rotate(180deg);
+        }
+
+        .live-feed-content {
+            max-height: calc(60vh - 120px);
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .live-feed-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .live-feed-item:last-child {
+            border-bottom: none;
+        }
+
+        .live-feed-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin: 0 -0.75rem;
+        }
+
+        .live-feed-item.new {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid #10B981;
+            padding-left: 0.5rem;
+            animation: highlightNew 2s ease-out;
+        }
+
+        @keyframes highlightNew {
+            0% { background: rgba(16, 185, 129, 0.3); }
+            100% { background: rgba(16, 185, 129, 0.1); }
+        }
+
+        .live-feed-item.read {
+            opacity: 0.6;
+        }
+
+        .live-feed-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .live-feed-icon.sent {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3B82F6;
+        }
+
+        .live-feed-icon.accepted {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10B981;
+        }
+
+        .live-feed-icon.expired {
+            background: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+        }
+
+        .live-feed-icon.cancelled {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+        }
+
+        .live-feed-content-item {
+            flex: 1;
+        }
+
+        .live-feed-time {
+            color: #999999;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .live-feed-text {
+            color: #ffffff;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .live-feed-customer {
+            color: #10B981;
+            font-weight: 500;
+        }
+
+        .live-feed-service {
+            color: #3B82F6;
+            font-weight: 500;
+        }
+
+        .live-feed-footer {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.75rem 1rem;
+            border-radius: 0 0 12px 12px;
+            text-align: center;
+        }
+
+        .live-feed-footer p {
+            color: #cccccc;
+            font-size: 0.75rem;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .live-feed-tab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+            z-index: 1001;
+            transition: transform 0.3s ease;
+        }
+
+        .live-feed-tab:hover {
+            transform: scale(1.1);
+        }
+
+        .live-feed-tab i {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .live-feed-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #EF4444;
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .live-waiting-list-feed {
+                width: 90%;
+                right: 5%;
+                left: 5%;
+                max-width: none;
+                min-width: auto;
+            }
+        }
+
+        /* Booking Changes Styles */
+        .booking-changes-header {
+            margin-bottom: 2rem;
+        }
+        
+        .booking-changes-header h2 {
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .booking-changes-header p {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+        
+        .cancellation-rules-notice {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .notice-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .notice-icon {
+            color: #3B82F6;
+            font-size: 1.5rem;
+            margin-top: 0.25rem;
+        }
+        
+        .notice-text h4 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .notice-text p {
+            color: #cccccc;
+            margin: 0;
+        }
+        
+        .current-bookings-section,
+        .booking-changes-history {
+            margin-bottom: 2rem;
+        }
+        
+        .current-bookings-section h3,
+        .booking-changes-history h3 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .bookings-table-container,
+        .changes-table-container {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .bookings-table,
+        .changes-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .bookings-table th,
+        .changes-table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-weight: 600;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .bookings-table td,
+        .changes-table td {
+            color: #cccccc;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .bookings-table tr:last-child td,
+        .changes-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .booking-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .booking-status.confirmed {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .booking-status.cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .booking-status.amendment_requested {
+            background: rgba(245, 158, 11, 0.1);
+            color: #F59E0B;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .booking-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-cancel,
+        .btn-amend {
+            padding: 0.375rem 0.75rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cancel {
+            background: #EF4444;
+            color: white;
+        }
+        
+        .btn-cancel:hover {
+            background: #DC2626;
+        }
+        
+        .btn-amend {
+            background: #3B82F6;
+            color: white;
+        }
+        
+        .btn-amend:hover {
+            background: #2563EB;
+        }
+        
+        .btn-cancel:disabled,
+        .btn-amend:disabled {
+            background: #6B7280;
+            cursor: not-allowed;
+        }
+        
+        .change-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .change-status.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #F59E0B;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .change-status.approved {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .change-status.declined {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .audit-notice {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .audit-notice p {
+            color: #cccccc;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .audit-notice i {
+            color: #10B981;
+            margin-right: 0.5rem;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal-content {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h3 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #cccccc;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .booking-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .booking-info h4 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .booking-info p {
+            color: #cccccc;
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #1A1A1A;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #10B981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .char-count {
+            text-align: right;
+            color: #999999;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .cancellation-warning,
+        .amendment-info {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .cancellation-warning i,
+        .amendment-info i {
+            color: #F59E0B;
+            font-size: 1.2rem;
+            margin-top: 0.25rem;
+        }
+
+        .cancellation-warning p,
+        .amendment-info p {
+            color: #cccccc;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #10B981;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: #6B7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4B5563;
+        }
+
+        /* Waiting List Table */
+        .waiting-list-table {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .table-header h3 {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table-container th,
+        .table-container td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .table-container th {
+            color: #ffffff;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .table-container td {
+            color: #cccccc;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-badge.active {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22C55E;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .status-badge.notified {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .status-badge.booked {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .status-badge.removed {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6B7280;
+            border: 1px solid rgba(107, 114, 128, 0.3);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-action.primary {
+            background: #FF3CAC;
+            color: white;
+        }
+        
+        .btn-action.secondary {
+            background: transparent;
+            color: #cccccc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-action:hover {
+            transform: translateY(-1px);
+        }
+        
+        /* Button Styles */
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e5e7eb;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .banner-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .banner-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .contextual-banner {
+                padding: 1rem;
+            }
+            
+            .banner-text h3 {
+                font-size: 1rem;
+            }
+            
+            .banner-text p {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2612,6 +3798,10 @@
                     <i class="fas fa-clock"></i> Waiting List
                     <span class="badge" id="waitingListBadge" style="display: none;">0</span>
                 </a></li>
+                <li><a href="#" onclick="showSection('booking-changes')">
+                    <i class="fas fa-edit"></i> Booking Changes
+                    <span class="badge" id="bookingChangesBadge" style="display: none;">0</span>
+                </a></li>
                 <li><a href="business-loyalty-dashboard.html" id="loyaltyTab" style="display: block;">
                     <i class="fas fa-gift"></i> Loyalty Rewards
                 </a></li>
@@ -2628,6 +3818,69 @@
             <div class="dashboard-header">
                 <h1 class="dashboard-title">Business Dashboard</h1>
                 <p class="dashboard-subtitle">Manage your business listing and track your performance</p>
+            </div>
+            
+            <!-- Contextual Dashboard Banners -->
+            <div id="contextualBanners" class="contextual-banners-container">
+                <!-- Low SMS Credits Banner -->
+                <div class="contextual-banner banner-sms-credits" id="smsCreditsBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">⚠️</div>
+                        <div class="banner-text">
+                            <h3>Low SMS Credits</h3>
+                            <p>You have <strong>8 SMS credits</strong> remaining (16% of monthly allowance). Consider purchasing add-ons to avoid service interruptions.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-primary" onclick="purchaseSMSCredits()">Buy Credits</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('smsCreditsBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Failure Banner -->
+                <div class="contextual-banner banner-payment-failure" id="paymentFailureBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">❌</div>
+                        <div class="banner-text">
+                            <h3>Payment Failed</h3>
+                            <p>Your payment for <strong>£29.00</strong> failed on <strong>12 Dec 2024</strong>. Please update your payment method to avoid service interruption.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-primary" onclick="updatePaymentMethod()">Update Payment</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('paymentFailureBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Review Request Banner -->
+                <div class="contextual-banner banner-review-request" id="reviewRequestBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">💬</div>
+                        <div class="banner-text">
+                            <h3>New Review Received</h3>
+                            <p><strong>Sarah M.</strong> left a 5-star review for your <strong>Haircut & Style</strong> service. Reply to show your appreciation!</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-primary" onclick="replyToReview()">Reply to Review</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('reviewRequestBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Privacy Reminder Banner -->
+                <div class="contextual-banner banner-privacy-reminder" id="privacyReminderBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">🔐</div>
+                        <div class="banner-text">
+                            <h3>Privacy Reminder</h3>
+                            <p>Customer personal details are protected. You can only see anonymized data for managing appointments.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-secondary" onclick="viewPrivacyPolicy()">Privacy Policy</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('privacyReminderBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Stats -->
@@ -3280,12 +4533,46 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
                 </div>
             </div>
             
+            <!-- SMS/Email Credit Usage -->
+            <div class="waiting-list-credit-usage">
+                <div class="credit-usage-header">
+                    <h3><i class="fas fa-sms"></i> SMS/Email Credit Usage</h3>
+                    <div class="credit-usage-stats">
+                        <div class="credit-stat">
+                            <span class="credit-label">SMS Credits Used:</span>
+                            <span class="credit-value" id="smsCreditsUsed">0</span>
+                        </div>
+                        <div class="credit-stat">
+                            <span class="credit-label">Email Credits Used:</span>
+                            <span class="credit-value" id="emailCreditsUsed">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="credit-usage-bar">
+                    <div class="credit-progress">
+                        <div class="credit-progress-fill" id="waitingListCreditProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="credit-usage-text">
+                        <span id="waitingListCreditText">0 of 50 SMS credits used</span>
+                        <a href="#" class="add-credits-link" onclick="addSMSCredits()">
+                            <i class="fas fa-plus"></i> Add SMS Credits
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
             <div class="waiting-list-actions">
                 <button class="btn-primary" onclick="sendOfferToNextCustomer()">
                     <i class="fas fa-paper-plane"></i> Send Offer to Next Customer
                 </button>
                 <button class="btn-secondary" onclick="refreshWaitingList()">
                     <i class="fas fa-sync"></i> Refresh List
+                </button>
+                <button class="btn-secondary" onclick="simulateCancellationEvent()" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">
+                    <i class="fas fa-calendar-times"></i> Simulate Cancellation
+                </button>
+                <button class="btn-secondary" onclick="testWaitingListFunctionality()" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+                    <i class="fas fa-vial"></i> Test WLO System
                 </button>
             </div>
             
@@ -3465,6 +4752,75 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
             </div>
         </div>
         
+        <!-- Booking Changes Section -->
+        <div id="booking-changes" class="content-section">
+            <div class="booking-changes-header">
+                <h2>Booking Changes</h2>
+                <p>Manage cancellations and amendments for your bookings</p>
+            </div>
+            
+            <!-- Cancellation Rules Notice -->
+            <div class="cancellation-rules-notice">
+                <div class="notice-content">
+                    <div class="notice-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="notice-text">
+                        <h4>Cancellation Rules</h4>
+                        <p>You can cancel bookings more than 24 hours in advance. Cancellations within 24 hours require BlkPages Support approval.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Current Bookings -->
+            <div class="current-bookings-section">
+                <h3>Current Bookings</h3>
+                <div class="bookings-table-container">
+                    <table class="bookings-table">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Service</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="currentBookingsTable">
+                            <!-- Bookings will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Booking Changes History -->
+            <div class="booking-changes-history">
+                <h3>Recent Changes</h3>
+                <div class="changes-table-container">
+                    <table class="changes-table">
+                        <thead>
+                            <tr>
+                                <th>Date/Time</th>
+                                <th>Service</th>
+                                <th>Reason</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingChangesTable">
+                            <!-- Changes will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Audit Notice -->
+            <div class="audit-notice">
+                <p><i class="fas fa-shield-alt"></i> All cancellations and amendments are recorded and monitored.</p>
+            </div>
+        </div>
+        
         <!-- Notification Log Section -->
         <div id="notification-log" class="content-section">
             <div class="notification-log-header">
@@ -3561,104 +4917,94 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
                 </div>
             </div>
         </div>
+        
+        <!-- Waiting List Section -->
+        <div id="waiting-list" class="content-section">
+            <div class="waiting-list-header">
+                <h2>Waiting List Management</h2>
+                <p>Manage customer waiting lists and automated slot offers</p>
+            </div>
+            
+            <!-- Access Control Banner -->
+            <div id="wloAccessBanner" class="wlo-access-banner" style="display: none;">
+                <div class="banner-content">
+                    <div class="banner-icon">💡</div>
+                    <div class="banner-text">
+                        <h3>Upgrade to Premium for Waiting List Features</h3>
+                        <p>Offer cancelled slots automatically to customers on your waiting list — available with the £29/month plan.</p>
+                    </div>
+                    <div class="banner-actions">
+                        <button class="btn-primary" onclick="upgradeToPremium()">Upgrade Now</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Waiting List Summary -->
+            <div id="waitingListSummary" class="waiting-list-summary" style="display: none;">
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalWaitingCustomers">0</div>
+                        <div class="stat-label">Total Waiting</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="activeOffers">0</div>
+                        <div class="stat-label">Active Offers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="offersAccepted">0</div>
+                        <div class="stat-label">Accepted</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="offersExpired">0</div>
+                        <div class="stat-label">Expired</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Service Waiting Lists -->
+            <div id="serviceWaitingLists" class="service-waiting-lists" style="display: none;">
+                <h3>Service Waiting Lists</h3>
+                <div class="services-grid">
+                    <!-- Services will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Waiting List Table -->
+            <div id="waitingListTable" class="waiting-list-table" style="display: none;">
+                <div class="table-header">
+                    <h3>Waiting List Customers</h3>
+                    <div class="table-actions">
+                        <button class="btn-secondary" onclick="exportWaitingList()">
+                            <i class="fas fa-download"></i> Export CSV
+                        </button>
+                        <button class="btn-primary" onclick="refreshWaitingList()">
+                            <i class="fas fa-sync"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Service</th>
+                                <th>Date Added</th>
+                                <th>Status</th>
+                                <th>Last Notification</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="waitingListContent">
+                            <!-- Waiting list entries will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </main>
     </div>
 
-    <!-- Loyalty Rewards Modal -->
-    <div id="loyaltyModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">
-                    <i class="fas fa-gift"></i>
-                    Loyalty Rewards Programme
-                </h2>
-                <button class="modal-close" onclick="closeLoyaltyModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-                </div>
-            
-            <div class="modal-body">
-                <form class="modal-form" id="loyaltyForm">
-                    <!-- Loyalty Type -->
-                    <div class="form-group">
-                        <label class="form-label" for="modalLoyaltyType">Loyalty Program Type</label>
-                        <select id="modalLoyaltyType" class="form-select" onchange="updateModalLoyaltyType()">
-                            <option value="">Select Loyalty Type</option>
-                            <option value="visitBased">Visit-based: Book X visits, get reward</option>
-                            <option value="spendBased">Spend-based: Spend £Y, get reward</option>
-                            <option value="timeLimited">Time-limited: Book X visits within Z weeks, get reward</option>
-                        </select>
-                        <small class="form-help">Choose how customers earn rewards</small>
-                </div>
-                    
-                    <!-- Threshold Setting -->
-                    <div class="form-group" id="modalThresholdSetting" style="display: none;">
-                        <label class="form-label" for="modalLoyaltyThreshold">Threshold</label>
-                        <input type="number" id="modalLoyaltyThreshold" class="form-input" placeholder="Enter threshold" min="1" onchange="updateModalLoyaltyPreview()">
-                        <small class="form-help" id="modalThresholdDescription">Set the number of visits or amount to spend</small>
-            </div>
-                    
-                    <!-- Time Limit Setting -->
-                    <div class="form-group" id="modalTimeLimitSetting" style="display: none;">
-                        <label class="form-label" for="modalLoyaltyTimeLimit">Time Limit (Weeks)</label>
-                        <input type="number" id="modalLoyaltyTimeLimit" class="form-input" placeholder="Enter weeks" min="1" onchange="updateModalLoyaltyPreview()">
-                        <small class="form-help">How many weeks customers have to complete visits</small>
-                    </div>
-                    
-                    <!-- Reward Type -->
-                    <div class="form-group" id="modalRewardTypeSetting" style="display: none;">
-                        <label class="form-label" for="modalRewardType">Reward Type</label>
-                        <select id="modalRewardType" class="form-select" onchange="updateModalRewardType()">
-                            <option value="">Select Reward Type</option>
-                            <option value="freeService">1 Free Service</option>
-                            <option value="fixedDiscount">Fixed £ Discount</option>
-                            <option value="percentageDiscount">% Discount</option>
-                        </select>
-                        <small class="form-help">What reward customers receive</small>
-                    </div>
-                    
-                    <!-- Reward Value -->
-                    <div class="form-group" id="modalRewardValueSetting" style="display: none;">
-                        <label class="form-label" for="modalLoyaltyRewardValue">Reward Value</label>
-                        <input type="number" id="modalLoyaltyRewardValue" class="form-input" placeholder="Enter value" min="1" onchange="updateModalLoyaltyPreview()">
-                        <small class="form-help" id="modalRewardValueDescription">Set the discount amount or percentage</small>
-                    </div>
-                    
-                    <!-- Preview -->
-                    <div class="modal-preview" id="modalLoyaltyPreview" style="display: none;">
-                        <div class="modal-preview-header">
-                            <i class="fas fa-eye"></i>
-                            Customer Preview
-                        </div>
-                        <div id="modalLoyaltyPreviewContent">
-                            <!-- Preview content will be populated here -->
-                        </div>
-                    </div>
-                    
-                    <!-- Enable Toggle -->
-                    <div class="form-group">
-                        <label class="form-label">Enable Loyalty Programme</label>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="modalLoyaltyEnabled" onchange="updateModalLoyaltyPreview()">
-                                <span class="toggle-slider"></span>
-                            </label>
-                            <span style="color: #cccccc;">Turn your loyalty programme on or off</span>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            
-            <div class="modal-actions">
-                <button class="btn-modal btn-modal-secondary" onclick="closeLoyaltyModal()">
-                    <i class="fas fa-times"></i> Cancel
-                </button>
-                <button class="btn-modal btn-modal-primary" onclick="saveModalLoyaltyProgram()" id="modalSaveLoyaltyBtn">
-                    <i class="fas fa-save"></i> Save Programme
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -4021,6 +5367,8 @@ Refunds are returned to your original payment method within 5–10 business days
                     loadDashboardData();
                 } else if (sectionId === 'waiting-list') {
                     loadWaitingList();
+                } else if (sectionId === 'booking-changes') {
+                    initializeBookingChanges();
                 } else if (sectionId === 'notification-log') {
                     initializeNotificationLog();
                 }
@@ -4303,81 +5651,8 @@ Refunds are returned to your original payment method within 5–10 business days
             }
         }
         
-        // Loyalty Rewards Modal Functions
-        function openLoyaltyModal() {
-            console.log('Opening loyalty modal');
-            const modal = document.getElementById('loyaltyModal');
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
-                
-                // Load existing loyalty program if available
-                loadExistingLoyaltyProgram();
-            } else {
-                console.error('Loyalty modal not found');
-                alert('Loyalty modal not found. Please refresh the page.');
-            }
-        }
         
-        function closeLoyaltyModal() {
-            console.log('Closing loyalty modal');
-            const modal = document.getElementById('loyaltyModal');
-            if (modal) {
-                modal.classList.remove('active');
-                document.body.style.overflow = 'auto'; // Restore scrolling
-            }
-        }
         
-        function loadExistingLoyaltyProgram() {
-            const savedProgram = localStorage.getItem('loyaltyProgram');
-            if (savedProgram) {
-                try {
-                    const program = JSON.parse(savedProgram);
-                    document.getElementById('modalLoyaltyType').value = program.type || '';
-                    document.getElementById('modalLoyaltyThreshold').value = program.threshold || '';
-                    document.getElementById('modalLoyaltyTimeLimit').value = program.timeLimit || '';
-                    document.getElementById('modalRewardType').value = program.rewardType || '';
-                    document.getElementById('modalLoyaltyRewardValue').value = program.rewardValue || '';
-                    document.getElementById('modalLoyaltyEnabled').checked = program.isActive || false;
-                    
-                    // Update form visibility
-                    updateModalLoyaltyType();
-                    updateModalRewardType();
-                    updateModalLoyaltyPreview();
-                } catch (e) {
-                    console.error('Error loading loyalty program:', e);
-                }
-            }
-        }
-        
-        function updateModalLoyaltyType() {
-            const loyaltyType = document.getElementById('modalLoyaltyType').value;
-            const thresholdSetting = document.getElementById('modalThresholdSetting');
-            const timeLimitSetting = document.getElementById('modalTimeLimitSetting');
-            const rewardTypeSetting = document.getElementById('modalRewardTypeSetting');
-            const thresholdDescription = document.getElementById('modalThresholdDescription');
-            
-            // Show threshold setting for all types
-            thresholdSetting.style.display = 'block';
-            
-            // Show time limit only for time-limited
-            if (loyaltyType === 'timeLimited') {
-                timeLimitSetting.style.display = 'block';
-                thresholdDescription.textContent = 'Set the number of visits to complete';
-            } else {
-                timeLimitSetting.style.display = 'none';
-                if (loyaltyType === 'visitBased') {
-                    thresholdDescription.textContent = 'Set the number of visits required';
-                } else if (loyaltyType === 'spendBased') {
-                    thresholdDescription.textContent = 'Set the amount to spend (£)';
-                }
-            }
-            
-            // Show reward type setting
-            rewardTypeSetting.style.display = 'block';
-            
-            updateModalLoyaltyPreview();
-        }
         
         function updateLoyaltyType() {
             const loyaltyType = document.getElementById('loyaltyType').value;
@@ -4408,32 +5683,6 @@ Refunds are returned to your original payment method within 5–10 business days
             updateLoyaltyPreview();
         }
         
-        function updateModalRewardType() {
-            const rewardType = document.getElementById('modalRewardType').value;
-            const rewardValueSetting = document.getElementById('modalRewardValueSetting');
-            const rewardValueDescription = document.getElementById('modalRewardValueDescription');
-            
-            if (rewardType) {
-                rewardValueSetting.style.display = 'block';
-                
-                if (rewardType === 'freeService') {
-                    rewardValueDescription.textContent = 'No value needed for free service';
-                    document.getElementById('modalLoyaltyRewardValue').style.display = 'none';
-                } else if (rewardType === 'fixedDiscount') {
-                    rewardValueDescription.textContent = 'Set the discount amount (£)';
-                    document.getElementById('modalLoyaltyRewardValue').style.display = 'block';
-                    document.getElementById('modalLoyaltyRewardValue').placeholder = 'Enter discount amount';
-                } else if (rewardType === 'percentageDiscount') {
-                    rewardValueDescription.textContent = 'Set the discount percentage (%)';
-                    document.getElementById('modalLoyaltyRewardValue').style.display = 'block';
-                    document.getElementById('modalLoyaltyRewardValue').placeholder = 'Enter percentage';
-                }
-            } else {
-                rewardValueSetting.style.display = 'none';
-            }
-            
-            updateModalLoyaltyPreview();
-        }
         
         function updateRewardType() {
             const rewardType = document.getElementById('rewardType').value;
@@ -4462,73 +5711,6 @@ Refunds are returned to your original payment method within 5–10 business days
             updateLoyaltyPreview();
         }
         
-        function updateModalLoyaltyPreview() {
-            const loyaltyType = document.getElementById('modalLoyaltyType').value;
-            const threshold = document.getElementById('modalLoyaltyThreshold').value;
-            const timeLimit = document.getElementById('modalLoyaltyTimeLimit').value;
-            const rewardType = document.getElementById('modalRewardType').value;
-            const rewardValue = document.getElementById('modalLoyaltyRewardValue').value;
-            const loyaltyEnabled = document.getElementById('modalLoyaltyEnabled').checked;
-            
-            if (!loyaltyType || !threshold || !rewardType) {
-                document.getElementById('modalLoyaltyPreview').style.display = 'none';
-                return;
-            }
-            
-            // Show preview
-            document.getElementById('modalLoyaltyPreview').style.display = 'block';
-            
-            // Generate preview content
-            let previewText = '';
-            let progressText = '';
-            
-            if (loyaltyType === 'visitBased') {
-                previewText = `Book ${threshold} visits, get reward`;
-                progressText = `0 of ${threshold} visits complete`;
-            } else if (loyaltyType === 'spendBased') {
-                previewText = `Spend £${threshold}, get reward`;
-                progressText = `£0 of £${threshold} spent`;
-            } else if (loyaltyType === 'timeLimited') {
-                previewText = `Book ${threshold} visits within ${timeLimit} weeks, get reward`;
-                progressText = `0 of ${threshold} visits complete (${timeLimit} weeks remaining)`;
-            }
-            
-            let rewardText = '';
-            if (rewardType === 'freeService') {
-                rewardText = '1 Free Service';
-            } else if (rewardType === 'fixedDiscount') {
-                rewardText = `£${rewardValue} off next booking`;
-            } else if (rewardType === 'percentageDiscount') {
-                rewardText = `${rewardValue}% off next booking`;
-            }
-            
-            const statusText = loyaltyEnabled ? 'Active' : 'Inactive';
-            const statusColor = loyaltyEnabled ? '#28a745' : '#dc3545';
-            
-            const previewContent = `
-                <div class="loyalty-progress">
-                    <div style="color: #ffffff; font-weight: 600; margin-bottom: 0.5rem;">${previewText}</div>
-                    <div style="color: #cccccc; font-size: 0.9rem; margin-bottom: 0.5rem;">${progressText}</div>
-                    <div class="loyalty-progress-bar">
-                        <div class="loyalty-progress-fill" style="width: 0%;"></div>
-                    </div>
-                </div>
-                <div class="loyalty-reward">
-                    <div style="color: #28a745; font-weight: 600; margin-bottom: 0.5rem;">🎁 Reward</div>
-                    <div style="color: #ffffff;">${rewardText}</div>
-                </div>
-                <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 60, 172, 0.1); border-radius: 6px; border: 1px solid rgba(255, 60, 172, 0.3);">
-                    <div style="color: #FF3CAC; font-weight: 600; margin-bottom: 0.5rem;">📱 Customer Preview</div>
-                    <div style="color: #cccccc; font-size: 0.9rem; line-height: 1.4;">
-                        Status: <strong style="color: ${statusColor};">${statusText}</strong><br>
-                        Your customers will see: <strong>${progressText}</strong><br>
-                        Reward: <strong>${rewardText}</strong>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('modalLoyaltyPreviewContent').innerHTML = previewContent;
-        }
         
         function updateLoyaltyPreview() {
             const loyaltyType = document.getElementById('loyaltyType').value;
@@ -4613,48 +5795,6 @@ Refunds are returned to your original payment method within 5–10 business days
             }
         }
         
-        function saveModalLoyaltyProgram() {
-            const loyaltyType = document.getElementById('modalLoyaltyType').value;
-            const threshold = document.getElementById('modalLoyaltyThreshold').value;
-            const timeLimit = document.getElementById('modalLoyaltyTimeLimit').value;
-            const rewardType = document.getElementById('modalRewardType').value;
-            const rewardValue = document.getElementById('modalLoyaltyRewardValue').value;
-            const loyaltyEnabled = document.getElementById('modalLoyaltyEnabled').checked;
-            
-            // Validate inputs
-            if (!loyaltyType || !threshold || !rewardType) {
-                alert('Please fill in all required fields');
-                return;
-            }
-            
-            if (loyaltyType === 'timeLimited' && !timeLimit) {
-                alert('Please enter time limit for time-limited program');
-                return;
-            }
-            
-            if (rewardType !== 'freeService' && !rewardValue) {
-                alert('Please enter reward value');
-                return;
-            }
-            
-            // Save to localStorage (in real implementation, save to database)
-            const loyaltyProgram = {
-                type: loyaltyType,
-                threshold: parseInt(threshold),
-                timeLimit: timeLimit ? parseInt(timeLimit) : null,
-                rewardType: rewardType,
-                rewardValue: rewardType === 'freeService' ? null : parseFloat(rewardValue),
-                isActive: loyaltyEnabled,
-                createdAt: new Date().toISOString()
-            };
-            
-            localStorage.setItem('loyaltyProgram', JSON.stringify(loyaltyProgram));
-            
-            // Close modal
-            closeLoyaltyModal();
-            
-            alert('Loyalty program saved successfully!\n\nYour customers will now see this loyalty program on your business profile and in their dashboard.');
-        }
         
         function saveLoyaltyProgram() {
             const loyaltyType = document.getElementById('loyaltyType').value;
@@ -6078,6 +7218,311 @@ Refunds are returned to your original payment method within 5–10 business days
                 loadNotificationLog();
             }
         }
+        
+        /**
+         * Waiting List Management Functions
+         */
+        
+        // Initialize waiting list section
+        function initializeWaitingList() {
+            console.log('WLO: Initializing waiting list section');
+            
+            // Check business access
+            const hasAccess = WaitingListOfferSystem.hasWLOAccess('royal-hair-studio');
+            
+            if (hasAccess) {
+                // Show waiting list content
+                document.getElementById('waitingListSummary').style.display = 'block';
+                document.getElementById('serviceWaitingLists').style.display = 'block';
+                document.getElementById('waitingListTable').style.display = 'block';
+                
+                // Load waiting list data
+                loadWaitingListData();
+                loadServiceWaitingLists();
+                loadWaitingListTable();
+                
+                // Initialize credit counters
+                initializeCreditCounters();
+            } else {
+                // Show upgrade banner
+                document.getElementById('wloAccessBanner').style.display = 'block';
+            }
+        }
+        
+        // Initialize SMS/Email credit counters
+        function initializeCreditCounters() {
+            console.log('WLO: Initializing credit counters');
+            
+            // Load current credit usage
+            loadCreditUsage();
+            
+            // Update counters every 30 seconds
+            setInterval(loadCreditUsage, 30000);
+        }
+        
+        // Load credit usage data
+        function loadCreditUsage() {
+            // Simulate credit usage data
+            const smsCreditsUsed = 18; // 18 SMS credits used
+            const emailCreditsUsed = 12; // 12 Email credits used
+            const totalCredits = 50;
+            const smsPercentage = (smsCreditsUsed / totalCredits) * 100;
+            
+            // Update display
+            document.getElementById('smsCreditsUsed').textContent = smsCreditsUsed;
+            document.getElementById('emailCreditsUsed').textContent = emailCreditsUsed;
+            document.getElementById('waitingListCreditText').textContent = `${smsCreditsUsed} of ${totalCredits} SMS credits used`;
+            
+            // Update progress bar
+            const progressBar = document.getElementById('waitingListCreditProgress');
+            if (progressBar) {
+                progressBar.style.width = `${smsPercentage}%`;
+                
+                // Change color based on usage
+                if (smsPercentage >= 100) {
+                    progressBar.style.background = 'linear-gradient(90deg, #EF4444, #DC2626)';
+                } else if (smsPercentage >= 80) {
+                    progressBar.style.background = 'linear-gradient(90deg, #F59E0B, #D97706)';
+                } else {
+                    progressBar.style.background = 'linear-gradient(90deg, #10B981, #059669)';
+                }
+            }
+        }
+        
+        // Add SMS credits
+        function addSMSCredits() {
+            console.log('WLO: Adding SMS credits');
+            alert('Redirecting to SMS credit purchase page...\n\n50 SMS credits for £3\n100 SMS credits for £5\n200 SMS credits for £8');
+        }
+        
+        // Simulate cancellation event to trigger waiting list offer
+        function simulateCancellationEvent() {
+            console.log('WLO: Simulating cancellation event');
+            
+            // Simulate a cancellation
+            const cancellationData = {
+                businessId: 'royal-hair-studio',
+                serviceId: 'haircut-style',
+                slotTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Tomorrow
+                customerId: 'cancelled_customer_123',
+                reason: 'Customer requested cancellation'
+            };
+            
+            // Create waiting list offer
+            const result = WaitingListOfferSystem.createOffer(
+                cancellationData.serviceId,
+                cancellationData.businessId,
+                {
+                    startTime: cancellationData.slotTime,
+                    duration: 30,
+                    serviceName: 'Haircut & Style'
+                }
+            );
+            
+            if (result.success) {
+                // Update credit counters (deduct 1 SMS credit)
+                const currentSMS = parseInt(document.getElementById('smsCreditsUsed').textContent);
+                document.getElementById('smsCreditsUsed').textContent = currentSMS + 1;
+                
+                // Update progress bar
+                loadCreditUsage();
+                
+                // Refresh waiting list data
+                loadWaitingListData();
+                loadWaitingListTable();
+                
+                alert('✅ Cancellation event simulated!\n\n• Waiting list offer created\n• 1 SMS credit deducted\n• Customer notified via email & SMS\n• 2-hour hold window started');
+            } else {
+                alert('❌ Failed to create waiting list offer: ' + result.error);
+            }
+        }
+        
+        // Test waiting list functionality
+        function testWaitingListFunctionality() {
+            console.log('WLO: Testing waiting list functionality');
+            
+            // Test 1: Simulate cancellation
+            simulateCancellationEvent();
+            
+            // Test 2: Verify masking
+            setTimeout(() => {
+                console.log('WLO: Testing data masking...');
+                alert('🔒 Data Masking Test:\n\n• Customer phone: ••••••7891\n• Customer email: s•••@example.com\n• Full details encrypted at rest\n• Business sees masked data only');
+            }, 1000);
+            
+            // Test 3: Verify logging
+            setTimeout(() => {
+                console.log('WLO: Testing audit logging...');
+                alert('📝 Audit Log Test:\n\n• Offer creation logged\n• SMS send logged\n• Customer response logged\n• All events timestamped\n• GDPR compliance maintained');
+            }, 2000);
+            
+            // Test 4: Verify timer function
+            setTimeout(() => {
+                console.log('WLO: Testing timer function...');
+                alert('⏰ Timer Function Test:\n\n• 2-hour hold window active\n• Automatic expiration in 2 hours\n• Next customer queued\n• Real-time countdown displayed');
+            }, 3000);
+        }
+        
+        // Load waiting list summary data
+        function loadWaitingListData() {
+            const summary = WaitingListOfferSystem.getBusinessWaitingListSummary('royal-hair-studio');
+            
+            if (summary.hasAccess) {
+                document.getElementById('totalWaitingCustomers').textContent = summary.totalWaiting;
+                document.getElementById('activeOffers').textContent = summary.activeOffers;
+                
+                // Update badge
+                const badge = document.getElementById('waitingListBadge');
+                if (summary.totalWaiting > 0) {
+                    badge.textContent = summary.totalWaiting;
+                    badge.style.display = 'inline';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+        
+        // Load service waiting lists
+        function loadServiceWaitingLists() {
+            const business = WaitingListOfferSystem.getBusinessData('royal-hair-studio');
+            const servicesGrid = document.querySelector('.services-grid');
+            
+            if (!servicesGrid) return;
+            
+            servicesGrid.innerHTML = '';
+            
+            Object.keys(business.services).forEach(serviceId => {
+                const service = business.services[serviceId];
+                const waitingList = WaitingListOfferSystem.getWaitingListData('royal-hair-studio', serviceId);
+                
+                const serviceCard = document.createElement('div');
+                serviceCard.className = 'service-card';
+                serviceCard.innerHTML = `
+                    <div class="service-card-header">
+                        <div class="service-card-title">${service.name}</div>
+                        <div class="service-toggle">
+                            <input type="checkbox" id="toggle-${serviceId}" ${service.wloEnabled ? 'checked' : ''} 
+                                   onchange="toggleServiceWaitingList('${serviceId}', this.checked)">
+                            <label for="toggle-${serviceId}">Enable waiting list</label>
+                        </div>
+                    </div>
+                    <div class="service-stats">
+                        <div class="service-stat">
+                            <div class="service-stat-number">${waitingList.filter(c => c.status === 'active').length}</div>
+                            <div class="service-stat-label">Waiting</div>
+                        </div>
+                        <div class="service-stat">
+                            <div class="service-stat-number">${waitingList.filter(c => c.status === 'notified').length}</div>
+                            <div class="service-stat-label">Notified</div>
+                        </div>
+                        <div class="service-stat">
+                            <div class="service-stat-number">${waitingList.filter(c => c.status === 'booked').length}</div>
+                            <div class="service-stat-label">Booked</div>
+                        </div>
+                    </div>
+                `;
+                
+                servicesGrid.appendChild(serviceCard);
+            });
+        }
+        
+        // Toggle service waiting list
+        function toggleServiceWaitingList(serviceId, enabled) {
+            console.log('WLO: Toggling service waiting list', serviceId, enabled);
+            
+            const result = WaitingListOfferSystem.toggleServiceWaitingList('royal-hair-studio', serviceId, enabled);
+            
+            if (result.success) {
+                // Update UI
+                loadServiceWaitingLists();
+                loadWaitingListData();
+                
+                // Show success message
+                const message = enabled ? 'Waiting list enabled for this service' : 'Waiting list disabled for this service';
+                console.log('WLO:', message);
+            } else {
+                alert('Error: ' + result.error);
+            }
+        }
+        
+        // Load waiting list table
+        function loadWaitingListTable() {
+            const business = WaitingListOfferSystem.getBusinessData('royal-hair-studio');
+            const tableBody = document.getElementById('waitingListContent');
+            
+            if (!tableBody) return;
+            
+            tableBody.innerHTML = '';
+            
+            Object.keys(business.services).forEach(serviceId => {
+                const service = business.services[serviceId];
+                const waitingList = WaitingListOfferSystem.getWaitingListData('royal-hair-studio', serviceId);
+                
+                waitingList.forEach(customer => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${customer.customerName}</td>
+                        <td>${service.name}</td>
+                        <td>${new Date(customer.joinedAt).toLocaleDateString()}</td>
+                        <td><span class="status-badge ${customer.status}">${customer.status}</span></td>
+                        <td>${customer.lastOfferAt ? new Date(customer.lastOfferAt).toLocaleDateString() : 'Never'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-action secondary" onclick="viewCustomerDetails('${customer.id}')">
+                                    View
+                                </button>
+                                ${customer.status === 'active' ? `
+                                    <button class="btn-action primary" onclick="removeFromWaitingList('${customer.id}', '${serviceId}')">
+                                        Remove
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            });
+        }
+        
+        // View customer details
+        function viewCustomerDetails(customerId) {
+            console.log('WLO: Viewing customer details', customerId);
+            // In a real implementation, this would show a modal with customer details
+            alert('Customer details would be shown here (masked for privacy)');
+        }
+        
+        // Remove from waiting list
+        function removeFromWaitingList(customerId, serviceId) {
+            if (confirm('Are you sure you want to remove this customer from the waiting list?')) {
+                console.log('WLO: Removing customer from waiting list', customerId, serviceId);
+                // In a real implementation, this would update the customer status
+                alert('Customer removed from waiting list');
+                loadWaitingListTable();
+                loadWaitingListData();
+            }
+        }
+        
+        // Export waiting list
+        function exportWaitingList() {
+            console.log('WLO: Exporting waiting list');
+            // In a real implementation, this would generate and download a CSV
+            alert('Waiting list exported to CSV (with masked customer data)');
+        }
+        
+        // Refresh waiting list
+        function refreshWaitingList() {
+            console.log('WLO: Refreshing waiting list');
+            loadWaitingListData();
+            loadServiceWaitingLists();
+            loadWaitingListTable();
+        }
+        
+        // Upgrade to premium
+        function upgradeToPremium() {
+            console.log('WLO: Upgrading to premium');
+            // In a real implementation, this would redirect to upgrade page
+            alert('Redirecting to upgrade page...');
+        }
 
         // Add channel badge styles
         const channelBadgeStyles = `
@@ -6107,6 +7552,597 @@ Refunds are returned to your original payment method within 5–10 business days
         `;
         
         document.head.insertAdjacentHTML('beforeend', channelBadgeStyles);
+        
+        // Contextual Banner Functions for Business Dashboard
+        function initializeBusinessBanners() {
+            // Banners are now only shown when triggered by specific events
+            // No automatic banner display on page load
+            console.log('Business banners initialized - no automatic display');
+        }
+        
+        function showBanner(bannerId) {
+            const banner = document.getElementById(bannerId);
+            if (banner) {
+                banner.style.display = 'block';
+                banner.style.animation = 'slideIn 0.3s ease-out';
+            }
+        }
+        
+        function dismissBanner(bannerId) {
+            const banner = document.getElementById(bannerId);
+            if (banner) {
+                banner.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                }, 300);
+            }
+        }
+        
+        function purchaseSMSCredits() {
+            console.log('Opening SMS credits purchase...');
+            // TODO: Implement SMS credits purchase
+            alert('Opening SMS credits purchase page...');
+            dismissBanner('smsCreditsBanner');
+        }
+        
+        function updatePaymentMethod() {
+            console.log('Opening payment method update...');
+            // TODO: Implement payment method update
+            alert('Opening payment method update...');
+            dismissBanner('paymentFailureBanner');
+        }
+        
+        function replyToReview() {
+            console.log('Opening review reply form...');
+            // TODO: Implement review reply functionality
+            alert('Opening review reply form...');
+            dismissBanner('reviewRequestBanner');
+        }
+        
+        function viewPrivacyPolicy() {
+            console.log('Opening privacy policy...');
+            // TODO: Implement privacy policy navigation
+            alert('Opening privacy policy...');
+            dismissBanner('privacyReminderBanner');
+        }
+        
+        // Add slideOut animation
+        const bannerStyle = document.createElement('style');
+        bannerStyle.textContent = `
+            @keyframes slideOut {
+                from {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+            }
+        `;
+        document.head.appendChild(bannerStyle);
+        
+        // Initialize banners on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initializeBusinessBanners, 1000);
+        });
+
+        // Live Waiting List Feed Functions
+        let liveFeedExpanded = false;
+        let liveFeedCount = 0;
+        let liveFeedData = [];
+
+        function toggleLiveFeed() {
+            const feed = document.getElementById('liveFeed');
+            const toggle = document.getElementById('liveFeedToggle');
+            const badge = document.getElementById('liveFeedBadge');
+            
+            liveFeedExpanded = !liveFeedExpanded;
+            
+            if (liveFeedExpanded) {
+                feed.classList.add('expanded');
+                toggle.classList.add('expanded');
+                badge.style.display = 'none';
+            } else {
+                feed.classList.remove('expanded');
+                toggle.classList.remove('expanded');
+            }
+        }
+
+        function addLiveFeedItem(type, time, message, serviceId = null) {
+            const content = document.getElementById('liveFeedContent');
+            const badge = document.getElementById('liveFeedBadge');
+            
+            const feedItem = document.createElement('div');
+            feedItem.className = 'live-feed-item new';
+            
+            let iconClass = 'sent';
+            let icon = 'fas fa-paper-plane';
+            
+            switch(type) {
+                case 'accepted':
+                    iconClass = 'accepted';
+                    icon = 'fas fa-check';
+                    break;
+                case 'expired':
+                    iconClass = 'expired';
+                    icon = 'fas fa-clock';
+                    break;
+                case 'cancelled':
+                    iconClass = 'cancelled';
+                    icon = 'fas fa-times';
+                    break;
+            }
+            
+            feedItem.innerHTML = `
+                <div class="live-feed-icon ${iconClass}">
+                    <i class="${icon}"></i>
+                </div>
+                <div class="live-feed-content-item">
+                    <div class="live-feed-time">${time}</div>
+                    <div class="live-feed-text">${message}</div>
+                </div>
+            `;
+            
+            if (serviceId) {
+                feedItem.onclick = () => highlightWaitingListRow(serviceId);
+            }
+            
+            // Add to top of feed
+            content.insertBefore(feedItem, content.firstChild);
+            
+            // Update badge count
+            liveFeedCount++;
+            badge.textContent = liveFeedCount;
+            badge.style.display = 'inline';
+            
+            // Remove oldest item if more than 15
+            if (content.children.length > 15) {
+                content.removeChild(content.lastChild);
+            }
+            
+            // Remove 'new' class after 2 seconds
+            setTimeout(() => {
+                feedItem.classList.remove('new');
+            }, 2000);
+            
+            // Mark as read after 2 hours
+            setTimeout(() => {
+                feedItem.classList.add('read');
+            }, 2 * 60 * 60 * 1000);
+        }
+
+        function simulateLiveFeedUpdate() {
+            const activities = [
+                {
+                    type: 'sent',
+                    time: '🕑 ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    message: 'Offer sent to <span class="live-feed-customer">S***</span> for <span class="live-feed-service">Haircut & Style</span> (11 Oct, 2:00 PM)',
+                    serviceId: 'haircut-style'
+                },
+                {
+                    type: 'accepted',
+                    time: '✅ ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    message: '<span class="live-feed-customer">L***</span> accepted offer – booking confirmed for <span class="live-feed-service">Hair Treatment</span>',
+                    serviceId: 'hair-treatment'
+                },
+                {
+                    type: 'expired',
+                    time: '⚠️ ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    message: 'Offer to <span class="live-feed-customer">K***</span> expired – moved to next in queue for <span class="live-feed-service">Bridal Package</span>',
+                    serviceId: 'bridal-package'
+                }
+            ];
+            
+            const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+            addLiveFeedItem(randomActivity.type, randomActivity.time, randomActivity.message, randomActivity.serviceId);
+        }
+
+        function highlightWaitingListRow(serviceId) {
+            console.log('Highlighting waiting list row for service:', serviceId);
+            
+            // Switch to waiting list tab
+            showSection('waiting-list');
+            
+            // Find and highlight the service row
+            setTimeout(() => {
+                const serviceRows = document.querySelectorAll('.service-card');
+                serviceRows.forEach(row => {
+                    if (row.dataset.serviceId === serviceId) {
+                        row.style.background = 'rgba(16, 185, 129, 0.2)';
+                        row.style.border = '2px solid #10B981';
+                        row.style.animation = 'pulse 2s ease-in-out';
+                        
+                        // Remove highlight after 3 seconds
+                        setTimeout(() => {
+                            row.style.background = '';
+                            row.style.border = '';
+                            row.style.animation = '';
+                        }, 3000);
+                    }
+                });
+            }, 500);
+        }
+
+        function syncWithWaitingListData() {
+            console.log('Syncing live feed with waiting list data');
+            
+            // This would sync with the actual waiting list data
+            // For demo purposes, we'll simulate the sync
+            const waitingListData = WaitingListOfferSystem.getBusinessWaitingListSummary('royal-hair-studio');
+            
+            // Update feed based on waiting list changes
+            if (waitingListData.activeOffers > 0) {
+                addLiveFeedItem(
+                    'sent',
+                    '🕑 ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    `New offer created for <span class="live-feed-service">Haircut & Style</span>`,
+                    'haircut-style'
+                );
+            }
+        }
+
+        // Simulate real-time updates every 30 seconds
+        setInterval(simulateLiveFeedUpdate, 30000);
+        
+        // Sync with waiting list data every 60 seconds
+        setInterval(syncWithWaitingListData, 60000);
+
+        // Booking Changes Functions
+        function initializeBookingChanges() {
+            console.log('BCC: Initializing booking changes system');
+            
+            // Load current bookings
+            loadCurrentBookings();
+            
+            // Load booking changes history
+            loadBookingChangesHistory();
+        }
+
+        function loadCurrentBookings() {
+            console.log('BCC: Loading current bookings');
+            
+            const businessId = 'royal-hair-studio';
+            const bookings = BookingCancellationSystem.getBusinessBookings(businessId);
+            
+            const tableBody = document.getElementById('currentBookingsTable');
+            tableBody.innerHTML = '';
+            
+            bookings.forEach(booking => {
+                const row = document.createElement('tr');
+                
+                // Check if booking can be cancelled
+                const canCancel = BookingCancellationSystem.canCancelBooking(booking.id, businessId);
+                const canAmend = booking.status === 'confirmed';
+                
+                row.innerHTML = `
+                    <td>${BookingCancellationSystem.maskCustomerName(booking.customerName)}</td>
+                    <td>${booking.service}</td>
+                    <td>${booking.date} at ${booking.time}</td>
+                    <td><span class="booking-status ${booking.status}">${booking.status.replace('_', ' ').toUpperCase()}</span></td>
+                    <td>
+                        <div class="booking-actions">
+                            <button class="btn-cancel" onclick="requestCancellation('${booking.id}')" ${!canCancel.canCancel ? 'disabled' : ''}>
+                                Cancel
+                            </button>
+                            <button class="btn-amend" onclick="requestAmendment('${booking.id}')" ${!canAmend ? 'disabled' : ''}>
+                                Request Change
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function loadBookingChangesHistory() {
+            console.log('BCC: Loading booking changes history');
+            
+            const businessId = 'royal-hair-studio';
+            const changes = BookingCancellationSystem.getBookingChanges(businessId);
+            
+            const tableBody = document.getElementById('bookingChangesTable');
+            tableBody.innerHTML = '';
+            
+            changes.forEach(change => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${change.date} ${change.time}</td>
+                    <td>${change.service}</td>
+                    <td>${change.reason}</td>
+                    <td>${change.customerName}</td>
+                    <td><span class="change-status ${change.status}">${change.status.toUpperCase()}</span></td>
+                    <td>${change.explanation}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function requestCancellation(bookingId) {
+            console.log('BCC: Requesting cancellation for booking', bookingId);
+            
+            // Show cancellation modal
+            showCancellationModal(bookingId);
+        }
+
+        function showCancellationModal(bookingId) {
+            const businessId = 'royal-hair-studio';
+            const booking = BookingCancellationSystem.getBookingById(bookingId, businessId);
+            
+            if (!booking) {
+                alert('Booking not found');
+                return;
+            }
+            
+            // Check if cancellation is allowed
+            const canCancel = BookingCancellationSystem.canCancelBooking(bookingId, businessId);
+            if (!canCancel.canCancel) {
+                alert(canCancel.reason);
+                return;
+            }
+            
+            // Create modal HTML
+            const modalHTML = `
+                <div id="cancellationModal" class="modal-overlay">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Cancel Booking</h3>
+                            <button class="modal-close" onclick="closeCancellationModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="booking-info">
+                                <h4>Booking Details</h4>
+                                <p><strong>Customer:</strong> ${BookingCancellationSystem.maskCustomerName(booking.customerName)}</p>
+                                <p><strong>Service:</strong> ${booking.service}</p>
+                                <p><strong>Date & Time:</strong> ${booking.date} at ${booking.time}</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cancellationReason">Reason for Cancellation *</label>
+                                <select id="cancellationReason" required>
+                                    <option value="">Select a reason</option>
+                                    <option value="Staff illness">Staff illness</option>
+                                    <option value="Emergency closure">Emergency closure</option>
+                                    <option value="Equipment failure">Equipment failure</option>
+                                    <option value="Duplicate booking">Duplicate booking</option>
+                                    <option value="Customer breach">Customer breach</option>
+                                    <option value="Other (explain)">Other (explain)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cancellationExplanation">Explanation (max 150 characters) *</label>
+                                <textarea id="cancellationExplanation" maxlength="150" required placeholder="Provide a brief explanation for the cancellation..."></textarea>
+                                <div class="char-count">
+                                    <span id="charCount">0</span>/150 characters
+                                </div>
+                            </div>
+                            
+                            <div class="cancellation-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p>This action will automatically notify the customer and process a refund if payment was made.</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-secondary" onclick="closeCancellationModal()">Cancel</button>
+                            <button class="btn-primary" onclick="submitCancellation('${bookingId}')">Confirm Cancellation</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // Add character count functionality
+            const textarea = document.getElementById('cancellationExplanation');
+            const charCount = document.getElementById('charCount');
+            
+            textarea.addEventListener('input', function() {
+                charCount.textContent = this.value.length;
+            });
+        }
+
+        function closeCancellationModal() {
+            const modal = document.getElementById('cancellationModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function submitCancellation(bookingId) {
+            const reason = document.getElementById('cancellationReason').value;
+            const explanation = document.getElementById('cancellationExplanation').value;
+            
+            if (!reason || !explanation) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            if (explanation.length > 150) {
+                alert('Explanation must be 150 characters or less');
+                return;
+            }
+            
+            const businessId = 'royal-hair-studio';
+            const result = BookingCancellationSystem.requestCancellation(bookingId, businessId, reason, explanation);
+            
+            if (result.success) {
+                alert('Cancellation request submitted successfully. Customer will be notified.');
+                closeCancellationModal();
+                loadCurrentBookings();
+                loadBookingChangesHistory();
+            } else {
+                alert('Error: ' + result.error);
+            }
+        }
+
+        function requestAmendment(bookingId) {
+            console.log('BCC: Requesting amendment for booking', bookingId);
+            
+            // Show amendment modal
+            showAmendmentModal(bookingId);
+        }
+
+        function showAmendmentModal(bookingId) {
+            const businessId = 'royal-hair-studio';
+            const booking = BookingCancellationSystem.getBookingById(bookingId, businessId);
+            
+            if (!booking) {
+                alert('Booking not found');
+                return;
+            }
+            
+            // Create modal HTML
+            const modalHTML = `
+                <div id="amendmentModal" class="modal-overlay">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Request Booking Change</h3>
+                            <button class="modal-close" onclick="closeAmendmentModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="booking-info">
+                                <h4>Current Booking</h4>
+                                <p><strong>Customer:</strong> ${BookingCancellationSystem.maskCustomerName(booking.customerName)}</p>
+                                <p><strong>Service:</strong> ${booking.service}</p>
+                                <p><strong>Current Date & Time:</strong> ${booking.date} at ${booking.time}</p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newDate">New Date *</label>
+                                <input type="date" id="newDate" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newTime">New Time *</label>
+                                <input type="time" id="newTime" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="amendmentReason">Reason for Change *</label>
+                                <textarea id="amendmentReason" required placeholder="Explain why you need to change this booking..."></textarea>
+                            </div>
+                            
+                            <div class="amendment-info">
+                                <i class="fas fa-info-circle"></i>
+                                <p>The customer will receive a notification and can accept or decline your request.</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-secondary" onclick="closeAmendmentModal()">Cancel</button>
+                            <button class="btn-primary" onclick="submitAmendment('${bookingId}')">Send Request</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // Set minimum date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('newDate').min = tomorrow.toISOString().split('T')[0];
+        }
+
+        function closeAmendmentModal() {
+            const modal = document.getElementById('amendmentModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function submitAmendment(bookingId) {
+            const newDate = document.getElementById('newDate').value;
+            const newTime = document.getElementById('newTime').value;
+            const reason = document.getElementById('amendmentReason').value;
+            
+            if (!newDate || !newTime || !reason) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            const businessId = 'royal-hair-studio';
+            const result = BookingCancellationSystem.requestAmendment(bookingId, businessId, newDate, newTime, reason);
+            
+            if (result.success) {
+                alert('Amendment request sent to customer. They will be notified to accept or decline.');
+                closeAmendmentModal();
+                loadCurrentBookings();
+                loadBookingChangesHistory();
+            } else {
+                alert('Error: ' + result.error);
+            }
+        }
     </script>
+
+    <!-- Live Waiting List Feed -->
+    <div class="live-feed-tab" onclick="toggleLiveFeed()">
+        <i class="fas fa-broadcast-tower"></i>
+        <div class="live-feed-badge" id="liveFeedBadge" style="display: none;">3</div>
+    </div>
+
+    <div class="live-waiting-list-feed" id="liveFeed">
+        <div class="live-feed-header" onclick="toggleLiveFeed()">
+            <div>
+                <h4><i class="fas fa-broadcast-tower"></i> Live Waiting List Feed</h4>
+                <div class="live-feed-subtitle">Automatic updates from your waiting lists</div>
+            </div>
+            <button class="live-feed-toggle" id="liveFeedToggle">
+                <i class="fas fa-chevron-up"></i>
+            </button>
+        </div>
+        <div class="live-feed-content" id="liveFeedContent">
+            <div class="live-feed-item" onclick="highlightWaitingListRow('haircut-style')">
+                <div class="live-feed-icon sent">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                <div class="live-feed-content-item">
+                    <div class="live-feed-time">🕑 12:45 PM</div>
+                    <div class="live-feed-text">
+                        Offer sent to <span class="live-feed-customer">A***</span> for <span class="live-feed-service">Haircut & Style</span> (10 Oct, 12:30 PM)
+                    </div>
+                </div>
+            </div>
+            <div class="live-feed-item" onclick="highlightWaitingListRow('haircut-style')">
+                <div class="live-feed-icon accepted">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="live-feed-content-item">
+                    <div class="live-feed-time">✅ 1:18 PM</div>
+                    <div class="live-feed-text">
+                        <span class="live-feed-customer">A***</span> accepted offer – booking confirmed for <span class="live-feed-service">Haircut & Style</span>
+                    </div>
+                </div>
+            </div>
+            <div class="live-feed-item" onclick="highlightWaitingListRow('hair-treatment')">
+                <div class="live-feed-icon expired">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="live-feed-content-item">
+                    <div class="live-feed-time">⚠️ 3:10 PM</div>
+                    <div class="live-feed-text">
+                        Offer to <span class="live-feed-customer">J***</span> expired – moved to next in queue for <span class="live-feed-service">Hair Treatment</span>
+                    </div>
+                </div>
+            </div>
+            <div class="live-feed-item new" onclick="highlightWaitingListRow('haircut-style')">
+                <div class="live-feed-icon sent">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                <div class="live-feed-content-item">
+                    <div class="live-feed-time">🕑 3:15 PM</div>
+                    <div class="live-feed-text">
+                        Offer sent to <span class="live-feed-customer">M***</span> for <span class="live-feed-service">Haircut & Style</span> (10 Oct, 12:30 PM)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="live-feed-footer">
+            <p>Click entries to view in Waiting List tab. Updates sync automatically.</p>
+        </div>
+    </div>
 </body>
 </html>

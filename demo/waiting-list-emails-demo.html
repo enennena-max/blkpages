@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waiting List Email Previews - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 2rem;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .demo-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #10B981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .demo-header p {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+
+        .email-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .email-preview-card {
+            background: #2A2A2A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .email-preview-card h3 {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .email-meta {
+            background: #1A1A1A;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .email-meta-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .email-meta-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .email-meta-label {
+            color: #cccccc;
+            font-weight: 500;
+        }
+
+        .email-meta-value {
+            color: #ffffff;
+        }
+
+        .email-content {
+            background: #ffffff;
+            color: #000000;
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+
+        .email-subject {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .email-body {
+            font-size: 0.95rem;
+            color: #333333;
+        }
+
+        .email-body p {
+            margin-bottom: 1rem;
+        }
+
+        .email-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .booking-link {
+            background: #10B981;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+
+        .preferences-link {
+            color: #10B981;
+            text-decoration: none;
+        }
+
+        .preferences-link:hover {
+            text-decoration: underline;
+        }
+
+        .demo-controls {
+            background: #2A2A2A;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .demo-controls h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .control-btn.secondary {
+            background: linear-gradient(135deg, #6B7280, #4B5563);
+        }
+
+        .sms-preview {
+            background: #2A2A2A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sms-preview h3 {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sms-message {
+            background: #1A1A1A;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #ffffff;
+            border-left: 4px solid #10B981;
+        }
+
+        .sms-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+
+        .character-count {
+            color: #10B981;
+            font-weight: 600;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #10B981;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #059669;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <a href="test-wlo-system.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to WLO System Test
+        </a>
+
+        <div class="demo-header">
+            <h1><i class="fas fa-envelope"></i> Waiting List Email Previews</h1>
+            <p>Preview the actual email templates sent to customers on waiting lists</p>
+            <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <a href="../waiting-list-terms.html" style="color: #10B981; text-decoration: none; font-weight: 600;">
+                    <i class="fas fa-file-contract"></i> View Waiting List Terms
+                </a>
+                <a href="../terms-appendix-waiting-list.html" style="color: #3B82F6; text-decoration: none; font-weight: 600;">
+                    <i class="fas fa-book"></i> Full Terms Appendix
+                </a>
+            </div>
+        </div>
+
+        <div class="demo-controls">
+            <h3>Email Preview Controls</h3>
+            <div class="control-buttons">
+                <button class="control-btn" onclick="showWaitingListOffer()">
+                    <i class="fas fa-bell"></i> Waiting List Offer
+                </button>
+                <button class="control-btn secondary" onclick="showOfferReminder()">
+                    <i class="fas fa-clock"></i> Offer Reminder
+                </button>
+                <button class="control-btn secondary" onclick="showOfferExpired()">
+                    <i class="fas fa-times"></i> Offer Expired
+                </button>
+                <button class="control-btn secondary" onclick="showBookingConfirmed()">
+                    <i class="fas fa-check"></i> Booking Confirmed
+                </button>
+            </div>
+        </div>
+
+        <div class="email-preview-grid">
+            <!-- Waiting List Offer Email -->
+            <div class="email-preview-card" id="waitingListOffer">
+                <h3><i class="fas fa-bell"></i> Waiting List Offer Email</h3>
+                <div class="email-meta">
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">To:</span>
+                        <span class="email-meta-value">sarah.johnson@example.com</span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">From:</span>
+                        <span class="email-meta-value">BlkPages <noreply@blkpages.com></span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">Subject:</span>
+                        <span class="email-meta-value">A slot opened at Royal Hair Studio!</span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">Sent:</span>
+                        <span class="email-meta-value">Friday, 15 Dec 2024 at 2:00 PM</span>
+                    </div>
+                </div>
+                <div class="email-content">
+                    <div class="email-subject">A slot opened at Royal Hair Studio!</div>
+                    <div class="email-body">
+                        <p>Hi Sarah,</p>
+                        
+                        <p>A slot has opened for <strong>Haircut & Style</strong> at <strong>Royal Hair Studio</strong> on <strong>Friday, 15 December 2024 at 2:00 PM</strong>. We've held it for you for the next 2 hours.</p>
+                        
+                        <a href="#" class="booking-link">Book Now - Secure Link</a>
+                        
+                        <p>If you don't book within 2 hours, we'll offer it to the next person on the list.</p>
+                        
+                        <p><strong>Service Details:</strong><br>
+                        • Haircut & Style<br>
+                        • Duration: 30 minutes<br>
+                        • Price: £45<br>
+                        • Location: Royal Hair Studio, 123 Beauty Street, London</p>
+                        
+                        <p><a href="#" class="preferences-link">Manage your notification preferences</a></p>
+                        
+                        <p><strong>Privacy:</strong> We never share your number with businesses in full. Your personal data is protected and encrypted.</p>
+                        
+                        <p>Best regards,<br>
+                        The BlkPages Team</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Offer Reminder Email -->
+            <div class="email-preview-card" id="offerReminder" style="display: none;">
+                <h3><i class="fas fa-clock"></i> Offer Reminder Email</h3>
+                <div class="email-meta">
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">To:</span>
+                        <span class="email-meta-value">sarah.johnson@example.com</span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">From:</span>
+                        <span class="email-meta-value">BlkPages <noreply@blkpages.com></span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">Subject:</span>
+                        <span class="email-meta-value">Reminder: Your slot offer expires in 1 hour</span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">Sent:</span>
+                        <span class="email-meta-value">Friday, 15 Dec 2024 at 3:00 PM</span>
+                    </div>
+                </div>
+                <div class="email-content">
+                    <div class="email-subject">Reminder: Your slot offer expires in 1 hour</div>
+                    <div class="email-body">
+                        <p>Hi Sarah,</p>
+                        
+                        <p>Just a friendly reminder that your slot offer for <strong>Haircut & Style</strong> at <strong>Royal Hair Studio</strong> expires in 1 hour.</p>
+                        
+                        <p><strong>Appointment Details:</strong><br>
+                        • Date: Friday, 15 December 2024<br>
+                        • Time: 2:00 PM<br>
+                        • Service: Haircut & Style<br>
+                        • Price: £45</p>
+                        
+                        <a href="#" class="booking-link">Book Now - Expires Soon</a>
+                        
+                        <p>If you don't book within the next hour, we'll offer this slot to the next person on the waiting list.</p>
+                        
+                        <p>Best regards,<br>
+                        The BlkPages Team</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Offer Expired Email -->
+            <div class="email-preview-card" id="offerExpired" style="display: none;">
+                <h3><i class="fas fa-times"></i> Offer Expired Email</h3>
+                <div class="email-meta">
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">To:</span>
+                        <span class="email-meta-value">sarah.johnson@example.com</span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">From:</span>
+                        <span class="email-meta-value">BlkPages <noreply@blkpages.com></span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">Subject:</span>
+                        <span class="email-meta-value">Your slot offer has expired</span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">Sent:</span>
+                        <span class="email-meta-value">Friday, 15 Dec 2024 at 4:00 PM</span>
+                    </div>
+                </div>
+                <div class="email-content">
+                    <div class="email-subject">Your slot offer has expired</div>
+                    <div class="email-body">
+                        <p>Hi Sarah,</p>
+                        
+                        <p>Your slot offer for <strong>Haircut & Style</strong> at <strong>Royal Hair Studio</strong> has expired. We've offered it to the next person on the waiting list.</p>
+                        
+                        <p>Don't worry - you're still on the waiting list for this service. We'll notify you again if another slot becomes available.</p>
+                        
+                        <p><a href="#" class="preferences-link">Update your waiting list preferences</a></p>
+                        
+                        <p>Best regards,<br>
+                        The BlkPages Team</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Confirmed Email -->
+            <div class="email-preview-card" id="bookingConfirmed" style="display: none;">
+                <h3><i class="fas fa-check"></i> Booking Confirmed Email</h3>
+                <div class="email-meta">
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">To:</span>
+                        <span class="email-meta-value">sarah.johnson@example.com</span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">From:</span>
+                        <span class="email-meta-value">BlkPages <noreply@blkpages.com></span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">Subject:</span>
+                        <span class="email-meta-value">Booking confirmed - Royal Hair Studio</span>
+                    </div>
+                    <div class="email-meta-item">
+                        <span class="email-meta-label">Sent:</span>
+                        <span class="email-meta-value">Friday, 15 Dec 2024 at 2:15 PM</span>
+                    </div>
+                </div>
+                <div class="email-content">
+                    <div class="email-subject">Booking confirmed - Royal Hair Studio</div>
+                    <div class="email-body">
+                        <p>Hi Sarah,</p>
+                        
+                        <p>Great news! Your booking has been confirmed. You've successfully secured your slot from the waiting list.</p>
+                        
+                        <p><strong>Appointment Details:</strong><br>
+                        • Date: Friday, 15 December 2024<br>
+                        • Time: 2:00 PM<br>
+                        • Service: Haircut & Style<br>
+                        • Duration: 30 minutes<br>
+                        • Price: £45<br>
+                        • Location: Royal Hair Studio, 123 Beauty Street, London</p>
+                        
+                        <p><strong>What's Next:</strong><br>
+                        • You'll receive a reminder 24 hours before your appointment<br>
+                        • You can reschedule or cancel up to 2 hours before your appointment<br>
+                        • Please arrive 5 minutes early</p>
+                        
+                        <p>Thank you for using BlkPages!</p>
+                        
+                        <p>Best regards,<br>
+                        The BlkPages Team</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SMS Preview -->
+        <div class="sms-preview">
+            <h3><i class="fas fa-sms"></i> SMS Notification Preview</h3>
+            <div class="sms-meta">
+                <span>To: +447700900000</span>
+                <span class="character-count">Characters: 98/160</span>
+            </div>
+            <div class="sms-message">
+Slot opened at Royal Hair Studio Friday, 15 Dec at 2:00 PM. Book within 2h: https://blkpages.com/wlo/abc123. No replies.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showWaitingListOffer() {
+            hideAllEmails();
+            document.getElementById('waitingListOffer').style.display = 'block';
+        }
+
+        function showOfferReminder() {
+            hideAllEmails();
+            document.getElementById('offerReminder').style.display = 'block';
+        }
+
+        function showOfferExpired() {
+            hideAllEmails();
+            document.getElementById('offerExpired').style.display = 'block';
+        }
+
+        function showBookingConfirmed() {
+            hideAllEmails();
+            document.getElementById('bookingConfirmed').style.display = 'block';
+        }
+
+        function hideAllEmails() {
+            const emails = ['waitingListOffer', 'offerReminder', 'offerExpired', 'bookingConfirmed'];
+            emails.forEach(id => {
+                document.getElementById(id).style.display = 'none';
+            });
+        }
+
+        // Initialize with waiting list offer
+        showWaitingListOffer();
+    </script>
+</body>
+</html>

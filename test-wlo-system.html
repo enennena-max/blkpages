@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WLO System Test - BlkPages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            padding: 2rem;
+        }
+        .test-section {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .test-button {
+            background: #FF3CAC;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        .test-result {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Waiting List Offer (WLO) System Test</h1>
+    
+    <div class="test-section">
+        <h2>1. System Initialization</h2>
+        <button class="test-button" onclick="testInitialization()">Test WLO System</button>
+        <div id="initResult" class="test-result" style="display: none;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Business Access Control</h2>
+        <button class="test-button" onclick="testBusinessAccess()">Test Premium Business Access</button>
+        <button class="test-button" onclick="testBasicBusinessAccess()">Test Basic Business Access</button>
+        <div id="accessResult" class="test-result" style="display: none;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Customer Join Waiting List</h2>
+        <button class="test-button" onclick="testJoinWaitingList()">Test Customer Join</button>
+        <div id="joinResult" class="test-result" style="display: none;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Create Waiting List Offer</h2>
+        <button class="test-button" onclick="testCreateOffer()">Test Create Offer</button>
+        <div id="offerResult" class="test-result" style="display: none;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>5. Business Dashboard Summary</h2>
+        <button class="test-button" onclick="testBusinessSummary()">Test Business Summary</button>
+        <div id="summaryResult" class="test-result" style="display: none;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>6. Email & SMS Previews</h2>
+        <button class="test-button" onclick="showEmailPreview()">Preview Waiting List Email</button>
+        <button class="test-button" onclick="showSMSPreview()">Preview Waiting List SMS</button>
+        <button class="test-button" onclick="window.open('demo/waiting-list-emails-demo.html', '_blank')" style="background: linear-gradient(135deg, #10B981, #059669);">
+            <i class="fas fa-envelope"></i> View Full Email Previews
+        </button>
+        <div id="emailPreview" class="test-result" style="display: none;"></div>
+        <div id="smsPreview" class="test-result" style="display: none;"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>7. Business Dashboard Demo</h2>
+        <button class="test-button" onclick="showBusinessDashboardDemo()">View Business Dashboard</button>
+        <button class="test-button" onclick="window.open('demo/business-waiting-list-demo.html', '_blank')" style="background: linear-gradient(135deg, #10B981, #059669);">
+            <i class="fas fa-external-link-alt"></i> Open Interactive Demo
+        </button>
+        <button class="test-button" onclick="window.open('demo/waiting-list-testing-demo.html', '_blank')" style="background: linear-gradient(135deg, #F59E0B, #D97706);">
+            <i class="fas fa-vial"></i> Testing Demo
+        </button>
+        <div id="dashboardDemo" class="test-result" style="display: none;"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>8. Booking Cancellation & Amendment System</h2>
+        <button class="test-button" onclick="showBookingChangesDemo()">View Business Booking Changes</button>
+        <button class="test-button" onclick="window.open('business-dashboard.html#booking-changes', '_blank')" style="background: linear-gradient(135deg, #3B82F6, #2563EB);">
+            <i class="fas fa-edit"></i> Business Dashboard - Booking Changes
+        </button>
+        <button class="test-button" onclick="window.open('customer-dashboard-booking-changes.html', '_blank')" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">
+            <i class="fas fa-user"></i> Customer Dashboard - Booking Changes
+        </button>
+        <button class="test-button" onclick="window.open('admin-booking-monitoring.html', '_blank')" style="background: linear-gradient(135deg, #EF4444, #DC2626);">
+            <i class="fas fa-shield-alt"></i> Admin Monitoring Dashboard
+        </button>
+        <div id="bookingChangesDemo" class="test-result" style="display: none;"></div>
+    </div>
+
+    <!-- WLO System Script -->
+    <script src="backend/waiting-list-offer-system.js"></script>
+    
+    <script>
+        function showResult(elementId, result) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = JSON.stringify(result, null, 2);
+        }
+        
+        function testInitialization() {
+            console.log('Testing WLO System initialization...');
+            const result = {
+                systemExists: typeof WaitingListOfferSystem !== 'undefined',
+                initialized: true,
+                timestamp: new Date().toISOString()
+            };
+            showResult('initResult', result);
+        }
+        
+        function testBusinessAccess() {
+            console.log('Testing premium business access...');
+            const hasAccess = WaitingListOfferSystem.hasWLOAccess('royal-hair-studio');
+            const result = {
+                businessId: 'royal-hair-studio',
+                hasAccess: hasAccess,
+                plan: 'premium',
+                timestamp: new Date().toISOString()
+            };
+            showResult('accessResult', result);
+        }
+        
+        function testBasicBusinessAccess() {
+            console.log('Testing basic business access...');
+            const hasAccess = WaitingListOfferSystem.hasWLOAccess('basic-salon');
+            const result = {
+                businessId: 'basic-salon',
+                hasAccess: hasAccess,
+                plan: 'basic',
+                timestamp: new Date().toISOString()
+            };
+            showResult('accessResult', result);
+        }
+        
+        function testJoinWaitingList() {
+            console.log('Testing customer join waiting list...');
+            const customerData = {
+                id: 'test_customer_123',
+                name: 'Test Customer',
+                email: 'test@example.com',
+                phone: '+447700900000',
+                consent: true,
+                smsConsent: true
+            };
+            
+            const result = WaitingListOfferSystem.joinWaitingList(
+                customerData,
+                'haircut-style',
+                'royal-hair-studio'
+            );
+            
+            showResult('joinResult', result);
+        }
+        
+        function testCreateOffer() {
+            console.log('Testing create waiting list offer...');
+            const slotData = {
+                startTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Tomorrow
+                duration: 30,
+                serviceName: 'Haircut & Style'
+            };
+            
+            const result = WaitingListOfferSystem.createOffer(
+                'haircut-style',
+                'royal-hair-studio',
+                slotData
+            );
+            
+            showResult('offerResult', result);
+        }
+        
+        function testBusinessSummary() {
+            console.log('Testing business waiting list summary...');
+            const summary = WaitingListOfferSystem.getBusinessWaitingListSummary('royal-hair-studio');
+            showResult('summaryResult', summary);
+        }
+        
+        function showEmailPreview() {
+            console.log('Showing waiting list email preview...');
+            const emailPreview = {
+                to: 'sarah@example.com',
+                subject: 'A slot opened at Royal Hair Studio!',
+                body: `Hi Sarah,
+
+A slot has opened for Haircut & Style at Friday, 15 December 2024 at 2:00 PM. We've held it for you for the next 2 hours.
+
+Book now: https://blkpages.com/booking/offer/wlo_abc123def456
+If you don't book within 2 hours, we'll offer it to the next person on the list.
+
+Manage preferences: https://blkpages.com/preferences
+Privacy: We never share your number with businesses in full.
+
+Best regards,
+The BlkPages Team`,
+                timestamp: new Date().toISOString()
+            };
+            showResult('emailPreview', emailPreview);
+        }
+        
+        function showSMSPreview() {
+            console.log('Showing waiting list SMS preview...');
+            const smsPreview = {
+                to: '+447700900000',
+                message: 'Slot opened at Royal Hair Studio Friday, 15 Dec at 2:00 PM. Book within 2h: https://blkpages.com/wlo/abc123. No replies.',
+                businessId: 'royal-hair-studio',
+                timestamp: new Date().toISOString()
+            };
+            showResult('smsPreview', smsPreview);
+        }
+        
+        function showBusinessDashboardDemo() {
+            console.log('Showing business dashboard demo...');
+            const dashboardDemo = {
+                businessId: 'royal-hair-studio',
+                plan: 'premium',
+                hasAccess: true,
+                waitingListSummary: {
+                    totalWaiting: 12,
+                    activeOffers: 2,
+                    accepted: 8,
+                    expired: 3
+                },
+                services: {
+                    'haircut-style': {
+                        name: 'Haircut & Style',
+                        wloEnabled: true,
+                        waitingCount: 5,
+                        notifiedCount: 1
+                    },
+                    'hair-treatment': {
+                        name: 'Hair Treatment',
+                        wloEnabled: false,
+                        waitingCount: 0,
+                        notifiedCount: 0
+                    }
+                },
+                recentCustomers: [
+                    {
+                        name: 'Sarah J.',
+                        service: 'Haircut & Style',
+                        joinedAt: '2024-12-14',
+                        status: 'active',
+                        lastNotification: 'Never'
+                    },
+                    {
+                        name: 'Mike R.',
+                        service: 'Haircut & Style',
+                        joinedAt: '2024-12-13',
+                        status: 'notified',
+                        lastNotification: '2024-12-14'
+                    }
+                ],
+                timestamp: new Date().toISOString(),
+                demoUrl: 'demo/business-waiting-list-demo.html'
+            };
+            showResult('dashboardDemo', dashboardDemo);
+        }
+
+        function showBookingChangesDemo() {
+            console.log('Showing booking changes demo...');
+            const bookingChangesDemo = {
+                businessId: 'royal-hair-studio',
+                cancellationRate: 4.2,
+                totalBookings: 45,
+                cancellations: 2,
+                amendments: 1,
+                features: {
+                    '24HourRule': 'Cancellations blocked within 24 hours',
+                    'ReasonTracking': 'Required explanations for all cancellations',
+                    'CustomerNotifications': 'Automatic email/SMS notifications',
+                    'AmendmentWorkflow': 'Request/response system for changes',
+                    'AdminMonitoring': 'Cancellation rate tracking and flagging',
+                    'GDPRCompliance': 'Data masking and audit logging'
+                },
+                recentChanges: [
+                    {
+                        type: 'cancellation',
+                        customer: 'Sarah J.',
+                        service: 'Haircut & Style',
+                        reason: 'Staff illness',
+                        timestamp: '2024-12-16 14:30'
+                    },
+                    {
+                        type: 'amendment',
+                        customer: 'Mike S.',
+                        service: 'Hair Treatment',
+                        newTime: '2024-12-19 15:00',
+                        status: 'pending'
+                    }
+                ]
+            };
+
+            const demo = document.getElementById('bookingChangesDemo');
+            demo.style.display = 'block';
+            demo.innerHTML = `
+                <h3>Booking Cancellation & Amendment System Demo</h3>
+                <p><strong>Business ID:</strong> ${bookingChangesDemo.businessId}</p>
+                <p><strong>Cancellation Rate:</strong> ${bookingChangesDemo.cancellationRate}%</p>
+                <p><strong>Total Bookings:</strong> ${bookingChangesDemo.totalBookings}</p>
+                <p><strong>Recent Cancellations:</strong> ${bookingChangesDemo.cancellations}</p>
+                <p><strong>Pending Amendments:</strong> ${bookingChangesDemo.amendments}</p>
+                
+                <h4>System Features:</h4>
+                <ul>
+                    <li>✅ ${bookingChangesDemo.features['24HourRule']}</li>
+                    <li>✅ ${bookingChangesDemo.features['ReasonTracking']}</li>
+                    <li>✅ ${bookingChangesDemo.features['CustomerNotifications']}</li>
+                    <li>✅ ${bookingChangesDemo.features['AmendmentWorkflow']}</li>
+                    <li>✅ ${bookingChangesDemo.features['AdminMonitoring']}</li>
+                    <li>✅ ${bookingChangesDemo.features['GDPRCompliance']}</li>
+                </ul>
+                
+                <h4>Recent Changes:</h4>
+                <ul>
+                    ${bookingChangesDemo.recentChanges.map(change => 
+                        `<li><strong>${change.type.toUpperCase()}:</strong> ${change.customer} - ${change.service} (${change.timestamp})</li>`
+                    ).join('')}
+                </ul>
+                
+                <p><strong>Access Points:</strong></p>
+                <ul>
+                    <li>🔵 Business Dashboard - Booking Changes tab</li>
+                    <li>🟣 Customer Dashboard - Booking notifications</li>
+                    <li>🔴 Admin Dashboard - Cancellation monitoring</li>
+                </ul>
+            `;
+        }
+    </script>
+</body>
+</html>

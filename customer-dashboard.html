@@ -13,11 +13,15 @@
     <script src="js/security-utils.js"></script>
     <script src="js/cookie-consent.js"></script>
     
+    <!-- Basket Count Sync Fix -->
+    <script src="assets/js/basket.js"></script>
+    
     <!-- SMS System -->
     <script src="backend/sms-credit-system.js"></script>
     <script src="backend/verified-business-numbers.js"></script>
     <script src="backend/verified-customer-numbers.js"></script>
     <script src="backend/sms-messaging-system.js"></script>
+    <script src="backend/customer-phone-verification.js"></script>
     <style>
         * {
             margin: 0;
@@ -1908,6 +1912,220 @@
         .phone-warning.hidden {
             display: none;
         }
+        
+        /* Contextual Dashboard Banners */
+        .contextual-banners-container {
+            margin-bottom: 2rem;
+        }
+        
+        .contextual-banner {
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid;
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .banner-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .banner-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .banner-text {
+            flex: 1;
+        }
+        
+        .banner-text h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .banner-text p {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .banner-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+        
+        .btn-dismiss {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-dismiss:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        /* Banner Types */
+        .banner-waiting-list {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        
+        .banner-waiting-list .banner-text h3 {
+            color: #3b82f6;
+        }
+        
+        .banner-waiting-list .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        .banner-sms-credits {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        
+        .banner-sms-credits .banner-text h3 {
+            color: #f59e0b;
+        }
+        
+        .banner-sms-credits .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        .banner-payment-failure {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        
+        .banner-payment-failure .banner-text h3 {
+            color: #ef4444;
+        }
+        
+        .banner-payment-failure .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        .banner-review-request {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .banner-review-request .banner-text h3 {
+            color: #10b981;
+        }
+        
+        .banner-review-request .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        .banner-privacy-reminder {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+        
+        .banner-privacy-reminder .banner-text h3 {
+            color: #8b5cf6;
+        }
+        
+        .banner-privacy-reminder .banner-text p {
+            color: #e5e7eb;
+        }
+        
+        /* Button Styles */
+        .btn-accept {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-accept:hover {
+            background: #059669;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e5e7eb;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .banner-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .banner-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .contextual-banner {
+                padding: 1rem;
+            }
+            
+            .banner-text h3 {
+                font-size: 1rem;
+            }
+            
+            .banner-text p {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1994,6 +2212,87 @@
 
         <!-- Dashboard Content -->
         <div class="dashboard-content">
+            <!-- Phone Verification Banner -->
+            <div class="phone-verification-banner" id="phoneVerificationBanner" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; display: none;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="color: #f59e0b; font-size: 1.5rem;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <h3 style="color: #f59e0b; margin-bottom: 0.5rem; font-size: 1.1rem;">Phone Verification Required</h3>
+                        <p style="color: #cccccc; margin: 0; font-size: 0.95rem;">
+                            ⚠️ Please verify your phone number — it's used for booking confirmations and updates. You won't receive notifications until it's verified.
+                        </p>
+                    </div>
+                    <button onclick="showPhoneVerificationModal()" style="background: #f59e0b; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background 0.3s ease;">
+                        <i class="fas fa-mobile-alt"></i> Verify Now
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Contextual Dashboard Banners -->
+            <div id="contextualBanners" class="contextual-banners-container">
+                <!-- Waiting List Offer Banner -->
+                <div class="contextual-banner banner-waiting-list" id="waitingListBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">💬</div>
+                        <div class="banner-text">
+                            <h3>Waiting List Offer</h3>
+                            <p>A slot opened at <strong>Royal Hair Studio</strong> for <strong>Haircut & Style</strong> on <strong>Friday, 15 Dec at 2:00 PM</strong>. This offer expires in <strong>1h 23m</strong>.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-accept" onclick="acceptWaitingListOffer()">Accept Offer</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('waitingListBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Failure Banner -->
+                <div class="contextual-banner banner-payment-failure" id="paymentFailureBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">❌</div>
+                        <div class="banner-text">
+                            <h3>Payment Failed</h3>
+                            <p>Your payment for <strong>£29.00</strong> failed on <strong>12 Dec 2024</strong>. Please update your payment method to avoid service interruption.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-primary" onclick="updatePaymentMethod()">Update Payment</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('paymentFailureBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Review Request Banner -->
+                <div class="contextual-banner banner-review-request" id="reviewRequestBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">💬</div>
+                        <div class="banner-text">
+                            <h3>Leave a Review</h3>
+                            <p>How was your experience at <strong>Royal Hair Studio</strong>? Your feedback helps other customers and supports local businesses.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-primary" onclick="writeReview()">Write Review</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('reviewRequestBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Privacy Reminder Banner -->
+                <div class="contextual-banner banner-privacy-reminder" id="privacyReminderBanner" style="display: none;">
+                    <div class="banner-content">
+                        <div class="banner-icon">🔐</div>
+                        <div class="banner-text">
+                            <h3>Privacy Reminder</h3>
+                            <p>Your personal data is protected. You can download your data or delete your account anytime in <strong>Account Settings</strong>.</p>
+                        </div>
+                        <div class="banner-actions">
+                            <button class="btn-secondary" onclick="openAccountSettings()">Account Settings</button>
+                            <button class="btn-dismiss" onclick="dismissBanner('privacyReminderBanner')">×</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Bookings Tab -->
             <div class="tab-content active" id="bookingsTab">
                 <!-- Upcoming Bookings Section -->
@@ -2912,6 +3211,54 @@
 
     <script>
         // Tab switching functionality
+        /**
+         * Phone Verification Functions
+         */
+        function showPhoneVerificationModal() {
+            // TODO: connect SMS verification function when notification system is added
+            console.log('TODO: Implement phone verification modal when SMS system is ready');
+            
+            // Show placeholder modal
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <h2>Phone Verification</h2>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center; padding: 2rem;">
+                            <div style="color: #f59e0b; font-size: 3rem; margin-bottom: 1rem;">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h3 style="color: #ffffff; margin-bottom: 1rem;">Phone Verification</h3>
+                            <p style="color: #cccccc; margin-bottom: 2rem;">
+                                Phone verification will be implemented when the SMS notification system is added. 
+                                For now, your phone number is stored securely.
+                            </p>
+                            <button onclick="this.closest('.modal-overlay').remove()" style="background: #f59e0b; color: white; border: none; padding: 0.75rem 2rem; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                                Got It
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function checkPhoneVerificationStatus() {
+            // TODO: connect SMS verification function when notification system is added
+            // For now, show the banner for demonstration
+            const banner = document.getElementById('phoneVerificationBanner');
+            if (banner) {
+                banner.style.display = 'block';
+            }
+        }
+
         function showTab(tabName) {
             // Hide all tab contents
             const tabContents = document.querySelectorAll('.tab-content');
@@ -3260,6 +3607,7 @@
             checkCancellationEligibility();
             loadCustomerWaitingList();
             setupBookingEventListeners();
+            checkPhoneVerificationStatus(); // Check phone verification status
             
             // Check if user came from Account Settings link
             if (localStorage.getItem('redirectToAccount') === 'true') {
@@ -4796,7 +5144,88 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize phone verification after a short delay to ensure systems are loaded
             setTimeout(initializePhoneVerification, 1000);
+            
+            // Initialize contextual banners
+            initializeContextualBanners();
         });
+        
+        // Contextual Banner Functions
+        function initializeContextualBanners() {
+            // Simulate different banner states for demo purposes
+            // In a real system, these would be determined by actual user data
+            
+            // Show waiting list offer banner (demo)
+            setTimeout(() => {
+                showBanner('waitingListBanner');
+            }, 2000);
+            
+            // Show review request banner after completed booking (demo)
+            setTimeout(() => {
+                showBanner('reviewRequestBanner');
+            }, 4000);
+        }
+        
+        function showBanner(bannerId) {
+            const banner = document.getElementById(bannerId);
+            if (banner) {
+                banner.style.display = 'block';
+                banner.style.animation = 'slideIn 0.3s ease-out';
+            }
+        }
+        
+        function dismissBanner(bannerId) {
+            const banner = document.getElementById(bannerId);
+            if (banner) {
+                banner.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    banner.style.display = 'none';
+                }, 300);
+            }
+        }
+        
+        function acceptWaitingListOffer() {
+            console.log('Accepting waiting list offer...');
+            // TODO: Implement waiting list offer acceptance
+            alert('Waiting list offer accepted! Redirecting to booking...');
+            dismissBanner('waitingListBanner');
+        }
+        
+        function updatePaymentMethod() {
+            console.log('Opening payment method update...');
+            // TODO: Implement payment method update
+            alert('Opening payment method update...');
+            dismissBanner('paymentFailureBanner');
+        }
+        
+        function writeReview() {
+            console.log('Opening review form...');
+            // TODO: Implement review writing
+            alert('Opening review form...');
+            dismissBanner('reviewRequestBanner');
+        }
+        
+        function openAccountSettings() {
+            console.log('Opening account settings...');
+            // TODO: Implement account settings navigation
+            alert('Opening account settings...');
+            dismissBanner('privacyReminderBanner');
+        }
+        
+        // Add slideOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOut {
+                from {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

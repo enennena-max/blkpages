@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed - BlkPages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 50%, #121212 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .confirmation-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .confirmation-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .confirmation-header i {
+            font-size: 4rem;
+            color: #10B981;
+            margin-bottom: 1rem;
+        }
+        
+        .confirmation-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #10B981, #059669);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .confirmation-details {
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #333;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .detail-section {
+            margin-bottom: 2rem;
+        }
+        
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-section h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #FF007F;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: #ccc;
+            font-weight: 500;
+        }
+        
+        .detail-value {
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .confirmation-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .action-btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .action-btn.primary {
+            background: linear-gradient(90deg, #FF007F, #C20056);
+            color: white;
+            border: none;
+        }
+        
+        .action-btn.primary:hover {
+            background: linear-gradient(90deg, #C20056, #FF007F);
+            transform: translateY(-2px);
+        }
+        
+        .action-btn.secondary {
+            background: transparent;
+            color: #FF007F;
+            border: 2px solid #FF007F;
+        }
+        
+        .action-btn.secondary:hover {
+            background: #FF007F;
+            color: white;
+        }
+        
+        .action-btn.success {
+            background: linear-gradient(90deg, #10B981, #059669);
+            color: white;
+            border: none;
+        }
+        
+        .action-btn.success:hover {
+            background: linear-gradient(90deg, #059669, #047857);
+            transform: translateY(-2px);
+        }
+        
+        .notice {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .notice i {
+            color: #10B981;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .notice h3 {
+            color: #10B981;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .notice p {
+            color: #ccc;
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .confirmation-container {
+                padding: 1rem;
+            }
+            
+            .confirmation-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <!-- Confirmation Header -->
+        <div class="confirmation-header">
+            <i class="fas fa-check-circle"></i>
+            <h1>Booking Confirmed!</h1>
+            <p>Your appointment has been successfully booked</p>
+        </div>
+
+        <!-- Confirmation Details -->
+        <div class="confirmation-details">
+            <!-- Service Details -->
+            <div class="detail-section">
+                <h3><i class="fas fa-cut"></i> Service Details</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Service:</span>
+                    <span class="detail-value" id="serviceName">Hair Cut & Style</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Duration:</span>
+                    <span class="detail-value" id="serviceDuration">30 minutes</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Price:</span>
+                    <span class="detail-value" id="servicePrice">£45</span>
+                </div>
+            </div>
+
+            <!-- Business Details -->
+            <div class="detail-section">
+                <h3><i class="fas fa-store"></i> Business Details</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Business:</span>
+                    <span class="detail-value" id="businessName">Royal Hair Studio</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Address:</span>
+                    <span class="detail-value" id="businessAddress">123 High Street, London, SW1A 1AA</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value" id="businessPhone">020 7123 4567</span>
+                </div>
+            </div>
+
+            <!-- Appointment Details -->
+            <div class="detail-section">
+                <h3><i class="fas fa-calendar-alt"></i> Appointment Details</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Date:</span>
+                    <span class="detail-value" id="appointmentDate">Monday, 15 January 2024</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Time:</span>
+                    <span class="detail-value" id="appointmentTime">10:00 AM</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Booking Reference:</span>
+                    <span class="detail-value" id="bookingReference">BLK-2024-001234</span>
+                </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="detail-section">
+                <h3><i class="fas fa-credit-card"></i> Payment Details</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Payment Method:</span>
+                    <span class="detail-value" id="paymentMethod">Pay at Venue</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Deposit Paid:</span>
+                    <span class="detail-value" id="depositPaid">£0</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Balance Due:</span>
+                    <span class="detail-value" id="balanceDue">£45</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Notice -->
+        <div class="notice">
+            <i class="fas fa-envelope"></i>
+            <h3>Confirmation Sent</h3>
+            <p>A confirmation email and SMS have been sent to you with all the details.</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="confirmation-actions">
+            <button class="action-btn primary" onclick="addToCalendar()">
+                <i class="fas fa-calendar-plus"></i>
+                Add to Calendar
+            </button>
+            <button class="action-btn secondary" onclick="viewBooking()">
+                <i class="fas fa-eye"></i>
+                View Booking
+            </button>
+            <button class="action-btn success" onclick="contactBusiness()">
+                <i class="fas fa-phone"></i>
+                Contact Business
+            </button>
+        </div>
+
+        <!-- Additional Actions -->
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="index.html" class="action-btn secondary">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Load booking details from localStorage or URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBookingDetails();
+        });
+
+        function loadBookingDetails() {
+            // Try to get booking details from localStorage
+            const bookingData = localStorage.getItem('lastBooking');
+            
+            if (bookingData) {
+                try {
+                    const booking = JSON.parse(bookingData);
+                    populateBookingDetails(booking);
+                } catch (e) {
+                    console.error('Error parsing booking data:', e);
+                    // Use default values
+                    populateDefaultDetails();
+                }
+            } else {
+                // Use default values for demo
+                populateDefaultDetails();
+            }
+        }
+
+        function populateBookingDetails(booking) {
+            document.getElementById('serviceName').textContent = booking.serviceName || 'Hair Cut & Style';
+            document.getElementById('serviceDuration').textContent = (booking.duration || 30) + ' minutes';
+            document.getElementById('servicePrice').textContent = '£' + (booking.price || 45);
+            document.getElementById('businessName').textContent = booking.businessName || 'Royal Hair Studio';
+            document.getElementById('businessAddress').textContent = booking.businessAddress || '123 High Street, London, SW1A 1AA';
+            document.getElementById('businessPhone').textContent = booking.businessPhone || '020 7123 4567';
+            document.getElementById('appointmentDate').textContent = booking.appointmentDate || 'Monday, 15 January 2024';
+            document.getElementById('appointmentTime').textContent = booking.appointmentTime || '10:00 AM';
+            document.getElementById('bookingReference').textContent = booking.bookingReference || 'BLK-2024-001234';
+            document.getElementById('paymentMethod').textContent = booking.paymentMethod || 'Pay at Venue';
+            document.getElementById('depositPaid').textContent = '£' + (booking.depositPaid || 0);
+            document.getElementById('balanceDue').textContent = '£' + (booking.balanceDue || 45);
+        }
+
+        function populateDefaultDetails() {
+            // Use default values for demo
+            const defaultBooking = {
+                serviceName: 'Hair Cut & Style',
+                duration: 30,
+                price: 45,
+                businessName: 'Royal Hair Studio',
+                businessAddress: '123 High Street, London, SW1A 1AA',
+                businessPhone: '020 7123 4567',
+                appointmentDate: 'Monday, 15 January 2024',
+                appointmentTime: '10:00 AM',
+                bookingReference: 'BLK-2024-001234',
+                paymentMethod: 'Pay at Venue',
+                depositPaid: 0,
+                balanceDue: 45
+            };
+            
+            populateBookingDetails(defaultBooking);
+        }
+
+        function addToCalendar() {
+            // Generate ICS file for calendar
+            const icsContent = generateICS();
+            const blob = new Blob([icsContent], { type: 'text/calendar' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'appointment.ics';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            
+            // Show success message
+            showMessage('Calendar event added successfully!', 'success');
+        }
+
+        function generateICS() {
+            const startDate = new Date('2024-01-15T10:00:00');
+            const endDate = new Date('2024-01-15T10:30:00');
+            
+            const formatDate = (date) => {
+                return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            };
+            
+            return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//BlkPages//Booking System//EN
+BEGIN:VEVENT
+UID:${Date.now()}@blkpages.com
+DTSTAMP:${formatDate(new Date())}
+DTSTART:${formatDate(startDate)}
+DTEND:${formatDate(endDate)}
+SUMMARY:Hair Cut & Style at Royal Hair Studio
+DESCRIPTION:Your appointment is confirmed.
+LOCATION:123 High Street, London, SW1A 1AA
+END:VEVENT
+END:VCALENDAR`;
+        }
+
+        function viewBooking() {
+            // Redirect to customer dashboard or booking management
+            window.location.href = 'customer-dashboard.html';
+        }
+
+        function contactBusiness() {
+            // Open contact options
+            const phone = document.getElementById('businessPhone').textContent;
+            window.open(`tel:${phone}`, '_self');
+        }
+
+        function showMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10B981' : '#EF4444'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 4px;
+                font-weight: 600;
+                z-index: 9999;
+                max-width: 300px;
+            `;
+            messageEl.textContent = message;
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                if (messageEl.parentNode) {
+                    messageEl.remove();
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

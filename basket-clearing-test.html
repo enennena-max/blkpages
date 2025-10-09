@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basket Clearing Rules Test - BlkPages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/js/basket.js"></script>
+    <style>
+        .test-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #1a1a1a;
+            border-radius: 8px;
+            color: white;
+        }
+        .test-section {
+            background: #222;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid #333;
+        }
+        .test-button {
+            background: #0D9488;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            background: #0F766E;
+        }
+        .test-button.danger {
+            background: #EF4444;
+        }
+        .test-button.danger:hover {
+            background: #DC2626;
+        }
+        .test-button.warning {
+            background: #F59E0B;
+        }
+        .test-button.warning:hover {
+            background: #D97706;
+        }
+        .basket-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 1rem;
+            border-radius: 50%;
+            background: rgba(13, 148, 136, 0.1);
+            border: 1px solid rgba(13, 148, 136, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            margin: 1rem;
+        }
+        .basket-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 2px solid #1a1a1a;
+        }
+        .log {
+            background: #111;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .status-indicator.success { background: #10B981; }
+        .status-indicator.warning { background: #F59E0B; }
+        .status-indicator.error { background: #EF4444; }
+        .status-indicator.info { background: #3B82F6; }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <div class="test-container">
+        <h1 class="text-3xl font-bold mb-6 text-center">🧪 Basket Clearing Rules Test</h1>
+        
+        <!-- Basket Display -->
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">Current Basket Status</h2>
+            <div class="text-center mb-4">
+                <div class="basket-icon" id="basketIcon">
+                    <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.5rem;"></i>
+                    <span class="basket-count" id="basketCount">0</span>
+                </div>
+            </div>
+            <div id="basketContents" class="log">Loading...</div>
+        </div>
+
+        <!-- Test Scenarios -->
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">🧪 Test Scenarios</h2>
+            
+            <h3 class="text-lg font-medium mb-3">1. Auto-Clear After Successful Checkout</h3>
+            <button class="test-button" onclick="testSuccessfulCheckout()">
+                Simulate Successful Checkout
+            </button>
+            <button class="test-button" onclick="testPayAtVenue()">
+                Simulate "Pay at Venue" Booking
+            </button>
+            
+            <h3 class="text-lg font-medium mb-3">2. Session Timeout (30 min)</h3>
+            <button class="test-button warning" onclick="testSessionTimeout()">
+                Simulate Session Timeout
+            </button>
+            <button class="test-button" onclick="testSessionWarning()">
+                Simulate 2-Min Warning
+            </button>
+            
+            <h3 class="text-lg font-medium mb-3">3. Slot Unavailability</h3>
+            <button class="test-button" onclick="testSlotUnavailable()">
+                Simulate Slot Booked by Another Customer
+            </button>
+            
+            <h3 class="text-lg font-medium mb-3">4. Business Switching</h3>
+            <button class="test-button" onclick="testBusinessSwitch()">
+                Simulate Adding Service from Different Business
+            </button>
+            
+            <h3 class="text-lg font-medium mb-3">5. Manual Clearing</h3>
+            <button class="test-button danger" onclick="testManualClear()">
+                Test "Empty Basket" Button
+            </button>
+            
+            <h3 class="text-lg font-medium mb-3">6. GDPR Compliance</h3>
+            <button class="test-button danger" onclick="testLogoutClear()">
+                Simulate Logout Clearing
+            </button>
+        </div>
+
+        <!-- Event Log -->
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">📋 Event Log</h2>
+            <div id="eventLog" class="log">Waiting for events...</div>
+        </div>
+
+        <!-- Test Instructions -->
+        <div class="test-section">
+            <h2 class="text-xl font-semibold mb-4">📖 Test Instructions</h2>
+            <div class="space-y-2 text-sm">
+                <p><span class="status-indicator success"></span><strong>Auto-Clear:</strong> Test successful checkout and "pay at venue" scenarios</p>
+                <p><span class="status-indicator warning"></span><strong>Session Timeout:</strong> Test 30-minute timeout with 2-minute warning</p>
+                <p><span class="status-indicator info"></span><strong>Slot Unavailability:</strong> Test partial clearing when slots become unavailable</p>
+                <p><span class="status-indicator error"></span><strong>Business Switching:</strong> Test clearing when adding services from different businesses</p>
+                <p><span class="status-indicator success"></span><strong>Manual Clearing:</strong> Test "Empty Basket" button with confirmation</p>
+                <p><span class="status-indicator error"></span><strong>GDPR Compliance:</strong> Test automatic clearing on logout</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let itemCounter = 1;
+        let businessCounter = 1;
+        
+        // Initialize test data
+        function initializeTestData() {
+            // Add some test items to basket
+            const testItems = [
+                {
+                    id: 'test-item-1',
+                    name: 'Hair Cut & Style',
+                    price: 45,
+                    business_id: 'business-1',
+                    business: 'Royal Hair Studio',
+                    slotInfo: '2024-01-15-10:00'
+                },
+                {
+                    id: 'test-item-2',
+                    name: 'Deep Conditioning',
+                    price: 35,
+                    business_id: 'business-1',
+                    business: 'Royal Hair Studio',
+                    slotInfo: '2024-01-15-11:00'
+                }
+            ];
+            
+            testItems.forEach(item => {
+                addToBasket(item);
+            });
+            
+            updateBasketContents();
+            logEvent('Test data initialized with 2 items from Royal Hair Studio');
+        }
+        
+        // Test 1: Successful Checkout
+        function testSuccessfulCheckout() {
+            logEvent('Testing successful checkout clearing...');
+            clearBasketAfterCheckout();
+            updateBasketContents();
+        }
+        
+        function testPayAtVenue() {
+            logEvent('Testing "Pay at Venue" booking clearing...');
+            clearBasketAfterCheckout();
+            updateBasketContents();
+        }
+        
+        // Test 2: Session Timeout
+        function testSessionTimeout() {
+            logEvent('Testing session timeout (simulated)...');
+            handleSessionTimeout();
+            updateBasketContents();
+        }
+        
+        function testSessionWarning() {
+            logEvent('Testing 2-minute warning...');
+            showSessionWarning();
+        }
+        
+        // Test 3: Slot Unavailability
+        function testSlotUnavailable() {
+            const basket = getBasket();
+            if (basket.length === 0) {
+                logEvent('No items in basket to test slot unavailability');
+                return;
+            }
+            
+            const firstItem = basket[0];
+            logEvent(`Testing slot unavailability for: ${firstItem.name}`);
+            removeUnavailableSlot(firstItem.id, firstItem.slotInfo);
+            updateBasketContents();
+        }
+        
+        // Test 4: Business Switching
+        function testBusinessSwitch() {
+            const differentBusinessItem = {
+                id: 'test-item-different-business',
+                name: 'Massage Therapy',
+                price: 80,
+                business_id: 'business-2',
+                business: 'Wellness Spa',
+                slotInfo: '2024-01-16-14:00'
+            };
+            
+            logEvent('Testing business switching...');
+            addToBasketWithBusinessCheck(differentBusinessItem);
+            updateBasketContents();
+        }
+        
+        // Test 5: Manual Clearing
+        function testManualClear() {
+            logEvent('Testing manual basket clearing...');
+            clearBasketWithConfirmation();
+            updateBasketContents();
+        }
+        
+        // Test 6: Logout Clearing
+        function testLogoutClear() {
+            logEvent('Testing logout clearing (GDPR compliance)...');
+            clearBasketOnLogout();
+            updateBasketContents();
+        }
+        
+        // Utility Functions
+        function updateBasketContents() {
+            const basket = getBasket();
+            const container = document.getElementById('basketContents');
+            
+            if (basket.length === 0) {
+                container.innerHTML = '<div style="color: #666; text-align: center; padding: 1rem;">Basket is empty</div>';
+            } else {
+                container.innerHTML = basket.map(item => 
+                    `<div style="padding: 0.5rem; border-bottom: 1px solid #333;">
+                        <strong>${item.name}</strong> - £${item.price}<br>
+                        <small style="color: #999;">${item.business} | Slot: ${item.slotInfo}</small>
+                    </div>`
+                ).join('');
+            }
+        }
+        
+        function logEvent(message) {
+            const log = document.getElementById('eventLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span style="color: #666;">[${timestamp}]</span> ${message}`;
+            log.appendChild(logEntry);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        // Listen for basket events
+        window.addEventListener('basketUpdated', function(e) {
+            logEvent(`Basket updated: ${e.detail.action} - ${e.detail.basket.length} items remaining`);
+            updateBasketContents();
+        });
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTestData();
+            logEvent('Basket clearing test page loaded');
+        });
+    </script>
+</body>
+</html>
