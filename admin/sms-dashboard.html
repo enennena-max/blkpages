@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin SMS Dashboard - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- SMS System -->
+    <script src="../backend/sms-credit-system.js"></script>
+    <script src="../backend/verified-business-numbers.js"></script>
+    <script src="../backend/verified-customer-numbers.js"></script>
+    <script src="../backend/sms-messaging-system.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .admin-badge {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .dashboard-subtitle {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #10B981;
+        }
+        
+        .stat-card p {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        /* Business Usage Table */
+        .business-usage-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .business-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .business-table th,
+        .business-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .business-table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .business-table td {
+            color: #cccccc;
+        }
+        
+        .business-name {
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .usage-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        
+        .usage-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .usage-fill.low {
+            background: linear-gradient(90deg, #10B981, #059669);
+        }
+        
+        .usage-fill.warning {
+            background: linear-gradient(90deg, #F59E0B, #D97706);
+        }
+        
+        .usage-fill.critical {
+            background: linear-gradient(90deg, #EF4444, #DC2626);
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-badge.low {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10B981;
+        }
+        
+        .status-badge.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #F59E0B;
+        }
+        
+        .status-badge.critical {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #EF4444;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        /* Audit Logs */
+        .audit-logs-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .audit-log {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .audit-log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .audit-log-type {
+            font-weight: 600;
+            color: #10B981;
+        }
+        
+        .audit-log-time {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .audit-log-details {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .business-table {
+                font-size: 0.8rem;
+            }
+            
+            .business-table th,
+            .business-table td {
+                padding: 0.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <a href="#" class="logo">BlkPages Admin</a>
+                <div class="admin-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Admin Dashboard</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">SMS System Admin Dashboard</h1>
+                <p class="dashboard-subtitle">Monitor SMS usage, credits, and system performance across all businesses</p>
+            </div>
+
+            <!-- Overall Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="totalBusinesses">0</h3>
+                    <p>Total Businesses</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalSMSSent">0</h3>
+                    <p>SMS Messages Sent</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalCreditsUsed">0</h3>
+                    <p>Credits Used This Month</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="lowCreditBusinesses">0</h3>
+                    <p>Businesses Under 20%</p>
+                </div>
+            </div>
+
+            <!-- Business Usage Table -->
+            <div class="business-usage-section">
+                <div class="section-header">
+                    <h2 class="section-title">Business SMS Usage</h2>
+                    <button class="refresh-btn" onclick="refreshBusinessUsage()">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh Data
+                    </button>
+                </div>
+                
+                <table class="business-table">
+                    <thead>
+                        <tr>
+                            <th>Business Name</th>
+                            <th>Plan</th>
+                            <th>Usage</th>
+                            <th>Remaining</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="businessUsageTable">
+                        <!-- Business data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Recent Audit Logs -->
+            <div class="audit-logs-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent SMS Audit Logs</h2>
+                    <button class="refresh-btn" onclick="refreshAuditLogs()">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh Logs
+                    </button>
+                </div>
+                
+                <div id="auditLogsContainer">
+                    <!-- Audit logs will be populated by JavaScript -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ==================== ADMIN SMS DASHBOARD ====================
+        
+        /**
+         * Initialize admin dashboard
+         */
+        function initializeAdminDashboard() {
+            loadOverallStats();
+            loadBusinessUsage();
+            loadAuditLogs();
+        }
+
+        /**
+         * Load overall statistics
+         */
+        function loadOverallStats() {
+            // Mock data for demo
+            const stats = {
+                totalBusinesses: 127,
+                totalSMSSent: 15420,
+                totalCreditsUsed: 12350,
+                lowCreditBusinesses: 23
+            };
+
+            document.getElementById('totalBusinesses').textContent = stats.totalBusinesses;
+            document.getElementById('totalSMSSent').textContent = stats.totalSMSSent.toLocaleString();
+            document.getElementById('totalCreditsUsed').textContent = stats.totalCreditsUsed.toLocaleString();
+            document.getElementById('lowCreditBusinesses').textContent = stats.lowCreditBusinesses;
+        }
+
+        /**
+         * Load business usage data
+         */
+        function loadBusinessUsage() {
+            const businesses = [
+                {
+                    name: "Royal Hair Studio",
+                    plan: "Starter",
+                    used: 45,
+                    total: 50,
+                    remaining: 5,
+                    status: "warning"
+                },
+                {
+                    name: "Beauty Studio",
+                    plan: "Professional",
+                    used: 12,
+                    total: 50,
+                    remaining: 38,
+                    status: "low"
+                },
+                {
+                    name: "Fitness Studio",
+                    plan: "Starter",
+                    used: 50,
+                    total: 50,
+                    remaining: 0,
+                    status: "critical"
+                },
+                {
+                    name: "Spa Retreat",
+                    plan: "Professional",
+                    used: 8,
+                    total: 50,
+                    remaining: 42,
+                    status: "low"
+                },
+                {
+                    name: "Nail Salon",
+                    plan: "Starter",
+                    used: 48,
+                    total: 50,
+                    remaining: 2,
+                    status: "warning"
+                }
+            ];
+
+            const tableBody = document.getElementById('businessUsageTable');
+            tableBody.innerHTML = '';
+
+            businesses.forEach(business => {
+                const usagePercentage = (business.used / business.total) * 100;
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td class="business-name">${business.name}</td>
+                    <td>${business.plan}</td>
+                    <td>
+                        <div class="usage-bar">
+                            <div class="usage-fill ${business.status}" style="width: ${usagePercentage}%"></div>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #cccccc;">
+                            ${business.used}/${business.total} SMS
+                        </div>
+                    </td>
+                    <td>${business.remaining}</td>
+                    <td>
+                        <span class="status-badge ${business.status}">
+                            <i class="fas fa-${business.status === 'critical' ? 'exclamation-circle' : business.status === 'warning' ? 'exclamation-triangle' : 'check-circle'}"></i>
+                            ${business.status === 'critical' ? 'Critical' : business.status === 'warning' ? 'Warning' : 'Good'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn" onclick="adjustCredits('${business.name}', ${business.remaining})">
+                            <i class="fas fa-plus"></i> Add Credits
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        /**
+         * Load audit logs
+         */
+        function loadAuditLogs() {
+            const auditLogs = [
+                {
+                    type: "credits_deducted",
+                    time: "2 minutes ago",
+                    details: "Royal Hair Studio - 1 SMS sent (booking confirmation)"
+                },
+                {
+                    type: "low_credit_warning_sent",
+                    time: "5 minutes ago",
+                    details: "Beauty Studio - 80% usage warning email sent"
+                },
+                {
+                    type: "addon_purchased",
+                    time: "15 minutes ago",
+                    details: "Fitness Studio - 50 SMS credits added (£3.00)"
+                },
+                {
+                    type: "sms_failed",
+                    time: "1 hour ago",
+                    details: "Spa Retreat - SMS delivery failed (invalid number)"
+                },
+                {
+                    type: "verification_successful",
+                    time: "2 hours ago",
+                    details: "Nail Salon - Business phone number verified"
+                }
+            ];
+
+            const container = document.getElementById('auditLogsContainer');
+            container.innerHTML = '';
+
+            auditLogs.forEach(log => {
+                const logElement = document.createElement('div');
+                logElement.className = 'audit-log';
+                
+                logElement.innerHTML = `
+                    <div class="audit-log-header">
+                        <span class="audit-log-type">${log.type.replace(/_/g, ' ').toUpperCase()}</span>
+                        <span class="audit-log-time">${log.time}</span>
+                    </div>
+                    <div class="audit-log-details">${log.details}</div>
+                `;
+                
+                container.appendChild(logElement);
+            });
+        }
+
+        /**
+         * Refresh business usage data
+         */
+        function refreshBusinessUsage() {
+            console.log('Refreshing business usage data...');
+            loadBusinessUsage();
+            showNotification('Business usage data refreshed', 'success');
+        }
+
+        /**
+         * Refresh audit logs
+         */
+        function refreshAuditLogs() {
+            console.log('Refreshing audit logs...');
+            loadAuditLogs();
+            showNotification('Audit logs refreshed', 'success');
+        }
+
+        /**
+         * Adjust credits for a business
+         */
+        function adjustCredits(businessName, currentCredits) {
+            const credits = prompt(`Adjust SMS credits for ${businessName}:\n\nCurrent credits: ${currentCredits}\n\nEnter new credit amount:`, currentCredits);
+            
+            if (credits !== null && !isNaN(credits) && credits >= 0) {
+                console.log(`Adjusting credits for ${businessName} to ${credits}`);
+                showNotification(`Credits adjusted for ${businessName}`, 'success');
+                loadBusinessUsage(); // Refresh the table
+            }
+        }
+
+        /**
+         * Show notification
+         */
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                font-weight: 500;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        /**
+         * Initialize dashboard on page load
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAdminDashboard();
+        });
+    </script>
+</body>
+</html>

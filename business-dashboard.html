@@ -10,6 +10,13 @@
     <!-- Security & GDPR Features -->
     <script src="js/security-utils.js"></script>
     <script src="js/cookie-consent.js"></script>
+    
+    <!-- SMS System -->
+    <script src="backend/sms-credit-system.js"></script>
+    <script src="backend/verified-business-numbers.js"></script>
+    <script src="backend/verified-customer-numbers.js"></script>
+    <script src="backend/sms-messaging-system.js"></script>
+    <script src="backend/notification-automation-system.js"></script>
     <style>
         * { 
             margin: 0; 
@@ -98,8 +105,309 @@
             transition: background 0.3s;
         }
         
-        .btn-logout:hover { 
+        .btn-logout:hover {
             background: #c82333;
+        }
+        
+        /* SMS Credit Tracker Styles */
+        .sms-credit-section {
+            margin: 2rem 0;
+        }
+        
+        .sms-credit-section h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .sms-credit-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .sms-credit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .sms-credit-info {
+            flex: 1;
+        }
+        
+        .sms-credit-title {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sms-credit-subtitle {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .sms-credit-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn-sms-add {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-sms-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .sms-credit-tracker {
+            margin-bottom: 1.5rem;
+        }
+        
+        .credit-progress {
+            margin-bottom: 1rem;
+        }
+        
+        .credit-progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .credit-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10B981, #059669);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 64%; /* 32/50 = 64% */
+        }
+        
+        .credit-progress-fill.warning {
+            background: linear-gradient(90deg, #F59E0B, #D97706);
+        }
+        
+        .credit-progress-fill.critical {
+            background: linear-gradient(90deg, #EF4444, #DC2626);
+        }
+        
+        .credit-stats {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .credits-remaining {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .credits-total {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .credit-alerts {
+            margin-top: 1rem;
+        }
+        
+        .credit-alert {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .credit-alert.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #F59E0B;
+        }
+        
+        .credit-alert.critical {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #EF4444;
+        }
+        
+        .sms-analytics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .analytics-item {
+            text-align: center;
+        }
+        
+        .analytics-label {
+            color: #cccccc;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .analytics-value {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        /* SMS Add-on Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        
+        .modal-content {
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-header h3 {
+            color: #ffffff;
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: #cccccc;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            color: #ffffff;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .sms-addon-options {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .addon-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .addon-info h4 {
+            color: #ffffff;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        
+        .addon-info p {
+            color: #cccccc;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .addon-price {
+            color: #10B981;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+        
+        .btn-addon {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-addon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .sms-info {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .sms-info p {
+            color: #cccccc;
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .sms-info p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .sms-info i {
+            color: #10B981;
         }
         
         /* Main Content */
@@ -2029,6 +2337,228 @@
                 transform: translateX(0);
             }
         }
+
+        /* Notification Log Styles */
+        .notification-log-header {
+            margin-bottom: 2rem;
+        }
+
+        .notification-log-header h2 {
+            color: #ffffff;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-log-header p {
+            color: #cccccc;
+            font-size: 1rem;
+        }
+
+        .notification-log-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .notification-log-filters {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-group label {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: #1A1A1A;
+            color: #ffffff;
+            font-size: 0.9rem;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #FF3CAC;
+            box-shadow: 0 0 0 3px rgba(255, 60, 172, 0.1);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .notification-log-container {
+            background: #2A2A2A;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .notification-log-table {
+            overflow-x: auto;
+        }
+
+        .notification-log-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .notification-log-table th {
+            background: #1A1A1A;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .notification-log-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #cccccc;
+        }
+
+        .notification-log-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-sent {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+
+        .status-failed {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .status-queued {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid #ffc107;
+        }
+
+        .status-suppressed {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+            border: 1px solid #6c757d;
+        }
+
+        .status-bounced {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+            border-style: dashed;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-resend {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-resend:hover {
+            background: #0056b3;
+        }
+
+        .btn-resend:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .btn-details {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-details:hover {
+            background: #5a6268;
+        }
+
+        .recipient-masked {
+            color: #888888;
+            font-family: monospace;
+        }
+
+        .attempts-info {
+            color: #ffc107;
+            font-weight: 600;
+        }
+
+        .error-details {
+            background: #1A1A1A;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            color: #dc3545;
+            font-size: 0.9rem;
+            font-family: monospace;
+        }
+
+        @media (max-width: 768px) {
+            .notification-log-filters {
+                padding: 1rem;
+            }
+            
+            .filter-actions {
+                flex-direction: column;
+            }
+            
+            .notification-log-table {
+                font-size: 0.9rem;
+            }
+            
+            .notification-log-table th,
+            .notification-log-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2085,6 +2615,9 @@
                 <li><a href="business-loyalty-dashboard.html" id="loyaltyTab" style="display: block;">
                     <i class="fas fa-gift"></i> Loyalty Rewards
                 </a></li>
+                <li><a href="#" onclick="showSection('notification-log')">
+                    <i class="fas fa-bell"></i> Notification Log
+                </a></li>
             </ul>
         </aside>
 
@@ -2114,6 +2647,59 @@
                 <div class="stat-card">
                     <h3>89</h3>
                     <p>Bookings This Month</p>
+                </div>
+            </div>
+            
+            <!-- SMS Credit Tracker -->
+            <div class="sms-credit-section">
+                <h3>SMS Credits</h3>
+                <div class="sms-credit-card">
+                    <div class="sms-credit-header">
+                        <div class="sms-credit-info">
+                            <div class="sms-credit-title">SMS Message Credits</div>
+                            <div class="sms-credit-subtitle">Automatic booking notifications and promotional messages</div>
+                        </div>
+                        <div class="sms-credit-actions">
+                            <button class="btn-sms-add" onclick="showSMSAddOnModal()">
+                                <i class="fas fa-plus"></i> Buy More Credits
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="sms-credit-tracker">
+                        <div class="credit-progress">
+                            <div class="credit-progress-bar">
+                                <div class="credit-progress-fill" id="smsProgressFill"></div>
+                            </div>
+                            <div class="credit-stats">
+                                <span class="credits-remaining" id="smsCreditsRemaining">32</span>
+                                <span class="credits-total">of 50 SMS remaining</span>
+                            </div>
+                        </div>
+                        
+                        <div class="credit-alerts" id="smsCreditAlerts">
+                            <!-- Alerts will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="sms-analytics">
+                        <div class="analytics-item">
+                            <div class="analytics-label">Booking SMS</div>
+                            <div class="analytics-value" id="bookingSMS">15</div>
+                        </div>
+                        <div class="analytics-item">
+                            <div class="analytics-label">Promotional SMS</div>
+                            <div class="analytics-value" id="promotionalSMS">3</div>
+                        </div>
+                        <div class="analytics-item">
+                            <div class="analytics-label">Weekly Usage</div>
+                            <div class="analytics-value" id="weeklyUsage">12</div>
+                        </div>
+                        <div class="analytics-item">
+                            <div class="analytics-label">Days Remaining</div>
+                            <div class="analytics-value" id="daysRemaining">15</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -2878,6 +3464,103 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
                 </div>
             </div>
         </div>
+        
+        <!-- Notification Log Section -->
+        <div id="notification-log" class="content-section">
+            <div class="notification-log-header">
+                <h2>Notification Log</h2>
+                <p>Track all notifications sent to customers and view delivery status</p>
+            </div>
+            
+            <div class="notification-log-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalNotifications">0</div>
+                    <div class="stat-label">Total Sent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="successfulNotifications">0</div>
+                    <div class="stat-label">Successful</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="failedNotifications">0</div>
+                    <div class="stat-label">Failed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingNotifications">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+            
+            <div class="notification-log-filters">
+                <div class="filter-group">
+                    <label for="notificationTypeFilter">Type</label>
+                    <select id="notificationTypeFilter" onchange="filterNotifications()">
+                        <option value="all">All Types</option>
+                        <option value="booking.create">Booking Confirmation</option>
+                        <option value="booking.cancel">Booking Cancellation</option>
+                        <option value="waitinglist.slot.opened">Waiting List Offer</option>
+                        <option value="stripe.payment_failed">Payment Failed</option>
+                        <option value="sms.credits.threshold">SMS Low Credit</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="notificationStatusFilter">Status</label>
+                    <select id="notificationStatusFilter" onchange="filterNotifications()">
+                        <option value="all">All Status</option>
+                        <option value="sent">Sent</option>
+                        <option value="failed">Failed</option>
+                        <option value="queued">Queued</option>
+                        <option value="suppressed">Suppressed</option>
+                        <option value="bounced">Bounced</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="notificationChannelFilter">Channel</label>
+                    <select id="notificationChannelFilter" onchange="filterNotifications()">
+                        <option value="all">All Channels</option>
+                        <option value="email">Email</option>
+                        <option value="sms">SMS</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="notificationDateFilter">Date Range</label>
+                    <input type="date" id="notificationDateFilter" onchange="filterNotifications()">
+                </div>
+                
+                <div class="filter-actions">
+                    <button class="btn-secondary" onclick="exportNotificationLog()">
+                        <i class="fas fa-download"></i> Export CSV
+                    </button>
+                    <button class="btn-primary" onclick="refreshNotificationLog()">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div class="notification-log-container">
+                <div class="notification-log-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date/Time</th>
+                                <th>Recipient</th>
+                                <th>Channel</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Attempts</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="notificationLogContent">
+                            <!-- Notification log entries will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </main>
     </div>
 
@@ -3332,6 +4015,15 @@ Refunds are returned to your original payment method within 5–10 business days
             if (targetSection) {
                 targetSection.classList.add('active');
                 console.log('Section', sectionId, 'is now active');
+                
+                // Load section-specific data
+                if (sectionId === 'dashboard') {
+                    loadDashboardData();
+                } else if (sectionId === 'waiting-list') {
+                    loadWaitingList();
+                } else if (sectionId === 'notification-log') {
+                    initializeNotificationLog();
+                }
             } else {
                 console.error('Section not found:', sectionId);
             }
@@ -4876,10 +5568,545 @@ Refunds are returned to your original payment method within 5–10 business days
          * Filter waiting list
          */
         function filterWaitingList() {
-            const businessId = localStorage.getItem('businessId') || 'business_1';
-            const waitingList = JSON.parse(localStorage.getItem(`businessWaitingList_${businessId}`) || '[]');
+            const businessId = localStorage.getItem('businessId') || 'business_1';                                                                              
+            const waitingList = JSON.parse(localStorage.getItem(`businessWaitingList_${businessId}`) || '[]');                                                  
             displayWaitingList(waitingList);
         }
+
+        // ==================== SMS CREDIT SYSTEM ====================
+        
+        /**
+         * Initialize SMS credit system
+         */
+        function initializeSMSCredits() {
+            const businessId = localStorage.getItem('businessId') || 'business_1';
+            
+            // Load SMS credit data
+            loadSMSCreditData(businessId);
+            
+            // Update SMS analytics
+            updateSMSAnalytics(businessId);
+            
+            // Check for low credit alerts
+            checkSMSCreditAlerts(businessId);
+        }
+
+        /**
+         * Load SMS credit data
+         */
+        function loadSMSCreditData(businessId) {
+            try {
+                const analytics = window.smsCreditSystem.getUsageAnalytics(businessId);
+                
+                if (analytics) {
+                    // Update progress bar
+                    const progressFill = document.getElementById('smsProgressFill');
+                    const creditsRemaining = document.getElementById('smsCreditsRemaining');
+                    const bookingSMS = document.getElementById('bookingSMS');
+                    const promotionalSMS = document.getElementById('promotionalSMS');
+                    const weeklyUsage = document.getElementById('weeklyUsage');
+                    const daysRemaining = document.getElementById('daysRemaining');
+                    
+                    if (progressFill) {
+                        const percentage = (analytics.current_credits / analytics.total_allowance) * 100;
+                        progressFill.style.width = percentage + '%';
+                        
+                        // Add warning/critical classes
+                        if (analytics.usage_percentage >= 80) {
+                            progressFill.classList.add('warning');
+                        }
+                        if (analytics.usage_percentage >= 100) {
+                            progressFill.classList.add('critical');
+                        }
+                    }
+                    
+                    if (creditsRemaining) {
+                        creditsRemaining.textContent = analytics.current_credits;
+                    }
+                    
+                    if (bookingSMS) {
+                        bookingSMS.textContent = analytics.booking_sms;
+                    }
+                    
+                    if (promotionalSMS) {
+                        promotionalSMS.textContent = analytics.promotional_sms;
+                    }
+                    
+                    if (weeklyUsage) {
+                        weeklyUsage.textContent = analytics.weekly_usage_rate;
+                    }
+                    
+                    if (daysRemaining) {
+                        daysRemaining.textContent = analytics.estimated_days_remaining;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading SMS credit data:', error);
+            }
+        }
+
+        /**
+         * Update SMS analytics
+         */
+        function updateSMSAnalytics(businessId) {
+            try {
+                const analytics = window.smsCreditSystem.getUsageAnalytics(businessId);
+                
+                if (analytics) {
+                    // Update analytics display
+                    console.log('SMS Analytics:', analytics);
+                }
+            } catch (error) {
+                console.error('Error updating SMS analytics:', error);
+            }
+        }
+
+        /**
+         * Check SMS credit alerts
+         */
+        function checkSMSCreditAlerts(businessId) {
+            try {
+                const analytics = window.smsCreditSystem.getUsageAnalytics(businessId);
+                const alertsContainer = document.getElementById('smsCreditAlerts');
+                
+                if (!alertsContainer || !analytics) return;
+                
+                // Clear existing alerts
+                alertsContainer.innerHTML = '';
+                
+                // Show warning alert at 80% usage
+                if (analytics.usage_percentage >= 80 && analytics.usage_percentage < 100) {
+                    const warningAlert = document.createElement('div');
+                    warningAlert.className = 'credit-alert warning';
+                    warningAlert.innerHTML = `
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>80% of your SMS credits have been used. Consider purchasing more credits to avoid interruption.</span>
+                    `;
+                    alertsContainer.appendChild(warningAlert);
+                }
+                
+                // Show critical alert at 100% usage
+                if (analytics.usage_percentage >= 100) {
+                    const criticalAlert = document.createElement('div');
+                    criticalAlert.className = 'credit-alert critical';
+                    criticalAlert.innerHTML = `
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>You've used all your SMS credits. SMS notifications are paused until you add more credits.</span>
+                    `;
+                    alertsContainer.appendChild(criticalAlert);
+                }
+            } catch (error) {
+                console.error('Error checking SMS credit alerts:', error);
+            }
+        }
+
+        /**
+         * Show SMS add-on modal
+         */
+        function showSMSAddOnModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Buy SMS Credits</h3>
+                        <button class="modal-close" onclick="closeSMSAddOnModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="sms-addon-options">
+                            <div class="addon-option">
+                                <div class="addon-info">
+                                    <h4>50 SMS Credits</h4>
+                                    <p>Perfect for small businesses</p>
+                                </div>
+                                <div class="addon-price">£3.00</div>
+                                <button class="btn-addon" onclick="purchaseSMSAddOn(1)">Add to Cart</button>
+                            </div>
+                            <div class="addon-option">
+                                <div class="addon-info">
+                                    <h4>100 SMS Credits</h4>
+                                    <p>Great for growing businesses</p>
+                                </div>
+                                <div class="addon-price">£6.00</div>
+                                <button class="btn-addon" onclick="purchaseSMSAddOn(2)">Add to Cart</button>
+                            </div>
+                            <div class="addon-option">
+                                <div class="addon-info">
+                                    <h4>150 SMS Credits</h4>
+                                    <p>Perfect for busy businesses</p>
+                                </div>
+                                <div class="addon-price">£9.00</div>
+                                <button class="btn-addon" onclick="purchaseSMSAddOn(3)">Add to Cart</button>
+                            </div>
+                        </div>
+                        <div class="sms-info">
+                            <p><i class="fas fa-info-circle"></i> SMS credits are used for booking confirmations, cancellations, and promotional messages.</p>
+                            <p><i class="fas fa-shield-alt"></i> All customer phone numbers are encrypted and protected for privacy.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        /**
+         * Close SMS add-on modal
+         */
+        function closeSMSAddOnModal() {
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        /**
+         * Purchase SMS add-on
+         */
+        function purchaseSMSAddOn(bundleCount) {
+            const businessId = localStorage.getItem('businessId') || 'business_1';
+            
+            try {
+                // Purchase add-on credits
+                const result = window.smsCreditSystem.purchaseAddOn(businessId, bundleCount);
+                
+                if (result) {
+                    // Update display
+                    loadSMSCreditData(businessId);
+                    checkSMSCreditAlerts(businessId);
+                    
+                    // Show success message
+                    showNotification(`Successfully added ${bundleCount * 50} SMS credits!`, 'success');
+                    
+                    // Close modal
+                    closeSMSAddOnModal();
+                }
+            } catch (error) {
+                console.error('Error purchasing SMS add-on:', error);
+                showNotification('Error purchasing SMS credits. Please try again.', 'error');
+            }
+        }
+
+        /**
+         * Initialize SMS system on page load
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize SMS credits after a short delay to ensure systems are loaded                                                                          
+            setTimeout(initializeSMSCredits, 1000);
+        });
+
+        /**
+         * Notification Log Functions
+         */
+        let notificationLogData = [];
+
+        /**
+         * Load notification log data
+         */
+        function loadNotificationLog() {
+            // Mock notification data
+            notificationLogData = [
+                {
+                    id: 'notif_1',
+                    date_time: '2024-01-15 14:30:00',
+                    recipient: 'j•••@example.com',
+                    channel: 'email',
+                    type: 'booking.create',
+                    status: 'sent',
+                    attempts: 1,
+                    error: null
+                },
+                {
+                    id: 'notif_2',
+                    date_time: '2024-01-15 14:32:00',
+                    recipient: '+44••••••7891',
+                    channel: 'sms',
+                    type: 'booking.create',
+                    status: 'sent',
+                    attempts: 1,
+                    error: null
+                },
+                {
+                    id: 'notif_3',
+                    date_time: '2024-01-15 15:15:00',
+                    recipient: 'm•••@example.com',
+                    channel: 'email',
+                    type: 'waitinglist.slot.opened',
+                    status: 'sent',
+                    attempts: 1,
+                    error: null
+                },
+                {
+                    id: 'notif_4',
+                    date_time: '2024-01-15 16:00:00',
+                    recipient: '+44••••••1234',
+                    channel: 'sms',
+                    type: 'waitinglist.slot.opened',
+                    status: 'failed',
+                    attempts: 3,
+                    error: 'Invalid phone number'
+                },
+                {
+                    id: 'notif_5',
+                    date_time: '2024-01-15 16:30:00',
+                    recipient: 'b•••@example.com',
+                    channel: 'email',
+                    type: 'stripe.payment_failed',
+                    status: 'sent',
+                    attempts: 1,
+                    error: null
+                },
+                {
+                    id: 'notif_6',
+                    date_time: '2024-01-15 17:00:00',
+                    recipient: 's•••@example.com',
+                    channel: 'email',
+                    type: 'sms.credits.threshold',
+                    status: 'sent',
+                    attempts: 1,
+                    error: null
+                }
+            ];
+
+            updateNotificationStats();
+            renderNotificationLog();
+        }
+
+        /**
+         * Update notification statistics
+         */
+        function updateNotificationStats() {
+            const total = notificationLogData.length;
+            const successful = notificationLogData.filter(n => n.status === 'sent').length;
+            const failed = notificationLogData.filter(n => n.status === 'failed').length;
+            const pending = notificationLogData.filter(n => n.status === 'queued').length;
+
+            document.getElementById('totalNotifications').textContent = total;
+            document.getElementById('successfulNotifications').textContent = successful;
+            document.getElementById('failedNotifications').textContent = failed;
+            document.getElementById('pendingNotifications').textContent = pending;
+        }
+
+        /**
+         * Render notification log table
+         */
+        function renderNotificationLog() {
+            const container = document.getElementById('notificationLogContent');
+            if (!container) return;
+
+            const filteredData = filterNotifications(notificationLogData);
+            
+            container.innerHTML = filteredData.map(notification => `
+                <tr>
+                    <td>${notification.date_time}</td>
+                    <td class="recipient-masked">${notification.recipient}</td>
+                    <td>
+                        <span class="channel-badge channel-${notification.channel}">
+                            <i class="fas fa-${notification.channel === 'email' ? 'envelope' : 'mobile-alt'}"></i>
+                            ${notification.channel.toUpperCase()}
+                        </span>
+                    </td>
+                    <td>${getNotificationTypeLabel(notification.type)}</td>
+                    <td>
+                        <span class="status-badge status-${notification.status}">
+                            ${notification.status.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="attempts-info">${notification.attempts}</td>
+                    <td>
+                        <div class="notification-actions">
+                            ${notification.status === 'failed' ? `
+                                <button class="btn-resend" onclick="resendNotification('${notification.id}')">
+                                    <i class="fas fa-redo"></i> Resend
+                                </button>
+                            ` : ''}
+                            <button class="btn-details" onclick="showNotificationDetails('${notification.id}')">
+                                <i class="fas fa-info-circle"></i> Details
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        /**
+         * Filter notifications based on selected filters
+         */
+        function filterNotifications(data = notificationLogData) {
+            const typeFilter = document.getElementById('notificationTypeFilter')?.value || 'all';
+            const statusFilter = document.getElementById('notificationStatusFilter')?.value || 'all';
+            const channelFilter = document.getElementById('notificationChannelFilter')?.value || 'all';
+            const dateFilter = document.getElementById('notificationDateFilter')?.value;
+
+            return data.filter(notification => {
+                if (typeFilter !== 'all' && notification.type !== typeFilter) return false;
+                if (statusFilter !== 'all' && notification.status !== statusFilter) return false;
+                if (channelFilter !== 'all' && notification.channel !== channelFilter) return false;
+                if (dateFilter && !notification.date_time.includes(dateFilter)) return false;
+                return true;
+            });
+        }
+
+        /**
+         * Get notification type label
+         */
+        function getNotificationTypeLabel(type) {
+            const labels = {
+                'booking.create': 'Booking Confirmation',
+                'booking.cancel': 'Booking Cancellation',
+                'waitinglist.slot.opened': 'Waiting List Offer',
+                'stripe.payment_failed': 'Payment Failed',
+                'sms.credits.threshold': 'SMS Low Credit'
+            };
+            return labels[type] || type;
+        }
+
+        /**
+         * Resend notification
+         */
+        function resendNotification(notificationId) {
+            const notification = notificationLogData.find(n => n.id === notificationId);
+            if (!notification) return;
+
+            // Update status to queued
+            notification.status = 'queued';
+            notification.attempts = 0;
+            notification.error = null;
+
+            // Simulate resend
+            setTimeout(() => {
+                notification.status = 'sent';
+                notification.attempts = 1;
+                notification.date_time = new Date().toLocaleString();
+                renderNotificationLog();
+                updateNotificationStats();
+                showNotification('Notification resent successfully', 'success');
+            }, 2000);
+
+            renderNotificationLog();
+            updateNotificationStats();
+            showNotification('Resending notification...', 'info');
+        }
+
+        /**
+         * Show notification details
+         */
+        function showNotificationDetails(notificationId) {
+            const notification = notificationLogData.find(n => n.id === notificationId);
+            if (!notification) return;
+
+            const details = `
+                <div class="notification-details">
+                    <h3>Notification Details</h3>
+                    <p><strong>ID:</strong> ${notification.id}</p>
+                    <p><strong>Recipient:</strong> ${notification.recipient}</p>
+                    <p><strong>Channel:</strong> ${notification.channel.toUpperCase()}</p>
+                    <p><strong>Type:</strong> ${getNotificationTypeLabel(notification.type)}</p>
+                    <p><strong>Status:</strong> ${notification.status.toUpperCase()}</p>
+                    <p><strong>Attempts:</strong> ${notification.attempts}</p>
+                    <p><strong>Date/Time:</strong> ${notification.date_time}</p>
+                    ${notification.error ? `
+                        <div class="error-details">
+                            <strong>Error:</strong> ${notification.error}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            // Create modal
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Notification Details</h2>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ${details}
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+        }
+
+        /**
+         * Export notification log to CSV
+         */
+        function exportNotificationLog() {
+            const filteredData = filterNotifications(notificationLogData);
+            
+            const csvContent = [
+                ['Date/Time', 'Recipient', 'Channel', 'Type', 'Status', 'Attempts'],
+                ...filteredData.map(n => [
+                    n.date_time,
+                    n.recipient,
+                    n.channel,
+                    getNotificationTypeLabel(n.type),
+                    n.status,
+                    n.attempts
+                ])
+            ].map(row => row.join(',')).join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `notification-log-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            showNotification('Notification log exported successfully', 'success');
+        }
+
+        /**
+         * Refresh notification log
+         */
+        function refreshNotificationLog() {
+            loadNotificationLog();
+            showNotification('Notification log refreshed', 'success');
+        }
+
+        /**
+         * Initialize notification log when section is shown
+         */
+        function initializeNotificationLog() {
+            if (document.getElementById('notification-log').classList.contains('active')) {
+                loadNotificationLog();
+            }
+        }
+
+        // Add channel badge styles
+        const channelBadgeStyles = `
+            <style>
+                .channel-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                    padding: 0.25rem 0.5rem;
+                    border-radius: 12px;
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                }
+                
+                .channel-email {
+                    background: rgba(33, 150, 243, 0.2);
+                    color: #2196f3;
+                    border: 1px solid #2196f3;
+                }
+                
+                .channel-sms {
+                    background: rgba(76, 175, 80, 0.2);
+                    color: #4caf50;
+                    border: 1px solid #4caf50;
+                }
+            </style>
+        `;
+        
+        document.head.insertAdjacentHTML('beforeend', channelBadgeStyles);
     </script>
 </body>
 </html>

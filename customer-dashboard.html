@@ -12,6 +12,12 @@
     <!-- Security & GDPR Features -->
     <script src="js/security-utils.js"></script>
     <script src="js/cookie-consent.js"></script>
+    
+    <!-- SMS System -->
+    <script src="backend/sms-credit-system.js"></script>
+    <script src="backend/verified-business-numbers.js"></script>
+    <script src="backend/verified-customer-numbers.js"></script>
+    <script src="backend/sms-messaging-system.js"></script>
     <style>
         * {
             margin: 0;
@@ -1738,6 +1744,170 @@
                 padding: 1rem;
             }
         }
+        
+        /* Phone Verification Styles */
+        .phone-verification {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .phone-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .status-indicator i {
+            color: #10B981;
+        }
+        
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .status-badge.verified {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10B981;
+        }
+        
+        .status-badge.unverified {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #F59E0B;
+        }
+        
+        .phone-input-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+        
+        .phone-input-group .form-input {
+            flex: 1;
+        }
+        
+        .btn-verify {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+        
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-verify:disabled {
+            background: #6B7280;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .phone-help {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #cccccc;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .phone-help i {
+            color: #10B981;
+        }
+        
+        .verification-code {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .code-input-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+        
+        .code-input-group .form-input {
+            flex: 1;
+            text-align: center;
+            font-size: 1.2rem;
+            letter-spacing: 0.2em;
+        }
+        
+        .code-help {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+        
+        .btn-resend {
+            background: none;
+            border: none;
+            color: #10B981;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+        
+        .btn-resend:hover {
+            color: #059669;
+        }
+        
+        .phone-warning {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: #F59E0B;
+            font-size: 0.9rem;
+        }
+        
+        .phone-warning i {
+            color: #F59E0B;
+        }
+        
+        .phone-warning.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -2602,6 +2772,60 @@
                             <i class="fas fa-save"></i> Update Profile
                     </button>
                 </div>
+                
+                    <!-- Phone Number Verification -->
+                    <div class="account-section">
+                        <h3>Phone Number Verification</h3>
+                        <div class="phone-verification">
+                            <div class="phone-status" id="phoneStatus">
+                                <div class="status-indicator">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <span>Phone Number Verification</span>
+                                </div>
+                                <div class="status-badge" id="phoneStatusBadge">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Unverified
+                                </div>
+                            </div>
+                            
+                            <div class="phone-form" id="phoneForm">
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <div class="phone-input-group">
+                                        <input type="tel" id="phoneNumber" placeholder="+44 7700 900000" class="form-input">
+                                        <button class="btn-verify" id="verifyPhoneBtn" onclick="initiatePhoneVerification()">
+                                            <i class="fas fa-paper-plane"></i> Send Code
+                                        </button>
+                                    </div>
+                                    <div class="phone-help">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>We'll send a verification code to confirm your phone number for booking notifications.</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="verification-code" id="verificationCodeSection" style="display: none;">
+                                    <div class="form-group">
+                                        <label>Verification Code</label>
+                                        <div class="code-input-group">
+                                            <input type="text" id="verificationCode" placeholder="123456" class="form-input" maxlength="6">
+                                            <button class="btn-verify" onclick="verifyPhoneCode()">
+                                                <i class="fas fa-check"></i> Verify
+                                            </button>
+                                        </div>
+                                        <div class="code-help">
+                                            <span>Enter the 6-digit code sent to your phone</span>
+                                            <button class="btn-resend" onclick="resendVerificationCode()">Resend Code</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="phone-warning" id="phoneWarning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Please verify your phone number — it's used for booking confirmations and updates. You won't receive notifications until it's verified.</span>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Change Password -->
                     <div class="account-section">
@@ -4434,6 +4658,145 @@
             showNotification('Left waiting list successfully', 'success');
             loadCustomerWaitingList();
         }
+
+        // ==================== PHONE VERIFICATION SYSTEM ====================
+        
+        /**
+         * Initialize phone verification system
+         */
+        function initializePhoneVerification() {
+            const customerId = localStorage.getItem('customerId') || 'customer_1';
+            
+            // Check verification status
+            checkPhoneVerificationStatus(customerId);
+        }
+
+        /**
+         * Check phone verification status
+         */
+        function checkPhoneVerificationStatus(customerId) {
+            try {
+                const status = window.verifiedCustomerNumbers.getVerificationStatus(customerId);
+                updatePhoneVerificationUI(status);
+            } catch (error) {
+                console.error('Error checking phone verification status:', error);
+            }
+        }
+
+        /**
+         * Update phone verification UI
+         */
+        function updatePhoneVerificationUI(status) {
+            const statusBadge = document.getElementById('phoneStatusBadge');
+            const phoneWarning = document.getElementById('phoneWarning');
+            
+            if (status.is_verified) {
+                if (statusBadge) {
+                    statusBadge.className = 'status-badge verified';
+                    statusBadge.innerHTML = '<i class="fas fa-check"></i> Verified';
+                }
+                if (phoneWarning) {
+                    phoneWarning.classList.add('hidden');
+                }
+            } else {
+                if (statusBadge) {
+                    statusBadge.className = 'status-badge unverified';
+                    statusBadge.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Unverified';
+                }
+                if (phoneWarning) {
+                    phoneWarning.classList.remove('hidden');
+                }
+            }
+        }
+
+        /**
+         * Initiate phone verification
+         */
+        async function initiatePhoneVerification() {
+            const customerId = localStorage.getItem('customerId') || 'customer_1';
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            
+            if (!phoneNumber) {
+                showNotification('Please enter a phone number', 'error');
+                return;
+            }
+
+            try {
+                const result = await window.verifiedCustomerNumbers.initiateVerification(customerId, phoneNumber);
+                
+                if (result.success) {
+                    // Show verification code section
+                    document.getElementById('verificationCodeSection').style.display = 'block';
+                    document.getElementById('verifyPhoneBtn').disabled = true;
+                    document.getElementById('verifyPhoneBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Code Sent';
+                    
+                    showNotification(result.message, 'success');
+                }
+            } catch (error) {
+                console.error('Error initiating phone verification:', error);
+                showNotification(error.message, 'error');
+            }
+        }
+
+        /**
+         * Verify phone code
+         */
+        async function verifyPhoneCode() {
+            const customerId = localStorage.getItem('customerId') || 'customer_1';
+            const code = document.getElementById('verificationCode').value;
+            
+            if (!code) {
+                showNotification('Please enter the verification code', 'error');
+                return;
+            }
+
+            try {
+                const result = await window.verifiedCustomerNumbers.verifyCode(customerId, code);
+                
+                if (result.success) {
+                    // Update UI
+                    document.getElementById('verificationCodeSection').style.display = 'none';
+                    document.getElementById('verifyPhoneBtn').disabled = false;
+                    document.getElementById('verifyPhoneBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send Code';
+                    document.getElementById('phoneNumber').value = '';
+                    document.getElementById('verificationCode').value = '';
+                    
+                    // Update status
+                    checkPhoneVerificationStatus(customerId);
+                    
+                    showNotification(result.message, 'success');
+                }
+            } catch (error) {
+                console.error('Error verifying phone code:', error);
+                showNotification(error.message, 'error');
+            }
+        }
+
+        /**
+         * Resend verification code
+         */
+        async function resendVerificationCode() {
+            const customerId = localStorage.getItem('customerId') || 'customer_1';
+            
+            try {
+                const result = await window.verifiedCustomerNumbers.resendVerificationCode(customerId);
+                
+                if (result.success) {
+                    showNotification(result.message, 'success');
+                }
+            } catch (error) {
+                console.error('Error resending verification code:', error);
+                showNotification(error.message, 'error');
+            }
+        }
+
+        /**
+         * Initialize phone verification on page load
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize phone verification after a short delay to ensure systems are loaded
+            setTimeout(initializePhoneVerification, 1000);
+        });
     </script>
 </body>
 </html>
