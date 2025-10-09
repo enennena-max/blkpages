@@ -208,6 +208,9 @@
                 <button onclick="simulateSearchImpression()" class="btn btn-secondary">
                     <i class="fas fa-search"></i> Simulate Search
                 </button>
+                <button onclick="testRealSearchTracking()" class="btn btn-secondary">
+                    <i class="fas fa-search-plus"></i> Test Real Search
+                </button>
                 <button onclick="simulateContactClick()" class="btn btn-secondary">
                     <i class="fas fa-phone"></i> Simulate Contact
                 </button>
@@ -477,6 +480,27 @@
             
             loadAnalyticsData();
             logToConsole(`Enquiry simulated! Total: ${analyticsData[businessId].enquiries}`);
+        }
+        
+        // Test real search tracking
+        function testRealSearchTracking() {
+            logToConsole('Testing real search tracking...');
+            
+            // Open search results page in new tab
+            const searchWindow = window.open('search-results.html', '_blank');
+            
+            // Wait for page to load, then trigger search
+            setTimeout(() => {
+                if (searchWindow && !searchWindow.closed) {
+                    try {
+                        // Call the test function from the search results page
+                        searchWindow.testSearchTracking();
+                        logToConsole('Real search tracking test triggered');
+                    } catch (error) {
+                        logToConsole('Error triggering search test: ' + error.message);
+                    }
+                }
+            }, 2000);
         }
         
         // Simulate all actions at once

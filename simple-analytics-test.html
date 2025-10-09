@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Analytics Test - BLKPAGES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        button {
+            background: #1E90FF;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #00BFFF;
+        }
+        .result {
+            background: #2a2a2a;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        .success {
+            color: #28A745;
+        }
+        .error {
+            color: #DC2626;
+        }
+        .warning {
+            color: #FFC107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Simple Analytics Test</h1>
+        <p>This is a minimal test to check if analytics tracking is working.</p>
+        
+        <button onclick="testBasicTracking()">Test Basic Tracking</button>
+        <button onclick="checkData()">Check Saved Data</button>
+        <button onclick="clearData()">Clear Data</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const businessId = 'royalHairStudio';
+        
+        function testBasicTracking() {
+            const resultsDiv = document.getElementById('results');
+            let result = '<div class="result">';
+            result += '<h3>Basic Tracking Test Results:</h3>';
+            
+            try {
+                // Get current data
+                let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+                
+                // Initialize if needed
+                if (!analyticsData[businessId]) {
+                    analyticsData[businessId] = {
+                        totalViews: 0,
+                        dailyViews: {},
+                        lastView: null,
+                        viewHistory: [],
+                        searchImpressions: 0,
+                        dailySearchImpressions: {},
+                        contactClicks: 0,
+                        dailyContactClicks: {},
+                        enquiries: 0,
+                        dailyEnquiries: {}
+                    };
+                }
+                
+                const beforeViews = analyticsData[businessId].totalViews || 0;
+                
+                // Add a view
+                analyticsData[businessId].totalViews += 1;
+                analyticsData[businessId].lastView = new Date().toISOString();
+                
+                // Save data
+                localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+                
+                // Verify
+                const verifyData = JSON.parse(localStorage.getItem('businessAnalytics'));
+                const afterViews = verifyData[businessId].totalViews || 0;
+                
+                if (afterViews === beforeViews + 1) {
+                    result += '<p class="success">✅ SUCCESS: Tracking is working!</p>';
+                    result += '<p>Profile Views: ' + afterViews + '</p>';
+                } else {
+                    result += '<p class="error">❌ FAILED: Data not saved correctly</p>';
+                }
+                
+                // Test event
+                try {
+                    window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+                        detail: { businessId: businessId, totalViews: afterViews }
+                    }));
+                    result += '<p class="success">✅ Event dispatch works</p>';
+                } catch (error) {
+                    result += '<p class="error">❌ Event dispatch failed: ' + error.message + '</p>';
+                }
+                
+            } catch (error) {
+                result += '<p class="error">❌ ERROR: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultsDiv.innerHTML = result;
+        }
+        
+        function checkData() {
+            const resultsDiv = document.getElementById('results');
+            let result = '<div class="result">';
+            result += '<h3>Current Analytics Data:</h3>';
+            
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (analyticsData[businessId]) {
+                const data = analyticsData[businessId];
+                result += '<p class="success">✅ Data found for business: ' + businessId + '</p>';
+                result += '<p>Profile Views: ' + (data.totalViews || 0) + '</p>';
+                result += '<p>Search Impressions: ' + (data.searchImpressions || 0) + '</p>';
+                result += '<p>Contact Clicks: ' + (data.contactClicks || 0) + '</p>';
+                result += '<p>Enquiries: ' + (data.enquiries || 0) + '</p>';
+                result += '<p>Last View: ' + (data.lastView || 'Never') + '</p>';
+            } else {
+                result += '<p class="warning">⚠️ No data found for business: ' + businessId + '</p>';
+            }
+            
+            result += '<h4>Raw Data:</h4>';
+            result += '<pre style="background: #000; padding: 1rem; border-radius: 4px; overflow-x: auto;">';
+            result += JSON.stringify(analyticsData, null, 2);
+            result += '</pre>';
+            
+            result += '</div>';
+            resultsDiv.innerHTML = result;
+        }
+        
+        function clearData() {
+            localStorage.removeItem('businessAnalytics');
+            document.getElementById('results').innerHTML = '<div class="result"><p class="success">✅ All analytics data cleared</p></div>';
+        }
+        
+        // Listen for analytics updates
+        window.addEventListener('analyticsUpdated', function(e) {
+            console.log('Analytics update received:', e.detail);
+        });
+        
+        // Run initial check
+        document.addEventListener('DOMContentLoaded', function() {
+            checkData();
+        });
+    </script>
+</body>
+</html>

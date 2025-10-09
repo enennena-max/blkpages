@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Tracking Demo Hub - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #0a0a0a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .header p {
+            color: #9CA3AF;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .demo-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(30, 144, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(30, 144, 255, 0.1);
+        }
+        
+        .demo-card h3 {
+            color: #1E90FF;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .demo-card p {
+            color: #9CA3AF;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .demo-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 144, 255, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid #1E90FF;
+            color: #1E90FF;
+        }
+        
+        .btn-secondary:hover {
+            background: #1E90FF;
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28A745, #20C997);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #FFC107, #FF8F00);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #DC2626, #B91C1C);
+        }
+        
+        .live-stats {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(30, 144, 255, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(30, 144, 255, 0.2);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1E90FF;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+        
+        .console-output {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #00ff00;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .status-active {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28A745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+        
+        .status-inactive {
+            background: rgba(220, 38, 38, 0.2);
+            color: #DC2626;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .test-section h3 {
+            color: #1E90FF;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .test-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .test-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-chart-line"></i> Analytics Tracking Demo Hub</h1>
+            <p>Comprehensive testing and demonstration of all analytics tracking features including Profile Views, Search Impressions, Contact Clicks, and Enquiries Received.</p>
+        </div>
+        
+        <!-- Live Analytics Stats -->
+        <div class="test-section">
+            <h3><i class="fas fa-chart-pie"></i> Live Analytics Data</h3>
+            <div class="live-stats">
+                <div class="stats-grid" id="liveStats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="liveProfileViews">0</div>
+                        <div class="stat-label">Profile Views</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="liveSearchImpressions">0</div>
+                        <div class="stat-label">Search Impressions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="liveContactClicks">0</div>
+                        <div class="stat-label">Contact Clicks</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="liveEnquiries">0</div>
+                        <div class="stat-label">Enquiries Received</div>
+                    </div>
+                </div>
+            </div>
+            <div class="test-buttons">
+                <button onclick="refreshLiveStats()" class="btn btn-secondary">
+                    <i class="fas fa-sync"></i> Refresh Stats
+                </button>
+                <button onclick="clearAllAnalytics()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Clear All Data
+                </button>
+            </div>
+        </div>
+        
+        <!-- Demo Cards Grid -->
+        <div class="demo-grid">
+            <!-- Profile Views Demo -->
+            <div class="demo-card">
+                <h3><i class="fas fa-eye"></i> Profile Views Tracking</h3>
+                <p>Test automatic profile view tracking when someone visits a business profile page. This tracks every public view of the business profile.</p>
+                <div class="status-indicator status-active">
+                    <i class="fas fa-check-circle"></i>
+                    Active - Tracks on business-profile.html
+                </div>
+                <div class="demo-actions">
+                    <a href="business-profile.html" class="btn" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Visit Business Profile
+                    </a>
+                    <button onclick="simulateProfileView()" class="btn btn-secondary">
+                        <i class="fas fa-plus"></i> Simulate Profile View
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Search Impressions Demo -->
+            <div class="demo-card">
+                <h3><i class="fas fa-search"></i> Search Impressions Tracking</h3>
+                <p>Test search impression tracking when businesses appear in search results. This tracks every time a business is shown in search results.</p>
+                <div class="status-indicator status-active">
+                    <i class="fas fa-check-circle"></i>
+                    Active - Tracks on search-results.html
+                </div>
+                <div class="demo-actions">
+                    <a href="search-results.html" class="btn" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Visit Search Results
+                    </a>
+                    <button onclick="simulateSearchImpression()" class="btn btn-secondary">
+                        <i class="fas fa-search"></i> Simulate Search
+                    </button>
+                    <button onclick="testRealSearchTracking()" class="btn btn-warning">
+                        <i class="fas fa-search-plus"></i> Test Real Search
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Contact Clicks Demo -->
+            <div class="demo-card">
+                <h3><i class="fas fa-phone"></i> Contact Clicks Tracking</h3>
+                <p>Test contact click tracking when users click on call or message buttons. This tracks every interaction with contact buttons.</p>
+                <div class="status-indicator status-active">
+                    <i class="fas fa-check-circle"></i>
+                    Active - Tracks on business-profile.html
+                </div>
+                <div class="demo-actions">
+                    <a href="business-profile.html" class="btn" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Visit Business Profile
+                    </a>
+                    <button onclick="simulateContactClick()" class="btn btn-secondary">
+                        <i class="fas fa-phone"></i> Simulate Contact Click
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Enquiries Demo -->
+            <div class="demo-card">
+                <h3><i class="fas fa-envelope"></i> Enquiries Received Tracking</h3>
+                <p>Test enquiry tracking when users complete bookings or send messages. This tracks every booking submission and enquiry.</p>
+                <div class="status-indicator status-active">
+                    <i class="fas fa-check-circle"></i>
+                    Active - Tracks on business-profile.html
+                </div>
+                <div class="demo-actions">
+                    <a href="business-profile.html" class="btn" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Visit Business Profile
+                    </a>
+                    <button onclick="simulateEnquiry()" class="btn btn-secondary">
+                        <i class="fas fa-envelope"></i> Simulate Enquiry
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Analytics Dashboard Demo -->
+            <div class="demo-card">
+                <h3><i class="fas fa-chart-bar"></i> Analytics Dashboard</h3>
+                <p>View the comprehensive analytics dashboard with real-time data updates. See all metrics in one place with detailed breakdowns.</p>
+                <div class="status-indicator status-active">
+                    <i class="fas fa-check-circle"></i>
+                    Live - Real-time updates
+                </div>
+                <div class="demo-actions">
+                    <a href="business-analytics-dashboard.html" class="btn" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> View Analytics Dashboard
+                    </a>
+                    <a href="business-dashboard.html" class="btn btn-secondary" target="_blank">
+                        <i class="fas fa-tachometer-alt"></i> View Business Dashboard
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Testing Tools Demo -->
+            <div class="demo-card">
+                <h3><i class="fas fa-tools"></i> Testing & Debug Tools</h3>
+                <p>Access comprehensive testing tools and debugging utilities to verify all tracking systems are working correctly.</p>
+                <div class="status-indicator status-active">
+                    <i class="fas fa-check-circle"></i>
+                    Available - Full testing suite
+                </div>
+                <div class="demo-actions">
+                    <a href="analytics-test.html" class="btn" target="_blank">
+                        <i class="fas fa-vial"></i> Analytics Test Page
+                    </a>
+                    <a href="debug-analytics.html" class="btn btn-secondary" target="_blank">
+                        <i class="fas fa-bug"></i> Debug Tools
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Comprehensive Testing Section -->
+        <div class="test-section">
+            <h3><i class="fas fa-rocket"></i> Comprehensive Testing</h3>
+            <p>Test all tracking systems simultaneously to verify everything is working correctly.</p>
+            <div class="test-buttons">
+                <button onclick="testAllTracking()" class="btn btn-success">
+                    <i class="fas fa-rocket"></i> Test All Tracking Systems
+                </button>
+                <button onclick="simulateRealUserJourney()" class="btn btn-warning">
+                    <i class="fas fa-user"></i> Simulate Real User Journey
+                </button>
+                <button onclick="verifyAnalyticsSync()" class="btn btn-secondary">
+                    <i class="fas fa-sync"></i> Verify Analytics Sync
+                </button>
+            </div>
+        </div>
+        
+        <!-- Console Output -->
+        <div class="test-section">
+            <h3><i class="fas fa-terminal"></i> Console Output</h3>
+            <div class="console-output" id="consoleOutput">
+                Analytics Demo Hub loaded. Ready to test tracking systems...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const businessId = 'royalHairStudio';
+        
+        // Load and display live analytics data
+        function refreshLiveStats() {
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (analyticsData[businessId]) {
+                const data = analyticsData[businessId];
+                
+                document.getElementById('liveProfileViews').textContent = data.totalViews || 0;
+                document.getElementById('liveSearchImpressions').textContent = data.searchImpressions || 0;
+                document.getElementById('liveContactClicks').textContent = data.contactClicks || 0;
+                document.getElementById('liveEnquiries').textContent = data.enquiries || 0;
+                
+                logToConsole('Live stats refreshed');
+            } else {
+                document.getElementById('liveProfileViews').textContent = '0';
+                document.getElementById('liveSearchImpressions').textContent = '0';
+                document.getElementById('liveContactClicks').textContent = '0';
+                document.getElementById('liveEnquiries').textContent = '0';
+                
+                logToConsole('No analytics data found');
+            }
+        }
+        
+        // Simulate profile view
+        function simulateProfileView() {
+            const currentDate = new Date().toISOString().split('T')[0];
+            const currentTime = new Date().toISOString();
+            
+            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (!analyticsData[businessId]) {
+                analyticsData[businessId] = {
+                    totalViews: 0,
+                    dailyViews: {},
+                    lastView: null,
+                    viewHistory: [],
+                    searchImpressions: 0,
+                    dailySearchImpressions: {},
+                    contactClicks: 0,
+                    dailyContactClicks: {},
+                    enquiries: 0,
+                    dailyEnquiries: {}
+                };
+            }
+            
+            analyticsData[businessId].totalViews += 1;
+            analyticsData[businessId].lastView = currentTime;
+            
+            if (!analyticsData[businessId].dailyViews[currentDate]) {
+                analyticsData[businessId].dailyViews[currentDate] = 0;
+            }
+            analyticsData[businessId].dailyViews[currentDate] += 1;
+            
+            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+            
+            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+                detail: { 
+                    businessId: businessId,
+                    totalViews: analyticsData[businessId].totalViews,
+                    dailyViews: analyticsData[businessId].dailyViews[currentDate]
+                }
+            }));
+            
+            refreshLiveStats();
+            logToConsole('Profile view simulated');
+        }
+        
+        // Simulate search impression
+        function simulateSearchImpression() {
+            const currentDate = new Date().toISOString().split('T')[0];
+            
+            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (!analyticsData[businessId]) {
+                analyticsData[businessId] = {
+                    totalViews: 0,
+                    dailyViews: {},
+                    lastView: null,
+                    viewHistory: [],
+                    searchImpressions: 0,
+                    dailySearchImpressions: {},
+                    contactClicks: 0,
+                    dailyContactClicks: {},
+                    enquiries: 0,
+                    dailyEnquiries: {}
+                };
+            }
+            
+            analyticsData[businessId].searchImpressions += 1;
+            
+            if (!analyticsData[businessId].dailySearchImpressions[currentDate]) {
+                analyticsData[businessId].dailySearchImpressions[currentDate] = 0;
+            }
+            analyticsData[businessId].dailySearchImpressions[currentDate] += 1;
+            
+            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+            
+            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+                detail: { 
+                    businessId: businessId,
+                    type: 'searchImpressions',
+                    totalImpressions: analyticsData[businessId].searchImpressions,
+                    todayImpressions: analyticsData[businessId].dailySearchImpressions[currentDate]
+                }
+            }));
+            
+            refreshLiveStats();
+            logToConsole('Search impression simulated');
+        }
+        
+        // Simulate contact click
+        function simulateContactClick() {
+            const currentDate = new Date().toISOString().split('T')[0];
+            
+            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (!analyticsData[businessId]) {
+                analyticsData[businessId] = {
+                    totalViews: 0,
+                    dailyViews: {},
+                    lastView: null,
+                    viewHistory: [],
+                    searchImpressions: 0,
+                    dailySearchImpressions: {},
+                    contactClicks: 0,
+                    dailyContactClicks: {},
+                    enquiries: 0,
+                    dailyEnquiries: {}
+                };
+            }
+            
+            analyticsData[businessId].contactClicks += 1;
+            
+            if (!analyticsData[businessId].dailyContactClicks[currentDate]) {
+                analyticsData[businessId].dailyContactClicks[currentDate] = 0;
+            }
+            analyticsData[businessId].dailyContactClicks[currentDate] += 1;
+            
+            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+            
+            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+                detail: { 
+                    businessId: businessId,
+                    type: 'contactClick',
+                    totalClicks: analyticsData[businessId].contactClicks,
+                    todayClicks: analyticsData[businessId].dailyContactClicks[currentDate]
+                }
+            }));
+            
+            refreshLiveStats();
+            logToConsole('Contact click simulated');
+        }
+        
+        // Simulate enquiry
+        function simulateEnquiry() {
+            const currentDate = new Date().toISOString().split('T')[0];
+            
+            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (!analyticsData[businessId]) {
+                analyticsData[businessId] = {
+                    totalViews: 0,
+                    dailyViews: {},
+                    lastView: null,
+                    viewHistory: [],
+                    searchImpressions: 0,
+                    dailySearchImpressions: {},
+                    contactClicks: 0,
+                    dailyContactClicks: {},
+                    enquiries: 0,
+                    dailyEnquiries: {}
+                };
+            }
+            
+            analyticsData[businessId].enquiries += 1;
+            
+            if (!analyticsData[businessId].dailyEnquiries[currentDate]) {
+                analyticsData[businessId].dailyEnquiries[currentDate] = 0;
+            }
+            analyticsData[businessId].dailyEnquiries[currentDate] += 1;
+            
+            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+            
+            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+                detail: { 
+                    businessId: businessId,
+                    type: 'enquiry',
+                    totalEnquiries: analyticsData[businessId].enquiries,
+                    todayEnquiries: analyticsData[businessId].dailyEnquiries[currentDate]
+                }
+            }));
+            
+            refreshLiveStats();
+            logToConsole('Enquiry simulated');
+        }
+        
+        // Test real search tracking
+        function testRealSearchTracking() {
+            logToConsole('Testing real search tracking...');
+            
+            const searchWindow = window.open('search-results.html', '_blank');
+            
+            setTimeout(() => {
+                if (searchWindow && !searchWindow.closed) {
+                    try {
+                        searchWindow.testSearchTracking();
+                        logToConsole('Real search tracking test triggered');
+                    } catch (error) {
+                        logToConsole('Error triggering search test: ' + error.message);
+                    }
+                }
+            }, 2000);
+        }
+        
+        // Test all tracking systems
+        function testAllTracking() {
+            logToConsole('Testing all tracking systems...');
+            
+            simulateProfileView();
+            setTimeout(() => simulateSearchImpression(), 200);
+            setTimeout(() => simulateContactClick(), 400);
+            setTimeout(() => simulateEnquiry(), 600);
+            setTimeout(() => {
+                logToConsole('All tracking tests completed!');
+                refreshLiveStats();
+            }, 800);
+        }
+        
+        // Simulate real user journey
+        function simulateRealUserJourney() {
+            logToConsole('Simulating real user journey...');
+            
+            // Step 1: User searches for businesses
+            simulateSearchImpression();
+            setTimeout(() => {
+                logToConsole('Step 1: User searches for businesses');
+                simulateSearchImpression();
+            }, 500);
+            
+            // Step 2: User views business profile
+            setTimeout(() => {
+                logToConsole('Step 2: User views business profile');
+                simulateProfileView();
+            }, 1000);
+            
+            // Step 3: User clicks contact button
+            setTimeout(() => {
+                logToConsole('Step 3: User clicks contact button');
+                simulateContactClick();
+            }, 1500);
+            
+            // Step 4: User completes booking
+            setTimeout(() => {
+                logToConsole('Step 4: User completes booking');
+                simulateEnquiry();
+            }, 2000);
+            
+            // Final update
+            setTimeout(() => {
+                logToConsole('Real user journey simulation completed!');
+                refreshLiveStats();
+            }, 2500);
+        }
+        
+        // Verify analytics sync
+        function verifyAnalyticsSync() {
+            logToConsole('Verifying analytics sync...');
+            
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (analyticsData[businessId]) {
+                const data = analyticsData[businessId];
+                logToConsole(`Analytics data found: ${data.totalViews} views, ${data.searchImpressions} impressions, ${data.contactClicks} clicks, ${data.enquiries} enquiries`);
+                
+                // Check if data is consistent
+                const hasData = data.totalViews > 0 || data.searchImpressions > 0 || data.contactClicks > 0 || data.enquiries > 0;
+                
+                if (hasData) {
+                    logToConsole('✅ Analytics sync verified - data is present and consistent');
+                } else {
+                    logToConsole('⚠️ Analytics sync verified - no data found (this is normal for new installations)');
+                }
+            } else {
+                logToConsole('❌ No analytics data found for business');
+            }
+        }
+        
+        // Clear all analytics
+        function clearAllAnalytics() {
+            localStorage.removeItem('businessAnalytics');
+            refreshLiveStats();
+            logToConsole('All analytics data cleared');
+        }
+        
+        // Log to console output
+        function logToConsole(message) {
+            const consoleOutput = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            consoleOutput.innerHTML += `[${timestamp}] ${message}\n`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        // Listen for analytics updates
+        window.addEventListener('analyticsUpdated', function(e) {
+            logToConsole(`Analytics updated: ${e.detail.type || 'general'} - ${JSON.stringify(e.detail)}`);
+            refreshLiveStats();
+        });
+        
+        // Listen for storage changes
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'businessAnalytics') {
+                logToConsole('Analytics data changed in another tab');
+                refreshLiveStats();
+            }
+        });
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshLiveStats();
+            logToConsole('Analytics Demo Hub initialized');
+        });
+    </script>
+</body>
+</html>

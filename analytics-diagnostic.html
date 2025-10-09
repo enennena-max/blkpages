@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Diagnostic - BLKPAGES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .section {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-weight: bold;
+        }
+        .status.success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28A745;
+            border: 1px solid #28A745;
+        }
+        .status.error {
+            background: rgba(220, 38, 38, 0.2);
+            color: #DC2626;
+            border: 1px solid #DC2626;
+        }
+        .status.warning {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid #FFC107;
+        }
+        button {
+            background: #1E90FF;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #00BFFF;
+        }
+        .btn-danger {
+            background: #DC2626;
+        }
+        .btn-danger:hover {
+            background: #B91C1C;
+        }
+        pre {
+            background: #000;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+        .test-result {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 4px;
+            border-left: 4px solid #1E90FF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Analytics System Diagnostic</h1>
+        <p>This tool will help diagnose issues with the analytics tracking system.</p>
+        
+        <div class="section">
+            <h2>System Status</h2>
+            <div id="systemStatus">
+                <div class="status warning">Running diagnostics...</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Quick Tests</h2>
+            <button onclick="testLocalStorage()">Test localStorage</button>
+            <button onclick="testAnalyticsData()">Check Analytics Data</button>
+            <button onclick="testTracking()">Test Tracking</button>
+            <button onclick="clearAllData()" class="btn-danger">Clear All Data</button>
+        </div>
+        
+        <div class="section">
+            <h2>Test Results</h2>
+            <div id="testResults">
+                <p>Click the test buttons above to see results here.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Raw Analytics Data</h2>
+            <pre id="rawData">No data found</pre>
+        </div>
+        
+        <div class="section">
+            <h2>Console Output</h2>
+            <pre id="consoleOutput">Ready for testing...</pre>
+        </div>
+    </div>
+
+    <script>
+        const businessId = 'royalHairStudio';
+        
+        // Run initial diagnostics
+        function runDiagnostics() {
+            const statusDiv = document.getElementById('systemStatus');
+            let statusHTML = '';
+            
+            // Check localStorage support
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                statusHTML += '<div class="status success">✅ localStorage is supported</div>';
+            } catch (e) {
+                statusHTML += '<div class="status error">❌ localStorage is not supported</div>';
+            }
+            
+            // Check if business-manager.js is loaded
+            if (typeof window.businessManager !== 'undefined') {
+                statusHTML += '<div class="status success">✅ Business Manager is loaded</div>';
+            } else {
+                statusHTML += '<div class="status error">❌ Business Manager is not loaded</div>';
+            }
+            
+            // Check analytics data
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            if (analyticsData[businessId]) {
+                statusHTML += '<div class="status success">✅ Analytics data exists</div>';
+            } else {
+                statusHTML += '<div class="status warning">⚠️ No analytics data found</div>';
+            }
+            
+            statusDiv.innerHTML = statusHTML;
+        }
+        
+        // Test localStorage functionality
+        function testLocalStorage() {
+            const resultsDiv = document.getElementById('testResults');
+            let result = '<div class="test-result"><h3>localStorage Test Results:</h3>';
+            
+            try {
+                // Test basic localStorage
+                localStorage.setItem('test_key', 'test_value');
+                const retrieved = localStorage.getItem('test_key');
+                localStorage.removeItem('test_key');
+                
+                if (retrieved === 'test_value') {
+                    result += '<div class="status success">✅ localStorage read/write works</div>';
+                } else {
+                    result += '<div class="status error">❌ localStorage read/write failed</div>';
+                }
+                
+                // Test JSON storage
+                const testData = { test: 'value', number: 123 };
+                localStorage.setItem('test_json', JSON.stringify(testData));
+                const retrievedJson = JSON.parse(localStorage.getItem('test_json'));
+                localStorage.removeItem('test_json');
+                
+                if (retrievedJson.test === 'value' && retrievedJson.number === 123) {
+                    result += '<div class="status success">✅ JSON storage/retrieval works</div>';
+                } else {
+                    result += '<div class="status error">❌ JSON storage/retrieval failed</div>';
+                }
+                
+            } catch (error) {
+                result += '<div class="status error">❌ localStorage error: ' + error.message + '</div>';
+            }
+            
+            result += '</div>';
+            resultsDiv.innerHTML = result;
+            logToConsole('localStorage test completed');
+        }
+        
+        // Test analytics data
+        function testAnalyticsData() {
+            const resultsDiv = document.getElementById('testResults');
+            let result = '<div class="test-result"><h3>Analytics Data Test Results:</h3>';
+            
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            
+            if (Object.keys(analyticsData).length === 0) {
+                result += '<div class="status warning">⚠️ No analytics data found in localStorage</div>';
+            } else {
+                result += '<div class="status success">✅ Analytics data exists</div>';
+                
+                if (analyticsData[businessId]) {
+                    const data = analyticsData[businessId];
+                    result += '<div class="status success">✅ Business data found for: ' + businessId + '</div>';
+                    result += '<div>Profile Views: ' + (data.totalViews || 0) + '</div>';
+                    result += '<div>Search Impressions: ' + (data.searchImpressions || 0) + '</div>';
+                    result += '<div>Contact Clicks: ' + (data.contactClicks || 0) + '</div>';
+                    result += '<div>Enquiries: ' + (data.enquiries || 0) + '</div>';
+                } else {
+                    result += '<div class="status warning">⚠️ No data found for business: ' + businessId + '</div>';
+                }
+            }
+            
+            result += '</div>';
+            resultsDiv.innerHTML = result;
+            
+            // Update raw data display
+            document.getElementById('rawData').textContent = JSON.stringify(analyticsData, null, 2);
+            
+            logToConsole('Analytics data test completed');
+        }
+        
+        // Test tracking functionality
+        function testTracking() {
+            const resultsDiv = document.getElementById('testResults');
+            let result = '<div class="test-result"><h3>Tracking Test Results:</h3>';
+            
+            try {
+                // Simulate a profile view
+                const currentDate = new Date().toISOString().split('T')[0];
+                const currentTime = new Date().toISOString();
+                
+                let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+                
+                if (!analyticsData[businessId]) {
+                    analyticsData[businessId] = {
+                        totalViews: 0,
+                        dailyViews: {},
+                        lastView: null,
+                        viewHistory: [],
+                        searchImpressions: 0,
+                        dailySearchImpressions: {},
+                        contactClicks: 0,
+                        dailyContactClicks: {},
+                        enquiries: 0,
+                        dailyEnquiries: {}
+                    };
+                }
+                
+                const beforeViews = analyticsData[businessId].totalViews || 0;
+                
+                // Add a view
+                analyticsData[businessId].totalViews += 1;
+                analyticsData[businessId].lastView = currentTime;
+                
+                if (!analyticsData[businessId].dailyViews[currentDate]) {
+                    analyticsData[businessId].dailyViews[currentDate] = 0;
+                }
+                analyticsData[businessId].dailyViews[currentDate] += 1;
+                
+                // Save the data
+                localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+                
+                // Verify the data was saved
+                const verifyData = JSON.parse(localStorage.getItem('businessAnalytics'));
+                const afterViews = verifyData[businessId].totalViews || 0;
+                
+                if (afterViews === beforeViews + 1) {
+                    result += '<div class="status success">✅ Tracking test passed - data saved correctly</div>';
+                } else {
+                    result += '<div class="status error">❌ Tracking test failed - data not saved correctly</div>';
+                }
+                
+                // Test event dispatch
+                try {
+                    window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+                        detail: { 
+                            businessId: businessId,
+                            totalViews: analyticsData[businessId].totalViews,
+                            test: true
+                        }
+                    }));
+                    result += '<div class="status success">✅ Event dispatch works</div>';
+                } catch (error) {
+                    result += '<div class="status error">❌ Event dispatch failed: ' + error.message + '</div>';
+                }
+                
+            } catch (error) {
+                result += '<div class="status error">❌ Tracking test error: ' + error.message + '</div>';
+            }
+            
+            result += '</div>';
+            resultsDiv.innerHTML = result;
+            
+            // Update raw data display
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            document.getElementById('rawData').textContent = JSON.stringify(analyticsData, null, 2);
+            
+            logToConsole('Tracking test completed');
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            localStorage.removeItem('businessAnalytics');
+            document.getElementById('rawData').textContent = 'No data found';
+            document.getElementById('testResults').innerHTML = '<p>All data cleared.</p>';
+            logToConsole('All analytics data cleared');
+        }
+        
+        // Log to console output
+        function logToConsole(message) {
+            const consoleOutput = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            consoleOutput.textContent += `[${timestamp}] ${message}\n`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        // Listen for analytics updates
+        window.addEventListener('analyticsUpdated', function(e) {
+            logToConsole('Analytics update event received: ' + JSON.stringify(e.detail));
+        });
+        
+        // Initialize diagnostics on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            runDiagnostics();
+            logToConsole('Analytics diagnostic tool loaded');
+        });
+    </script>
+</body>
+</html>
