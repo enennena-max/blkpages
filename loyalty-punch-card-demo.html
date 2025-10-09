@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loyalty Punch Card Demo - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .demo-header p {
+            color: #999;
+            font-size: 1.1rem;
+        }
+        
+        .loyalty-programs {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .loyalty-card {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .loyalty-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .loyalty-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .business-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .business-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+        
+        .business-details h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .business-details p {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .loyalty-status {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-badge.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .status-badge.unlocked {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .status-badge.redeemed {
+            background: rgba(107, 114, 128, 0.2);
+            color: #6b7280;
+            border: 1px solid rgba(107, 114, 128, 0.3);
+        }
+        
+        .loyalty-progress {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-title {
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .progress-text {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .progress-dots {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .progress-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: #374151;
+            border: 2px solid #4b5563;
+            transition: all 0.3s ease;
+        }
+        
+        .progress-dot.completed {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+        
+        .progress-dot.current {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #374151;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .loyalty-reward {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .loyalty-reward.unlocked {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .reward-icon {
+            font-size: 2rem;
+        }
+        
+        .reward-details h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .reward-details p {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .reward-actions {
+            margin-top: 1rem;
+        }
+        
+        .btn-reward {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-reward:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-reward:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .expired-card {
+            opacity: 0.6;
+            background: #374151;
+        }
+        
+        .expired-message {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(107, 114, 128, 0.1);
+            border-radius: 8px;
+            color: #9ca3af;
+        }
+        
+        .demo-actions {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(135deg, #ec4899, #be185d);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+        }
+        
+        .demo-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #93c5fd;
+        }
+        
+        @media (max-width: 768px) {
+            .loyalty-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .progress-dots {
+                flex-wrap: wrap;
+            }
+            
+            .progress-dot {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🎯 Loyalty Punch Card Demo</h1>
+            <p>See how the digital punch card loyalty system works with different customer states</p>
+        </div>
+        
+        <div class="demo-actions">
+            <button class="btn-demo" onclick="loadDemoData()">
+                <i class="fas fa-play"></i> Load Demo Data
+            </button>
+            <button class="btn-demo" onclick="clearDemoData()">
+                <i class="fas fa-trash"></i> Clear Demo Data
+            </button>
+        </div>
+        
+        <div class="demo-info">
+            <strong>Demo Features:</strong> This shows 5 different loyalty programs with various customer progress states:
+            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li><strong>Glow Hair Studio:</strong> 3/5 visits (Progress state with punch dots)</li>
+                <li><strong>Zen Spa:</strong> £120/£200 spend (Progress state with spend tracking)</li>
+                <li><strong>City Nails:</strong> 2/3 visits (Progress state - almost there!)</li>
+                <li><strong>Fresh Cuts:</strong> 4/4 visits (Unlocked reward with voucher code)</li>
+                <li><strong>Luxe Brow:</strong> 5/5 visits (Redeemed reward - completed)</li>
+            </ul>
+        </div>
+        
+        <div class="loyalty-programs" id="loyaltyPrograms">
+            <!-- Demo loyalty cards will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Demo data for punch card loyalty system
+        const demoData = {
+            businesses: [
+                { id: 'biz_glow_hair', name: 'Glow Hair Studio', logo: '💇‍♀️' },
+                { id: 'biz_zen_spa', name: 'Zen Spa & Wellness', logo: '🧘‍♀️' },
+                { id: 'biz_city_nails', name: 'City Nails & Beauty', logo: '💅' },
+                { id: 'biz_fresh_cuts', name: 'Fresh Cuts Barbershop', logo: '✂️' },
+                { id: 'biz_luxe_brow', name: 'Luxe Brow Studio', logo: '👁️' }
+            ],
+            programmes: [
+                { id: 'prog_glow_hair', business_id: 'biz_glow_hair', type: 'Visits', threshold: 5, reward_type: 'Free Service', reward_value: 'Blow Dry', expiry_days: 30 },
+                { id: 'prog_zen_spa', business_id: 'biz_zen_spa', type: 'Spend', threshold: 200.00, reward_type: 'Credit', reward_value: '£20', expiry_days: 60 },
+                { id: 'prog_city_nails', business_id: 'biz_city_nails', type: 'Visits', threshold: 3, reward_type: 'Discount', reward_value: '20%', expiry_days: 14 },
+                { id: 'prog_fresh_cuts', business_id: 'biz_fresh_cuts', type: 'Time', threshold: 4, reward_type: 'Free Service', reward_value: 'Express Cut', expiry_days: 45 },
+                { id: 'prog_luxe_brow', business_id: 'biz_luxe_brow', type: 'Visits', threshold: 5, reward_type: 'Free Service', reward_value: 'Brow Wax', expiry_days: 30 }
+            ],
+            progress: [
+                { id: 'progress_glow_1', customer_id: 'customer_1', business_id: 'biz_glow_hair', total_visits: 3, total_spend: 0, reward_unlocked: false, reward_redeemed: false },
+                { id: 'progress_zen_1', customer_id: 'customer_1', business_id: 'biz_zen_spa', total_visits: 0, total_spend: 120.00, reward_unlocked: false, reward_redeemed: false },
+                { id: 'progress_city_1', customer_id: 'customer_1', business_id: 'biz_city_nails', total_visits: 2, total_spend: 0, reward_unlocked: false, reward_redeemed: false },
+                { id: 'progress_fresh_1', customer_id: 'customer_1', business_id: 'biz_fresh_cuts', total_visits: 4, total_spend: 0, reward_unlocked: true, reward_redeemed: false, reward_voucher_id: 'voucher_fresh_1' },
+                { id: 'progress_luxe_1', customer_id: 'customer_1', business_id: 'biz_luxe_brow', total_visits: 5, total_spend: 0, reward_unlocked: true, reward_redeemed: true, reward_voucher_id: 'voucher_luxe_1' }
+            ],
+            vouchers: [
+                { id: 'voucher_fresh_1', code: 'BP-FR3SH1', business_id: 'biz_fresh_cuts', reward_type: 'Free Service', reward_value: 'Express Cut', expiry_date: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(), redeemed: false },
+                { id: 'voucher_luxe_1', code: 'BP-LUX3B1', business_id: 'biz_luxe_brow', reward_type: 'Free Service', reward_value: 'Brow Wax', expiry_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), redeemed: true, redeemed_on: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() }
+            ]
+        };
+        
+        function loadDemoData() {
+            const container = document.getElementById('loyaltyPrograms');
+            let html = '';
+            
+            demoData.progress.forEach(progress => {
+                const programme = demoData.programmes.find(p => p.business_id === progress.business_id);
+                const business = demoData.businesses.find(b => b.id === progress.business_id);
+                const voucher = demoData.vouchers.find(v => v.id === progress.reward_voucher_id);
+                
+                if (programme && business) {
+                    html += generateLoyaltyCard(progress, programme, business, voucher);
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function generateLoyaltyCard(progress, programme, business, voucher) {
+            if (progress.reward_unlocked === false) {
+                return generateProgressCard(progress, programme, business);
+            } else if (progress.reward_unlocked === true && progress.reward_redeemed === false) {
+                return generateRewardCard(progress, programme, business, voucher);
+            } else if (progress.reward_redeemed === true) {
+                return generateRedeemedCard(progress, programme, business, voucher);
+            }
+        }
+        
+        function generateProgressCard(progress, programme, business) {
+            const progressPercentage = programme.type === 'Spend' 
+                ? Math.min((progress.total_spend / programme.threshold) * 100, 100)
+                : Math.min((progress.total_visits / programme.threshold) * 100, 100);
+            
+            const progressText = programme.type === 'Spend'
+                ? `£${progress.total_spend.toFixed(2)} of £${programme.threshold.toFixed(2)} spent`
+                : `${progress.total_visits} of ${programme.threshold} visits`;
+            
+            const dots = generateProgressDots(progress.total_visits, programme.threshold, programme.type);
+            
+            return `
+                <div class="loyalty-card active">
+                    <div class="loyalty-header">
+                        <div class="business-info">
+                            <div class="business-logo">${business.logo}</div>
+                            <div class="business-details">
+                                <h3>${business.name}</h3>
+                                <p>Loyalty Program</p>
+                            </div>
+                        </div>
+                        <div class="loyalty-status">
+                            <span class="status-badge active">In Progress</span>
+                        </div>
+                    </div>
+                    
+                    <div class="loyalty-progress">
+                        <div class="progress-header">
+                            <div class="progress-title">${programme.type} Progress</div>
+                            <div class="progress-text">${progressText}</div>
+                        </div>
+                        
+                        ${programme.type === 'Visits' ? dots : ''}
+                        
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 1rem; color: #999; font-size: 0.9rem;">
+                            ${Math.ceil(programme.threshold - (programme.type === 'Spend' ? progress.total_spend : progress.total_visits))} more ${programme.type === 'Spend' ? 'spent' : 'visits'} needed
+                        </div>
+                    </div>
+                    
+                    <div class="loyalty-reward">
+                        <div class="reward-icon">🎁</div>
+                        <div class="reward-details">
+                            <h4>Unlock Reward</h4>
+                            <p>${programme.reward_type}: ${programme.reward_value}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function generateRewardCard(progress, programme, business, voucher) {
+            const expiryDate = new Date(voucher.expiry_date);
+            const isExpired = expiryDate < new Date();
+            
+            return `
+                <div class="loyalty-card unlocked ${isExpired ? 'expired-card' : ''}">
+                    <div class="loyalty-header">
+                        <div class="business-info">
+                            <div class="business-logo">${business.logo}</div>
+                            <div class="business-details">
+                                <h3>${business.name}</h3>
+                                <p>Reward Unlocked!</p>
+                            </div>
+                        </div>
+                        <div class="loyalty-status">
+                            <span class="status-badge unlocked">${isExpired ? 'Expired' : 'Available'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="loyalty-reward unlocked">
+                        <div class="reward-icon">🎉</div>
+                        <div class="reward-details">
+                            <h4>${programme.reward_type}: ${programme.reward_value}</h4>
+                            <p>Code: <strong>${voucher.code}</strong></p>
+                            <p>Expires: ${expiryDate.toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="reward-actions">
+                        <button class="btn-reward" ${isExpired ? 'disabled' : ''} onclick="useReward('${voucher.code}', '${business.id}')">
+                            ${isExpired ? 'Reward Expired' : 'Use Reward Now'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function generateRedeemedCard(progress, programme, business, voucher) {
+            const redeemedDate = new Date(voucher.redeemed_on);
+            
+            return `
+                <div class="loyalty-card expired-card">
+                    <div class="loyalty-header">
+                        <div class="business-info">
+                            <div class="business-logo">${business.logo}</div>
+                            <div class="business-details">
+                                <h3>${business.name}</h3>
+                                <p>Reward Redeemed</p>
+                            </div>
+                        </div>
+                        <div class="loyalty-status">
+                            <span class="status-badge redeemed">Redeemed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="expired-message">
+                        <h4>✅ Reward redeemed on ${redeemedDate.toLocaleDateString()}</h4>
+                        <p>Keep booking to earn your next reward!</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function generateProgressDots(completed, total, type) {
+            if (type !== 'Visits') return '';
+            
+            let dots = '<div class="progress-dots">';
+            for (let i = 1; i <= total; i++) {
+                let className = 'progress-dot';
+                if (i <= completed) {
+                    className += ' completed';
+                } else if (i === completed + 1) {
+                    className += ' current';
+                }
+                dots += `<div class="${className}">${i}</div>`;
+            }
+            dots += '</div>';
+            return dots;
+        }
+        
+        function useReward(code, businessId) {
+            alert(`Reward code ${code} applied! Redirecting to ${businessId} booking page...`);
+            // In real implementation, this would redirect to booking page with pre-filled promo code
+        }
+        
+        function clearDemoData() {
+            document.getElementById('loyaltyPrograms').innerHTML = '';
+        }
+        
+        // Load demo data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDemoData();
+        });
+    </script>
+</body>
+</html>

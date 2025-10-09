@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Checkout - BlkPages</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .content {
+            padding: 30px 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #FF3CAC;
+        }
+        
+        .promo-section {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .promo-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .promo-input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            background: #FF3CAC;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #e91e63;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .booking-summary {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .summary-total {
+            font-weight: 600;
+            font-size: 18px;
+            color: #FF3CAC;
+            border-top: 2px solid #e5e7eb;
+            padding-top: 10px;
+        }
+        
+        .discount-applied {
+            color: #10b981;
+            font-weight: 600;
+        }
+        
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Demo Checkout</h1>
+            <p>Test promo code validation with demo loyalty rewards</p>
+        </div>
+        
+        <div class="content">
+            <div class="form-group">
+                <label class="form-label">Service</label>
+                <input type="text" class="form-input" id="serviceName" value="Hair Styling" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Amount</label>
+                <input type="text" class="form-input" id="serviceAmount" value="£45.00" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Business</label>
+                <input type="text" class="form-input" id="businessName" value="DEMO_GlowHair" readonly>
+            </div>
+            
+            <!-- Promo Code Section -->
+            <div class="promo-section">
+                <h3>🎫 Promo Code</h3>
+                <p>Have a promo code? Enter it below to apply your discount.</p>
+                
+                <div class="promo-input-group">
+                    <input type="text" class="promo-input" id="promoCode" placeholder="Enter promo code (e.g., BP-ABC123)">
+                    <button class="btn" onclick="validatePromoCode()">Apply</button>
+                </div>
+                
+                <div id="promoFeedback"></div>
+            </div>
+            
+            <!-- Booking Summary -->
+            <div class="booking-summary">
+                <h3>📋 Booking Summary</h3>
+                <div class="summary-row">
+                    <span>Service:</span>
+                    <span id="summaryService">Hair Styling</span>
+                </div>
+                <div class="summary-row">
+                    <span>Amount:</span>
+                    <span id="summaryAmount">£45.00</span>
+                </div>
+                <div class="summary-row" id="discountRow" style="display: none;">
+                    <span>Discount:</span>
+                    <span class="discount-applied" id="discountAmount">-£0.00</span>
+                </div>
+                <div class="summary-row summary-total">
+                    <span>Total:</span>
+                    <span id="summaryTotal">£45.00</span>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn" onclick="completeBooking()" id="completeBtn">
+                    Complete Booking
+                </button>
+                <button class="btn btn-secondary" onclick="resetDemo()" style="margin-left: 10px;">
+                    Reset Demo
+                </button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>This is a demo checkout page for testing loyalty reward redemption.</p>
+            <p>Need help? Contact us at <a href="mailto:support@blkpages.co.uk" style="color: #FF3CAC;">support@blkpages.co.uk</a></p>
+        </div>
+    </div>
+
+    <script>
+        let appliedPromoCode = null;
+        let discountAmount = 0;
+        
+        // Load demo data
+        function loadDemoData() {
+            const vouchers = JSON.parse(localStorage.getItem('demo_RewardVouchers') || '[]');
+            const businesses = JSON.parse(localStorage.getItem('demo_Businesses') || '[]');
+            const customers = JSON.parse(localStorage.getItem('demo_Customers') || '[]');
+            
+            console.log('Demo data loaded:', { vouchers, businesses, customers });
+        }
+        
+        // Validate promo code
+        function validatePromoCode() {
+            const promoCode = document.getElementById('promoCode').value.trim().toUpperCase();
+            const feedback = document.getElementById('promoFeedback');
+            
+            if (!promoCode) {
+                showFeedback('Please enter a promo code.', 'error');
+                return;
+            }
+            
+            // Load demo vouchers
+            const vouchers = JSON.parse(localStorage.getItem('demo_RewardVouchers') || '[]');
+            const businesses = JSON.parse(localStorage.getItem('demo_Businesses') || '[]');
+            const customers = JSON.parse(localStorage.getItem('demo_Customers') || '[]');
+            
+            // Find voucher by code
+            const voucher = vouchers.find(v => v.code === promoCode);
+            
+            if (!voucher) {
+                showFeedback('Invalid promo code. Please check and try again.', 'error');
+                return;
+            }
+            
+            // Check if voucher is expired
+            if (new Date(voucher.expires_at) < new Date()) {
+                showFeedback('This promo code has expired.', 'error');
+                return;
+            }
+            
+            // Check if voucher is already used
+            if (voucher.used) {
+                showFeedback('This promo code has already been used.', 'error');
+                return;
+            }
+            
+            // Check if voucher is for the correct business
+            const currentBusiness = businesses.find(b => b.name === 'DEMO_GlowHair');
+            if (voucher.business_id !== currentBusiness.id) {
+                showFeedback('This promo code is not valid for this business.', 'error');
+                return;
+            }
+            
+            // Apply discount
+            applyDiscount(voucher);
+        }
+        
+        // Apply discount
+        function applyDiscount(voucher) {
+            appliedPromoCode = voucher;
+            
+            // Calculate discount based on reward type
+            let discount = 0;
+            const serviceAmount = 45.00; // £45.00
+            
+            if (voucher.reward_type === 'Free Service') {
+                discount = serviceAmount; // Free service = full amount
+            } else if (voucher.reward_type === 'Discount') {
+                discount = serviceAmount * (parseFloat(voucher.reward_value) / 100); // Percentage discount
+            } else if (voucher.reward_type === 'Credit') {
+                discount = parseFloat(voucher.reward_value); // Fixed credit amount
+            }
+            
+            discountAmount = Math.min(discount, serviceAmount); // Don't exceed service amount
+            
+            // Update UI
+            document.getElementById('discountRow').style.display = 'flex';
+            document.getElementById('discountAmount').textContent = `-£${discountAmount.toFixed(2)}`;
+            
+            const newTotal = serviceAmount - discountAmount;
+            document.getElementById('summaryTotal').textContent = `£${newTotal.toFixed(2)}`;
+            
+            // Show success message
+            const feedback = document.getElementById('promoFeedback');
+            feedback.innerHTML = `
+                <div class="success-message">
+                    ✅ Promo code applied successfully!<br>
+                    <strong>${voucher.reward_type}: ${voucher.reward_value}</strong><br>
+                    You saved £${discountAmount.toFixed(2)}!
+                </div>
+            `;
+            
+            // Disable promo code input
+            document.getElementById('promoCode').disabled = true;
+            document.querySelector('.promo-input-group button').disabled = true;
+            document.querySelector('.promo-input-group button').textContent = 'Applied';
+        }
+        
+        // Complete booking
+        function completeBooking() {
+            if (appliedPromoCode) {
+                // Mark voucher as used
+                const vouchers = JSON.parse(localStorage.getItem('demo_RewardVouchers') || '[]');
+                const voucherIndex = vouchers.findIndex(v => v.id === appliedPromoCode.id);
+                
+                if (voucherIndex !== -1) {
+                    vouchers[voucherIndex].used = true;
+                    vouchers[voucherIndex].used_at = new Date().toISOString();
+                    localStorage.setItem('demo_RewardVouchers', JSON.stringify(vouchers));
+                    
+                    // Update loyalty progress
+                    const loyaltyProgress = JSON.parse(localStorage.getItem('demo_LoyaltyProgress') || '[]');
+                    const progressIndex = loyaltyProgress.findIndex(p => p.reward_voucher_id === appliedPromoCode.id);
+                    
+                    if (progressIndex !== -1) {
+                        loyaltyProgress[progressIndex].reward_redeemed = true;
+                        loyaltyProgress[progressIndex].updated_at = new Date().toISOString();
+                        localStorage.setItem('demo_LoyaltyProgress', JSON.stringify(loyaltyProgress));
+                    }
+                }
+                
+                alert(`🎉 Booking completed successfully!\n\nPromo code ${appliedPromoCode.code} has been redeemed.\nYou saved £${discountAmount.toFixed(2)}!`);
+            } else {
+                alert('Booking completed successfully!');
+            }
+        }
+        
+        // Reset demo
+        function resetDemo() {
+            document.getElementById('promoCode').value = '';
+            document.getElementById('promoCode').disabled = false;
+            document.querySelector('.promo-input-group button').disabled = false;
+            document.querySelector('.promo-input-group button').textContent = 'Apply';
+            document.getElementById('discountRow').style.display = 'none';
+            document.getElementById('summaryTotal').textContent = '£45.00';
+            document.getElementById('promoFeedback').innerHTML = '';
+            
+            appliedPromoCode = null;
+            discountAmount = 0;
+        }
+        
+        // Show feedback message
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('promoFeedback');
+            const className = type === 'error' ? 'error-message' : 'success-message';
+            feedback.innerHTML = `<div class="${className}">${message}</div>`;
+        }
+        
+        // Load demo data on page load
+        document.addEventListener('DOMContentLoaded', loadDemoData);
+    </script>
+</body>
+</html>

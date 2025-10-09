@@ -2088,6 +2088,47 @@
             box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
         }
         
+        /* Field error states */
+        .field-error {
+            border: 2px solid #FF4D4D !important;
+            box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1) !important;
+        }
+        
+        /* Inline error messages */
+        .field-error-message {
+            color: #FF4D4D;
+            font-size: 12px;
+            font-style: italic;
+            margin-top: 0.5rem;
+            display: block;
+        }
+        
+        /* Button shake animation */
+        .shake-animation {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        /* Button disabled state */
+        .sticky-cta button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* Mobile-specific validation styles */
+        @media (max-width: 768px) {
+            .field-error-message {
+                font-size: 11px;
+                margin-top: 0.25rem;
+            }
+        }
+        
         /* Inline error messages */
         .field-error {
             color: #ff4444;
@@ -5287,29 +5328,105 @@
             }
         }
         
-        // UK-specific customer details validation
+        // Helper functions for enhanced validation feedback
+        function clearValidationStates() {
+            const fields = ['fullName', 'email', 'phone', 'postcode'];
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.classList.remove('error', 'success');
+                    field.style.borderColor = '#d1d5db';
+                    field.style.backgroundColor = '#ffffff';
+                }
+                
+                // Clear error and success messages
+                const errorMsg = document.getElementById(`${fieldId}Error`);
+                const successMsg = document.getElementById(`${fieldId}Success`);
+                if (errorMsg) errorMsg.style.display = 'none';
+                if (successMsg) successMsg.style.display = 'none';
+            });
+        }
+        
+        function showFieldError(field, message) {
+            if (!field) return;
+            
+            field.classList.add('error');
+            field.classList.remove('success');
+            field.style.borderColor = '#ef4444';
+            field.style.backgroundColor = '#fef2f2';
+            
+            // Show error message
+            let errorElement = document.getElementById(`${field.id}Error`);
+            if (!errorElement) {
+                errorElement = document.createElement('div');
+                errorElement.id = `${field.id}Error`;
+                errorElement.className = 'error-message';
+                errorElement.style.color = '#ef4444';
+                errorElement.style.fontSize = '0.875rem';
+                errorElement.style.marginTop = '0.25rem';
+                field.parentNode.appendChild(errorElement);
+            }
+            
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+        
+        function showFieldSuccess(field, message) {
+            if (!field) return;
+            
+            field.classList.add('success');
+            field.classList.remove('error');
+            field.style.borderColor = '#10b981';
+            field.style.backgroundColor = '#f0fdf4';
+            
+            // Show success message
+            let successElement = document.getElementById(`${field.id}Success`);
+            if (!successElement) {
+                successElement = document.createElement('div');
+                successElement.id = `${field.id}Success`;
+                successElement.className = 'success-message';
+                successElement.style.color = '#10b981';
+                successElement.style.fontSize = '0.875rem';
+                successElement.style.marginTop = '0.25rem';
+                field.parentNode.appendChild(successElement);
+            }
+            
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+        }
+        
+        // Enhanced UK-specific customer details validation with improved user feedback
         function validateCustomerDetails() {
             const fullName = document.getElementById('fullName');
             const email = document.getElementById('email');
             const phone = document.getElementById('phone');
             const postcode = document.getElementById('postcode');
             
+            // Clear previous validation states
+            clearValidationStates();
+            
             // Validate Full Name
             if (!fullName || !fullName.value.trim()) {
+                showFieldError(fullName, 'Please enter your full name.');
                 return { isValid: false, field: fullName, message: 'Please enter your full name.' };
             }
             
             // Check if name has at least 2 words (first and last)
             const nameWords = fullName.value.trim().split(/\s+/);
             if (nameWords.length < 2) {
+                showFieldError(fullName, 'Please enter your first and last name.');
                 return { isValid: false, field: fullName, message: 'Please enter your first and last name.' };
             }
             
             // Validate name format (letters, hyphens, apostrophes only)
             const nameRegex = /^(?=.{2,50}$)[A-Za-z]+(?:['-][A-Za-z]+)?\s+[A-Za-z]+(?:['-][A-Za-z]+)?$/;
             if (!nameRegex.test(fullName.value.trim())) {
+                showFieldError(fullName, 'Names can only include letters, hyphens, or apostrophes.');
                 return { isValid: false, field: fullName, message: 'Names can only include letters, hyphens, or apostrophes.' };
             }
+            
+            // Show success for valid name
+            showFieldSuccess(fullName, '✓ Name looks good!');
             
             // Validate Email
             if (!email || !email.value.trim()) {
@@ -9081,7 +9198,414 @@ This policy is set by ${businessName}. BlkPages processes payments via Stripe on
                 }
             }
         };
+
+        // ========================================
+        // COMPREHENSIVE FORM VALIDATION SYSTEM
+        // ========================================
+        
+        // Validation rules as specified
+        const ValidationRules = {
+            "service_selection": {
+                "required": true,
+                "errorMessage": "Please select at least one service."
+            },
+            "date_selection": {
+                "required": true,
+                "errorMessage": "Please choose a date for your booking."
+            },
+            "time_selection": {
+                "required": true,
+                "errorMessage": "Please select a time slot."
+            },
+            "first_name": {
+                "required": true,
+                "pattern": "^[A-Za-z\\-']{2,}$",
+                "errorMessage": "Enter a valid first name (letters only)."
+            },
+            "last_name": {
+                "required": true,
+                "pattern": "^[A-Za-z\\-']{2,}$",
+                "errorMessage": "Enter a valid surname (letters only)."
+            },
+            "email": {
+                "required": true,
+                "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+                "errorMessage": "Enter a valid UK email address."
+            },
+            "phone": {
+                "required": true,
+                "pattern": "^(\\+44\\s?7\\d{3}|07\\d{3})\\s?\\d{3}\\s?\\d{3}$|^0\\d{2,4}\\s?\\d{3}\\s?\\d{3,4}$",
+                "errorMessage": "Enter a valid UK phone number."
+            },
+            "postcode": {
+                "required": true,
+                "pattern": "^[A-Z]{1,2}\\d[A-Z\\d]?\\s?\\d[A-Z]{2}$",
+                "errorMessage": "Enter a valid UK postcode (e.g., SW1A 1AA)."
+            },
+            "terms_checkbox": {
+                "required": true,
+                "errorMessage": "You must accept the terms and cancellation policy to continue."
+            }
+        };
+        
+        // Validation state tracking
+        let validationInProgress = false;
+        let currentValidationErrors = [];
+        
+        /**
+         * Main validation function - called when Book Now button is clicked
+         */
+        function validateAndSubmitBooking() {
+            if (validationInProgress) {
+                console.log('Validation already in progress, ignoring click');
+                return;
+            }
+            
+            validationInProgress = true;
+            currentValidationErrors = [];
+            
+            // Clear previous errors
+            clearAllValidationErrors();
+            
+            // Disable button temporarily
+            const bookingBtn = document.getElementById('completeBookingBtn');
+            const originalText = document.getElementById('bookingBtnText').textContent;
+            bookingBtn.disabled = true;
+            document.getElementById('bookingBtnText').textContent = 'Validating...';
+            
+            console.log('Starting comprehensive form validation...');
+            
+            // Run validation checks in order
+            const validationResults = [
+                validateServiceSelection(),
+                validateDateSelection(),
+                validateTimeSelection(),
+                validateCustomerDetails(),
+                validateTermsAcceptance()
+            ];
+            
+            // Check if any validation failed
+            const hasErrors = validationResults.some(result => !result.valid);
+            
+            if (hasErrors) {
+                // Show errors and scroll to first invalid field
+                showValidationErrors();
+                scrollToFirstError();
+                showButtonShakeAnimation();
+                
+                // Re-enable button
+                bookingBtn.disabled = false;
+                document.getElementById('bookingBtnText').textContent = originalText;
+                
+                console.log('Validation failed:', currentValidationErrors);
+            } else {
+                // All validations passed - proceed with booking
+                console.log('All validations passed - proceeding with booking');
+                proceedWithBooking();
+            }
+            
+            validationInProgress = false;
+        }
+        
+        /**
+         * Validate service selection
+         */
+        function validateServiceSelection() {
+            const servicesList = document.getElementById('booking-services-list');
+            const hasServices = servicesList && servicesList.children.length > 0;
+            
+            if (!hasServices) {
+                showFieldError('service_selection', ValidationRules.service_selection.errorMessage);
+                return { valid: false, field: 'service_selection' };
+            }
+            
+            return { valid: true };
+        }
+        
+        /**
+         * Validate date selection
+         */
+        function validateDateSelection() {
+            const selectedDate = localStorage.getItem('selectedDate');
+            
+            if (!selectedDate) {
+                showFieldError('date_selection', ValidationRules.date_selection.errorMessage);
+                return { valid: false, field: 'date_selection' };
+            }
+            
+            return { valid: true };
+        }
+        
+        /**
+         * Validate time selection
+         */
+        function validateTimeSelection() {
+            const selectedTime = localStorage.getItem('selectedTime');
+            
+            if (!selectedTime) {
+                showFieldError('time_selection', ValidationRules.time_selection.errorMessage);
+                return { valid: false, field: 'time_selection' };
+            }
+            
+            return { valid: true };
+        }
+        
+        /**
+         * Validate customer details
+         */
+        function validateCustomerDetails() {
+            const fullName = document.getElementById('fullName');
+            const email = document.getElementById('email');
+            const phone = document.getElementById('phone');
+            const postcode = document.getElementById('postcode');
+            
+            let allValid = true;
+            
+            // Validate full name (split into first and last)
+            if (fullName && fullName.value.trim()) {
+                const nameParts = fullName.value.trim().split(' ');
+                const firstName = nameParts[0];
+                const lastName = nameParts.slice(1).join(' ');
+                
+                if (!validateField(firstName, 'first_name')) {
+                    allValid = false;
+                }
+                if (lastName && !validateField(lastName, 'last_name')) {
+                    allValid = false;
+                }
+            } else {
+                showFieldError('fullName', 'Please enter your full name');
+                allValid = false;
+            }
+            
+            // Validate email
+            if (email && !validateField(email.value, 'email')) {
+                allValid = false;
+            }
+            
+            // Validate phone
+            if (phone && !validateField(phone.value, 'phone')) {
+                allValid = false;
+            }
+            
+            // Validate postcode
+            if (postcode && !validateField(postcode.value.toUpperCase(), 'postcode')) {
+                allValid = false;
+            }
+            
+            return { valid: allValid };
+        }
+        
+        /**
+         * Validate terms acceptance
+         */
+        function validateTermsAcceptance() {
+            const termsCheckbox = document.getElementById('acceptTerms');
+            
+            if (!termsCheckbox || !termsCheckbox.checked) {
+                showFieldError('acceptTerms', ValidationRules.terms_checkbox.errorMessage);
+                return { valid: false, field: 'acceptTerms' };
+            }
+            
+            return { valid: true };
+        }
+        
+        /**
+         * Validate individual field against pattern
+         */
+        function validateField(value, fieldName) {
+            const rule = ValidationRules[fieldName];
+            if (!rule) return true;
+            
+            if (rule.required && (!value || value.trim() === '')) {
+                showFieldError(fieldName, rule.errorMessage);
+                return false;
+            }
+            
+            if (rule.pattern && value) {
+                const regex = new RegExp(rule.pattern);
+                if (!regex.test(value)) {
+                    showFieldError(fieldName, rule.errorMessage);
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        /**
+         * Show field error with inline message
+         */
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+            
+            // Add error class
+            field.classList.add('field-error');
+            
+            // Remove existing error message
+            const existingError = field.parentNode.querySelector('.field-error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Add new error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'field-error-message';
+            errorDiv.textContent = message;
+            errorDiv.setAttribute('aria-live', 'polite');
+            errorDiv.setAttribute('aria-describedby', fieldId);
+            
+            field.parentNode.appendChild(errorDiv);
+            
+            // Track error for scrolling
+            currentValidationErrors.push({
+                field: field,
+                message: message
+            });
+        }
+        
+        /**
+         * Clear all validation errors
+         */
+        function clearAllValidationErrors() {
+            // Remove error classes
+            document.querySelectorAll('.field-error').forEach(field => {
+                field.classList.remove('field-error');
+            });
+            
+            // Remove error messages
+            document.querySelectorAll('.field-error-message').forEach(error => {
+                error.remove();
+            });
+        }
+        
+        /**
+         * Clear field error when user starts typing
+         */
+        function clearFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+            
+            field.classList.remove('field-error');
+            const errorMessage = field.parentNode.querySelector('.field-error-message');
+            if (errorMessage) {
+                errorMessage.remove();
+            }
+        }
+        
+        /**
+         * Show validation errors summary
+         */
+        function showValidationErrors() {
+            if (currentValidationErrors.length === 0) return;
+            
+            console.log('Validation errors found:', currentValidationErrors.length);
+            currentValidationErrors.forEach(error => {
+                console.log(`- ${error.field.id || error.field}: ${error.message}`);
+            });
+        }
+        
+        /**
+         * Scroll to first error field smoothly
+         */
+        function scrollToFirstError() {
+            if (currentValidationErrors.length === 0) return;
+            
+            const firstError = currentValidationErrors[0].field;
+            const fieldRect = firstError.getBoundingClientRect();
+            const isMobile = window.innerWidth <= 768;
+            const offset = isMobile ? 100 : 80; // Account for mobile keyboard
+            
+            window.scrollTo({
+                top: window.pageYOffset + fieldRect.top - offset,
+                behavior: 'smooth'
+            });
+            
+            // Focus the field for accessibility
+            setTimeout(() => {
+                firstError.focus();
+            }, 500);
+        }
+        
+        /**
+         * Show button shake animation
+         */
+        function showButtonShakeAnimation() {
+            const button = document.getElementById('completeBookingBtn');
+            button.classList.add('shake-animation');
+            
+            setTimeout(() => {
+                button.classList.remove('shake-animation');
+            }, 500);
+        }
+        
+        /**
+         * Proceed with booking after validation passes
+         */
+        function proceedWithBooking() {
+            console.log('All validations passed - proceeding with booking');
+            
+            // Re-enable button
+            const bookingBtn = document.getElementById('completeBookingBtn');
+            bookingBtn.disabled = false;
+            document.getElementById('bookingBtnText').textContent = 'Book Now';
+            
+            // Call existing booking function
+            if (typeof completeBooking === 'function') {
+                completeBooking();
+            } else {
+                console.log('Booking function not found - showing success message');
+                showValidationSuccess();
+            }
+        }
+        
+        /**
+         * Show validation success message
+         */
+        function showValidationSuccess() {
+            alert('✅ All fields valid — booking can now proceed.');
+        }
+        
+        // Add real-time validation listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add blur listeners for real-time validation
+            const validationFields = ['fullName', 'email', 'phone', 'postcode'];
+            
+            validationFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('blur', function() {
+                        if (this.value.trim()) {
+                            clearFieldError(fieldId);
+                        }
+                    });
+                    
+                    field.addEventListener('input', function() {
+                        clearFieldError(fieldId);
+                    });
+                }
+            });
+            
+            // Add terms checkbox listener
+            const termsCheckbox = document.getElementById('acceptTerms');
+            if (termsCheckbox) {
+                termsCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        clearFieldError('acceptTerms');
+                    }
+                });
+            }
+        });
     </script>
+
+    <!-- Sticky CTA Button -->
+    <div class="sticky-cta" id="stickyCTA">
+        <button id="completeBookingBtn" onclick="validateAndSubmitBooking()">
+            <i class="fas fa-calendar-check"></i>
+            <span id="bookingBtnText">Book Now</span>
+        </button>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-charcoal border-t border-white/10 py-8 mt-16">

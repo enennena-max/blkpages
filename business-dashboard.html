@@ -1452,6 +1452,191 @@
         }
         
         /* Loyalty Tab Styles */
+        
+        /* Loyalty Analytics Styles */
+        .loyalty-analytics-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .loyalty-analytics-section h3 {
+            color: #374151;
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .analytics-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .analytics-header {
+            margin-bottom: 1rem;
+        }
+
+        .analytics-header h4 {
+            color: #374151;
+            margin: 0 0 0.25rem 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .analytics-subtitle {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .customer-progress-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .customer-initials {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #FF3CAC;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .customer-details {
+            flex: 1;
+        }
+
+        .customer-name {
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .customer-progress {
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-bar-small {
+            width: 60px;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill-small {
+            height: 100%;
+            background: #10b981;
+            transition: width 0.3s ease;
+        }
+
+        .progress-percentage {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .issued-reward-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .reward-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .reward-code {
+            font-family: 'Courier New', monospace;
+            background: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .reward-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.issued {
+            background: #f59e0b;
+        }
+
+        .status-dot.redeemed {
+            background: #10b981;
+        }
+
+        .status-dot.expired {
+            background: #6b7280;
+        }
+
+        .status-text {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .reward-date {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
         .loyalty-header {
             margin-bottom: 2rem;
         }
@@ -2235,6 +2420,32 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
                             </button>
                         </div>
                     </div>
+                    
+                    <!-- Loyalty Analytics Section -->
+                    <div class="loyalty-analytics-section">
+                        <h3>Loyalty Analytics</h3>
+                        <div class="analytics-grid">
+                            <div class="analytics-card">
+                                <div class="analytics-header">
+                                    <h4>Customer Progress</h4>
+                                    <span class="analytics-subtitle">Anonymized customer data</span>
+                                </div>
+                                <div class="customer-progress-list" id="customerProgressList">
+                                    <!-- Customer progress items will be loaded here -->
+                                </div>
+                            </div>
+                            
+                            <div class="analytics-card">
+                                <div class="analytics-header">
+                                    <h4>Issued Rewards</h4>
+                                    <span class="analytics-subtitle">Reward codes and redemption status</span>
+                                </div>
+                                <div class="issued-rewards-list" id="issuedRewardsList">
+                                    <!-- Issued rewards will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -2954,6 +3165,9 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
             
             // Setup booking event listeners
             setupBusinessBookingEventListeners();
+            
+            // Load loyalty analytics
+            loadLoyaltyAnalytics();
         if (isLoggedIn !== 'true') {
             console.log('User not logged in, but allowing access for testing');
             // Set demo login status for testing
@@ -3140,15 +3354,15 @@ Refunds are returned to your original payment method within 5–10 business days
             
             const form = document.getElementById(`replyForm-${reviewId}`);
             if (form) {
-                form.style.display = 'block';
+            form.style.display = 'block';
             }
         }
         
         function cancelReply(reviewId) {
             const form = document.getElementById(`replyForm-${reviewId}`);
             if (form) {
-                form.style.display = 'none';
-                form.querySelector('textarea').value = '';
+            form.style.display = 'none';
+            form.querySelector('textarea').value = '';
             }
         }
         
@@ -3191,28 +3405,28 @@ Refunds are returned to your original payment method within 5–10 business days
                 const response = await submitBusinessReply(reviewId, replyText);
                 
                 if (response.success) {
-                    // Create reply element
-                    const reviewCard = form.closest('.review-card');
-                    const replyElement = document.createElement('div');
-                    replyElement.className = 'review-reply';
-                    replyElement.innerHTML = `
-                        <div class="review-reply-header">
-                            <h5>Your Reply</h5>
-                            <span class="review-reply-date">Posted on ${new Date().toLocaleDateString()}</span>
-                        </div>
-                        <div class="review-reply-text">${replyText}</div>
-                    `;
-                    
-                    // Replace form with reply
-                    form.parentNode.replaceChild(replyElement, form);
-                    
-                    // Update review card data
-                    reviewCard.setAttribute('data-reply', 'replied');
-                    reviewCard.classList.remove('new');
-                    
-                    // Update status badge
-                    updatePendingCount();
-                    
+            // Create reply element
+            const reviewCard = form.closest('.review-card');
+            const replyElement = document.createElement('div');
+            replyElement.className = 'review-reply';
+            replyElement.innerHTML = `
+                <div class="review-reply-header">
+                    <h5>Your Reply</h5>
+                    <span class="review-reply-date">Posted on ${new Date().toLocaleDateString()}</span>
+                </div>
+                <div class="review-reply-text">${replyText}</div>
+            `;
+            
+            // Replace form with reply
+            form.parentNode.replaceChild(replyElement, form);
+            
+            // Update review card data
+            reviewCard.setAttribute('data-reply', 'replied');
+            reviewCard.classList.remove('new');
+            
+            // Update status badge
+            updatePendingCount();
+            
                     showNotification('Reply submitted successfully!', 'success');
                 } else {
                     showNotification(response.message || 'Failed to submit reply. Please try again.', 'error');
@@ -3976,6 +4190,129 @@ Refunds are returned to your original payment method within 5–10 business days
             alert('Loyalty program saved successfully!\n\nYour customers will now see this loyalty program on your business profile and in their dashboard.');
         }
         
+        // Load loyalty analytics data
+        function loadLoyaltyAnalytics() {
+            try {
+                // Load customer progress data
+                loadCustomerProgressData();
+                
+                // Load issued rewards data
+                loadIssuedRewardsData();
+                
+            } catch (error) {
+                console.error('Error loading loyalty analytics:', error);
+            }
+        }
+
+        // Load customer progress data (anonymized)
+        function loadCustomerProgressData() {
+            try {
+                const loyaltyProgress = JSON.parse(localStorage.getItem('loyaltyProgress') || '[]');
+                const currentBusinessId = 'business_001'; // In a real app, get from session
+                
+                // Filter progress for current business
+                const businessProgress = loyaltyProgress.filter(progress => 
+                    progress.business_id === currentBusinessId
+                );
+                
+                const progressList = document.getElementById('customerProgressList');
+                if (!progressList) return;
+                
+                if (businessProgress.length === 0) {
+                    progressList.innerHTML = '<p style="color: #6b7280; font-size: 0.875rem; text-align: center; padding: 1rem;">No customer progress data yet</p>';
+                    return;
+                }
+                
+                // Generate anonymized customer progress items
+                const progressItems = businessProgress.map(progress => {
+                    const customerInitials = getCustomerInitials(progress.customer_id);
+                    const progressPercentage = Math.round((progress.total_visits / 5) * 100); // Assuming 5 visits threshold
+                    
+                    return `
+                        <div class="customer-progress-item">
+                            <div class="customer-info">
+                                <div class="customer-initials">${customerInitials}</div>
+                                <div class="customer-details">
+                                    <div class="customer-name">Customer ${customerInitials}</div>
+                                    <div class="customer-progress">${progress.total_visits} visits completed</div>
+                                </div>
+                            </div>
+                            <div class="progress-indicator">
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: ${progressPercentage}%"></div>
+                                </div>
+                                <span class="progress-percentage">${progressPercentage}%</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                progressList.innerHTML = progressItems;
+                
+            } catch (error) {
+                console.error('Error loading customer progress data:', error);
+            }
+        }
+
+        // Load issued rewards data
+        function loadIssuedRewardsData() {
+            try {
+                const rewardVouchers = JSON.parse(localStorage.getItem('rewardVouchers') || '[]');
+                const currentBusinessId = 'business_001'; // In a real app, get from session
+                
+                // Filter vouchers for current business
+                const businessVouchers = rewardVouchers.filter(voucher => 
+                    voucher.business_id === currentBusinessId
+                );
+                
+                const rewardsList = document.getElementById('issuedRewardsList');
+                if (!rewardsList) return;
+                
+                if (businessVouchers.length === 0) {
+                    rewardsList.innerHTML = '<p style="color: #6b7280; font-size: 0.875rem; text-align: center; padding: 1rem;">No rewards issued yet</p>';
+                    return;
+                }
+                
+                // Generate issued rewards items
+                const rewardItems = businessVouchers.map(voucher => {
+                    const status = voucher.expired ? 'expired' : (voucher.used ? 'redeemed' : 'issued');
+                    const statusText = voucher.expired ? 'Expired' : (voucher.used ? 'Redeemed' : 'Issued');
+                    const issueDate = new Date(voucher.created_at).toLocaleDateString();
+                    
+                    return `
+                        <div class="issued-reward-item">
+                            <div class="reward-info">
+                                <div class="reward-code">${voucher.id.substring(0, 8).toUpperCase()}</div>
+                                <div class="reward-details">
+                                    <div class="reward-type">${voucher.reward_type}</div>
+                                    <div class="reward-date">Issued: ${issueDate}</div>
+                                </div>
+                            </div>
+                            <div class="reward-status">
+                                <div class="status-dot ${status}"></div>
+                                <span class="status-text">${statusText}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                rewardsList.innerHTML = rewardItems;
+                
+            } catch (error) {
+                console.error('Error loading issued rewards data:', error);
+            }
+        }
+
+        // Get customer initials for anonymization
+        function getCustomerInitials(customerId) {
+            const customerNames = {
+                'customer_1': 'JS',
+                'customer_2': 'JD',
+                'customer_3': 'SW'
+            };
+            return customerNames[customerId] || 'CU';
+        }
+
         // Simulate saving to LoyaltyProgrammes database table
         function saveLoyaltyProgrammeToDatabase(loyaltyData) {
             try {
@@ -4319,7 +4656,7 @@ Refunds are returned to your original payment method within 5–10 business days
                 notification.remove();
             }, 5000);
         }
-
+        
         // Initialize bookings on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadBusinessBookings();

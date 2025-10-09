@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation Demo - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .demo-header p {
+            color: #999;
+            font-size: 1.1rem;
+        }
+        
+        .demo-form {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            background: #2A2A2A;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            background: #2A2A2A;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3b82f6;
+        }
+        
+        .form-checkbox label {
+            color: #ffffff;
+            font-size: 0.9rem;
+        }
+        
+        .required-asterisk {
+            color: #FF4D4D;
+            margin-right: 0.25rem;
+        }
+        
+        /* Field error states */
+        .field-error {
+            border: 2px solid #FF4D4D !important;
+            box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1) !important;
+        }
+        
+        /* Inline error messages */
+        .field-error-message {
+            color: #FF4D4D;
+            font-size: 12px;
+            font-style: italic;
+            margin-top: 0.5rem;
+            display: block;
+        }
+        
+        .demo-actions {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-demo:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .btn-test {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .btn-clear {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+        
+        .btn-test:hover {
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-clear:hover {
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+        
+        .demo-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #93c5fd;
+        }
+        
+        .validation-log {
+            background: #1A1A1A;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .validation-log h3 {
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .validation-log pre {
+            color: #cccccc;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+        
+        .shake-animation {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        @media (max-width: 768px) {
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+            
+            .demo-form {
+                padding: 1.5rem;
+            }
+            
+            .btn-demo {
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🔍 Form Validation Demo</h1>
+            <p>Test the comprehensive booking form validation system</p>
+        </div>
+        
+        <div class="demo-info">
+            <strong>Demo Features:</strong> This form demonstrates all validation rules including:
+            <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li><strong>Service Selection:</strong> Must select at least one service</li>
+                <li><strong>Date & Time:</strong> Must choose date and time slot</li>
+                <li><strong>Customer Details:</strong> Name, email, phone, postcode validation</li>
+                <li><strong>Terms Acceptance:</strong> Must accept terms and conditions</li>
+                <li><strong>Real-time Feedback:</strong> Errors clear automatically on correction</li>
+                <li><strong>Auto-scroll:</strong> Smooth scroll to first invalid field</li>
+            </ul>
+        </div>
+        
+        <div class="demo-form">
+            <h2 style="margin-bottom: 1.5rem; color: #ffffff;">Mock Booking Form</h2>
+            
+            <!-- Service Selection -->
+            <div class="form-group">
+                <label class="form-label">Services *</label>
+                <select class="form-select" id="serviceSelection">
+                    <option value="">Select a service...</option>
+                    <option value="haircut">Hair Cut - £30</option>
+                    <option value="coloring">Hair Coloring - £80</option>
+                    <option value="styling">Hair Styling - £25</option>
+                </select>
+            </div>
+            
+            <!-- Date Selection -->
+            <div class="form-group">
+                <label class="form-label">Date *</label>
+                <input type="date" class="form-input" id="dateSelection">
+            </div>
+            
+            <!-- Time Selection -->
+            <div class="form-group">
+                <label class="form-label">Time *</label>
+                <select class="form-select" id="timeSelection">
+                    <option value="">Select a time...</option>
+                    <option value="09:00">9:00 AM</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="14:00">2:00 PM</option>
+                    <option value="15:00">3:00 PM</option>
+                </select>
+            </div>
+            
+            <!-- Customer Details -->
+            <div class="form-group">
+                <label class="form-label">Full Name *</label>
+                <input type="text" class="form-input" id="fullName" placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Email Address *</label>
+                <input type="email" class="form-input" id="email" placeholder="Enter your email">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Phone Number *</label>
+                <input type="tel" class="form-input" id="phone" placeholder="Enter your UK phone number">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Postcode *</label>
+                <input type="text" class="form-input" id="postcode" placeholder="Enter your UK postcode" style="text-transform: uppercase;">
+            </div>
+            
+            <!-- Terms Acceptance -->
+            <div class="form-checkbox">
+                <input type="checkbox" id="acceptTerms">
+                <label for="acceptTerms">
+                    <span class="required-asterisk">*</span>
+                    I agree to the terms and conditions
+                </label>
+            </div>
+        </div>
+        
+        <div class="demo-actions">
+            <button class="btn-demo btn-test" onclick="testValidation()">
+                <i class="fas fa-play"></i> Test Validation
+            </button>
+            <button class="btn-demo btn-clear" onclick="clearForm()">
+                <i class="fas fa-trash"></i> Clear Form
+            </button>
+            <button class="btn-demo" onclick="fillValidData()">
+                <i class="fas fa-check"></i> Fill Valid Data
+            </button>
+        </div>
+        
+        <div class="validation-log" id="validationLog">
+            <h3>Validation Log</h3>
+            <pre id="logContent">Click "Test Validation" to see validation results...</pre>
+        </div>
+    </div>
+
+    <script>
+        // Validation rules (same as main form)
+        const ValidationRules = {
+            "service_selection": {
+                "required": true,
+                "errorMessage": "Please select at least one service."
+            },
+            "date_selection": {
+                "required": true,
+                "errorMessage": "Please choose a date for your booking."
+            },
+            "time_selection": {
+                "required": true,
+                "errorMessage": "Please select a time slot."
+            },
+            "first_name": {
+                "required": true,
+                "pattern": "^[A-Za-z\\-']{2,}$",
+                "errorMessage": "Enter a valid first name (letters only)."
+            },
+            "last_name": {
+                "required": true,
+                "pattern": "^[A-Za-z\\-']{2,}$",
+                "errorMessage": "Enter a valid surname (letters only)."
+            },
+            "email": {
+                "required": true,
+                "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+                "errorMessage": "Enter a valid UK email address."
+            },
+            "phone": {
+                "required": true,
+                "pattern": "^(\\+44\\s?7\\d{3}|07\\d{3})\\s?\\d{3}\\s?\\d{3}$|^0\\d{2,4}\\s?\\d{3}\\s?\\d{3,4}$",
+                "errorMessage": "Enter a valid UK phone number."
+            },
+            "postcode": {
+                "required": true,
+                "pattern": "^[A-Z]{1,2}\\d[A-Z\\d]?\\s?\\d[A-Z]{2}$",
+                "errorMessage": "Enter a valid UK postcode (e.g., SW1A 1AA)."
+            },
+            "terms_checkbox": {
+                "required": true,
+                "errorMessage": "You must accept the terms and cancellation policy to continue."
+            }
+        };
+        
+        let validationErrors = [];
+        
+        function testValidation() {
+            console.log('Starting validation test...');
+            validationErrors = [];
+            clearAllValidationErrors();
+            
+            const logContent = document.getElementById('logContent');
+            logContent.textContent = 'Running validation tests...\n\n';
+            
+            // Test each field
+            const results = [
+                validateServiceSelection(),
+                validateDateSelection(),
+                validateTimeSelection(),
+                validateCustomerDetails(),
+                validateTermsAcceptance()
+            ];
+            
+            const hasErrors = results.some(result => !result.valid);
+            
+            if (hasErrors) {
+                showValidationErrors();
+                scrollToFirstError();
+                showButtonShakeAnimation();
+                
+                logContent.textContent += `❌ Validation failed with ${validationErrors.length} errors:\n\n`;
+                validationErrors.forEach((error, index) => {
+                    logContent.textContent += `${index + 1}. ${error.field}: ${error.message}\n`;
+                });
+                
+                logContent.textContent += `\n🔍 First error field: ${validationErrors[0].field}\n`;
+                logContent.textContent += `📍 Scrolling to first error...\n`;
+            } else {
+                logContent.textContent += '✅ All validations passed!\n';
+                logContent.textContent += '🎉 Form is ready for submission.\n';
+            }
+            
+            console.log('Validation test completed');
+        }
+        
+        function validateServiceSelection() {
+            const serviceSelect = document.getElementById('serviceSelection');
+            const hasService = serviceSelect && serviceSelect.value;
+            
+            if (!hasService) {
+                showFieldError('serviceSelection', ValidationRules.service_selection.errorMessage);
+                return { valid: false, field: 'serviceSelection' };
+            }
+            
+            return { valid: true };
+        }
+        
+        function validateDateSelection() {
+            const dateInput = document.getElementById('dateSelection');
+            const hasDate = dateInput && dateInput.value;
+            
+            if (!hasDate) {
+                showFieldError('dateSelection', ValidationRules.date_selection.errorMessage);
+                return { valid: false, field: 'dateSelection' };
+            }
+            
+            return { valid: true };
+        }
+        
+        function validateTimeSelection() {
+            const timeSelect = document.getElementById('timeSelection');
+            const hasTime = timeSelect && timeSelect.value;
+            
+            if (!hasTime) {
+                showFieldError('timeSelection', ValidationRules.time_selection.errorMessage);
+                return { valid: false, field: 'timeSelection' };
+            }
+            
+            return { valid: true };
+        }
+        
+        function validateCustomerDetails() {
+            const fullName = document.getElementById('fullName');
+            const email = document.getElementById('email');
+            const phone = document.getElementById('phone');
+            const postcode = document.getElementById('postcode');
+            
+            let allValid = true;
+            
+            // Validate full name
+            if (fullName && fullName.value.trim()) {
+                const nameParts = fullName.value.trim().split(' ');
+                const firstName = nameParts[0];
+                const lastName = nameParts.slice(1).join(' ');
+                
+                if (!validateField(firstName, 'first_name', 'fullName')) {
+                    allValid = false;
+                }
+                if (lastName && !validateField(lastName, 'last_name', 'fullName')) {
+                    allValid = false;
+                }
+            } else {
+                showFieldError('fullName', 'Please enter your full name');
+                allValid = false;
+            }
+            
+            // Validate email
+            if (email && !validateField(email.value, 'email', 'email')) {
+                allValid = false;
+            }
+            
+            // Validate phone
+            if (phone && !validateField(phone.value, 'phone', 'phone')) {
+                allValid = false;
+            }
+            
+            // Validate postcode
+            if (postcode && !validateField(postcode.value.toUpperCase(), 'postcode', 'postcode')) {
+                allValid = false;
+            }
+            
+            return { valid: allValid };
+        }
+        
+        function validateTermsAcceptance() {
+            const termsCheckbox = document.getElementById('acceptTerms');
+            
+            if (!termsCheckbox || !termsCheckbox.checked) {
+                showFieldError('acceptTerms', ValidationRules.terms_checkbox.errorMessage);
+                return { valid: false, field: 'acceptTerms' };
+            }
+            
+            return { valid: true };
+        }
+        
+        function validateField(value, fieldName, fieldId) {
+            const rule = ValidationRules[fieldName];
+            if (!rule) return true;
+            
+            if (rule.required && (!value || value.trim() === '')) {
+                showFieldError(fieldId, rule.errorMessage);
+                return false;
+            }
+            
+            if (rule.pattern && value) {
+                const regex = new RegExp(rule.pattern);
+                if (!regex.test(value)) {
+                    showFieldError(fieldId, rule.errorMessage);
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            if (!field) return;
+            
+            field.classList.add('field-error');
+            
+            const existingError = field.parentNode.querySelector('.field-error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'field-error-message';
+            errorDiv.textContent = message;
+            field.parentNode.appendChild(errorDiv);
+            
+            validationErrors.push({
+                field: fieldId,
+                message: message
+            });
+        }
+        
+        function clearAllValidationErrors() {
+            document.querySelectorAll('.field-error').forEach(field => {
+                field.classList.remove('field-error');
+            });
+            
+            document.querySelectorAll('.field-error-message').forEach(error => {
+                error.remove();
+            });
+        }
+        
+        function showValidationErrors() {
+            console.log('Validation errors:', validationErrors);
+        }
+        
+        function scrollToFirstError() {
+            if (validationErrors.length === 0) return;
+            
+            const firstError = document.getElementById(validationErrors[0].field);
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => {
+                    firstError.focus();
+                }, 500);
+            }
+        }
+        
+        function showButtonShakeAnimation() {
+            const button = document.querySelector('.btn-test');
+            button.classList.add('shake-animation');
+            setTimeout(() => {
+                button.classList.remove('shake-animation');
+            }, 500);
+        }
+        
+        function clearForm() {
+            document.getElementById('serviceSelection').value = '';
+            document.getElementById('dateSelection').value = '';
+            document.getElementById('timeSelection').value = '';
+            document.getElementById('fullName').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('postcode').value = '';
+            document.getElementById('acceptTerms').checked = false;
+            
+            clearAllValidationErrors();
+            document.getElementById('logContent').textContent = 'Form cleared. Click "Test Validation" to see validation results...';
+        }
+        
+        function fillValidData() {
+            document.getElementById('serviceSelection').value = 'haircut';
+            document.getElementById('dateSelection').value = '2024-12-25';
+            document.getElementById('timeSelection').value = '10:00';
+            document.getElementById('fullName').value = 'John Smith';
+            document.getElementById('email').value = 'john.smith@example.com';
+            document.getElementById('phone').value = '07123456789';
+            document.getElementById('postcode').value = 'SW1A 1AA';
+            document.getElementById('acceptTerms').checked = true;
+            
+            clearAllValidationErrors();
+            document.getElementById('logContent').textContent = 'Valid data filled. Click "Test Validation" to verify...';
+        }
+        
+        // Add real-time validation listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const validationFields = ['fullName', 'email', 'phone', 'postcode'];
+            
+            validationFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function() {
+                        this.classList.remove('field-error');
+                        const errorMessage = this.parentNode.querySelector('.field-error-message');
+                        if (errorMessage) {
+                            errorMessage.remove();
+                        }
+                    });
+                }
+            });
+            
+            const termsCheckbox = document.getElementById('acceptTerms');
+            if (termsCheckbox) {
+                termsCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        this.classList.remove('field-error');
+                        const errorMessage = this.parentNode.querySelector('.field-error-message');
+                        if (errorMessage) {
+                            errorMessage.remove();
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

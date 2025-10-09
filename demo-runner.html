@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlkPages Loyalty Demo Runner</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .content {
+            padding: 30px 20px;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        
+        .btn {
+            background: #FF3CAC;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: background 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #e91e63;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-success {
+            background: #10b981;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .log-container {
+            background: #f8f9fa;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #FF3CAC;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF3CAC;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .links-container {
+            background: #e9ecef;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .link-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .link-item:last-child {
+            border-bottom: none;
+        }
+        
+        .link-button {
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .link-button:hover {
+            background: #0056b3;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 BlkPages Loyalty Demo Runner</h1>
+            <p>Complete end-to-end loyalty rewards system demonstration</p>
+        </div>
+        
+        <div class="content">
+            <div class="warning">
+                <strong>⚠️ IMPORTANT:</strong> This is for demo/sandbox use only! Never run in production environment.
+            </div>
+            
+            <div id="demoControls">
+                <h3>🚀 Demo Controls</h3>
+                <button class="btn" onclick="runDemo()" id="runBtn">Run Demo Seeder</button>
+                <button class="btn btn-secondary" onclick="viewStats()" id="statsBtn" disabled>View Statistics</button>
+                <button class="btn btn-success" onclick="downloadCSV()" id="csvBtn" disabled>Download CSV</button>
+                <button class="btn btn-danger" onclick="cleanupDemo()" id="cleanupBtn" disabled>Cleanup Demo Data</button>
+            </div>
+            
+            <div id="logContainer" class="log-container" style="display: none;">
+                <div id="logContent"></div>
+            </div>
+            
+            <div id="statsContainer" class="stats-grid" style="display: none;">
+                <!-- Stats will be loaded here -->
+            </div>
+            
+            <div id="linksContainer" class="links-container" style="display: none;">
+                <h3>🔗 Demo Links</h3>
+                <div id="linksContent">
+                    <!-- Links will be loaded here -->
+                </div>
+            </div>
+            
+            <div id="summaryContainer" style="display: none;">
+                <h3>📊 Demo Summary</h3>
+                <div id="summaryContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let demoData = null;
+        
+        // Run the complete demo seeder
+        async function runDemo() {
+            const runBtn = document.getElementById('runBtn');
+            const logContainer = document.getElementById('logContainer');
+            const logContent = document.getElementById('logContent');
+            
+            runBtn.disabled = true;
+            runBtn.textContent = 'Running Demo...';
+            logContainer.style.display = 'block';
+            logContent.innerHTML = '';
+            
+            try {
+                log('🚀 Starting BlkPages Loyalty Demo...');
+                log('⚠️  IMPORTANT: This is for demo/sandbox use only!');
+                
+                // Step 1: Environment Check
+                log('🔍 Checking environment...');
+                if (window.location.hostname === 'production' || window.location.hostname.includes('prod')) {
+                    throw new Error('❌ SAFETY ABORT: This script cannot run in production environment!');
+                }
+                log('✅ Environment check passed: demo/sandbox');
+                
+                // Step 2: Initialize Demo Data
+                log('🔍 Initializing demo data...');
+                await initializeDemoData();
+                
+                // Step 3: Create Demo Businesses
+                log('🏢 Creating demo businesses...');
+                const businesses = await createDemoBusinesses();
+                log(`✅ Created ${businesses.length} demo businesses`);
+                
+                // Step 4: Create Demo Customers
+                log('👥 Creating demo customers...');
+                const customers = await createDemoCustomers();
+                log(`✅ Created ${customers.length} demo customers`);
+                
+                // Step 5: Create Loyalty Programmes
+                log('🎯 Creating loyalty programmes...');
+                const programmes = await createLoyaltyProgrammes(businesses);
+                log(`✅ Created ${programmes.length} loyalty programmes`);
+                
+                // Step 6: Seed Bookings
+                log('📅 Seeding demo bookings...');
+                const bookings = await seedBookings(businesses, customers);
+                log(`✅ Created ${bookings.length} demo bookings`);
+                
+                // Step 7: Generate Vouchers
+                log('🎫 Generating reward vouchers...');
+                const { vouchers, loyaltyProgress } = await generateVouchers(businesses, customers, programmes);
+                log(`✅ Generated ${vouchers.length} reward vouchers`);
+                log(`✅ Created ${loyaltyProgress.length} loyalty progress records`);
+                
+                // Store demo data
+                demoData = {
+                    businesses,
+                    customers,
+                    programmes,
+                    bookings,
+                    vouchers,
+                    loyaltyProgress,
+                    created_at: new Date().toISOString()
+                };
+                
+                log('✅ Demo seeding completed successfully!');
+                
+                // Show results
+                showResults();
+                
+            } catch (error) {
+                log(`❌ Demo seeding failed: ${error.message}`);
+                showError(error.message);
+            } finally {
+                runBtn.disabled = false;
+                runBtn.textContent = 'Run Demo Seeder';
+            }
+        }
+        
+        // Initialize demo data storage
+        async function initializeDemoData() {
+            const requiredTables = [
+                'demo_Businesses',
+                'demo_Customers', 
+                'demo_Bookings',
+                'demo_LoyaltyProgrammes',
+                'demo_LoyaltyProgress',
+                'demo_RewardVouchers'
+            ];
+            
+            requiredTables.forEach(table => {
+                if (!localStorage.getItem(table)) {
+                    localStorage.setItem(table, JSON.stringify([]));
+                }
+            });
+            
+            log('✅ Demo tables initialized');
+        }
+        
+        // Create demo businesses
+        async function createDemoBusinesses() {
+            const businesses = [
+                {
+                    id: generateId(),
+                    name: 'DEMO_GlowHair',
+                    email: 'demo_glow@blkpages.test',
+                    timezone: 'Europe/London',
+                    plan: 'Professional',
+                    demo: true,
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: 'DEMO_ZenSpa',
+                    email: 'demo_zen@blkpages.test',
+                    timezone: 'Europe/London',
+                    plan: 'Starter',
+                    demo: true,
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: 'DEMO_CityNails',
+                    email: 'demo_city@blkpages.test',
+                    timezone: 'Europe/London',
+                    plan: 'Starter',
+                    demo: true,
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: 'DEMO_FreshCuts',
+                    email: 'demo_fresh@blkpages.test',
+                    timezone: 'Europe/London',
+                    plan: 'Professional',
+                    demo: true,
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    name: 'DEMO_LuxeBrow',
+                    email: 'demo_luxe@blkpages.test',
+                    timezone: 'Europe/London',
+                    plan: 'FreeGrowth',
+                    demo: true,
+                    created_at: new Date().toISOString()
+                }
+            ];
+            
+            localStorage.setItem('demo_Businesses', JSON.stringify(businesses));
+            return businesses;
+        }
+        
+        // Create demo customers
+        async function createDemoCustomers() {
+            const customers = [
+                { id: generateId(), first_name: 'DemoAlice', email: 'demo_customer1@blkpages.test', demo: true, created_at: new Date().toISOString() },
+                { id: generateId(), first_name: 'DemoBen', email: 'demo_customer2@blkpages.test', demo: true, created_at: new Date().toISOString() },
+                { id: generateId(), first_name: 'DemoCara', email: 'demo_customer3@blkpages.test', demo: true, created_at: new Date().toISOString() },
+                { id: generateId(), first_name: 'DemoDan', email: 'demo_customer4@blkpages.test', demo: true, created_at: new Date().toISOString() },
+                { id: generateId(), first_name: 'DemoEve', email: 'demo_customer5@blkpages.test', demo: true, created_at: new Date().toISOString() },
+                { id: generateId(), first_name: 'DemoFred', email: 'demo_customer6@blkpages.test', demo: true, created_at: new Date().toISOString() },
+                { id: generateId(), first_name: 'DemoGina', email: 'demo_customer7@blkpages.test', demo: true, created_at: new Date().toISOString() },
+                { id: generateId(), first_name: 'DemoHugo', email: 'demo_customer8@blkpages.test', demo: true, created_at: new Date().toISOString() }
+            ];
+            
+            localStorage.setItem('demo_Customers', JSON.stringify(customers));
+            return customers;
+        }
+        
+        // Create loyalty programmes
+        async function createLoyaltyProgrammes(businesses) {
+            const programmes = [
+                {
+                    id: generateId(),
+                    business_id: businesses[0].id, // GlowHair
+                    type: 'Visits',
+                    threshold: 5,
+                    reward_type: 'Free Service',
+                    reward_value: 'Blow Dry',
+                    expiry_days: 30,
+                    active: true,
+                    demo: true,
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    business_id: businesses[1].id, // ZenSpa
+                    type: 'Spend',
+                    threshold: 200.00,
+                    reward_type: 'Credit',
+                    reward_value: '20.00',
+                    expiry_days: 60,
+                    active: true,
+                    demo: true,
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    business_id: businesses[2].id, // CityNails
+                    type: 'Visits',
+                    threshold: 3,
+                    reward_type: 'Discount',
+                    reward_value: '20',
+                    expiry_days: 14,
+                    active: true,
+                    demo: true,
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    business_id: businesses[3].id, // FreshCuts
+                    type: 'Time',
+                    threshold: 4,
+                    reward_type: 'Free Service',
+                    reward_value: 'Express Cut',
+                    expiry_days: 45,
+                    active: true,
+                    demo: true,
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: generateId(),
+                    business_id: businesses[4].id, // LuxeBrow
+                    type: 'Visits',
+                    threshold: 5,
+                    reward_type: 'Free Service',
+                    reward_value: 'Brow Wax',
+                    expiry_days: 30,
+                    active: true,
+                    demo: true,
+                    created_at: new Date().toISOString()
+                }
+            ];
+            
+            localStorage.setItem('demo_LoyaltyProgrammes', JSON.stringify(programmes));
+            return programmes;
+        }
+        
+        // Seed bookings
+        async function seedBookings(businesses, customers) {
+            const bookings = [];
+            const now = new Date();
+            
+            // GlowHair: Customer1 -> 5 completed bookings (should unlock voucher)
+            for (let i = 0; i < 5; i++) {
+                bookings.push({
+                    id: generateId(),
+                    customer_id: customers[0].id,
+                    business_id: businesses[0].id,
+                    service: 'Hair Styling',
+                    amount: 45.00,
+                    status: 'Completed',
+                    completed_at: new Date(now.getTime() - (i * 7 * 24 * 60 * 60 * 1000)).toISOString(),
+                    demo: true,
+                    created_at: new Date().toISOString()
+                });
+            }
+            
+            // ZenSpa: Customer2 -> bookings totalling £210 in spend (should unlock voucher)
+            bookings.push({
+                id: generateId(),
+                customer_id: customers[1].id,
+                business_id: businesses[1].id,
+                service: 'Full Body Massage',
+                amount: 210.00,
+                status: 'Completed',
+                completed_at: new Date(now.getTime() - (2 * 24 * 60 * 60 * 1000)).toISOString(),
+                demo: true,
+                created_at: new Date().toISOString()
+            });
+            
+            // CityNails: Customer3 -> 2 completed bookings (not yet unlocked)
+            for (let i = 0; i < 2; i++) {
+                bookings.push({
+                    id: generateId(),
+                    customer_id: customers[2].id,
+                    business_id: businesses[2].id,
+                    service: 'Manicure',
+                    amount: 25.00,
+                    status: 'Completed',
+                    completed_at: new Date(now.getTime() - (i * 14 * 24 * 60 * 60 * 1000)).toISOString(),
+                    demo: true,
+                    created_at: new Date().toISOString()
+                });
+            }
+            
+            // CityNails: Customer4 -> 3 completed bookings (unlocked)
+            for (let i = 0; i < 3; i++) {
+                bookings.push({
+                    id: generateId(),
+                    customer_id: customers[3].id,
+                    business_id: businesses[2].id,
+                    service: 'Pedicure',
+                    amount: 30.00,
+                    status: 'Completed',
+                    completed_at: new Date(now.getTime() - (i * 10 * 24 * 60 * 60 * 1000)).toISOString(),
+                    demo: true,
+                    created_at: new Date().toISOString()
+                });
+            }
+            
+            // FreshCuts: Customer5 -> 4 bookings within 60 days (unlocked)
+            for (let i = 0; i < 4; i++) {
+                bookings.push({
+                    id: generateId(),
+                    customer_id: customers[4].id,
+                    business_id: businesses[3].id,
+                    service: 'Haircut',
+                    amount: 35.00,
+                    status: 'Completed',
+                    completed_at: new Date(now.getTime() - (i * 15 * 24 * 60 * 60 * 1000)).toISOString(),
+                    demo: true,
+                    created_at: new Date().toISOString()
+                });
+            }
+            
+            // LuxeBrow: Customer6 -> 5 bookings (unlocked)
+            for (let i = 0; i < 5; i++) {
+                bookings.push({
+                    id: generateId(),
+                    customer_id: customers[5].id,
+                    business_id: businesses[4].id,
+                    service: 'Brow Shaping',
+                    amount: 20.00,
+                    status: 'Completed',
+                    completed_at: new Date(now.getTime() - (i * 8 * 24 * 60 * 60 * 1000)).toISOString(),
+                    demo: true,
+                    created_at: new Date().toISOString()
+                });
+            }
+            
+            localStorage.setItem('demo_Bookings', JSON.stringify(bookings));
+            return bookings;
+        }
+        
+        // Generate vouchers
+        async function generateVouchers(businesses, customers, programmes) {
+            const vouchers = [];
+            const loyaltyProgress = [];
+            
+            // Process each business's completed bookings
+            for (const business of businesses) {
+                const businessBookings = JSON.parse(localStorage.getItem('demo_Bookings') || '[]')
+                    .filter(b => b.business_id === business.id && b.status === 'Completed');
+                const programme = programmes.find(p => p.business_id === business.id);
+                
+                if (!programme) continue;
+                
+                // Group bookings by customer
+                const customerBookings = {};
+                businessBookings.forEach(booking => {
+                    if (!customerBookings[booking.customer_id]) {
+                        customerBookings[booking.customer_id] = [];
+                    }
+                    customerBookings[booking.customer_id].push(booking);
+                });
+                
+                // Process each customer's progress
+                for (const [customerId, bookings] of Object.entries(customerBookings)) {
+                    const customer = customers.find(c => c.id === customerId);
+                    if (!customer) continue;
+                    
+                    // Calculate progress based on programme type
+                    let currentProgress = 0;
+                    if (programme.type === 'Visits') {
+                        currentProgress = bookings.length;
+                    } else if (programme.type === 'Spend') {
+                        currentProgress = bookings.reduce((sum, b) => sum + b.amount, 0);
+                    } else if (programme.type === 'Time') {
+                        // For time-based, check if visits are within the time window
+                        const timeWindow = 60; // days
+                        const cutoffDate = new Date(Date.now() - (timeWindow * 24 * 60 * 60 * 1000));
+                        const recentBookings = bookings.filter(b => new Date(b.completed_at) > cutoffDate);
+                        currentProgress = recentBookings.length;
+                    }
+                    
+                    // Create or update loyalty progress
+                    const progressId = generateId();
+                    const progress = {
+                        id: progressId,
+                        customer_id: customerId,
+                        business_id: business.id,
+                        total_visits: programme.type === 'Visits' ? currentProgress : bookings.length,
+                        total_spend: bookings.reduce((sum, b) => sum + b.amount, 0),
+                        last_visit: bookings[bookings.length - 1].completed_at,
+                        reward_unlocked: currentProgress >= programme.threshold,
+                        reward_redeemed: false,
+                        reward_voucher_id: null,
+                        demo: true,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    };
+                    
+                    loyaltyProgress.push(progress);
+                    
+                    // Generate voucher if threshold met
+                    if (currentProgress >= programme.threshold) {
+                        const voucherCode = generateVoucherCode();
+                        const expiryDate = new Date(Date.now() + (programme.expiry_days * 24 * 60 * 60 * 1000));
+                        
+                        const voucher = {
+                            id: generateId(),
+                            code: voucherCode,
+                            customer_id: customerId,
+                            business_id: business.id,
+                            reward_type: programme.reward_type,
+                            reward_value: programme.reward_value,
+                            expires_at: expiryDate.toISOString(),
+                            used: false,
+                            expired: false,
+                            demo: true,
+                            created_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString()
+                        };
+                        
+                        vouchers.push(voucher);
+                        
+                        // Update progress with voucher ID
+                        progress.reward_voucher_id = voucher.id;
+                    }
+                }
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('demo_RewardVouchers', JSON.stringify(vouchers));
+            localStorage.setItem('demo_LoyaltyProgress', JSON.stringify(loyaltyProgress));
+            
+            return { vouchers, loyaltyProgress };
+        }
+        
+        // Show results
+        function showResults() {
+            const statsContainer = document.getElementById('statsContainer');
+            const linksContainer = document.getElementById('linksContainer');
+            const summaryContainer = document.getElementById('summaryContainer');
+            const summaryContent = document.getElementById('summaryContent');
+            const linksContent = document.getElementById('linksContent');
+            
+            // Enable buttons
+            document.getElementById('statsBtn').disabled = false;
+            document.getElementById('csvBtn').disabled = false;
+            document.getElementById('cleanupBtn').disabled = false;
+            
+            // Show stats
+            statsContainer.style.display = 'grid';
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${demoData.businesses.length}</div>
+                    <div class="stat-label">Businesses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${demoData.customers.length}</div>
+                    <div class="stat-label">Customers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${demoData.bookings.length}</div>
+                    <div class="stat-label">Bookings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${demoData.vouchers.length}</div>
+                    <div class="stat-label">Vouchers</div>
+                </div>
+            `;
+            
+            // Show links
+            linksContainer.style.display = 'block';
+            linksContent.innerHTML = `
+                <div class="link-item">
+                    <span>📊 Admin Demo UI</span>
+                    <a href="admin/demo/loyalty.html" class="link-button" target="_blank">Open Admin UI</a>
+                </div>
+                <div class="link-item">
+                    <span>🛒 Demo Checkout</span>
+                    <a href="demo/business/checkout.html" class="link-button" target="_blank">Test Checkout</a>
+                </div>
+                <div class="link-item">
+                    <span>📥 Download CSV</span>
+                    <button class="link-button" onclick="downloadCSV()">Download CSV</button>
+                </div>
+            `;
+            
+            // Show summary
+            summaryContainer.style.display = 'block';
+            const sampleVouchers = demoData.vouchers.slice(0, 10).map(v => {
+                const business = demoData.businesses.find(b => b.id === v.business_id);
+                const customer = demoData.customers.find(c => c.id === v.customer_id);
+                return `${v.code} - ${business.name} - ${customer.first_name} - ${v.reward_type}: ${v.reward_value}`;
+            }).join('<br>');
+            
+            summaryContent.innerHTML = `
+                <div class="success-message">
+                    <strong>🎉 Demo completed successfully!</strong><br>
+                    <strong>Sample Voucher Codes:</strong><br>
+                    ${sampleVouchers}
+                </div>
+            `;
+        }
+        
+        // View statistics
+        function viewStats() {
+            if (!demoData) {
+                alert('Please run the demo seeder first!');
+                return;
+            }
+            
+            const statsContainer = document.getElementById('statsContainer');
+            statsContainer.style.display = 'grid';
+        }
+        
+        // Download CSV
+        function downloadCSV() {
+            if (!demoData) {
+                alert('Please run the demo seeder first!');
+                return;
+            }
+            
+            const vouchers = demoData.vouchers;
+            const businesses = demoData.businesses;
+            const customers = demoData.customers;
+            
+            const csvContent = [
+                'code,business_name,customer_name,reward_type,reward_value,expiry_date,redeemed,redeemed_on,expired,created_at'
+            ].concat(
+                vouchers.map(voucher => {
+                    const business = businesses.find(b => b.id === voucher.business_id);
+                    const customer = customers.find(c => c.id === voucher.customer_id);
+                    
+                    return [
+                        voucher.code,
+                        business ? business.name : 'Unknown',
+                        customer ? customer.first_name : 'Unknown',
+                        voucher.reward_type,
+                        voucher.reward_value,
+                        voucher.expires_at,
+                        voucher.used ? 'true' : 'false',
+                        voucher.used_at || '',
+                        voucher.expired ? 'true' : 'false',
+                        voucher.created_at
+                    ].join(',');
+                })
+            ).join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `loyalty_demo_vouchers_${new Date().toISOString().slice(0,10).replace(/-/g,'')}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // Cleanup demo data
+        function cleanupDemo() {
+            if (confirm('This will delete all demo data. Are you sure?')) {
+                const demoKeys = [
+                    'demo_Businesses',
+                    'demo_Customers', 
+                    'demo_Bookings',
+                    'demo_LoyaltyProgrammes',
+                    'demo_LoyaltyProgress',
+                    'demo_RewardVouchers'
+                ];
+                
+                let cleanedCount = 0;
+                demoKeys.forEach(key => {
+                    if (localStorage.getItem(key)) {
+                        localStorage.removeItem(key);
+                        cleanedCount++;
+                    }
+                });
+                
+                demoData = null;
+                
+                // Hide results
+                document.getElementById('statsContainer').style.display = 'none';
+                document.getElementById('linksContainer').style.display = 'none';
+                document.getElementById('summaryContainer').style.display = 'none';
+                
+                // Disable buttons
+                document.getElementById('statsBtn').disabled = true;
+                document.getElementById('csvBtn').disabled = true;
+                document.getElementById('cleanupBtn').disabled = true;
+                
+                alert(`Demo data cleaned up successfully! Removed ${cleanedCount} demo datasets.`);
+            }
+        }
+        
+        // Helper functions
+        function generateId() {
+            return 'demo_' + Math.random().toString(36).substr(2, 9);
+        }
+        
+        function generateVoucherCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'BP-';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        function log(message) {
+            const logContent = document.getElementById('logContent');
+            const timestamp = new Date().toISOString();
+            logContent.innerHTML += `[${timestamp}] ${message}<br>`;
+            logContent.scrollTop = logContent.scrollHeight;
+        }
+        
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `<strong>Error:</strong> ${message}`;
+            document.getElementById('demoControls').appendChild(errorDiv);
+        }
+    </script>
+</body>
+</html>
