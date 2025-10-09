@@ -8,11 +8,14 @@
  * - All messages trigger automatically without manual intervention
  */
 
+const NotificationLogSystem = require('./notification-log-system');
+
 class CommunicationSystem {
     constructor() {
         this.emailService = new EmailService();
         this.smsService = new SMSService();
         this.timezoneService = new TimezoneService();
+        this.notificationLogSystem = new NotificationLogSystem();
     }
 
     // ========================================
@@ -20,71 +23,129 @@ class CommunicationSystem {
     // ========================================
 
     /**
-     * 1. Booking Confirmation (Email + SMS if Premium)
+     * Booking Confirmation with notification logging
      * Trigger: Immediately after customer completes a booking
      */
     async handleBookingConfirmation(bookingData) {
-        const { customer, business, service, bookingTime, paymentModel, totalAmount } = bookingData;
+        const { customer, business, service, bookingTime, paymentModel, totalAmount, bookingId } = bookingData;
         
-        // Always send email
-        await this.emailService.sendBookingConfirmation({
-            to: customer.email,
-            customerName: customer.firstName,
-            businessName: business.name,
-            service: service.name,
-            bookingTime: this.timezoneService.formatDateTime(bookingTime, business.timezone),
-            paymentModel: paymentModel,
-            totalAmount: totalAmount,
-            businessProfileUrl: `${process.env.PLATFORM_URL}/business/${business.id}`,
-            dashboardUrl: `${process.env.PLATFORM_URL}/customer-dashboard`
-        });
-
-        // Send SMS only if Premium business
-        if (business.package === 'Premium' && customer.phoneNumber) {
-            await this.smsService.sendBookingConfirmation({
-                to: customer.phoneNumber,
-                service: service.name,
+        try {
+            // Always send email
+            const emailSent = await this.emailService.sendBookingConfirmation({
+                to: customer.email,
+                customerName: customer.firstName,
                 businessName: business.name,
-                bookingTime: this.timezoneService.formatDateTime(bookingTime, business.timezone)
+                service: service.name,
+                bookingTime: this.timezoneService.formatDateTime(bookingTime, business.timezone),
+                paymentModel: paymentModel,
+                totalAmount: totalAmount,
+                businessProfileUrl: `${process.env.PLATFORM_URL}/business/${business.id}`,
+                dashboardUrl: `${process.env.PLATFORM_URL}/customer-dashboard`
             });
+
+            // Log email confirmation status
+            await this.notificationLogSystem.logNotificationStatus(
+                bookingId,
+                'confirmation',
+                emailSent,
+                'email'
+            );
+
+            // Send SMS only if Premium business
+            if (business.package === 'Premium' && customer.phoneNumber) {
+                const smsSent = await this.smsService.sendBookingConfirmation({
+                    to: customer.phoneNumber,
+                    service: service.name,
+                    businessName: business.name,
+                    bookingTime: this.timezoneService.formatDateTime(bookingTime, business.timezone)
+                });
+
+                // Log SMS confirmation status
+                await this.notificationLogSystem.logNotificationStatus(
+                    bookingId,
+                    'confirmation',
+                    smsSent,
+                    'sms'
+                );
+            }
+
+            console.log(`Booking confirmation notifications logged for booking ${bookingId}`);
+        } catch (error) {
+            console.error('Failed to send booking confirmation:', error);
+            // Log failed notification
+            await this.notificationLogSystem.logNotificationStatus(
+                bookingId,
+                'confirmation',
+                false,
+                'email'
+            );
         }
     }
 
     /**
-     * 2. Reminder (Email + SMS if Premium)
+     * Booking Reminder with notification logging
      * Trigger: 24 hours before booking start time
      */
     async handleBookingReminder(bookingData) {
-        const { customer, business, service, bookingTime, paymentModel, totalAmount } = bookingData;
+        const { customer, business, service, bookingTime, paymentModel, totalAmount, bookingId } = bookingData;
         
-        // Check if booking is still active (not cancelled)
-        const booking = await this.getBookingStatus(bookingData.bookingId);
-        if (booking.status === 'cancelled') {
-            console.log(`Skipping reminder for cancelled booking ${bookingData.bookingId}`);
-            return;
-        }
+        try {
+            // Check if booking is still active (not cancelled)
+            const booking = await this.getBookingStatus(bookingId);
+            if (booking.status === 'cancelled') {
+                console.log(`Skipping reminder for cancelled booking ${bookingId}`);
+                return;
+            }
 
-        // Always send email reminder
-        await this.emailService.sendBookingReminder({
-            to: customer.email,
-            customerName: customer.firstName,
-            businessName: business.name,
-            service: service.name,
-            bookingTime: this.timezoneService.formatDateTime(bookingTime, business.timezone),
-            paymentModel: paymentModel,
-            totalAmount: totalAmount,
-            businessProfileUrl: `${process.env.PLATFORM_URL}/business/${business.id}`,
-            dashboardUrl: `${process.env.PLATFORM_URL}/customer-dashboard`
-        });
-
-        // Send SMS only if Premium business
-        if (business.package === 'Premium' && customer.phoneNumber) {
-            await this.smsService.sendBookingReminder({
-                to: customer.phoneNumber,
-                service: service.name,
+            // Always send email reminder
+            const emailSent = await this.emailService.sendBookingReminder({
+                to: customer.email,
+                customerName: customer.firstName,
                 businessName: business.name,
-                bookingTime: this.timezoneService.formatDateTime(bookingTime, business.timezone)
+                service: service.name,
+                bookingTime: this.timezoneService.formatDateTime(bookingTime, business.timezone),
+                paymentModel: paymentModel,
+                totalAmount: totalAmount,
+                businessProfileUrl: `${process.env.PLATFORM_URL}/business/${business.id}`,
+                dashboardUrl: `${process.env.PLATFORM_URL}/customer-dashboard`
             });
+
+            // Log email reminder status
+            await this.notificationLogSystem.logNotificationStatus(
+                bookingId,
+                'reminder',
+                emailSent,
+                'email'
+            );
+
+            // Send SMS only if Premium business
+            if (business.package === 'Premium' && customer.phoneNumber) {
+                const smsSent = await this.smsService.sendBookingReminder({
+                    to: customer.phoneNumber,
+                    service: service.name,
+                    businessName: business.name,
+                    bookingTime: this.timezoneService.formatDateTime(bookingTime, business.timezone)
+                });
+
+                // Log SMS reminder status
+                await this.notificationLogSystem.logNotificationStatus(
+                    bookingId,
+                    'reminder',
+                    smsSent,
+                    'sms'
+                );
+            }
+
+            console.log(`Booking reminder notifications logged for booking ${bookingId}`);
+        } catch (error) {
+            console.error('Failed to send booking reminder:', error);
+            // Log failed notification
+            await this.notificationLogSystem.logNotificationStatus(
+                bookingId,
+                'reminder',
+                false,
+                'email'
+            );
         }
     }
 

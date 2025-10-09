@@ -110,6 +110,9 @@ async function processCancellation(bookingId, cancellationReason = 'Customer can
         await updateCustomerDashboard(booking, refundAmount, refundResult);
         await updateBusinessDashboard(booking, refundAmount, refundResult);
         
+        // Trigger booking.cancel event for real-time updates
+        await triggerBookingCancelEvent(booking, refundAmount, refundResult);
+        
         // Send notifications
         await sendCancellationNotifications(booking, refundResult, refundAmount);
         
@@ -188,6 +191,7 @@ async function updateCustomerDashboard(booking, refundAmount, refundResult) {
             customerBookings[bookingIndex].status = 'Cancelled';
             customerBookings[bookingIndex].cancelledAt = new Date().toISOString();
             customerBookings[bookingIndex].cancellationReason = booking.cancellationReason || 'Customer cancellation';
+            customerBookings[bookingIndex].updatedAt = new Date().toISOString();
             
             // Add refund information if applicable
             if (refundAmount > 0) {
@@ -228,6 +232,7 @@ async function updateBusinessDashboard(booking, refundAmount, refundResult) {
             businessBookings[bookingIndex].status = 'Refunded';
             businessBookings[bookingIndex].cancelledAt = new Date().toISOString();
             businessBookings[bookingIndex].cancellationReason = booking.cancellationReason || 'Customer cancellation';
+            businessBookings[bookingIndex].updatedAt = new Date().toISOString();
             
             // Add refund information
             businessBookings[bookingIndex].refundAmount = refundAmount;
@@ -262,6 +267,43 @@ async function updateBusinessPayout(booking, refundAmount) {
     payoutDate.setHours(payoutDate.getHours() + 24);
     
     console.log(`Business payout scheduled: £${payoutAmount.toFixed(2)} for ${payoutDate.toISOString()}`);
+}
+
+/**
+ * Trigger booking.cancel event for real-time dashboard updates
+ */
+async function triggerBookingCancelEvent(booking, refundAmount, refundResult) {
+    try {
+        const cancelEventData = {
+            bookingId: booking.id,
+            customerId: booking.customerId,
+            businessId: booking.businessId,
+            customerName: booking.customerName,
+            businessName: booking.businessName,
+            serviceName: booking.serviceName,
+            bookingDate: booking.bookingDate,
+            bookingTime: booking.bookingTime,
+            status: 'Cancelled',
+            cancellationReason: booking.cancellationReason || 'Customer cancellation',
+            refundAmount: refundAmount,
+            refundId: refundResult?.id || null,
+            refundStatus: refundAmount > 0 ? 'Processed' : 'Non-refundable',
+            timestamp: new Date().toISOString(),
+            // Security: No payment details exposed
+            securityNotice: 'Payment details are securely processed by Stripe and never exposed to businesses'
+        };
+        
+        // Dispatch booking.cancel event
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('booking.cancel', {
+                detail: cancelEventData
+            }));
+        }
+        
+        console.log('Booking.cancel event triggered:', cancelEventData);
+    } catch (error) {
+        console.error('Failed to trigger booking.cancel event:', error);
+    }
 }
 
 /**

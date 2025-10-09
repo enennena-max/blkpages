@@ -2568,6 +2568,20 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
                             <small class="form-help" id="tabRewardValueDescription">Set the discount amount or percentage</small>
                         </div>
                         
+                        <!-- Expiry Days -->
+                        <div class="form-group" id="tabExpiryDaysSetting" style="display: none;">
+                            <label for="tabLoyaltyExpiryDays">Reward Expiry Days</label>
+                            <input type="number" id="tabLoyaltyExpiryDays" class="form-input" placeholder="Enter days" min="1" max="365" onchange="updateTabLoyaltyPreview()">
+                            <small class="form-help">How many days customers have to use their reward (1-365 days)</small>
+                        </div>
+                        
+                        <!-- Terms -->
+                        <div class="form-group" id="tabTermsSetting" style="display: none;">
+                            <label for="tabLoyaltyTerms">Terms & Conditions</label>
+                            <textarea id="tabLoyaltyTerms" class="form-textarea" placeholder="Enter terms and conditions (optional)" rows="3" onchange="updateTabLoyaltyPreview()"></textarea>
+                            <small class="form-help">Optional terms and conditions for your loyalty programme</small>
+                        </div>
+                        
                         <!-- Enable Toggle -->
                         <div class="form-group">
                             <label>Enable Loyalty Programme</label>
@@ -3783,6 +3797,8 @@ Refunds are returned to your original payment method within 5–10 business days
             const thresholdSetting = document.getElementById('tabThresholdSetting');
             const timeLimitSetting = document.getElementById('tabTimeLimitSetting');
             const rewardTypeSetting = document.getElementById('tabRewardTypeSetting');
+            const expiryDaysSetting = document.getElementById('tabExpiryDaysSetting');
+            const termsSetting = document.getElementById('tabTermsSetting');
             const thresholdDescription = document.getElementById('tabThresholdDescription');
             
             // Show threshold setting for all types
@@ -3801,8 +3817,10 @@ Refunds are returned to your original payment method within 5–10 business days
                 }
             }
             
-            // Show reward type setting
+            // Show reward type setting and additional fields
             rewardTypeSetting.style.display = 'block';
+            expiryDaysSetting.style.display = 'block';
+            termsSetting.style.display = 'block';
             
             updateTabLoyaltyPreview();
         }
@@ -3909,6 +3927,8 @@ Refunds are returned to your original payment method within 5–10 business days
             const timeLimit = document.getElementById('tabLoyaltyTimeLimit').value;
             const rewardType = document.getElementById('tabRewardType').value;
             const rewardValue = document.getElementById('tabLoyaltyRewardValue').value;
+            const expiryDays = document.getElementById('tabLoyaltyExpiryDays').value;
+            const terms = document.getElementById('tabLoyaltyTerms').value;
             const loyaltyEnabled = document.getElementById('tabLoyaltyEnabled').checked;
             
             // Validate inputs
@@ -3927,6 +3947,12 @@ Refunds are returned to your original payment method within 5–10 business days
                 return;
             }
             
+            // Enhanced validation for new fields
+            if (loyaltyEnabled && (!expiryDays || expiryDays < 1 || expiryDays > 365)) {
+                alert('Please enter a valid expiry days (1-365).');
+                return;
+            }
+            
             // Save to localStorage (in real implementation, save to database)
             const loyaltyProgram = {
                 type: loyaltyType,
@@ -3934,13 +3960,67 @@ Refunds are returned to your original payment method within 5–10 business days
                 timeLimit: timeLimit ? parseInt(timeLimit) : null,
                 rewardType: rewardType,
                 rewardValue: rewardType === 'freeService' ? null : parseFloat(rewardValue),
+                expiryDays: expiryDays ? parseInt(expiryDays) : 90, // Default 90 days
+                terms: terms || 'Valid for the specified period from earning',
                 isActive: loyaltyEnabled,
-                createdAt: new Date().toISOString()
+                businessId: getCurrentBusinessId(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             };
             
             localStorage.setItem('loyaltyProgram', JSON.stringify(loyaltyProgram));
             
+            // Save to LoyaltyProgrammes database table
+            saveLoyaltyProgrammeToDatabase(loyaltyProgram);
+            
             alert('Loyalty program saved successfully!\n\nYour customers will now see this loyalty program on your business profile and in their dashboard.');
+        }
+        
+        // Simulate saving to LoyaltyProgrammes database table
+        function saveLoyaltyProgrammeToDatabase(loyaltyData) {
+            try {
+                // Simulate database save
+                const loyaltyProgramme = {
+                    id: generateUUID(),
+                    business_id: loyaltyData.businessId,
+                    type: loyaltyData.type === 'visitBased' ? 'Visits' : 
+                          loyaltyData.type === 'spendBased' ? 'Spend' : 'Time',
+                    threshold: loyaltyData.threshold,
+                    reward_type: loyaltyData.rewardType === 'freeService' ? 'Free Service' :
+                                loyaltyData.rewardType === 'fixedDiscount' ? 'Discount' : 'Credit',
+                    reward_value: loyaltyData.rewardValue ? loyaltyData.rewardValue.toString() : '1',
+                    expiry_days: loyaltyData.expiryDays,
+                    terms: loyaltyData.terms,
+                    active: loyaltyData.isActive,
+                    created_at: loyaltyData.createdAt,
+                    updated_at: loyaltyData.updatedAt
+                };
+                
+                // Store in localStorage for demo (in real app, this would be a database call)
+                const existingProgrammes = JSON.parse(localStorage.getItem('loyaltyProgrammes') || '[]');
+                const updatedProgrammes = existingProgrammes.filter(p => p.business_id !== loyaltyData.businessId);
+                updatedProgrammes.push(loyaltyProgramme);
+                localStorage.setItem('loyaltyProgrammes', JSON.stringify(updatedProgrammes));
+                
+                console.log('Loyalty programme saved to database:', loyaltyProgramme);
+            } catch (error) {
+                console.error('Failed to save loyalty programme to database:', error);
+            }
+        }
+        
+        // Generate UUID for database records
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+        
+        // Get current business ID
+        function getCurrentBusinessId() {
+            // In a real app, this would come from authentication
+            return localStorage.getItem('currentBusinessId') || 'business_001';
         }
         
         // Load and display business bookings from localStorage

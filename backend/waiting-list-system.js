@@ -13,28 +13,38 @@ class WaitingListSystem {
     // ========================================
 
     /**
-     * Add customer to waiting list
+     * Add customer to waiting list with privacy protection
      */
-    async joinWaitingList(customerId, businessId, serviceData) {
+    async joinWaitingList(customerId, businessId, serviceData, customerName = 'Customer') {
         try {
+            // Get customer position in queue
+            const position = await this.getCustomerPosition(businessId, serviceData.name);
+            
             const waitingListEntry = {
                 id: `waiting_${Date.now()}`,
                 customerId,
                 businessId,
                 serviceData,
+                customerName: customerName.split(' ')[0], // Only first name for privacy
                 joinedAt: new Date().toISOString(),
                 status: 'waiting',
-                priority: await this.calculatePriority(customerId, businessId)
+                priority: await this.calculatePriority(customerId, businessId),
+                position: position + 1, // Position in queue
+                // Privacy protection - no contact details stored
+                privacyNotice: 'Contact details are securely stored by BlkPages'
             };
 
-            // Add to business waiting list
+            // Add to business waiting list (privacy-protected)
             await this.addToBusinessWaitingList(businessId, waitingListEntry);
             
-            // Add to customer waiting list
+            // Add to customer waiting list (full details)
             await this.addToCustomerWaitingList(customerId, waitingListEntry);
 
-            // Send confirmation to customer
-            await this.sendWaitingListConfirmation(customerId, businessId, serviceData);
+            // Send confirmation to customer with position
+            await this.sendWaitingListConfirmation(customerId, businessId, serviceData, position + 1);
+
+            // Trigger waitinglist.join event
+            await this.triggerWaitingListJoinEvent(waitingListEntry);
 
             console.log('Customer added to waiting list:', waitingListEntry.id);
             return waitingListEntry;
@@ -104,7 +114,52 @@ class WaitingListSystem {
     }
 
     /**
-     * Handle offer acceptance
+     * Get customer position in waiting list
+     */
+    async getCustomerPosition(businessId, serviceName) {
+        try {
+            const businessWaitingList = JSON.parse(localStorage.getItem(`businessWaitingList_${businessId}`) || '[]');
+            const sameServiceWaiting = businessWaitingList.filter(item => 
+                item.serviceData.name === serviceName && item.status === 'waiting'
+            );
+            return sameServiceWaiting.length;
+        } catch (error) {
+            console.error('Failed to get customer position:', error);
+            return 0;
+        }
+    }
+
+    /**
+     * Trigger waitinglist.join event
+     */
+    async triggerWaitingListJoinEvent(waitingListEntry) {
+        try {
+            const joinEventData = {
+                waitingListId: waitingListEntry.id,
+                customerId: waitingListEntry.customerId,
+                businessId: waitingListEntry.businessId,
+                customerFirstName: waitingListEntry.customerName,
+                serviceName: waitingListEntry.serviceData.name,
+                position: waitingListEntry.position,
+                joinedAt: waitingListEntry.joinedAt,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Dispatch waitinglist.join event
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('waitinglist.join', {
+                    detail: joinEventData
+                }));
+            }
+            
+            console.log('Waitinglist.join event triggered:', joinEventData);
+        } catch (error) {
+            console.error('Failed to trigger waitinglist.join event:', error);
+        }
+    }
+
+    /**
+     * Handle offer acceptance with booking creation
      */
     async acceptOffer(offerId, customerId) {
         try {
@@ -131,11 +186,42 @@ class WaitingListSystem {
             // Update offer status
             await this.updateOfferStatus(offerId, 'accepted');
 
+            // Trigger waitinglist.offer.accept event
+            await this.triggerWaitingListOfferAcceptEvent(offer, booking);
+
             console.log('Offer accepted, booking created:', booking.id);
             return booking;
         } catch (error) {
             console.error('Failed to accept offer:', error);
             throw error;
+        }
+    }
+
+    /**
+     * Trigger waitinglist.offer.accept event
+     */
+    async triggerWaitingListOfferAcceptEvent(offer, booking) {
+        try {
+            const acceptEventData = {
+                waitingListId: offer.waitingListId,
+                customerId: offer.customerId,
+                businessId: offer.businessId,
+                bookingId: booking.id,
+                serviceName: offer.serviceData.name,
+                acceptedAt: new Date().toISOString(),
+                timestamp: new Date().toISOString()
+            };
+            
+            // Dispatch waitinglist.offer.accept event
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('waitinglist.offer.accept', {
+                    detail: acceptEventData
+                }));
+            }
+            
+            console.log('Waitinglist.offer.accept event triggered:', acceptEventData);
+        } catch (error) {
+            console.error('Failed to trigger waitinglist.offer.accept event:', error);
         }
     }
 
