@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Enforcement Demo - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Privacy Enforcement System -->
+    <script src="../backend/privacy-enforcement-system.js"></script>
+    <script src="../js/privacy-tooltip-utils.js"></script>
+    <link rel="stylesheet" href="../css/privacy-tooltips.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .demo-header p {
+            color: #999;
+            font-size: 1.1rem;
+        }
+        
+        .demo-section {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .demo-section h2 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .demo-section h3 {
+            color: #FF3CAC;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .demo-actions {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-test {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .btn-clear {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+        
+        .btn-test:hover {
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-clear:hover {
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+        
+        .data-display {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        
+        .data-display pre {
+            color: #cccccc;
+            white-space: pre-wrap;
+        }
+        
+        .privacy-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #93c5fd;
+        }
+        
+        .privacy-warning {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #fca5a5;
+        }
+        
+        .customer-data-example {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .customer-name {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        .restricted-field {
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+        
+        .allowed-field {
+            color: #10b981;
+        }
+        
+        .privacy-notice {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #6ee7b7;
+            margin-top: 8px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-card {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+            
+            .demo-section {
+                padding: 1.5rem;
+            }
+            
+            .btn-demo {
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🛡️ Privacy Enforcement Demo</h1>
+            <p>Global privacy protection system for all shared datasets</p>
+        </div>
+        
+        <div class="privacy-info">
+            <strong>Privacy Protection Active:</strong> This demo shows how the Global Privacy Enforcement System automatically strips restricted fields and adds privacy disclaimers to all shared data across the platform.
+        </div>
+        
+        <div class="demo-actions">
+            <button class="btn-demo btn-test" onclick="testPrivacyEnforcement()">
+                <i class="fas fa-shield-alt"></i> Test Privacy Enforcement
+            </button>
+            <button class="btn-demo btn-clear" onclick="clearDemoData()">
+                <i class="fas fa-trash"></i> Clear Demo Data
+            </button>
+            <button class="btn-demo" onclick="showPrivacyReport()">
+                <i class="fas fa-chart-bar"></i> Show Privacy Report
+            </button>
+        </div>
+        
+        <!-- Privacy Schemas Section -->
+        <div class="demo-section">
+            <h2>Privacy Schemas</h2>
+            <p>Each dataset has defined allowed and restricted fields:</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalSchemas">0</div>
+                    <div class="stat-label">Privacy Schemas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalAllowedFields">0</div>
+                    <div class="stat-label">Allowed Fields</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalRestrictedFields">0</div>
+                    <div class="stat-label">Restricted Fields</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalActions">0</div>
+                    <div class="stat-label">Privacy Actions</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data Stripping Demo -->
+        <div class="demo-section">
+            <h2>Automatic Field Stripping</h2>
+            <p>Before data is shared, restricted fields are automatically removed:</p>
+            
+            <div class="demo-actions">
+                <button class="btn-demo" onclick="demoBookingData()">Demo Booking Data</button>
+                <button class="btn-demo" onclick="demoReviewData()">Demo Review Data</button>
+                <button class="btn-demo" onclick="demoLoyaltyData()">Demo Loyalty Data</button>
+            </div>
+            
+            <div id="dataStrippingDemo" class="data-display" style="display: none;">
+                <h3>Original Data (with restricted fields):</h3>
+                <pre id="originalData"></pre>
+                
+                <h3>Sanitized Data (restricted fields removed):</h3>
+                <pre id="sanitizedData"></pre>
+                
+                <div class="privacy-notice" id="privacyNotice"></div>
+            </div>
+        </div>
+        
+        <!-- Privacy Tooltips Demo -->
+        <div class="demo-section">
+            <h2>Privacy Tooltips</h2>
+            <p>UI elements showing customer data automatically get privacy tooltips:</p>
+            
+            <div class="customer-data-example">
+                <h3>Customer Information 
+                    <span class="privacy-tooltip" data-booking-data="true">
+                        <span class="privacy-tooltip-icon">P</span>
+                        <div class="privacy-tooltip-content">
+                            <div style="font-weight: 600; margin-bottom: 4px; color: #3b82f6;">
+                                <i class="fas fa-shield-alt"></i> Privacy Protected
+                            </div>
+                            <div>Customer personal details are protected for privacy. Only essential booking information is shared with businesses.</div>
+                        </div>
+                    </span>
+                </h3>
+                
+                <div class="customer-name" data-customer-data="true">
+                    John Smith
+                </div>
+                
+                <div class="privacy-disclaimer-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Privacy Protected</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Privacy Logs Section -->
+        <div class="demo-section">
+            <h2>Privacy Action Logs</h2>
+            <p>All privacy enforcement actions are logged for audit and debugging:</p>
+            
+            <div class="data-display">
+                <pre id="privacyLogs">Click "Test Privacy Enforcement" to see privacy action logs...</pre>
+            </div>
+        </div>
+        
+        <!-- Compliance Section -->
+        <div class="demo-section">
+            <h2>Compliance Features</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">✅</div>
+                    <div class="stat-label">GDPR Compliant</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">✅</div>
+                    <div class="stat-label">UK Data Protection</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">✅</div>
+                    <div class="stat-label">Privacy by Design</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">✅</div>
+                    <div class="stat-label">Automatic Enforcement</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo data for testing
+        const demoData = {
+            booking: {
+                id: 'booking_123',
+                business_id: 'biz_001',
+                business_name: 'Royal Hair Studio',
+                customer_id: 'customer_456',
+                customerFirstName: 'John',
+                customerLastName: 'Smith',
+                customerEmail: 'john.smith@example.com', // Restricted
+                customerPhone: '07123456789', // Restricted
+                customerPostcode: 'SW1A 1AA', // Restricted
+                serviceName: 'Hair Cut & Style',
+                servicePrice: 45.00,
+                bookingDate: '2024-12-25',
+                bookingTime: '10:00',
+                totalAmount: 45.00,
+                paymentMethod: 'Pay Now',
+                status: 'Confirmed',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                source: 'booking_form'
+            },
+            
+            review: {
+                id: 'review_789',
+                business_id: 'biz_001',
+                customer_id: 'customer_456',
+                customerName: 'John Smith', // Restricted
+                customerEmail: 'john.smith@example.com', // Restricted
+                rating: 5,
+                comment: 'Excellent service, very professional!',
+                bookingReference: 'booking_123',
+                createdAt: new Date().toISOString(),
+                status: 'published'
+            },
+            
+            loyalty: {
+                id: 'loyalty_101',
+                customer_id: 'customer_456',
+                business_id: 'biz_001',
+                customerName: 'John Smith', // Restricted
+                customerEmail: 'john.smith@example.com', // Restricted
+                total_visits: 3,
+                total_spend: 135.00,
+                last_visit: new Date().toISOString(),
+                reward_unlocked: false,
+                reward_redeemed: false,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            }
+        };
+        
+        function testPrivacyEnforcement() {
+            console.log('Testing privacy enforcement...');
+            
+            // Test booking data
+            const sanitizedBooking = privacyEnforcement.stripRestrictedFields(demoData.booking, 'bookings');
+            
+            // Test review data
+            const sanitizedReview = privacyEnforcement.stripRestrictedFields(demoData.review, 'reviews');
+            
+            // Test loyalty data
+            const sanitizedLoyalty = privacyEnforcement.stripRestrictedFields(demoData.loyalty, 'loyalty');
+            
+            // Show results
+            showDataStrippingDemo('bookings', demoData.booking, sanitizedBooking);
+            
+            // Update stats
+            updatePrivacyStats();
+            
+            // Show logs
+            showPrivacyLogs();
+            
+            console.log('Privacy enforcement test completed');
+        }
+        
+        function showDataStrippingDemo(dataset, original, sanitized) {
+            const demo = document.getElementById('dataStrippingDemo');
+            const originalData = document.getElementById('originalData');
+            const sanitizedData = document.getElementById('sanitizedData');
+            const privacyNotice = document.getElementById('privacyNotice');
+            
+            originalData.textContent = JSON.stringify(original, null, 2);
+            sanitizedData.textContent = JSON.stringify(sanitized, null, 2);
+            privacyNotice.textContent = sanitized.privacyNotice || 'Privacy notice added automatically';
+            
+            demo.style.display = 'block';
+        }
+        
+        function demoBookingData() {
+            showDataStrippingDemo('bookings', demoData.booking, 
+                privacyEnforcement.stripRestrictedFields(demoData.booking, 'bookings'));
+        }
+        
+        function demoReviewData() {
+            showDataStrippingDemo('reviews', demoData.review, 
+                privacyEnforcement.stripRestrictedFields(demoData.review, 'reviews'));
+        }
+        
+        function demoLoyaltyData() {
+            showDataStrippingDemo('loyalty', demoData.loyalty, 
+                privacyEnforcement.stripRestrictedFields(demoData.loyalty, 'loyalty'));
+        }
+        
+        function updatePrivacyStats() {
+            const schemas = Object.keys(PRIVACY_SCHEMAS);
+            const totalAllowed = schemas.reduce((sum, schema) => sum + PRIVACY_SCHEMAS[schema].allowed_fields.length, 0);
+            const totalRestricted = schemas.reduce((sum, schema) => sum + PRIVACY_SCHEMAS[schema].restricted_fields.length, 0);
+            const report = privacyEnforcement.getPrivacyReport();
+            
+            document.getElementById('totalSchemas').textContent = schemas.length;
+            document.getElementById('totalAllowedFields').textContent = totalAllowed;
+            document.getElementById('totalRestrictedFields').textContent = totalRestricted;
+            document.getElementById('totalActions').textContent = report.totalActions;
+        }
+        
+        function showPrivacyLogs() {
+            const logs = JSON.parse(localStorage.getItem('privacyEnforcementLogs') || '[]');
+            const logsElement = document.getElementById('privacyLogs');
+            
+            if (logs.length === 0) {
+                logsElement.textContent = 'No privacy logs found. Run a test to generate logs.';
+                return;
+            }
+            
+            const recentLogs = logs.slice(-10).reverse();
+            logsElement.textContent = JSON.stringify(recentLogs, null, 2);
+        }
+        
+        function showPrivacyReport() {
+            const report = privacyEnforcement.getPrivacyReport();
+            alert(`Privacy Enforcement Report:\n\n` +
+                  `Total Actions: ${report.totalActions}\n` +
+                  `Schemas: ${report.schemas.join(', ')}\n` +
+                  `Actions by Dataset: ${JSON.stringify(report.actionsByDataset, null, 2)}\n` +
+                  `Actions by Type: ${JSON.stringify(report.actionsByType, null, 2)}`);
+        }
+        
+        function clearDemoData() {
+            document.getElementById('dataStrippingDemo').style.display = 'none';
+            document.getElementById('privacyLogs').textContent = 'Privacy logs cleared.';
+            privacyEnforcement.clearPrivacyLogs();
+            updatePrivacyStats();
+        }
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePrivacyStats();
+            showPrivacyLogs();
+            
+            // Show privacy status
+            if (privacyTooltipManager) {
+                privacyTooltipManager.showPrivacyStatus('Privacy Enforcement Demo Loaded', 2000);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Security Utils -->
+    <script src="js/security-utils.js"></script>
+    <script src="js/cookie-consent.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .account-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .account-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .account-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .account-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .account-card {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .account-card h2 {
+            color: #3b82f6;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: #2A2A2A;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-input:disabled {
+            background: #1A1A1A;
+            color: #666;
+            cursor: not-allowed;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .password-strength {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .strength-weak { color: #ef4444; }
+        .strength-medium { color: #f59e0b; }
+        .strength-strong { color: #10b981; }
+        
+        .data-section {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .data-item:last-child {
+            border-bottom: none;
+        }
+        
+        .data-label {
+            color: #999;
+            font-weight: 600;
+        }
+        
+        .data-value {
+            color: #ffffff;
+        }
+        
+        .masked-data {
+            color: #3b82f6;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .warning-box h4 {
+            color: #ef4444;
+            margin-bottom: 0.5rem;
+        }
+        
+        .warning-box p {
+            color: #fca5a5;
+            font-size: 0.9rem;
+        }
+        
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #6ee7b7;
+        }
+        
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #fca5a5;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .account-container {
+                padding: 1rem;
+            }
+            
+            .account-header h1 {
+                font-size: 2rem;
+            }
+            
+            .account-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="account-container">
+        <a href="demo-hub.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Demo Hub
+        </a>
+        
+        <div class="account-header">
+            <h1><i class="fas fa-user-circle"></i> My Account</h1>
+            <p>Manage your personal data and account settings</p>
+        </div>
+        
+        <div class="account-grid">
+            <!-- Personal Information -->
+            <div class="account-card">
+                <h2><i class="fas fa-user"></i> Personal Information</h2>
+                
+                <form id="personalInfoForm">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" id="firstName" value="John">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" id="lastName" value="Smith">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="email" value="john.smith@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-input" id="phone" value="07123456789">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Postcode</label>
+                        <input type="text" class="form-input" id="postcode" value="SW1A 1AA">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Information
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Security Settings -->
+            <div class="account-card">
+                <h2><i class="fas fa-shield-alt"></i> Security Settings</h2>
+                
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" class="form-input" id="currentPassword" placeholder="Enter current password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-input" id="newPassword" placeholder="Enter new password">
+                        <div class="password-strength" id="passwordStrength"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Data Management -->
+            <div class="account-card">
+                <h2><i class="fas fa-database"></i> Data Management</h2>
+                
+                <div class="data-section">
+                    <h3>Your Data Summary</h3>
+                    <div class="data-item">
+                        <span class="data-label">Account Created:</span>
+                        <span class="data-value">Dec 1, 2024</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Total Bookings:</span>
+                        <span class="data-value">12</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Data Size:</span>
+                        <span class="data-value">2.3 MB</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-primary" onclick="downloadMyData()">
+                        <i class="fas fa-download"></i> Download My Data
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-secondary" onclick="requestDataDeletion()">
+                        <i class="fas fa-trash"></i> Request Data Deletion
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Privacy Settings -->
+            <div class="account-card">
+                <h2><i class="fas fa-eye"></i> Privacy Settings</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="marketingEmails" checked>
+                        Receive marketing emails
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="smsNotifications" checked>
+                        SMS notifications
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <input type="checkbox" id="rememberDetails" checked>
+                        Remember my details for future bookings
+                    </label>
+                </div>
+                
+                <button class="btn btn-primary" onclick="savePrivacySettings()">
+                    <i class="fas fa-save"></i> Save Privacy Settings
+                </button>
+            </div>
+            
+            <!-- Account Actions -->
+            <div class="account-card">
+                <h2><i class="fas fa-cog"></i> Account Actions</h2>
+                
+                <div class="warning-box">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
+                    <p>These actions cannot be undone. Please proceed with caution.</p>
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-danger" onclick="deleteAccount()">
+                        <i class="fas fa-trash"></i> Delete My Account
+                    </button>
+                </div>
+                
+                <div class="form-group">
+                    <a href="privacy-policy.html" class="btn btn-secondary">
+                        <i class="fas fa-shield-alt"></i> Privacy Policy
+                    </a>
+                </div>
+                
+                <div class="form-group">
+                    <a href="terms-conditions.html" class="btn btn-secondary">
+                        <i class="fas fa-gavel"></i> Terms & Conditions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load user data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            setupEventListeners();
+            
+            // Log account access
+            if (typeof securityUtils !== 'undefined') {
+                securityUtils.logSecurityEvent('account_page_accessed', {
+                    page: 'my_account',
+                    timestamp: new Date().toISOString()
+                });
+            }
+        });
+        
+        function loadUserData() {
+            // Load user data from localStorage or API
+            const userData = {
+                firstName: 'John',
+                lastName: 'Smith',
+                email: 'john.smith@example.com',
+                phone: '07123456789',
+                postcode: 'SW1A 1AA',
+                marketingEmails: true,
+                smsNotifications: true,
+                rememberDetails: true
+            };
+            
+            // Populate form fields
+            document.getElementById('firstName').value = userData.firstName;
+            document.getElementById('lastName').value = userData.lastName;
+            document.getElementById('email').value = userData.email;
+            document.getElementById('phone').value = userData.phone;
+            document.getElementById('postcode').value = userData.postcode;
+            document.getElementById('marketingEmails').checked = userData.marketingEmails;
+            document.getElementById('smsNotifications').checked = userData.smsNotifications;
+            document.getElementById('rememberDetails').checked = userData.rememberDetails;
+        }
+        
+        function setupEventListeners() {
+            // Personal info form
+            document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                updatePersonalInfo();
+            });
+            
+            // Password form
+            document.getElementById('passwordForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                changePassword();
+            });
+            
+            // Password strength checker
+            document.getElementById('newPassword').addEventListener('input', function() {
+                checkPasswordStrength();
+            });
+        }
+        
+        function updatePersonalInfo() {
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                postcode: document.getElementById('postcode').value
+            };
+            
+            // Validate input
+            if (!securityUtils.validateEmail(formData.email)) {
+                showMessage('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Sanitize input
+            Object.keys(formData).forEach(key => {
+                formData[key] = securityUtils.sanitizeInput(formData[key]);
+            });
+            
+            // Simulate API call
+            setTimeout(() => {
+                showMessage('Personal information updated successfully!', 'success');
+                
+                // Log the update
+                if (typeof securityUtils !== 'undefined') {
+                    securityUtils.logSecurityEvent('personal_info_updated', {
+                        fields_updated: Object.keys(formData),
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }, 1000);
+        }
+        
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validate passwords
+            if (newPassword !== confirmPassword) {
+                showMessage('New passwords do not match', 'error');
+                return;
+            }
+            
+            const strength = securityUtils.validatePasswordStrength(newPassword);
+            if (!strength.valid) {
+                showMessage('Password does not meet security requirements', 'error');
+                return;
+            }
+            
+            // Simulate password change
+            setTimeout(() => {
+                showMessage('Password changed successfully!', 'success');
+                document.getElementById('passwordForm').reset();
+                
+                // Log the change
+                if (typeof securityUtils !== 'undefined') {
+                    securityUtils.logSecurityEvent('password_changed', {
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }, 1000);
+        }
+        
+        function checkPasswordStrength() {
+            const password = document.getElementById('newPassword').value;
+            const strength = securityUtils.validatePasswordStrength(password);
+            const strengthElement = document.getElementById('passwordStrength');
+            
+            if (password.length === 0) {
+                strengthElement.textContent = '';
+                return;
+            }
+            
+            strengthElement.textContent = `Password strength: ${strength.strength}`;
+            strengthElement.className = `password-strength strength-${strength.strength}`;
+        }
+        
+        function downloadMyData() {
+            const userData = {
+                personal_info: {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    postcode: document.getElementById('postcode').value
+                },
+                account_info: {
+                    created_date: '2024-12-01',
+                    last_login: new Date().toISOString(),
+                    total_bookings: 12
+                },
+                privacy_settings: {
+                    marketing_emails: document.getElementById('marketingEmails').checked,
+                    sms_notifications: document.getElementById('smsNotifications').checked,
+                    remember_details: document.getElementById('rememberDetails').checked
+                },
+                export_info: {
+                    export_date: new Date().toISOString(),
+                    data_format: 'JSON',
+                    gdpr_compliant: true
+                }
+            };
+            
+            // Create and download file
+            const dataStr = JSON.stringify(userData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `blkpages_data_export_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            
+            showMessage('Data export downloaded successfully!', 'success');
+            
+            // Log the export
+            if (typeof securityUtils !== 'undefined') {
+                securityUtils.logSecurityEvent('data_export_requested', {
+                    export_date: new Date().toISOString(),
+                    data_size: dataStr.length
+                });
+            }
+        }
+        
+        function requestDataDeletion() {
+            if (confirm('Are you sure you want to request deletion of all your personal data? This action cannot be undone.')) {
+                // Simulate deletion request
+                setTimeout(() => {
+                    showMessage('Data deletion request submitted. You will receive email confirmation.', 'success');
+                    
+                    // Log the deletion request
+                    if (typeof securityUtils !== 'undefined') {
+                        securityUtils.logSecurityEvent('data_deletion_requested', {
+                            timestamp: new Date().toISOString(),
+                            user_confirmed: true
+                        });
+                    }
+                }, 1000);
+            }
+        }
+        
+        function savePrivacySettings() {
+            const settings = {
+                marketingEmails: document.getElementById('marketingEmails').checked,
+                smsNotifications: document.getElementById('smsNotifications').checked,
+                rememberDetails: document.getElementById('rememberDetails').checked
+            };
+            
+            // Save settings
+            localStorage.setItem('privacy_settings', JSON.stringify(settings));
+            
+            showMessage('Privacy settings saved successfully!', 'success');
+            
+            // Log the settings change
+            if (typeof securityUtils !== 'undefined') {
+                securityUtils.logSecurityEvent('privacy_settings_updated', {
+                    settings: settings,
+                    timestamp: new Date().toISOString()
+                });
+            }
+        }
+        
+        function deleteAccount() {
+            if (confirm('Are you absolutely sure you want to delete your account? This will permanently delete all your data and cannot be undone.')) {
+                if (confirm('This is your final warning. Click OK to permanently delete your account.')) {
+                    // Simulate account deletion
+                    setTimeout(() => {
+                        showMessage('Account deletion initiated. You will be logged out and redirected.', 'success');
+                        
+                        // Log the deletion
+                        if (typeof securityUtils !== 'undefined') {
+                            securityUtils.logSecurityEvent('account_deletion_requested', {
+                                timestamp: new Date().toISOString(),
+                                user_confirmed: true
+                            });
+                        }
+                        
+                        // Redirect after delay
+                        setTimeout(() => {
+                            window.location.href = 'demo-hub.html';
+                        }, 3000);
+                    }, 1000);
+                }
+            }
+        }
+        
+        function showMessage(message, type) {
+            // Remove existing messages
+            const existingMessages = document.querySelectorAll('.success-message, .error-message');
+            existingMessages.forEach(msg => msg.remove());
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'}"></i>
+                ${message}
+            `;
+            
+            // Insert at the top of the first card
+            const firstCard = document.querySelector('.account-card');
+            firstCard.insertBefore(messageDiv, firstCard.firstChild);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

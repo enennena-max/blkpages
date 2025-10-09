@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persistent Basket Demo - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Persistent Basket System -->
+    <script src="../js/persistent-basket-system.js"></script>
+    <script src="../backend/basket-merge-api.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .demo-header p {
+            color: #999;
+            font-size: 1.1rem;
+        }
+        
+        .demo-section {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .demo-section h2 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .demo-section h3 {
+            color: #FF3CAC;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .demo-actions {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .btn-signup {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+        
+        .btn-clear {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+        
+        .btn-login:hover {
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-signup:hover {
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+        
+        .btn-clear:hover {
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+        
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .service-card {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+        
+        .service-card h4 {
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-card .price {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .service-card .duration {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .add-service-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .add-service-btn:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+        
+        .add-service-btn.selected {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .basket-display {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .basket-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .basket-item:last-child {
+            border-bottom: none;
+        }
+        
+        .basket-total {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #3b82f6;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #3b82f6;
+        }
+        
+        .status-indicator {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 12px;
+            color: #6ee7b7;
+        }
+        
+        .status-indicator.logged-out {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+        
+        .form-demo {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: #1A1A1A;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-input.auto-populated {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: #10b981;
+            color: #10b981;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-card {
+            background: #2A2A2A;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+            
+            .demo-section {
+                padding: 1.5rem;
+            }
+            
+            .btn-demo {
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🛒 Persistent Basket Demo</h1>
+            <p>Basket persistence and auto-population system for customer bookings</p>
+        </div>
+        
+        <!-- Status Section -->
+        <div class="demo-section">
+            <h2>System Status</h2>
+            <div id="systemStatus" class="status-indicator logged-out">
+                <i class="fas fa-user-slash"></i>
+                <span>Not logged in - Basket items will be saved locally</span>
+            </div>
+            
+            <div class="demo-actions">
+                <button class="btn-demo btn-login" onclick="simulateLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Simulate Login
+                </button>
+                <button class="btn-demo btn-signup" onclick="simulateSignup()">
+                    <i class="fas fa-user-plus"></i> Simulate Signup
+                </button>
+                <button class="btn-demo btn-clear" onclick="clearAllData()">
+                    <i class="fas fa-trash"></i> Clear All Data
+                </button>
+            </div>
+        </div>
+        
+        <!-- Services Section -->
+        <div class="demo-section">
+            <h2>Available Services</h2>
+            <p>Add services to your basket. Items will persist even if you're not logged in!</p>
+            
+            <div class="service-grid">
+                <div class="service-card">
+                    <h4>Hair Cut & Style</h4>
+                    <div class="price">£45</div>
+                    <div class="duration">30 minutes</div>
+                    <button class="add-service-btn" onclick="addService('Hair Cut & Style', 45, 30)">
+                        <i class="fas fa-plus"></i> Add to Basket
+                    </button>
+                </div>
+                
+                <div class="service-card">
+                    <h4>Hair Coloring</h4>
+                    <div class="price">£85</div>
+                    <div class="duration">90 minutes</div>
+                    <button class="add-service-btn" onclick="addService('Hair Coloring', 85, 90)">
+                        <i class="fas fa-plus"></i> Add to Basket
+                    </button>
+                </div>
+                
+                <div class="service-card">
+                    <h4>Deep Conditioning</h4>
+                    <div class="price">£35</div>
+                    <div class="duration">45 minutes</div>
+                    <button class="add-service-btn" onclick="addService('Deep Conditioning', 35, 45)">
+                        <i class="fas fa-plus"></i> Add to Basket
+                    </button>
+                </div>
+                
+                <div class="service-card">
+                    <h4>Bridal Package</h4>
+                    <div class="price">£150</div>
+                    <div class="duration">120 minutes</div>
+                    <button class="add-service-btn" onclick="addService('Bridal Package', 150, 120)">
+                        <i class="fas fa-plus"></i> Add to Basket
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Basket Display -->
+        <div class="demo-section">
+            <h2>Your Basket</h2>
+            <div class="basket-display" id="basketDisplay">
+                <p>Your basket is empty</p>
+            </div>
+        </div>
+        
+        <!-- Auto-Population Demo -->
+        <div class="demo-section">
+            <h2>Auto-Population Demo</h2>
+            <p>When you log in or sign up, your form fields will be automatically populated with your profile data:</p>
+            
+            <div class="form-demo">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" id="demoFullName" placeholder="Will be auto-populated">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" id="demoEmail" placeholder="Will be auto-populated">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" id="demoPhone" placeholder="Will be auto-populated">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Postcode</label>
+                    <input type="text" class="form-input" id="demoPostcode" placeholder="Will be auto-populated">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="demo-section">
+            <h2>Basket Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalItems">0</div>
+                    <div class="stat-label">Total Items</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalPrice">£0</div>
+                    <div class="stat-label">Total Price</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="basketAge">0h</div>
+                    <div class="stat-label">Basket Age</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="loginStatus">No</div>
+                    <div class="stat-label">Logged In</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo services data
+        const demoServices = [
+            { name: 'Hair Cut & Style', price: 45, duration: 30 },
+            { name: 'Hair Coloring', price: 85, duration: 90 },
+            { name: 'Deep Conditioning', price: 35, duration: 45 },
+            { name: 'Bridal Package', price: 150, duration: 120 }
+        ];
+        
+        // Add service to basket
+        function addService(name, price, duration) {
+            const service = {
+                id: `service_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                name: name,
+                price: price,
+                duration: duration,
+                quantity: 1,
+                businessId: 'biz_001',
+                business_id: 'biz_001'
+            };
+            
+            // Add to persistent basket system
+            if (typeof persistentBasketSystem !== 'undefined') {
+                persistentBasketSystem.addServiceToBasket(service);
+            }
+            
+            // Dispatch service added event
+            window.dispatchEvent(new CustomEvent('service.added', {
+                detail: service
+            }));
+            
+            // Update display
+            updateBasketDisplay();
+            updateStatistics();
+            
+            // Update button state
+            updateServiceButtons();
+            
+            console.log('Service added:', service);
+        }
+        
+        // Update basket display
+        function updateBasketDisplay() {
+            const basketDisplay = document.getElementById('basketDisplay');
+            const basketItems = persistentBasketSystem ? persistentBasketSystem.getCurrentBasket() : [];
+            
+            if (basketItems.length === 0) {
+                basketDisplay.innerHTML = '<p>Your basket is empty</p>';
+                return;
+            }
+            
+            const totalPrice = basketItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            basketDisplay.innerHTML = `
+                <div class="basket-items">
+                    ${basketItems.map(item => `
+                        <div class="basket-item">
+                            <div>
+                                <strong>${item.service_name}</strong>
+                                <div style="font-size: 0.9rem; color: #999;">${item.duration} minutes</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div>£${item.price} x ${item.quantity}</div>
+                                <div style="font-weight: 600; color: #3b82f6;">£${(item.price * item.quantity).toFixed(2)}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="basket-total">
+                    Total: £${totalPrice.toFixed(2)}
+                </div>
+            `;
+        }
+        
+        // Update statistics
+        function updateStatistics() {
+            const basketItems = persistentBasketSystem ? persistentBasketSystem.getCurrentBasket() : [];
+            const totalItems = basketItems.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = basketItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            // Calculate basket age
+            const timestamp = localStorage.getItem('basket_timestamp');
+            let basketAge = '0h';
+            if (timestamp) {
+                const age = Date.now() - parseInt(timestamp);
+                const hours = Math.floor(age / (1000 * 60 * 60));
+                basketAge = `${hours}h`;
+            }
+            
+            document.getElementById('totalItems').textContent = totalItems;
+            document.getElementById('totalPrice').textContent = `£${totalPrice.toFixed(2)}`;
+            document.getElementById('basketAge').textContent = basketAge;
+            document.getElementById('loginStatus').textContent = persistentBasketSystem?.isLoggedIn ? 'Yes' : 'No';
+        }
+        
+        // Update service buttons
+        function updateServiceButtons() {
+            const basketItems = persistentBasketSystem ? persistentBasketSystem.getCurrentBasket() : [];
+            const serviceNames = basketItems.map(item => item.service_name);
+            
+            document.querySelectorAll('.add-service-btn').forEach(button => {
+                const onclick = button.getAttribute('onclick');
+                const serviceName = onclick.match(/'([^']+)'/)[1];
+                
+                if (serviceNames.includes(serviceName)) {
+                    button.classList.add('selected');
+                    button.innerHTML = '<i class="fas fa-check"></i> Added';
+                } else {
+                    button.classList.remove('selected');
+                    button.innerHTML = '<i class="fas fa-plus"></i> Add to Basket';
+                }
+            });
+        }
+        
+        // Update system status
+        function updateSystemStatus() {
+            const statusElement = document.getElementById('systemStatus');
+            const isLoggedIn = persistentBasketSystem?.isLoggedIn || false;
+            
+            if (isLoggedIn) {
+                statusElement.className = 'status-indicator';
+                statusElement.innerHTML = `
+                    <i class="fas fa-user-check"></i>
+                    <span>Logged in as ${persistentBasketSystem.customerId} - Basket items are saved to your account</span>
+                `;
+            } else {
+                statusElement.className = 'status-indicator logged-out';
+                statusElement.innerHTML = `
+                    <i class="fas fa-user-slash"></i>
+                    <span>Not logged in - Basket items will be saved locally</span>
+                `;
+            }
+        }
+        
+        // Simulate login
+        function simulateLogin() {
+            const loginData = {
+                customerId: 'customer_1',
+                email: 'john.smith@example.com',
+                firstName: 'John',
+                lastName: 'Smith'
+            };
+            
+            // Dispatch login event
+            window.dispatchEvent(new CustomEvent('customer.login', {
+                detail: loginData
+            }));
+            
+            // Update displays
+            setTimeout(() => {
+                updateSystemStatus();
+                updateStatistics();
+                populateDemoForm();
+            }, 500);
+            
+            console.log('Login simulated:', loginData);
+        }
+        
+        // Simulate signup
+        function simulateSignup() {
+            const signupData = {
+                customerId: 'customer_new_' + Date.now(),
+                email: 'new.customer@example.com',
+                firstName: 'New',
+                lastName: 'Customer',
+                profile: {
+                    first_name: 'New',
+                    last_name: 'Customer',
+                    email: 'new.customer@example.com',
+                    phone: '07123456789',
+                    postcode: 'SW1A 1AA'
+                }
+            };
+            
+            // Dispatch signup event
+            window.dispatchEvent(new CustomEvent('customer.signup', {
+                detail: signupData
+            }));
+            
+            // Update displays
+            setTimeout(() => {
+                updateSystemStatus();
+                updateStatistics();
+                populateDemoForm(signupData.profile);
+            }, 500);
+            
+            console.log('Signup simulated:', signupData);
+        }
+        
+        // Populate demo form
+        function populateDemoForm(profileData = null) {
+            let profile = profileData;
+            
+            if (!profile && persistentBasketSystem?.isLoggedIn) {
+                // Simulate getting profile data
+                profile = {
+                    first_name: 'John',
+                    last_name: 'Smith',
+                    email: 'john.smith@example.com',
+                    phone: '07123456789',
+                    postcode: 'SW1A 1AA'
+                };
+            }
+            
+            if (profile) {
+                document.getElementById('demoFullName').value = `${profile.first_name} ${profile.last_name}`;
+                document.getElementById('demoFullName').classList.add('auto-populated');
+                
+                document.getElementById('demoEmail').value = profile.email;
+                document.getElementById('demoEmail').classList.add('auto-populated');
+                
+                document.getElementById('demoPhone').value = profile.phone;
+                document.getElementById('demoPhone').classList.add('auto-populated');
+                
+                document.getElementById('demoPostcode').value = profile.postcode.toUpperCase();
+                document.getElementById('demoPostcode').classList.add('auto-populated');
+            }
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            // Clear persistent basket
+            if (persistentBasketSystem) {
+                persistentBasketSystem.clearCurrentBasket();
+            }
+            
+            // Clear demo form
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.value = '';
+                input.classList.remove('auto-populated');
+            });
+            
+            // Reset buttons
+            document.querySelectorAll('.add-service-btn').forEach(button => {
+                button.classList.remove('selected');
+                button.innerHTML = '<i class="fas fa-plus"></i> Add to Basket';
+            });
+            
+            // Update displays
+            updateBasketDisplay();
+            updateStatistics();
+            updateSystemStatus();
+            
+            console.log('All data cleared');
+        }
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up event listeners
+            window.addEventListener('customer.login', function() {
+                setTimeout(() => {
+                    updateSystemStatus();
+                    updateStatistics();
+                    populateDemoForm();
+                }, 100);
+            });
+            
+            window.addEventListener('customer.signup', function() {
+                setTimeout(() => {
+                    updateSystemStatus();
+                    updateStatistics();
+                }, 100);
+            });
+            
+            // Initial display update
+            setTimeout(() => {
+                updateBasketDisplay();
+                updateStatistics();
+                updateSystemStatus();
+                updateServiceButtons();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

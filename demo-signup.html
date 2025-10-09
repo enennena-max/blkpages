@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Signup - BlkPages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Security Utils -->
+    <script src="js/security-utils.js"></script>
+    <script src="js/cookie-consent.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .signup-container {
+            background: #1A1A1A;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .signup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .signup-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .signup-header p {
+            color: #999;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: #2A2A2A;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-input.error {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+        
+        .form-input.success {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        
+        .success-message {
+            color: #10b981;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        
+        .password-strength {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .strength-weak { color: #ef4444; }
+        .strength-medium { color: #f59e0b; }
+        .strength-strong { color: #10b981; }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 0.25rem;
+        }
+        
+        .checkbox-group label {
+            font-size: 0.9rem;
+            color: #cccccc;
+            line-height: 1.4;
+        }
+        
+        .checkbox-group a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .security-notice {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .security-notice h4 {
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #3b82f6;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .rate-limit-warning {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: #fca5a5;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .signup-container {
+                padding: 1.5rem;
+            }
+            
+            .signup-header h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <a href="demo-hub.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Demo Hub
+        </a>
+        
+        <div class="signup-header">
+            <h1><i class="fas fa-user-plus"></i> Create Account</h1>
+            <p>Join BlkPages with enhanced security features</p>
+        </div>
+        
+        <div class="security-notice">
+            <h4><i class="fas fa-shield-alt"></i> Security Notice</h4>
+            <p>This demo includes GDPR-compliant security features including password hashing, data encryption, and audit logging. All data is processed securely.</p>
+        </div>
+        
+        <form id="signupForm">
+            <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-input" id="firstName" required>
+                <div class="error-message" id="firstNameError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-input" id="lastName" required>
+                <div class="error-message" id="lastNameError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-input" id="email" required>
+                <div class="error-message" id="emailError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-input" id="phone" required>
+                <div class="error-message" id="phoneError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="password" required>
+                <div class="password-strength" id="passwordStrength"></div>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" class="form-input" id="confirmPassword" required>
+                <div class="error-message" id="confirmPasswordError"></div>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="termsAgreement" required>
+                <label for="termsAgreement">
+                    I agree to the <a href="terms-conditions.html" target="_blank">Terms & Conditions</a> and <a href="privacy-policy.html" target="_blank">Privacy Policy</a>
+                </label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="marketingConsent">
+                <label for="marketingConsent">
+                    I would like to receive marketing emails and promotional offers (optional)
+                </label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="signupButton">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Initialize security features
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            generateCSRFToken();
+            
+            // Log signup page access
+            if (typeof securityUtils !== 'undefined') {
+                securityUtils.logSecurityEvent('signup_page_accessed', {
+                    page: 'demo_signup',
+                    timestamp: new Date().toISOString()
+                });
+            }
+        });
+        
+        function setupEventListeners() {
+            const form = document.getElementById('signupForm');
+            const inputs = form.querySelectorAll('input');
+            
+            // Real-time validation
+            inputs.forEach(input => {
+                input.addEventListener('blur', () => validateField(input));
+                input.addEventListener('input', () => clearFieldError(input));
+            });
+            
+            // Password strength checking
+            document.getElementById('password').addEventListener('input', checkPasswordStrength);
+            
+            // Form submission
+            form.addEventListener('submit', handleSignup);
+        }
+        
+        function generateCSRFToken() {
+            if (typeof securityUtils !== 'undefined') {
+                const token = securityUtils.generateCSRFToken();
+                // Add hidden CSRF token field
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrf_token';
+                csrfInput.value = token;
+                document.getElementById('signupForm').appendChild(csrfInput);
+            }
+        }
+        
+        function validateField(input) {
+            const value = input.value.trim();
+            const fieldName = input.id;
+            let isValid = true;
+            let errorMessage = '';
+            
+            // Required field validation
+            if (input.hasAttribute('required') && !value) {
+                isValid = false;
+                errorMessage = `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
+            }
+            
+            // Specific field validations
+            if (value && isValid) {
+                switch (fieldName) {
+                    case 'email':
+                        if (!securityUtils.validateEmail(value)) {
+                            isValid = false;
+                            errorMessage = 'Please enter a valid email address';
+                        }
+                        break;
+                    case 'password':
+                        const strength = securityUtils.validatePasswordStrength(value);
+                        if (!strength.valid) {
+                            isValid = false;
+                            errorMessage = 'Password must be 8+ characters with uppercase, lowercase, number, and symbol';
+                        }
+                        break;
+                    case 'confirmPassword':
+                        const password = document.getElementById('password').value;
+                        if (value !== password) {
+                            isValid = false;
+                            errorMessage = 'Passwords do not match';
+                        }
+                        break;
+                    case 'phone':
+                        if (!/^[\d\s\-\+\(\)]+$/.test(value)) {
+                            isValid = false;
+                            errorMessage = 'Please enter a valid phone number';
+                        }
+                        break;
+                }
+            }
+            
+            // Sanitize input
+            if (value) {
+                input.value = securityUtils.sanitizeInput(value);
+            }
+            
+            showFieldError(input, isValid, errorMessage);
+            return isValid;
+        }
+        
+        function clearFieldError(input) {
+            input.classList.remove('error', 'success');
+            const errorElement = document.getElementById(input.id + 'Error');
+            if (errorElement) {
+                errorElement.style.display = 'none';
+                errorElement.textContent = '';
+            }
+        }
+        
+        function showFieldError(input, isValid, errorMessage) {
+            const errorElement = document.getElementById(input.id + 'Error');
+            
+            if (isValid) {
+                input.classList.remove('error');
+                input.classList.add('success');
+                if (errorElement) {
+                    errorElement.style.display = 'none';
+                }
+            } else {
+                input.classList.remove('success');
+                input.classList.add('error');
+                if (errorElement) {
+                    errorElement.textContent = errorMessage;
+                    errorElement.style.display = 'block';
+                }
+            }
+        }
+        
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthElement = document.getElementById('passwordStrength');
+            
+            if (password.length === 0) {
+                strengthElement.textContent = '';
+                return;
+            }
+            
+            const strength = securityUtils.validatePasswordStrength(password);
+            strengthElement.textContent = `Password strength: ${strength.strength}`;
+            strengthElement.className = `password-strength strength-${strength.strength}`;
+        }
+        
+        async function handleSignup(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            // Validate CSRF token
+            if (typeof securityUtils !== 'undefined') {
+                if (!securityUtils.validateCSRFToken(data.csrf_token)) {
+                    alert('Security token invalid. Please refresh the page and try again.');
+                    return;
+                }
+            }
+            
+            // Check rate limiting
+            const clientIP = securityUtils.getClientIP();
+            if (!securityUtils.checkRateLimit(clientIP, 'signup')) {
+                showRateLimitWarning();
+                return;
+            }
+            
+            // Validate all fields
+            const inputs = e.target.querySelectorAll('input[required]');
+            let allValid = true;
+            
+            inputs.forEach(input => {
+                if (!validateField(input)) {
+                    allValid = false;
+                }
+            });
+            
+            if (!allValid) {
+                return;
+            }
+            
+            // Disable submit button
+            const submitButton = document.getElementById('signupButton');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+            
+            try {
+                // Simulate account creation with security features
+                await createSecureAccount(data);
+                
+                // Log successful signup
+                if (typeof securityUtils !== 'undefined') {
+                    securityUtils.logSecurityEvent('account_created', {
+                        email: data.email,
+                        timestamp: new Date().toISOString(),
+                        marketing_consent: data.marketingConsent === 'on'
+                    });
+                }
+                
+                // Show success message
+                alert('Account created successfully! You will be redirected to the demo hub.');
+                
+                // Redirect to demo hub
+                setTimeout(() => {
+                    window.location.href = 'demo-hub.html';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert('An error occurred during account creation. Please try again.');
+                
+                // Log signup error
+                if (typeof securityUtils !== 'undefined') {
+                    securityUtils.logSecurityEvent('signup_error', {
+                        error: error.message,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            } finally {
+                // Re-enable submit button
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+            }
+        }
+        
+        async function createSecureAccount(data) {
+            // Simulate secure account creation
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    try {
+                        // Hash password
+                        const hashedPassword = securityUtils.hashPassword(data.password);
+                        
+                        // Encrypt sensitive data
+                        const encryptedData = {
+                            firstName: securityUtils.encryptData(data.firstName),
+                            lastName: securityUtils.encryptData(data.lastName),
+                            email: data.email, // Email not encrypted for demo
+                            phone: securityUtils.encryptData(data.phone),
+                            password: hashedPassword,
+                            marketingConsent: data.marketingConsent === 'on',
+                            createdAt: new Date().toISOString(),
+                            securityLevel: 'high'
+                        };
+                        
+                        // Store in localStorage for demo
+                        localStorage.setItem('demo_user_account', JSON.stringify(encryptedData));
+                        
+                        console.log('Secure account created:', {
+                            email: data.email,
+                            hashedPassword: hashedPassword.substring(0, 20) + '...',
+                            encrypted: true
+                        });
+                        
+                        resolve(encryptedData);
+                    } catch (error) {
+                        reject(error);
+                    }
+                }, 2000);
+            });
+        }
+        
+        function showRateLimitWarning() {
+            const warning = document.createElement('div');
+            warning.className = 'rate-limit-warning';
+            warning.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                Too many signup attempts. Please wait 15 minutes before trying again.
+            `;
+            
+            const form = document.getElementById('signupForm');
+            form.insertBefore(warning, form.firstChild);
+            
+            // Remove warning after 5 seconds
+            setTimeout(() => {
+                warning.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
