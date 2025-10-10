@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics System Demo - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #0a0a0a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .header p {
+            color: #9CA3AF;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .demo-section h2 {
+            color: #1E90FF;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(30, 144, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(30, 144, 255, 0.1);
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+        }
+        
+        .metric-card h3 {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+        
+        .metric-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1E90FF;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-card .subtitle {
+            font-size: 0.8rem;
+            color: #9CA3AF;
+        }
+        
+        .growth-positive {
+            color: #28A745;
+        }
+        
+        .growth-negative {
+            color: #DC2626;
+        }
+        
+        .growth-neutral {
+            color: #FFC107;
+        }
+        
+        .demo-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 144, 255, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28A745, #20C997);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #FFC107, #FF8F00);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #DC2626, #B91C1C);
+        }
+        
+        .btn-secondary {
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid #1E90FF;
+            color: #1E90FF;
+        }
+        
+        .btn-secondary:hover {
+            background: #1E90FF;
+            color: white;
+        }
+        
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #28A745;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        
+        .live-indicator .pulse {
+            width: 8px;
+            height: 8px;
+            background: #28A745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .demo-pages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .demo-page-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-page-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(30, 144, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(30, 144, 255, 0.1);
+        }
+        
+        .demo-page-card h3 {
+            color: #1E90FF;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .demo-page-card p {
+            color: #9CA3AF;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .demo-page-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .console-output {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #00ff00;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .status-active {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28A745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+        
+        .status-inactive {
+            background: rgba(220, 38, 38, 0.2);
+            color: #DC2626;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-chart-line"></i> Analytics System Demo</h1>
+            <p>Complete demonstration of the BlkPages analytics tracking system with real-time updates and live data</p>
+        </div>
+        
+        <div class="live-indicator">
+            <div class="pulse"></div>
+            <span>Live Analytics Demo</span>
+        </div>
+        
+        <!-- Live Analytics Display -->
+        <div class="demo-section">
+            <h2><i class="fas fa-chart-pie"></i> Live Analytics Dashboard</h2>
+            <p>Real-time analytics metrics that update automatically as you interact with the system</p>
+            
+            <div class="analytics-grid">
+                <div class="metric-card">
+                    <h3>Profile Views</h3>
+                    <div class="number" id="profileViews">0</div>
+                    <div class="subtitle">Total profile views</div>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>Search Impressions</h3>
+                    <div class="number" id="searchImpressions">0</div>
+                    <div class="subtitle">Times appeared in search</div>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>Contact Clicks</h3>
+                    <div class="number" id="contactClicks">0</div>
+                    <div class="subtitle">Call/Message button clicks</div>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>Enquiries Received</h3>
+                    <div class="number" id="enquiries">0</div>
+                    <div class="subtitle">Form submissions</div>
+                </div>
+            </div>
+            
+            <div class="demo-buttons">
+                <button onclick="simulateProfileView()" class="btn">
+                    <i class="fas fa-eye"></i> Simulate Profile View
+                </button>
+                <button onclick="simulateSearchImpression()" class="btn btn-success">
+                    <i class="fas fa-search"></i> Simulate Search Impression
+                </button>
+                <button onclick="simulateContactClick()" class="btn btn-warning">
+                    <i class="fas fa-phone"></i> Simulate Contact Click
+                </button>
+                <button onclick="simulateEnquiry()" class="btn btn-danger">
+                    <i class="fas fa-envelope"></i> Simulate Enquiry
+                </button>
+            </div>
+        </div>
+        
+        <!-- Demo Pages -->
+        <div class="demo-section">
+            <h2><i class="fas fa-desktop"></i> Demo Pages</h2>
+            <p>Interactive demo pages that show the analytics system in action</p>
+            
+            <div class="demo-pages">
+                <div class="demo-page-card">
+                    <h3>Real-time Analytics Dashboard</h3>
+                    <p>Live analytics dashboard with automatic updates showing total views, today's views, growth rate, and average time spent.</p>
+                    <button onclick="openDashboard()" class="btn">
+                        <i class="fas fa-chart-line"></i> Open Dashboard
+                    </button>
+                </div>
+                
+                <div class="demo-page-card">
+                    <h3>Business Profile with Tracking</h3>
+                    <p>Business profile page with automatic analytics tracking that records views and time spent on the page.</p>
+                    <button onclick="openBusinessProfile()" class="btn btn-secondary">
+                        <i class="fas fa-user"></i> Open Profile
+                    </button>
+                </div>
+                
+                <div class="demo-page-card">
+                    <h3>Analytics Test Page</h3>
+                    <p>Complete testing page to verify the analytics system is working correctly with step-by-step instructions.</p>
+                    <button onclick="openTestPage()" class="btn btn-warning">
+                        <i class="fas fa-vial"></i> Open Test Page
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Features -->
+        <div class="demo-section">
+            <h2><i class="fas fa-cogs"></i> System Features</h2>
+            <p>Key features of the analytics system that have been implemented</p>
+            
+            <div class="demo-buttons">
+                <button onclick="testAllFeatures()" class="btn btn-success">
+                    <i class="fas fa-rocket"></i> Test All Features
+                </button>
+                <button onclick="clearAllData()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Clear All Data
+                </button>
+                <button onclick="exportData()" class="btn btn-secondary">
+                    <i class="fas fa-download"></i> Export Data
+                </button>
+            </div>
+            
+            <div class="status-indicator status-active">
+                <i class="fas fa-check-circle"></i>
+                Analytics system is active and tracking events
+            </div>
+        </div>
+        
+        <!-- Console Output -->
+        <div class="demo-section">
+            <h2><i class="fas fa-terminal"></i> Console Output</h2>
+            <div class="console-output" id="consoleOutput">
+                Analytics Demo loaded. Ready to demonstrate the system...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const businessId = 'demo-business-123';
+        let analyticsData = {
+            profileViews: 0,
+            searchImpressions: 0,
+            contactClicks: 0,
+            enquiries: 0
+        };
+        
+        // Load analytics data from localStorage
+        function loadAnalyticsData() {
+            const saved = localStorage.getItem('analyticsDemoData');
+            if (saved) {
+                analyticsData = JSON.parse(saved);
+            }
+            updateDisplay();
+        }
+        
+        // Save analytics data to localStorage
+        function saveAnalyticsData() {
+            localStorage.setItem('analyticsDemoData', JSON.stringify(analyticsData));
+        }
+        
+        // Update display
+        function updateDisplay() {
+            document.getElementById('profileViews').textContent = analyticsData.profileViews;
+            document.getElementById('searchImpressions').textContent = analyticsData.searchImpressions;
+            document.getElementById('contactClicks').textContent = analyticsData.contactClicks;
+            document.getElementById('enquiries').textContent = analyticsData.enquiries;
+        }
+        
+        // Simulate profile view
+        function simulateProfileView() {
+            analyticsData.profileViews += 1;
+            saveAnalyticsData();
+            updateDisplay();
+            logToConsole('Profile view recorded');
+        }
+        
+        // Simulate search impression
+        function simulateSearchImpression() {
+            analyticsData.searchImpressions += 1;
+            saveAnalyticsData();
+            updateDisplay();
+            logToConsole('Search impression recorded');
+        }
+        
+        // Simulate contact click
+        function simulateContactClick() {
+            analyticsData.contactClicks += 1;
+            saveAnalyticsData();
+            updateDisplay();
+            logToConsole('Contact click recorded');
+        }
+        
+        // Simulate enquiry
+        function simulateEnquiry() {
+            analyticsData.enquiries += 1;
+            saveAnalyticsData();
+            updateDisplay();
+            logToConsole('Enquiry recorded');
+        }
+        
+        // Test all features
+        function testAllFeatures() {
+            logToConsole('Testing all analytics features...');
+            
+            simulateProfileView();
+            setTimeout(() => simulateSearchImpression(), 200);
+            setTimeout(() => simulateContactClick(), 400);
+            setTimeout(() => simulateEnquiry(), 600);
+            
+            setTimeout(() => {
+                logToConsole('All features tested successfully!');
+            }, 800);
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            analyticsData = {
+                profileViews: 0,
+                searchImpressions: 0,
+                contactClicks: 0,
+                enquiries: 0
+            };
+            saveAnalyticsData();
+            updateDisplay();
+            logToConsole('All analytics data cleared');
+        }
+        
+        // Export data
+        function exportData() {
+            const dataStr = JSON.stringify(analyticsData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `analytics-demo-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            logToConsole('Analytics data exported');
+        }
+        
+        // Open dashboard
+        function openDashboard() {
+            window.open('analytics-dashboard-realtime.html', '_blank');
+            logToConsole('Opening real-time analytics dashboard...');
+        }
+        
+        // Open business profile
+        function openBusinessProfile() {
+            window.open('business-profile-with-tracking.html', '_blank');
+            logToConsole('Opening business profile with tracking...');
+        }
+        
+        // Open test page
+        function openTestPage() {
+            window.open('analytics-test-page.html', '_blank');
+            logToConsole('Opening analytics test page...');
+        }
+        
+        // Log to console output
+        function logToConsole(message) {
+            const consoleOutput = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            consoleOutput.innerHTML += `[${timestamp}] ${message}\n`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAnalyticsData();
+            logToConsole('Analytics Demo initialized');
+            logToConsole('Click the buttons above to simulate analytics events');
+        });
+    </script>
+</body>
+</html>

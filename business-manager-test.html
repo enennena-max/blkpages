@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Manager Test - BLKPAGES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        button {
+            background: #1E90FF;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #00BFFF;
+        }
+        .btn-success {
+            background: #28A745;
+        }
+        .btn-danger {
+            background: #DC2626;
+        }
+        .result {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 4px;
+            border-left: 4px solid #1E90FF;
+        }
+        .success {
+            color: #28A745;
+            border-left-color: #28A745;
+        }
+        .error {
+            color: #DC2626;
+            border-left-color: #DC2626;
+        }
+        .warning {
+            color: #FFC107;
+            border-left-color: #FFC107;
+        }
+        pre {
+            background: #000;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Business Manager Test</h1>
+        <p>This page tests if the Business Manager is loaded and working properly.</p>
+        
+        <div class="test-section">
+            <h2>Business Manager Status</h2>
+            <button onclick="checkBusinessManager()">Check Business Manager</button>
+            <button onclick="testBusinessManager()">Test Business Manager</button>
+            <button onclick="loadBusinessManager()">Load Business Manager</button>
+            <div id="bmResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Business Data Test</h2>
+            <button onclick="testBusinessData()">Test Business Data</button>
+            <button onclick="addTestBusiness()">Add Test Business</button>
+            <button onclick="clearBusinessData()" class="btn-danger">Clear Business Data</button>
+            <div id="dataResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Current Business Data</h2>
+            <pre id="currentData">Loading...</pre>
+        </div>
+    </div>
+
+    <!-- Load Business Manager -->
+    <script src="business-manager.js"></script>
+    
+    <script>
+        function checkBusinessManager() {
+            const resultDiv = document.getElementById('bmResult');
+            let result = '<div class="result">';
+            result += '<h3>Business Manager Status:</h3>';
+            
+            if (typeof window.businessManager !== 'undefined') {
+                result += '<p class="success">✅ Business Manager is loaded!</p>';
+                result += '<p>Type: ' + typeof window.businessManager + '</p>';
+                result += '<p>Methods available: ' + Object.getOwnPropertyNames(Object.getPrototypeOf(window.businessManager)).join(', ') + '</p>';
+            } else {
+                result += '<p class="error">❌ Business Manager is not loaded</p>';
+                result += '<p>Available globals: ' + Object.keys(window).filter(k => k.includes('business')).join(', ') + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+        }
+        
+        function testBusinessManager() {
+            const resultDiv = document.getElementById('bmResult');
+            let result = '<div class="result">';
+            result += '<h3>Business Manager Test Results:</h3>';
+            
+            try {
+                if (typeof window.businessManager !== 'undefined') {
+                    const businesses = window.businessManager.getBusinesses();
+                    result += '<p class="success">✅ Business Manager is working!</p>';
+                    result += '<p>Number of businesses: ' + businesses.length + '</p>';
+                    
+                    if (businesses.length > 0) {
+                        result += '<p>First business: ' + businesses[0].name + '</p>';
+                    }
+                } else {
+                    result += '<p class="error">❌ Business Manager is not available</p>';
+                }
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+        }
+        
+        function loadBusinessManager() {
+            const resultDiv = document.getElementById('bmResult');
+            let result = '<div class="result">';
+            result += '<h3>Loading Business Manager:</h3>';
+            
+            if (typeof window.businessManager !== 'undefined') {
+                result += '<p class="success">✅ Business Manager already loaded</p>';
+            } else {
+                result += '<p class="warning">⚠️ Attempting to load Business Manager...</p>';
+                
+                const script = document.createElement('script');
+                script.src = 'business-manager.js';
+                script.onload = function() {
+                    result += '<p class="success">✅ Business Manager loaded successfully!</p>';
+                    resultDiv.innerHTML = result;
+                };
+                script.onerror = function() {
+                    result += '<p class="error">❌ Failed to load Business Manager</p>';
+                    resultDiv.innerHTML = result;
+                };
+                document.head.appendChild(script);
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+        }
+        
+        function testBusinessData() {
+            const resultDiv = document.getElementById('dataResult');
+            let result = '<div class="result">';
+            result += '<h3>Business Data Test Results:</h3>';
+            
+            try {
+                if (typeof window.businessManager !== 'undefined') {
+                    const businesses = window.businessManager.getBusinesses();
+                    result += '<p class="success">✅ Business data accessible</p>';
+                    result += '<p>Total businesses: ' + businesses.length + '</p>';
+                    
+                    if (businesses.length > 0) {
+                        result += '<h4>Businesses:</h4>';
+                        businesses.forEach((business, index) => {
+                            result += '<p>' + (index + 1) + '. ' + business.name + ' (' + business.category + ')</p>';
+                        });
+                    } else {
+                        result += '<p class="warning">⚠️ No businesses found</p>';
+                    }
+                } else {
+                    result += '<p class="error">❌ Business Manager not available</p>';
+                }
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        function addTestBusiness() {
+            const resultDiv = document.getElementById('dataResult');
+            let result = '<div class="result">';
+            result += '<h3>Adding Test Business:</h3>';
+            
+            try {
+                if (typeof window.businessManager !== 'undefined') {
+                    const testBusiness = {
+                        name: 'Test Business ' + Date.now(),
+                        category: 'Test',
+                        address: '123 Test Street',
+                        city: 'Test City',
+                        state: 'Test State',
+                        zipCode: 'TE1 1ST',
+                        phone: '01234567890',
+                        email: 'test@test.com',
+                        description: 'This is a test business for analytics testing'
+                    };
+                    
+                    window.businessManager.addBusiness(testBusiness);
+                    result += '<p class="success">✅ Test business added successfully!</p>';
+                    result += '<p>Business: ' + testBusiness.name + '</p>';
+                } else {
+                    result += '<p class="error">❌ Business Manager not available</p>';
+                }
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        function clearBusinessData() {
+            localStorage.removeItem('blkpages_businesses');
+            updateCurrentData();
+            document.getElementById('dataResult').innerHTML = '<div class="result"><p class="success">✅ Business data cleared</p></div>';
+        }
+        
+        function updateCurrentData() {
+            try {
+                const businesses = typeof window.businessManager !== 'undefined' ? 
+                    window.businessManager.getBusinesses() : [];
+                document.getElementById('currentData').textContent = JSON.stringify(businesses, null, 2);
+            } catch (error) {
+                document.getElementById('currentData').textContent = 'Error loading data: ' + error.message;
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkBusinessManager();
+            updateCurrentData();
+        });
+    </script>
+</body>
+</html>

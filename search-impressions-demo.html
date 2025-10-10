@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Impressions Analytics Demo - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #0a0a0a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .header p {
+            color: #9CA3AF;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .demo-section h2 {
+            color: #1E90FF;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(30, 144, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(30, 144, 255, 0.1);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-content h3 {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+        
+        .stat-value.positive {
+            color: #28A745;
+        }
+        
+        .stat-value.negative {
+            color: #DC2626;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #9CA3AF;
+            font-weight: 500;
+        }
+        
+        /* Trend Chart */
+        .trend-section {
+            margin: 2rem 0;
+        }
+        
+        .trend-chart {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            height: 400px;
+            position: relative;
+        }
+        
+        .demo-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 144, 255, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28A745, #20C997);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #FFC107, #FF8F00);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #DC2626, #B91C1C);
+        }
+        
+        .btn-secondary {
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid #1E90FF;
+            color: #1E90FF;
+        }
+        
+        .btn-secondary:hover {
+            background: #1E90FF;
+            color: white;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #28A745;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        
+        .status-indicator .pulse {
+            width: 8px;
+            height: 8px;
+            background: #28A745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .last-updated {
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+            
+            .trend-chart {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-search"></i> Search Impressions Analytics</h1>
+            <p>Track how often your business appears in search results with live analytics and trend visualization</p>
+        </div>
+        
+        <div class="status-indicator">
+            <div class="pulse"></div>
+            <span>Live Search Impressions Analytics</span>
+        </div>
+        
+        <div class="last-updated" id="lastUpdated">
+            Last updated: Never
+        </div>
+        
+        <!-- Live Search Impressions Analytics Display -->
+        <div class="demo-section">
+            <h2><i class="fas fa-chart-line"></i> Live Search Impressions Analytics</h2>
+            <p>Real-time search impression data with growth tracking and conversion metrics</p>
+            
+            <!-- Key Metrics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Impressions</h3>
+                        <div class="stat-value" id="totalImpressions">0</div>
+                        <div class="stat-label">All time</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Today's Impressions</h3>
+                        <div class="stat-value" id="todayImpressions">0</div>
+                        <div class="stat-label">Last 24 hours</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Growth Rate</h3>
+                        <div class="stat-value" id="growthRate">0.0%</div>
+                        <div class="stat-label">vs last month</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-mouse-pointer"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Conversion Rate</h3>
+                        <div class="stat-value" id="conversionRate">0.0%</div>
+                        <div class="stat-label">Impressions → Clicks</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trend Chart -->
+            <div class="trend-section">
+                <div class="trend-chart">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="demo-buttons">
+                <button onclick="simulateSearchImpression()" class="btn">
+                    <i class="fas fa-search"></i> Simulate Search Impression
+                </button>
+                <button onclick="simulateContactClick()" class="btn btn-success">
+                    <i class="fas fa-mouse-pointer"></i> Simulate Contact Click
+                </button>
+                <button onclick="generateSampleData()" class="btn btn-warning">
+                    <i class="fas fa-database"></i> Generate Sample Data
+                </button>
+                <button onclick="clearAllData()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Clear All Data
+                </button>
+                <button onclick="refreshData()" class="btn btn-secondary">
+                    <i class="fas fa-sync-alt"></i> Refresh Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const businessId = 'demo-business-123';
+        let analyticsData = {
+            totalImpressions: 0,
+            todayImpressions: 0,
+            growthRate: 0,
+            conversionRate: 0,
+            trend: []
+        };
+        
+        let trendChart = null;
+        
+        // Load analytics data from localStorage
+        function loadAnalyticsData() {
+            const saved = localStorage.getItem('searchImpressionsData');
+            if (saved) {
+                analyticsData = JSON.parse(saved);
+            }
+            updateDisplay();
+        }
+        
+        // Save analytics data to localStorage
+        function saveAnalyticsData() {
+            localStorage.setItem('searchImpressionsData', JSON.stringify(analyticsData));
+        }
+        
+        // Simulate search impression
+        function simulateSearchImpression() {
+            analyticsData.totalImpressions += 1;
+            analyticsData.todayImpressions += 1;
+            
+            // Add to trend data
+            const today = new Date().toISOString().split('T')[0];
+            const existingDay = analyticsData.trend.find(t => t.date === today);
+            if (existingDay) {
+                existingDay.impressions += 1;
+            } else {
+                analyticsData.trend.push({ date: today, impressions: 1 });
+            }
+            
+            // Sort trend data by date
+            analyticsData.trend.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            // Keep only last 30 days
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            analyticsData.trend = analyticsData.trend.filter(t => new Date(t.date) >= thirtyDaysAgo);
+            
+            // Calculate growth rate (simplified for demo)
+            analyticsData.growthRate = Math.random() * 20 - 10; // Random between -10% and +10%
+            
+            saveAnalyticsData();
+            updateDisplay();
+            updateLastUpdated();
+        }
+        
+        // Simulate contact click (conversion)
+        function simulateContactClick() {
+            // Calculate conversion rate
+            if (analyticsData.totalImpressions > 0) {
+                const totalClicks = Math.floor(analyticsData.totalImpressions * 0.15); // Assume 15% conversion
+                analyticsData.conversionRate = (totalClicks / analyticsData.totalImpressions) * 100;
+            }
+            
+            saveAnalyticsData();
+            updateDisplay();
+            updateLastUpdated();
+        }
+        
+        // Generate sample data
+        function generateSampleData() {
+            // Generate 100 random search impressions over the last 30 days
+            for (let i = 0; i < 100; i++) {
+                simulateSearchImpression();
+            }
+            
+            // Generate some contact clicks
+            for (let i = 0; i < 15; i++) {
+                simulateContactClick();
+            }
+            
+            updateDisplay();
+            updateLastUpdated();
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            analyticsData = {
+                totalImpressions: 0,
+                todayImpressions: 0,
+                growthRate: 0,
+                conversionRate: 0,
+                trend: []
+            };
+            saveAnalyticsData();
+            updateDisplay();
+            updateLastUpdated();
+        }
+        
+        // Refresh data
+        function refreshData() {
+            loadAnalyticsData();
+            updateLastUpdated();
+        }
+        
+        // Update display
+        function updateDisplay() {
+            document.getElementById('totalImpressions').textContent = analyticsData.totalImpressions.toLocaleString();
+            document.getElementById('todayImpressions').textContent = analyticsData.todayImpressions.toLocaleString();
+            
+            const growthRateElement = document.getElementById('growthRate');
+            growthRateElement.textContent = `${analyticsData.growthRate >= 0 ? '+' : ''}${analyticsData.growthRate.toFixed(1)}%`;
+            growthRateElement.className = `stat-value ${analyticsData.growthRate >= 0 ? 'positive' : 'negative'}`;
+            
+            document.getElementById('conversionRate').textContent = `${analyticsData.conversionRate.toFixed(1)}%`;
+            
+            updateTrendChart();
+        }
+        
+        // Update trend chart
+        function updateTrendChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            
+            if (trendChart) {
+                trendChart.destroy();
+            }
+            
+            // Prepare chart data
+            const labels = analyticsData.trend.map(t => {
+                const date = new Date(t.date);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            
+            const data = analyticsData.trend.map(t => t.impressions);
+            
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Search Impressions',
+                        data: data,
+                        borderColor: '#36A2EB',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#36A2EB',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Search Impressions Trend (30 Days)',
+                            color: '#ffffff',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: '#36A2EB',
+                            borderWidth: 1,
+                            callbacks: {
+                                title: function(context) {
+                                    const dataIndex = context[0].dataIndex;
+                                    const trendItem = analyticsData.trend[dataIndex];
+                                    return new Date(trendItem.date).toLocaleDateString('en-US', { 
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    });
+                                },
+                                label: function(context) {
+                                    return `${context.parsed.y} impressions`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#ffffff',
+                                maxTicksLimit: 10
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#ffffff',
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+        
+        // Update last updated time
+        function updateLastUpdated() {
+            document.getElementById('lastUpdated').textContent = 
+                `Last updated: ${new Date().toLocaleTimeString()}`;
+        }
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAnalyticsData();
+            updateLastUpdated();
+        });
+    </script>
+</body>
+</html>

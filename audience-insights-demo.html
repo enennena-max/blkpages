@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audience Insights Demo - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #0a0a0a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .header p {
+            color: #9CA3AF;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .demo-section h2 {
+            color: #1E90FF;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .insight-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .insight-box:hover {
+            transform: translateY(-5px);
+            border-color: rgba(30, 144, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(30, 144, 255, 0.1);
+        }
+        
+        .insight-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+        }
+        
+        .insight-box h3 {
+            color: #1E90FF;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #1E90FF;
+            padding-bottom: 0.5rem;
+        }
+        
+        .borough-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .borough-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .borough-item:last-child {
+            border-bottom: none;
+        }
+        
+        .borough-item:hover {
+            background-color: rgba(30, 144, 255, 0.1);
+            border-radius: 6px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+        
+        .borough-name {
+            font-weight: 600;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+        
+        .borough-count {
+            background: #1E90FF;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .chart-container {
+            height: 300px;
+            position: relative;
+            margin-top: 16px;
+        }
+        
+        .no-data {
+            color: #9CA3AF;
+            font-style: italic;
+            text-align: center;
+            padding: 32px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+        
+        .demo-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 144, 255, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28A745, #20C997);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #FFC107, #FF8F00);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #DC2626, #B91C1C);
+        }
+        
+        .btn-secondary {
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid #1E90FF;
+            color: #1E90FF;
+        }
+        
+        .btn-secondary:hover {
+            background: #1E90FF;
+            color: white;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #28A745;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        
+        .status-indicator .pulse {
+            width: 8px;
+            height: 8px;
+            background: #28A745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .last-updated {
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Date Range Selector */
+        .range-selector {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            flex-wrap: wrap;
+        }
+        
+        .range-selector label {
+            font-weight: 600;
+            color: #1E90FF;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        .range-select {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(30, 144, 255, 0.3);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 140px;
+        }
+        
+        .range-select:hover {
+            border-color: #1E90FF;
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1);
+        }
+        
+        .range-select:focus {
+            outline: none;
+            border-color: #1E90FF;
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
+        }
+        
+        .custom-range {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .date-input {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(30, 144, 255, 0.3);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 140px;
+        }
+        
+        .date-input:hover {
+            border-color: #1E90FF;
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1);
+        }
+        
+        .date-input:focus {
+            outline: none;
+            border-color: #1E90FF;
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
+        }
+        
+        .custom-range span {
+            color: #9CA3AF;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-users"></i> Audience Insights Demo</h1>
+            <p>Live demonstration of visitor analytics including top areas, device usage, and activity patterns</p>
+        </div>
+        
+        <div class="status-indicator">
+            <div class="pulse"></div>
+            <span>Live Audience Insights</span>
+        </div>
+        
+        <div class="last-updated" id="lastUpdated">
+            Last updated: Never
+        </div>
+        
+        <!-- Live Audience Insights Display -->
+        <div class="demo-section">
+            <h2><i class="fas fa-chart-pie"></i> Live Audience Insights</h2>
+            <p>Real-time visitor analytics that update automatically as you interact with the system</p>
+            
+            <!-- Date Range Selector -->
+            <div class="range-selector">
+                <label for="dateRange">Time Period:</label>
+                <select id="dateRange" class="range-select">
+                    <option value="7d">Last 7 Days</option>
+                    <option value="30d">Last 30 Days</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+                
+                <div class="custom-range" id="customRange" style="display: none;">
+                    <input type="date" id="customFrom" class="date-input" placeholder="From date">
+                    <span>to</span>
+                    <input type="date" id="customTo" class="date-input" placeholder="To date">
+                </div>
+            </div>
+            
+            <div class="insights-grid">
+                <!-- Top Visitor Areas by Borough -->
+                <div class="insight-box">
+                    <h3>Top Visitor Areas by Borough</h3>
+                    <ul class="borough-list" id="boroughList">
+                        <li class="no-data">No location data available</li>
+                    </ul>
+                </div>
+                
+                <!-- Device Usage -->
+                <div class="insight-box">
+                    <h3>Device Usage</h3>
+                    <div class="chart-container">
+                        <canvas id="deviceChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Most Active Days & Times -->
+                <div class="insight-box">
+                    <h3>Most Active Days & Times</h3>
+                    <div class="chart-container">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-buttons">
+                <button onclick="simulateProfileView('mobile', 'Lewisham')" class="btn">
+                    <i class="fas fa-mobile-alt"></i> Simulate Mobile View (Lewisham)
+                </button>
+                <button onclick="simulateProfileView('desktop', 'Southwark')" class="btn btn-success">
+                    <i class="fas fa-desktop"></i> Simulate Desktop View (Southwark)
+                </button>
+                <button onclick="simulateProfileView('mobile', 'Camden')" class="btn btn-warning">
+                    <i class="fas fa-mobile-alt"></i> Simulate Mobile View (Camden)
+                </button>
+                <button onclick="simulateProfileView('desktop', 'Westminster')" class="btn btn-danger">
+                    <i class="fas fa-desktop"></i> Simulate Desktop View (Westminster)
+                </button>
+                <button onclick="generateSampleData()" class="btn btn-secondary">
+                    <i class="fas fa-database"></i> Generate Sample Data
+                </button>
+                <button onclick="clearAllData()" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Clear All Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const businessId = 'demo-business-123';
+        let insightsData = {
+            topBoroughs: [],
+            deviceUsage: { mobile: 0, desktop: 0 },
+            activePeriods: []
+        };
+        
+        let deviceChart = null;
+        let activityChart = null;
+        let dateRange = '7d';
+        let customFrom = '';
+        let customTo = '';
+        
+        // Load analytics data from localStorage
+        function loadInsightsData() {
+            const saved = localStorage.getItem('audienceInsightsData');
+            if (saved) {
+                insightsData = JSON.parse(saved);
+            }
+            updateDisplay();
+        }
+        
+        // Save analytics data to localStorage
+        function saveInsightsData() {
+            localStorage.setItem('audienceInsightsData', JSON.stringify(insightsData));
+        }
+        
+        // Simulate profile view with visitor context
+        function simulateProfileView(deviceType, borough) {
+            // Add to device usage
+            insightsData.deviceUsage[deviceType] = (insightsData.deviceUsage[deviceType] || 0) + 1;
+            
+            // Add to borough data
+            const existingBorough = insightsData.topBoroughs.find(b => b.borough === borough);
+            if (existingBorough) {
+                existingBorough.count += 1;
+            } else {
+                insightsData.topBoroughs.push({ borough, count: 1 });
+            }
+            
+            // Sort boroughs by count
+            insightsData.topBoroughs.sort((a, b) => b.count - a.count);
+            
+            // Add to active periods (simulate current time)
+            const now = new Date();
+            const dayOfWeek = now.getDay() + 1; // MongoDB dayOfWeek is 1-7
+            const hour = now.getHours();
+            
+            const existingPeriod = insightsData.activePeriods.find(p => 
+                p.dayOfWeek === dayOfWeek && p.hour === hour
+            );
+            if (existingPeriod) {
+                existingPeriod.count += 1;
+            } else {
+                insightsData.activePeriods.push({ dayOfWeek, hour, count: 1 });
+            }
+            
+            // Sort active periods by count
+            insightsData.activePeriods.sort((a, b) => b.count - a.count);
+            
+            saveInsightsData();
+            updateDisplay();
+            updateLastUpdated();
+        }
+        
+        // Generate sample data
+        function generateSampleData() {
+            const boroughs = ['Lewisham', 'Southwark', 'Camden', 'Westminster', 'Hackney', 'Tower Hamlets'];
+            const deviceTypes = ['mobile', 'desktop'];
+            
+            // Generate 50 random profile views
+            for (let i = 0; i < 50; i++) {
+                const deviceType = deviceTypes[Math.floor(Math.random() * deviceTypes.length)];
+                const borough = boroughs[Math.floor(Math.random() * boroughs.length)];
+                simulateProfileView(deviceType, borough);
+            }
+            
+            updateDisplay();
+            updateLastUpdated();
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            insightsData = {
+                topBoroughs: [],
+                deviceUsage: { mobile: 0, desktop: 0 },
+                activePeriods: []
+            };
+            saveInsightsData();
+            updateDisplay();
+            updateLastUpdated();
+        }
+        
+        // Update display
+        function updateDisplay() {
+            updateBoroughList();
+            updateDeviceChart();
+            updateActivityChart();
+        }
+        
+        // Update borough list
+        function updateBoroughList() {
+            const boroughList = document.getElementById('boroughList');
+            if (insightsData.topBoroughs.length === 0) {
+                boroughList.innerHTML = '<li class="no-data">No location data available</li>';
+                return;
+            }
+            
+            const topBoroughs = insightsData.topBoroughs.slice(0, 5);
+            boroughList.innerHTML = topBoroughs.map(borough => `
+                <li class="borough-item">
+                    <span class="borough-name">${borough.borough}</span>
+                    <span class="borough-count">${borough.count}</span>
+                </li>
+            `).join('');
+        }
+        
+        // Update device chart
+        function updateDeviceChart() {
+            const ctx = document.getElementById('deviceChart').getContext('2d');
+            
+            if (deviceChart) {
+                deviceChart.destroy();
+            }
+            
+            deviceChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Mobile', 'Desktop'],
+                    datasets: [{
+                        data: [
+                            insightsData.deviceUsage.mobile || 0,
+                            insightsData.deviceUsage.desktop || 0
+                        ],
+                        backgroundColor: ['#36A2EB', '#FFCE56'],
+                        borderColor: ['#36A2EB', '#FFCE56'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update activity chart
+        function updateActivityChart() {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            
+            if (activityChart) {
+                activityChart.destroy();
+            }
+            
+            const topPeriods = insightsData.activePeriods.slice(0, 5);
+            
+            if (topPeriods.length === 0) {
+                // Show no data message
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                ctx.fillStyle = '#9CA3AF';
+                ctx.font = '16px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText('No activity data available', ctx.canvas.width / 2, ctx.canvas.height / 2);
+                return;
+            }
+            
+            const labels = topPeriods.map(p => {
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                return `${days[p.dayOfWeek - 1]}, ${p.hour}:00`;
+            });
+            
+            activityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Profile Views',
+                        data: topPeriods.map(p => p.count),
+                        backgroundColor: '#4BC0C0',
+                        borderColor: '#4BC0C0',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#ffffff',
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update last updated time
+        function updateLastUpdated() {
+            document.getElementById('lastUpdated').textContent = 
+                `Last updated: ${new Date().toLocaleTimeString()}`;
+        }
+        
+        // Handle date range changes
+        function handleDateRangeChange() {
+            const dateRangeSelect = document.getElementById('dateRange');
+            const customRangeDiv = document.getElementById('customRange');
+            const customFromInput = document.getElementById('customFrom');
+            const customToInput = document.getElementById('customTo');
+            
+            dateRange = dateRangeSelect.value;
+            
+            if (dateRange === 'custom') {
+                customRangeDiv.style.display = 'flex';
+                // Set default dates for custom range
+                const today = new Date();
+                const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                customFromInput.value = weekAgo.toISOString().split('T')[0];
+                customToInput.value = today.toISOString().split('T')[0];
+                customFrom = customFromInput.value;
+                customTo = customToInput.value;
+            } else {
+                customRangeDiv.style.display = 'none';
+                customFrom = '';
+                customTo = '';
+            }
+            
+            // Filter data based on date range
+            filterDataByDateRange();
+        }
+        
+        // Filter data based on selected date range
+        function filterDataByDateRange() {
+            // In a real implementation, this would filter the data based on the date range
+            // For the demo, we'll just update the display
+            updateDisplay();
+            updateLastUpdated();
+        }
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInsightsData();
+            updateLastUpdated();
+            
+            // Set up date range selector
+            const dateRangeSelect = document.getElementById('dateRange');
+            const customFromInput = document.getElementById('customFrom');
+            const customToInput = document.getElementById('customTo');
+            
+            dateRangeSelect.addEventListener('change', handleDateRangeChange);
+            customFromInput.addEventListener('change', function() {
+                customFrom = this.value;
+                filterDataByDateRange();
+            });
+            customToInput.addEventListener('change', function() {
+                customTo = this.value;
+                filterDataByDateRange();
+            });
+        });
+    </script>
+</body>
+</html>

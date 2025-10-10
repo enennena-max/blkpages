@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Test - BLKPAGES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        button {
+            background: #1E90FF;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #00BFFF;
+        }
+        .btn-success {
+            background: #28A745;
+        }
+        .btn-warning {
+            background: #FFC107;
+            color: #000;
+        }
+        .btn-danger {
+            background: #DC2626;
+        }
+        .result {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 4px;
+            border-left: 4px solid #1E90FF;
+        }
+        .success {
+            color: #28A745;
+            border-left-color: #28A745;
+        }
+        .error {
+            color: #DC2626;
+            border-left-color: #DC2626;
+        }
+        .warning {
+            color: #FFC107;
+            border-left-color: #FFC107;
+        }
+        pre {
+            background: #000;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Tracking Functions Test</h1>
+        <p>This page tests each tracking function individually to identify issues.</p>
+        
+        <div class="test-section">
+            <h2>1. Profile View Tracking</h2>
+            <button onclick="testProfileView()">Test Profile View</button>
+            <button onclick="testProfileViewReal()">Test Real Profile View</button>
+            <div id="profileResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. Search Impressions Tracking</h2>
+            <button onclick="testSearchImpressions()">Test Search Impressions</button>
+            <button onclick="testSearchImpressionsReal()">Test Real Search</button>
+            <div id="searchResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. Contact Click Tracking</h2>
+            <button onclick="testContactClick()">Test Contact Click</button>
+            <button onclick="testContactClickReal()">Test Real Contact Click</button>
+            <div id="contactResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. Enquiry Tracking</h2>
+            <button onclick="testEnquiry()">Test Enquiry</button>
+            <button onclick="testEnquiryReal()">Test Real Enquiry</button>
+            <div id="enquiryResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>5. All Tracking Test</h2>
+            <button onclick="testAllTracking()" class="btn-success">Test All Functions</button>
+            <button onclick="checkAllData()" class="btn-warning">Check All Data</button>
+            <button onclick="clearAllData()" class="btn-danger">Clear All Data</button>
+            <div id="allResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Current Analytics Data</h2>
+            <pre id="currentData">Loading...</pre>
+        </div>
+    </div>
+
+    <script>
+        const businessId = 'royalHairStudio';
+        
+        // Test Profile View Tracking
+        function testProfileView() {
+            const resultDiv = document.getElementById('profileResult');
+            let result = '<div class="result">';
+            result += '<h3>Profile View Test Results:</h3>';
+            
+            try {
+                const currentDate = new Date().toISOString().split('T')[0];
+                const currentTime = new Date().toISOString();
+                
+                let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+                
+                if (!analyticsData[businessId]) {
+                    analyticsData[businessId] = {
+                        totalViews: 0,
+                        dailyViews: {},
+                        lastView: null,
+                        viewHistory: [],
+                        searchImpressions: 0,
+                        dailySearchImpressions: {},
+                        contactClicks: 0,
+                        dailyContactClicks: {},
+                        enquiries: 0,
+                        dailyEnquiries: {}
+                    };
+                }
+                
+                const beforeViews = analyticsData[businessId].totalViews || 0;
+                
+                // Simulate profile view
+                analyticsData[businessId].totalViews += 1;
+                analyticsData[businessId].lastView = currentTime;
+                
+                if (!analyticsData[businessId].dailyViews[currentDate]) {
+                    analyticsData[businessId].dailyViews[currentDate] = 0;
+                }
+                analyticsData[businessId].dailyViews[currentDate] += 1;
+                
+                localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+                
+                // Verify
+                const verifyData = JSON.parse(localStorage.getItem('businessAnalytics'));
+                const afterViews = verifyData[businessId].totalViews || 0;
+                
+                if (afterViews === beforeViews + 1) {
+                    result += '<p class="success">✅ Profile view tracking works!</p>';
+                    result += '<p>Views: ' + beforeViews + ' → ' + afterViews + '</p>';
+                } else {
+                    result += '<p class="error">❌ Profile view tracking failed</p>';
+                }
+                
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        // Test Real Profile View (opens business profile)
+        function testProfileViewReal() {
+            window.open('business-profile.html', '_blank');
+            document.getElementById('profileResult').innerHTML = '<div class="result"><p class="warning">⚠️ Opened business profile - check if tracking works there</p></div>';
+        }
+        
+        // Test Search Impressions Tracking
+        function testSearchImpressions() {
+            const resultDiv = document.getElementById('searchResult');
+            let result = '<div class="result">';
+            result += '<h3>Search Impressions Test Results:</h3>';
+            
+            try {
+                const currentDate = new Date().toISOString().split('T')[0];
+                
+                let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+                
+                if (!analyticsData[businessId]) {
+                    analyticsData[businessId] = {
+                        totalViews: 0,
+                        dailyViews: {},
+                        lastView: null,
+                        viewHistory: [],
+                        searchImpressions: 0,
+                        dailySearchImpressions: {},
+                        contactClicks: 0,
+                        dailyContactClicks: {},
+                        enquiries: 0,
+                        dailyEnquiries: {}
+                    };
+                }
+                
+                const beforeImpressions = analyticsData[businessId].searchImpressions || 0;
+                
+                // Simulate search impression
+                analyticsData[businessId].searchImpressions += 1;
+                
+                if (!analyticsData[businessId].dailySearchImpressions[currentDate]) {
+                    analyticsData[businessId].dailySearchImpressions[currentDate] = 0;
+                }
+                analyticsData[businessId].dailySearchImpressions[currentDate] += 1;
+                
+                localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+                
+                // Verify
+                const verifyData = JSON.parse(localStorage.getItem('businessAnalytics'));
+                const afterImpressions = verifyData[businessId].searchImpressions || 0;
+                
+                if (afterImpressions === beforeImpressions + 1) {
+                    result += '<p class="success">✅ Search impressions tracking works!</p>';
+                    result += '<p>Impressions: ' + beforeImpressions + ' → ' + afterImpressions + '</p>';
+                } else {
+                    result += '<p class="error">❌ Search impressions tracking failed</p>';
+                }
+                
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        // Test Real Search Impressions (opens search results)
+        function testSearchImpressionsReal() {
+            window.open('search-results.html', '_blank');
+            document.getElementById('searchResult').innerHTML = '<div class="result"><p class="warning">⚠️ Opened search results - check if tracking works there</p></div>';
+        }
+        
+        // Test Contact Click Tracking
+        function testContactClick() {
+            const resultDiv = document.getElementById('contactResult');
+            let result = '<div class="result">';
+            result += '<h3>Contact Click Test Results:</h3>';
+            
+            try {
+                const currentDate = new Date().toISOString().split('T')[0];
+                
+                let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+                
+                if (!analyticsData[businessId]) {
+                    analyticsData[businessId] = {
+                        totalViews: 0,
+                        dailyViews: {},
+                        lastView: null,
+                        viewHistory: [],
+                        searchImpressions: 0,
+                        dailySearchImpressions: {},
+                        contactClicks: 0,
+                        dailyContactClicks: {},
+                        enquiries: 0,
+                        dailyEnquiries: {}
+                    };
+                }
+                
+                const beforeClicks = analyticsData[businessId].contactClicks || 0;
+                
+                // Simulate contact click
+                analyticsData[businessId].contactClicks += 1;
+                
+                if (!analyticsData[businessId].dailyContactClicks[currentDate]) {
+                    analyticsData[businessId].dailyContactClicks[currentDate] = 0;
+                }
+                analyticsData[businessId].dailyContactClicks[currentDate] += 1;
+                
+                localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+                
+                // Verify
+                const verifyData = JSON.parse(localStorage.getItem('businessAnalytics'));
+                const afterClicks = verifyData[businessId].contactClicks || 0;
+                
+                if (afterClicks === beforeClicks + 1) {
+                    result += '<p class="success">✅ Contact click tracking works!</p>';
+                    result += '<p>Clicks: ' + beforeClicks + ' → ' + afterClicks + '</p>';
+                } else {
+                    result += '<p class="error">❌ Contact click tracking failed</p>';
+                }
+                
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        // Test Real Contact Click (opens business profile)
+        function testContactClickReal() {
+            window.open('business-profile.html', '_blank');
+            document.getElementById('contactResult').innerHTML = '<div class="result"><p class="warning">⚠️ Opened business profile - click "Call Now" button to test real tracking</p></div>';
+        }
+        
+        // Test Enquiry Tracking
+        function testEnquiry() {
+            const resultDiv = document.getElementById('enquiryResult');
+            let result = '<div class="result">';
+            result += '<h3>Enquiry Test Results:</h3>';
+            
+            try {
+                const currentDate = new Date().toISOString().split('T')[0];
+                
+                let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+                
+                if (!analyticsData[businessId]) {
+                    analyticsData[businessId] = {
+                        totalViews: 0,
+                        dailyViews: {},
+                        lastView: null,
+                        viewHistory: [],
+                        searchImpressions: 0,
+                        dailySearchImpressions: {},
+                        contactClicks: 0,
+                        dailyContactClicks: {},
+                        enquiries: 0,
+                        dailyEnquiries: {}
+                    };
+                }
+                
+                const beforeEnquiries = analyticsData[businessId].enquiries || 0;
+                
+                // Simulate enquiry
+                analyticsData[businessId].enquiries += 1;
+                
+                if (!analyticsData[businessId].dailyEnquiries[currentDate]) {
+                    analyticsData[businessId].dailyEnquiries[currentDate] = 0;
+                }
+                analyticsData[businessId].dailyEnquiries[currentDate] += 1;
+                
+                localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+                
+                // Verify
+                const verifyData = JSON.parse(localStorage.getItem('businessAnalytics'));
+                const afterEnquiries = verifyData[businessId].enquiries || 0;
+                
+                if (afterEnquiries === beforeEnquiries + 1) {
+                    result += '<p class="success">✅ Enquiry tracking works!</p>';
+                    result += '<p>Enquiries: ' + beforeEnquiries + ' → ' + afterEnquiries + '</p>';
+                } else {
+                    result += '<p class="error">❌ Enquiry tracking failed</p>';
+                }
+                
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        // Test Real Enquiry (opens business profile)
+        function testEnquiryReal() {
+            window.open('business-profile.html', '_blank');
+            document.getElementById('enquiryResult').innerHTML = '<div class="result"><p class="warning">⚠️ Opened business profile - complete a booking to test real tracking</p></div>';
+        }
+        
+        // Test All Tracking
+        function testAllTracking() {
+            const resultDiv = document.getElementById('allResult');
+            let result = '<div class="result">';
+            result += '<h3>All Tracking Test Results:</h3>';
+            
+            // Test all functions
+            testProfileView();
+            setTimeout(() => testSearchImpressions(), 200);
+            setTimeout(() => testContactClick(), 400);
+            setTimeout(() => testEnquiry(), 600);
+            
+            setTimeout(() => {
+                result += '<p class="success">✅ All tracking tests completed!</p>';
+                result += '<p>Check individual results above.</p>';
+                resultDiv.innerHTML = result;
+                updateCurrentData();
+            }, 1000);
+        }
+        
+        // Check All Data
+        function checkAllData() {
+            updateCurrentData();
+            document.getElementById('allResult').innerHTML = '<div class="result"><p class="success">✅ Data refreshed - check "Current Analytics Data" section below</p></div>';
+        }
+        
+        // Clear All Data
+        function clearAllData() {
+            localStorage.removeItem('businessAnalytics');
+            updateCurrentData();
+            document.getElementById('allResult').innerHTML = '<div class="result"><p class="success">✅ All analytics data cleared</p></div>';
+        }
+        
+        // Update Current Data Display
+        function updateCurrentData() {
+            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+            document.getElementById('currentData').textContent = JSON.stringify(analyticsData, null, 2);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCurrentData();
+        });
+    </script>
+</body>
+</html>

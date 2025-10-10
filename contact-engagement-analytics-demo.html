@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Engagement Analytics - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .contact-engagement-dashboard {
+            padding: 24px;
+            color: #fff;
+            font-family: system-ui, Inter, sans-serif;
+        }
+        
+        .trend-section, .breakdown-section, .conversion-section {
+            margin-top: 24px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .conversion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .conversion-box {
+            background: #2b2b2b;
+            border-radius: 8px;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .conversion-box h4 {
+            color: #aaa;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+        
+        .conversion-box p {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .demo-controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .btn {
+            background: #FF6384;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 600;
+        }
+        
+        .btn:hover {
+            background: #E55A7A;
+        }
+        
+        .btn-success {
+            background: #2ecc71;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-info {
+            background: #4BC0C0;
+        }
+        
+        .btn-info:hover {
+            background: #3BA8A8;
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-engagement-dashboard">
+        <h2>Contact Engagement & Conversion Analytics</h2>
+
+        <div class="trend-section">
+            <h3>Engagement Trend (30 Days)</h3>
+            <canvas id="trendChart" width="400" height="200"></canvas>
+        </div>
+
+        <div class="breakdown-section">
+            <h3>Engagement Breakdown</h3>
+            <canvas id="breakdownChart" width="400" height="200"></canvas>
+        </div>
+
+        <div class="conversion-section">
+            <h3>Conversion Analysis</h3>
+            <div class="conversion-grid">
+                <div class="conversion-box">
+                    <h4>Bookings</h4>
+                    <p id="bookings">0</p>
+                </div>
+                <div class="conversion-box">
+                    <h4>Enquiries</h4>
+                    <p id="enquiries">0</p>
+                </div>
+                <div class="conversion-box">
+                    <h4>Store Visits</h4>
+                    <p id="visits">0</p>
+                </div>
+                <div class="conversion-box">
+                    <h4>Total Positive Outcomes</h4>
+                    <p id="totalPositiveOutcomes">0</p>
+                </div>
+                <div class="conversion-box">
+                    <h4>Overall Positive Rate</h4>
+                    <p id="positiveRate">0.0%</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-controls">
+            <button class="btn" onclick="simulateContactClick('phone')">Simulate Phone Click</button>
+            <button class="btn" onclick="simulateContactClick('email')">Simulate Email Click</button>
+            <button class="btn" onclick="simulateContactClick('form')">Simulate Form Click</button>
+            <button class="btn" onclick="simulateContactClick('directions')">Simulate Directions Click</button>
+            <button class="btn btn-success" onclick="simulateOutcome('booking')">Simulate Booking</button>
+            <button class="btn btn-warning" onclick="simulateOutcome('enquiry')">Simulate Enquiry</button>
+            <button class="btn btn-info" onclick="simulateOutcome('visit')">Simulate Store Visit</button>
+            <button class="btn btn-warning" onclick="generateSampleData()">Generate Sample Data</button>
+            <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+        </div>
+    </div>
+
+    <script>
+        let analyticsData = {
+            trend: [],
+            breakdown: {
+                phone: 0,
+                email: 0,
+                form: 0,
+                directions: 0
+            },
+            conversions: {
+                bookings: 0,
+                enquiries: 0,
+                visits: 0
+            },
+            totalPositiveOutcomes: 0,
+            positiveRate: 0
+        };
+        
+        let trendChart = null;
+        let breakdownChart = null;
+        
+        // Load analytics data from localStorage
+        function loadAnalyticsData() {
+            const saved = localStorage.getItem('contactEngagementAnalytics');
+            if (saved) {
+                analyticsData = JSON.parse(saved);
+            }
+            updateDisplay();
+        }
+        
+        // Save analytics data to localStorage
+        function saveAnalyticsData() {
+            localStorage.setItem('contactEngagementAnalytics', JSON.stringify(analyticsData));
+        }
+        
+        // Simulate contact click
+        function simulateContactClick(contactType) {
+            // Add to breakdown
+            analyticsData.breakdown[contactType] += 1;
+            
+            // Add to trend data
+            const today = new Date().toISOString().split('T')[0];
+            const existingDay = analyticsData.trend.find(t => t.date === today);
+            if (existingDay) {
+                existingDay.total += 1;
+            } else {
+                analyticsData.trend.push({ date: today, total: 1 });
+            }
+            
+            // Sort trend data by date
+            analyticsData.trend.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            // Keep only last 30 days
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            analyticsData.trend = analyticsData.trend.filter(t => new Date(t.date) >= thirtyDaysAgo);
+            
+            saveAnalyticsData();
+            updateDisplay();
+        }
+        
+        // Simulate outcome
+        function simulateOutcome(outcomeType) {
+            analyticsData.conversions[outcomeType] += 1;
+            
+            // Recalculate totals
+            analyticsData.totalPositiveOutcomes = 
+                analyticsData.conversions.bookings + 
+                analyticsData.conversions.enquiries + 
+                analyticsData.conversions.visits;
+            
+            const totalClicks = Object.values(analyticsData.breakdown).reduce((a, b) => a + b, 0);
+            analyticsData.positiveRate = totalClicks > 0 ? (analyticsData.totalPositiveOutcomes / totalClicks) * 100 : 0;
+            
+            saveAnalyticsData();
+            updateDisplay();
+        }
+        
+        // Generate sample data
+        function generateSampleData() {
+            // Generate random contact clicks
+            const contactTypes = ['phone', 'email', 'form', 'directions'];
+            for (let i = 0; i < 100; i++) {
+                const randomType = contactTypes[Math.floor(Math.random() * contactTypes.length)];
+                simulateContactClick(randomType);
+            }
+            
+            // Generate some outcomes
+            const outcomes = ['booking', 'enquiry', 'visit'];
+            for (let i = 0; i < 25; i++) {
+                const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+                simulateOutcome(randomOutcome);
+            }
+            
+            updateDisplay();
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            analyticsData = {
+                trend: [],
+                breakdown: {
+                    phone: 0,
+                    email: 0,
+                    form: 0,
+                    directions: 0
+                },
+                conversions: {
+                    bookings: 0,
+                    enquiries: 0,
+                    visits: 0
+                },
+                totalPositiveOutcomes: 0,
+                positiveRate: 0
+            };
+            saveAnalyticsData();
+            updateDisplay();
+        }
+        
+        // Update display
+        function updateDisplay() {
+            document.getElementById('bookings').textContent = analyticsData.conversions.bookings;
+            document.getElementById('enquiries').textContent = analyticsData.conversions.enquiries;
+            document.getElementById('visits').textContent = analyticsData.conversions.visits;
+            document.getElementById('totalPositiveOutcomes').textContent = analyticsData.totalPositiveOutcomes;
+            document.getElementById('positiveRate').textContent = `${analyticsData.positiveRate.toFixed(1)}%`;
+            
+            updateTrendChart();
+            updateBreakdownChart();
+        }
+        
+        // Update trend chart
+        function updateTrendChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            
+            if (trendChart) {
+                trendChart.destroy();
+            }
+            
+            // Prepare chart data
+            const labels = analyticsData.trend.map(t => {
+                const date = new Date(t.date);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            
+            const data = analyticsData.trend.map(t => t.total);
+            
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Contact Engagement (Last 30 Days)',
+                        data: data,
+                        borderColor: '#FF6384',
+                        backgroundColor: 'rgba(255,99,132,0.25)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update breakdown chart
+        function updateBreakdownChart() {
+            const ctx = document.getElementById('breakdownChart').getContext('2d');
+            
+            if (breakdownChart) {
+                breakdownChart.destroy();
+            }
+            
+            breakdownChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Phone', 'Email', 'Form', 'Directions'],
+                    datasets: [{
+                        label: 'Contact Method Clicks',
+                        data: [
+                            analyticsData.breakdown.phone || 0,
+                            analyticsData.breakdown.email || 0,
+                            analyticsData.breakdown.form || 0,
+                            analyticsData.breakdown.directions || 0
+                        ],
+                        backgroundColor: ['#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAnalyticsData();
+        });
+    </script>
+</body>
+</html>

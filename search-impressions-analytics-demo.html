@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Impressions Analytics - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .search-impressions-dashboard {
+            padding: 24px;
+            font-family: system-ui, -apple-system, "Inter", Arial, sans-serif;
+            color: #fff;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .metric-box {
+            background: #1e1e1e;
+            border-radius: 8px;
+            text-align: center;
+            padding: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .metric-box h4 {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin-bottom: 4px;
+        }
+        
+        .metric-box p {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .trend-section {
+            margin-top: 20px;
+            background: #222;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .ctr-summary {
+            margin-top: 30px;
+            background: linear-gradient(90deg, #0f0c29, #302b63, #24243e);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .ctr-summary h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .positive { 
+            color: #2ecc71; 
+        }
+        
+        .negative { 
+            color: #e74c3c; 
+        }
+        
+        .demo-controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .btn {
+            background: #36A2EB;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 600;
+        }
+        
+        .btn:hover {
+            background: #2E8BCC;
+        }
+        
+        .btn-success {
+            background: #2ecc71;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-impressions-dashboard">
+        <h2>Search Impressions Analytics</h2>
+        
+        <div class="stats-grid">
+            <div class="metric-box">
+                <h4>Total Impressions</h4>
+                <p id="totalImpressions">0</p>
+            </div>
+            <div class="metric-box">
+                <h4>Today's Impressions</h4>
+                <p id="todayImpressions">0</p>
+            </div>
+            <div class="metric-box">
+                <h4>Growth Rate</h4>
+                <p id="growthRate" class="positive">+0.0%</p>
+            </div>
+            <div class="metric-box">
+                <h4>Impressions → Clicks</h4>
+                <p id="conversionRate">0.0%</p>
+            </div>
+        </div>
+
+        <div class="trend-section">
+            <h3>Impressions Trend (Last 30 Days)</h3>
+            <canvas id="trendChart" width="400" height="200"></canvas>
+        </div>
+
+        <div class="ctr-summary">
+            <h3>Click-Through Rate</h3>
+            <p id="ctrText">0.0% of all impressions became profile clicks</p>
+        </div>
+        
+        <div class="demo-controls">
+            <button class="btn" onclick="simulateSearchImpression()">Simulate Search Impression</button>
+            <button class="btn btn-success" onclick="simulateProfileClick()">Simulate Profile Click</button>
+            <button class="btn btn-warning" onclick="generateSampleData()">Generate Sample Data</button>
+            <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+        </div>
+    </div>
+
+    <script>
+        let analyticsData = {
+            totalImpressions: 0,
+            todayImpressions: 0,
+            growthRate: 0,
+            conversionRate: 0,
+            trend: []
+        };
+        
+        let trendChart = null;
+        
+        // Load analytics data from localStorage
+        function loadAnalyticsData() {
+            const saved = localStorage.getItem('searchImpressionsAnalytics');
+            if (saved) {
+                analyticsData = JSON.parse(saved);
+            }
+            updateDisplay();
+        }
+        
+        // Save analytics data to localStorage
+        function saveAnalyticsData() {
+            localStorage.setItem('searchImpressionsAnalytics', JSON.stringify(analyticsData));
+        }
+        
+        // Simulate search impression
+        function simulateSearchImpression() {
+            analyticsData.totalImpressions += 1;
+            analyticsData.todayImpressions += 1;
+            
+            // Add to trend data
+            const today = new Date().toISOString().split('T')[0];
+            const existingDay = analyticsData.trend.find(t => t.date === today);
+            if (existingDay) {
+                existingDay.impressions += 1;
+            } else {
+                analyticsData.trend.push({ date: today, impressions: 1 });
+            }
+            
+            // Sort trend data by date
+            analyticsData.trend.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            // Keep only last 30 days
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            analyticsData.trend = analyticsData.trend.filter(t => new Date(t.date) >= thirtyDaysAgo);
+            
+            // Calculate growth rate (simplified for demo)
+            analyticsData.growthRate = Math.random() * 20 - 10; // Random between -10% and +10%
+            
+            saveAnalyticsData();
+            updateDisplay();
+        }
+        
+        // Simulate profile click
+        function simulateProfileClick() {
+            // Calculate conversion rate
+            if (analyticsData.totalImpressions > 0) {
+                const totalClicks = Math.floor(analyticsData.totalImpressions * 0.15); // Assume 15% conversion
+                analyticsData.conversionRate = (totalClicks / analyticsData.totalImpressions) * 100;
+            }
+            
+            saveAnalyticsData();
+            updateDisplay();
+        }
+        
+        // Generate sample data
+        function generateSampleData() {
+            // Generate 100 random search impressions over the last 30 days
+            for (let i = 0; i < 100; i++) {
+                simulateSearchImpression();
+            }
+            
+            // Generate some profile clicks
+            for (let i = 0; i < 15; i++) {
+                simulateProfileClick();
+            }
+            
+            updateDisplay();
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            analyticsData = {
+                totalImpressions: 0,
+                todayImpressions: 0,
+                growthRate: 0,
+                conversionRate: 0,
+                trend: []
+            };
+            saveAnalyticsData();
+            updateDisplay();
+        }
+        
+        // Update display
+        function updateDisplay() {
+            document.getElementById('totalImpressions').textContent = analyticsData.totalImpressions;
+            document.getElementById('todayImpressions').textContent = analyticsData.todayImpressions;
+            
+            const growthRateElement = document.getElementById('growthRate');
+            growthRateElement.textContent = `${analyticsData.growthRate >= 0 ? '+' : ''}${analyticsData.growthRate.toFixed(1)}%`;
+            growthRateElement.className = analyticsData.growthRate >= 0 ? 'positive' : 'negative';
+            
+            document.getElementById('conversionRate').textContent = `${analyticsData.conversionRate.toFixed(1)}%`;
+            document.getElementById('ctrText').textContent = `${analyticsData.conversionRate.toFixed(1)}% of all impressions became profile clicks`;
+            
+            updateTrendChart();
+        }
+        
+        // Update trend chart
+        function updateTrendChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            
+            if (trendChart) {
+                trendChart.destroy();
+            }
+            
+            // Prepare chart data
+            const labels = analyticsData.trend.map(t => {
+                const date = new Date(t.date);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            
+            const data = analyticsData.trend.map(t => t.impressions);
+            
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Daily Impressions (30-Day Trend)',
+                        data: data,
+                        borderColor: '#36A2EB',
+                        backgroundColor: 'rgba(54,162,235,0.25)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAnalyticsData();
+        });
+    </script>
+</body>
+</html>

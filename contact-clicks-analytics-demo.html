@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Clicks Analytics - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .contact-clicks-dashboard {
+            padding: 24px;
+            color: #fff;
+            font-family: system-ui, -apple-system, Inter, Arial, sans-serif;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .metric-box {
+            background: #1e1e1e;
+            border-radius: 8px;
+            text-align: center;
+            padding: 12px;
+        }
+        
+        .metric-box h4 {
+            font-size: 0.95rem;
+            color: #bbb;
+            margin-bottom: 4px;
+        }
+        
+        .metric-box p {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .trend-section {
+            margin-top: 20px;
+            background: #222;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .positive { 
+            color: #2ecc71; 
+        }
+        
+        .negative { 
+            color: #e74c3c; 
+        }
+        
+        .demo-controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .btn {
+            background: #4BC0C0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 600;
+        }
+        
+        .btn:hover {
+            background: #3BA8A8;
+        }
+        
+        .btn-success {
+            background: #2ecc71;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-clicks-dashboard">
+        <h2>Contact Clicks Analytics</h2>
+        
+        <div class="stats-grid">
+            <div class="metric-box">
+                <h4>Total Contact Clicks</h4>
+                <p id="totalClicks">0</p>
+            </div>
+            <div class="metric-box">
+                <h4>Today's Clicks</h4>
+                <p id="todaysClicks">0</p>
+            </div>
+            <div class="metric-box">
+                <h4>Growth Rate</h4>
+                <p id="growthRate" class="positive">+0.0%</p>
+            </div>
+            <div class="metric-box">
+                <h4>Conversion (Impressions → Clicks)</h4>
+                <p id="conversionRate">0.0%</p>
+            </div>
+        </div>
+
+        <div class="trend-section">
+            <h3>30-Day Contact Clicks Trend</h3>
+            <canvas id="trendChart" width="400" height="200"></canvas>
+        </div>
+        
+        <div class="demo-controls">
+            <button class="btn" onclick="simulateContactClick()">Simulate Contact Click</button>
+            <button class="btn btn-success" onclick="simulateSearchImpression()">Simulate Search Impression</button>
+            <button class="btn btn-warning" onclick="generateSampleData()">Generate Sample Data</button>
+            <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+        </div>
+    </div>
+
+    <script>
+        let analyticsData = {
+            totalClicks: 0,
+            todaysClicks: 0,
+            growthRate: 0,
+            conversionRate: 0,
+            trend: []
+        };
+        
+        let trendChart = null;
+        
+        // Load analytics data from localStorage
+        function loadAnalyticsData() {
+            const saved = localStorage.getItem('contactClicksAnalytics');
+            if (saved) {
+                analyticsData = JSON.parse(saved);
+            }
+            updateDisplay();
+        }
+        
+        // Save analytics data to localStorage
+        function saveAnalyticsData() {
+            localStorage.setItem('contactClicksAnalytics', JSON.stringify(analyticsData));
+        }
+        
+        // Simulate contact click
+        function simulateContactClick() {
+            analyticsData.totalClicks += 1;
+            analyticsData.todaysClicks += 1;
+            
+            // Add to trend data
+            const today = new Date().toISOString().split('T')[0];
+            const existingDay = analyticsData.trend.find(t => t.date === today);
+            if (existingDay) {
+                existingDay.clicks += 1;
+            } else {
+                analyticsData.trend.push({ date: today, clicks: 1 });
+            }
+            
+            // Sort trend data by date
+            analyticsData.trend.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            // Keep only last 30 days
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            analyticsData.trend = analyticsData.trend.filter(t => new Date(t.date) >= thirtyDaysAgo);
+            
+            // Calculate growth rate (simplified for demo)
+            analyticsData.growthRate = Math.random() * 20 - 10; // Random between -10% and +10%
+            
+            saveAnalyticsData();
+            updateDisplay();
+        }
+        
+        // Simulate search impression (for conversion rate)
+        function simulateSearchImpression() {
+            // This would typically be tracked separately
+            // For demo purposes, we'll just update the conversion rate
+            if (analyticsData.totalClicks > 0) {
+                const totalImpressions = Math.floor(analyticsData.totalClicks * 10); // Assume 10:1 ratio
+                analyticsData.conversionRate = (analyticsData.totalClicks / totalImpressions) * 100;
+            }
+            
+            saveAnalyticsData();
+            updateDisplay();
+        }
+        
+        // Generate sample data
+        function generateSampleData() {
+            // Generate 50 random contact clicks over the last 30 days
+            for (let i = 0; i < 50; i++) {
+                simulateContactClick();
+            }
+            
+            // Generate some search impressions for conversion rate
+            for (let i = 0; i < 5; i++) {
+                simulateSearchImpression();
+            }
+            
+            updateDisplay();
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            analyticsData = {
+                totalClicks: 0,
+                todaysClicks: 0,
+                growthRate: 0,
+                conversionRate: 0,
+                trend: []
+            };
+            saveAnalyticsData();
+            updateDisplay();
+        }
+        
+        // Update display
+        function updateDisplay() {
+            document.getElementById('totalClicks').textContent = analyticsData.totalClicks;
+            document.getElementById('todaysClicks').textContent = analyticsData.todaysClicks;
+            
+            const growthRateElement = document.getElementById('growthRate');
+            growthRateElement.textContent = `${analyticsData.growthRate >= 0 ? '+' : ''}${analyticsData.growthRate.toFixed(1)}%`;
+            growthRateElement.className = analyticsData.growthRate >= 0 ? 'positive' : 'negative';
+            
+            document.getElementById('conversionRate').textContent = `${analyticsData.conversionRate.toFixed(1)}%`;
+            
+            updateTrendChart();
+        }
+        
+        // Update trend chart
+        function updateTrendChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            
+            if (trendChart) {
+                trendChart.destroy();
+            }
+            
+            // Prepare chart data
+            const labels = analyticsData.trend.map(t => {
+                const date = new Date(t.date);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            
+            const data = analyticsData.trend.map(t => t.clicks);
+            
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Contact Clicks (Last 30 Days)',
+                        data: data,
+                        borderColor: '#4BC0C0',
+                        backgroundColor: 'rgba(75,192,192,0.25)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#ffffff'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAnalyticsData();
+        });
+    </script>
+</body>
+</html>

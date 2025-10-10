@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Fixed Test - BLKPAGES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        button {
+            background: #1E90FF;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #00BFFF;
+        }
+        .btn-success {
+            background: #28A745;
+        }
+        .btn-warning {
+            background: #FFC107;
+            color: #000;
+        }
+        .btn-danger {
+            background: #DC2626;
+        }
+        .result {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 4px;
+            border-left: 4px solid #1E90FF;
+        }
+        .success {
+            color: #28A745;
+            border-left-color: #28A745;
+        }
+        .error {
+            color: #DC2626;
+            border-left-color: #DC2626;
+        }
+        .warning {
+            color: #FFC107;
+            border-left-color: #FFC107;
+        }
+        pre {
+            background: #000;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Analytics Fixed Test</h1>
+        <p>This page tests the new centralized analytics tracking system that should fix all the undefined object errors.</p>
+        
+        <div class="test-section">
+            <h2>System Status</h2>
+            <button onclick="checkSystem()">Check System Status</button>
+            <div id="systemResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Individual Tracking Tests</h2>
+            <button onclick="testProfileView()">Test Profile View</button>
+            <button onclick="testSearchImpressions()">Test Search Impressions</button>
+            <button onclick="testContactClick()">Test Contact Click</button>
+            <button onclick="testEnquiry()">Test Enquiry</button>
+            <div id="trackingResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>All Tracking Test</h2>
+            <button onclick="testAllTracking()" class="btn-success">Test All Functions</button>
+            <button onclick="checkAnalyticsData()" class="btn-success">Check Analytics Data</button>
+            <button onclick="clearAllData()" class="btn-danger">Clear All Data</button>
+            <div id="allResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Current Analytics Data</h2>
+            <pre id="currentData">Loading...</pre>
+        </div>
+    </div>
+
+    <!-- Load Analytics Tracker -->
+    <script src="analytics-tracker.js"></script>
+    
+    <script>
+        function checkSystem() {
+            const resultDiv = document.getElementById('systemResult');
+            let result = '<div class="result">';
+            result += '<h3>System Status:</h3>';
+            
+            // Check if analytics tracker is loaded
+            if (typeof window.analyticsTracker !== 'undefined') {
+                result += '<p class="success">✅ Analytics Tracker is loaded!</p>';
+                result += '<p>Type: ' + typeof window.analyticsTracker + '</p>';
+                result += '<p>Methods: ' + Object.getOwnPropertyNames(Object.getPrototypeOf(window.analyticsTracker)).join(', ') + '</p>';
+            } else {
+                result += '<p class="error">❌ Analytics Tracker is not loaded</p>';
+            }
+            
+            // Check if global functions exist
+            if (typeof window.trackProfileView === 'function') {
+                result += '<p class="success">✅ Global tracking functions are available</p>';
+            } else {
+                result += '<p class="error">❌ Global tracking functions not available</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+        }
+        
+        function testProfileView() {
+            const resultDiv = document.getElementById('trackingResult');
+            let result = '<div class="result">';
+            result += '<h3>Profile View Test:</h3>';
+            
+            try {
+                const success = window.analyticsTracker.trackProfileView();
+                if (success) {
+                    result += '<p class="success">✅ Profile view tracking successful!</p>';
+                } else {
+                    result += '<p class="error">❌ Profile view tracking failed</p>';
+                }
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        function testSearchImpressions() {
+            const resultDiv = document.getElementById('trackingResult');
+            let result = '<div class="result">';
+            result += '<h3>Search Impressions Test:</h3>';
+            
+            try {
+                const testBusinesses = [
+                    { id: 'royalHairStudio', name: 'Royal Hair Studio' },
+                    { id: 'testBusiness', name: 'Test Business' }
+                ];
+                const success = window.analyticsTracker.trackSearchImpressions(testBusinesses);
+                if (success) {
+                    result += '<p class="success">✅ Search impressions tracking successful!</p>';
+                } else {
+                    result += '<p class="error">❌ Search impressions tracking failed</p>';
+                }
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        function testContactClick() {
+            const resultDiv = document.getElementById('trackingResult');
+            let result = '<div class="result">';
+            result += '<h3>Contact Click Test:</h3>';
+            
+            try {
+                const success = window.analyticsTracker.trackContactClick('call');
+                if (success) {
+                    result += '<p class="success">✅ Contact click tracking successful!</p>';
+                } else {
+                    result += '<p class="error">❌ Contact click tracking failed</p>';
+                }
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        function testEnquiry() {
+            const resultDiv = document.getElementById('trackingResult');
+            let result = '<div class="result">';
+            result += '<h3>Enquiry Test:</h3>';
+            
+            try {
+                const success = window.analyticsTracker.trackEnquiry('booking');
+                if (success) {
+                    result += '<p class="success">✅ Enquiry tracking successful!</p>';
+                } else {
+                    result += '<p class="error">❌ Enquiry tracking failed</p>';
+                }
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        function testAllTracking() {
+            const resultDiv = document.getElementById('allResult');
+            let result = '<div class="result">';
+            result += '<h3>All Tracking Test Results:</h3>';
+            
+            try {
+                // Test all functions
+                const profileSuccess = window.analyticsTracker.trackProfileView();
+                const searchSuccess = window.analyticsTracker.trackSearchImpressions([{ id: 'royalHairStudio', name: 'Royal Hair Studio' }]);
+                const contactSuccess = window.analyticsTracker.trackContactClick('call');
+                const enquirySuccess = window.analyticsTracker.trackEnquiry('booking');
+                
+                if (profileSuccess && searchSuccess && contactSuccess && enquirySuccess) {
+                    result += '<p class="success">✅ All tracking functions working perfectly!</p>';
+                } else {
+                    result += '<p class="error">❌ Some tracking functions failed</p>';
+                }
+                
+                result += '<p>Profile View: ' + (profileSuccess ? '✅' : '❌') + '</p>';
+                result += '<p>Search Impressions: ' + (searchSuccess ? '✅' : '❌') + '</p>';
+                result += '<p>Contact Click: ' + (contactSuccess ? '✅' : '❌') + '</p>';
+                result += '<p>Enquiry: ' + (enquirySuccess ? '✅' : '❌') + '</p>';
+                
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        function checkAnalyticsData() {
+            const resultDiv = document.getElementById('allResult');
+            let result = '<div class="result">';
+            result += '<h3>Analytics Data Check:</h3>';
+            
+            try {
+                const data = window.analyticsTracker.getAnalyticsData();
+                if (data) {
+                    result += '<p class="success">✅ Analytics data found!</p>';
+                    result += '<p>Profile Views: ' + (data.totalViews || 0) + '</p>';
+                    result += '<p>Search Impressions: ' + (data.searchImpressions || 0) + '</p>';
+                    result += '<p>Contact Clicks: ' + (data.contactClicks || 0) + '</p>';
+                    result += '<p>Enquiries: ' + (data.enquiries || 0) + '</p>';
+                } else {
+                    result += '<p class="warning">⚠️ No analytics data found</p>';
+                }
+            } catch (error) {
+                result += '<p class="error">❌ Error: ' + error.message + '</p>';
+            }
+            
+            result += '</div>';
+            resultDiv.innerHTML = result;
+            updateCurrentData();
+        }
+        
+        function clearAllData() {
+            window.analyticsTracker.clearAnalyticsData();
+            updateCurrentData();
+            document.getElementById('allResult').innerHTML = '<div class="result"><p class="success">✅ All analytics data cleared</p></div>';
+        }
+        
+        function updateCurrentData() {
+            try {
+                const data = window.analyticsTracker.getAnalyticsData();
+                document.getElementById('currentData').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('currentData').textContent = 'Error loading data: ' + error.message;
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSystem();
+            updateCurrentData();
+        });
+    </script>
+</body>
+</html>

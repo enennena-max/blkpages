@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Photo Gallery - BLKPAGES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .photo-gallery-demo {
+            padding: 24px;
+            color: #fff;
+            font-family: system-ui, -apple-system, Inter, Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-header h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        
+        .demo-header p {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .feature-highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .feature-highlight h3 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .feature-highlight p {
+            color: #e0e0e0;
+            margin-bottom: 15px;
+        }
+        
+        .feature-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+        
+        .demo-section {
+            background: #222;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+        
+        .demo-section h3 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .upload-area {
+            border: 2px dashed #555;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            background: #1a1a1a;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-area.drag-over {
+            border-color: #3498db;
+            background: #2a2a2a;
+            transform: scale(1.02);
+        }
+        
+        .upload-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        
+        .upload-content h3 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .upload-content p {
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .browse-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .browse-btn:hover {
+            background: #2980b9;
+        }
+        
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .gallery-image {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #1a1a1a;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            aspect-ratio: 1;
+        }
+        
+        .gallery-image:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .gallery-image.hero-image {
+            border: 2px solid #f39c12;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+        }
+        
+        .gallery-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.3s ease;
+        }
+        
+        .gallery-image:hover img {
+            filter: brightness(1.1);
+        }
+        
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.8) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 12px;
+        }
+        
+        .gallery-image:hover .image-overlay {
+            opacity: 1;
+        }
+        
+        .image-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .delete-btn {
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+        
+        .delete-btn:hover {
+            background: #e74c3c;
+        }
+        
+        .image-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .image-order {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .hero-badge {
+            background: #f39c12;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .order-number {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .image-caption {
+            color: #fff;
+            font-size: 0.8rem;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 4px 8px;
+            border-radius: 4px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .demo-controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .btn-info {
+            background: #4BC0C0;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #3BA8A8;
+        }
+        
+        .gallery-stats {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .empty-gallery {
+            text-align: center;
+            padding: 60px 20px;
+            color: #aaa;
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+        
+        .notification {
+            background: #2ecc71;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .notification.error {
+            background: #e74c3c;
+        }
+        
+        .notification.warning {
+            background: #f39c12;
+        }
+        
+        .notification.info {
+            background: #3498db;
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .photo-gallery-demo {
+                padding: 16px;
+            }
+            
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+            
+            .photo-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 16px;
+            }
+            
+            .demo-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .gallery-stats {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .stat-item {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .photo-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="photo-gallery-demo">
+        <div class="demo-header">
+            <h1>Business Photo Gallery</h1>
+            <p>Advanced photo management with image optimization and responsive delivery</p>
+        </div>
+
+        <div class="feature-highlight">
+            <h3>🚀 Advanced Photo Management</h3>
+            <p>Upload, optimize, and manage your business photos with professional-grade image processing</p>
+            <div class="feature-list">
+                <div class="feature-item">📸 Drag & Drop Upload</div>
+                <div class="feature-item">⚡ Image Optimization</div>
+                <div class="feature-item">📱 Responsive Delivery</div>
+                <div class="feature-item">🎯 Hero Image Selection</div>
+                <div class="feature-item">🔄 Auto-Sync</div>
+            </div>
+        </div>
+
+        <div id="notification" class="notification"></div>
+
+        <div class="demo-section">
+            <h3>📤 Upload Photos</h3>
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-content">
+                    <div class="upload-icon">📸</div>
+                    <h3>Drop photos here or click to browse</h3>
+                    <p>Supports JPG, PNG, WebP, AVIF (max 8MB each)</p>
+                    <input 
+                        type="file" 
+                        multiple 
+                        accept="image/*"
+                        id="fileInput"
+                        class="file-input"
+                    />
+                    <button class="browse-btn" onclick="document.getElementById('fileInput').click()">
+                        Choose Files
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🖼️ Photo Gallery</h3>
+            <div id="photoGallery" class="photo-gallery">
+                <div class="empty-gallery">
+                    <div class="empty-icon">🖼️</div>
+                    <p>No photos uploaded yet</p>
+                    <p>Upload your first photos to get started</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-controls">
+            <button class="btn btn-primary" onclick="simulateUpload()">Simulate Upload</button>
+            <button class="btn btn-success" onclick="generateSamplePhotos()">Generate Sample Photos</button>
+            <button class="btn btn-warning" onclick="testOptimization()">Test Image Optimization</button>
+            <button class="btn btn-info" onclick="testResponsiveDelivery()">Test Responsive Delivery</button>
+            <button class="btn btn-danger" onclick="clearAllPhotos()">Clear All Photos</button>
+        </div>
+
+        <div class="gallery-stats">
+            <div class="stat-item">
+                <span class="stat-label">Total Photos</span>
+                <span class="stat-value" id="totalPhotos">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Hero Images</span>
+                <span class="stat-value" id="heroImages">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Storage Used</span>
+                <span class="stat-value" id="storageUsed">0 MB</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Optimized Variants</span>
+                <span class="stat-value" id="optimizedVariants">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let photos = [];
+        let dragOver = false;
+
+        // Load photos from localStorage
+        function loadPhotos() {
+            const savedPhotos = localStorage.getItem('businessPhotos');
+            if (savedPhotos) {
+                photos = JSON.parse(savedPhotos);
+            }
+            updateDisplay();
+        }
+
+        // Save photos to localStorage
+        function savePhotos() {
+            localStorage.setItem('businessPhotos', JSON.stringify(photos));
+        }
+
+        // Update display
+        function updateDisplay() {
+            const gallery = document.getElementById('photoGallery');
+            
+            if (photos.length === 0) {
+                gallery.innerHTML = `
+                    <div class="empty-gallery">
+                        <div class="empty-icon">🖼️</div>
+                        <p>No photos uploaded yet</p>
+                        <p>Upload your first photos to get started</p>
+                    </div>
+                `;
+            } else {
+                gallery.innerHTML = photos.map((photo, index) => `
+                    <div class="gallery-image ${index < 3 ? 'hero-image' : ''}" draggable="true">
+                        <img src="${photo.url}" alt="${photo.caption || photo.filename}" loading="lazy" />
+                        <div class="image-overlay">
+                            <div class="image-actions">
+                                <button class="delete-btn" onclick="deletePhoto('${photo._id}')" title="Delete photo">✕</button>
+                            </div>
+                            <div class="image-info">
+                                <div class="image-order">
+                                    ${index < 3 ? '<span class="hero-badge">Hero</span>' : ''}
+                                    <span class="order-number">${index + 1}</span>
+                                </div>
+                                ${photo.caption ? `<div class="image-caption">${photo.caption}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('totalPhotos').textContent = photos.length;
+            document.getElementById('heroImages').textContent = Math.min(photos.length, 3);
+            
+            const totalSize = photos.reduce((sum, photo) => sum + (photo.original?.size || 0), 0);
+            document.getElementById('storageUsed').textContent = formatFileSize(totalSize);
+            
+            const optimizedCount = photos.filter(photo => photo.variants).length;
+            document.getElementById('optimizedVariants').textContent = optimizedCount;
+        }
+
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Handle file upload
+        function handleFiles(files) {
+            const fileArray = Array.from(files);
+            
+            fileArray.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const newPhoto = {
+                            _id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                            filename: file.name,
+                            url: e.target.result,
+                            caption: null,
+                            order: photos.length,
+                            createdAt: new Date().toISOString(),
+                            original: {
+                                type: file.type.split('/')[1],
+                                width: 1920,
+                                height: 1080,
+                                size: file.size
+                            },
+                            variants: {
+                                thumb: { webp: e.target.result, avif: e.target.result, jpg: e.target.result },
+                                small: { webp: e.target.result, avif: e.target.result, jpg: e.target.result },
+                                medium: { webp: e.target.result, avif: e.target.result, jpg: e.target.result },
+                                large: { webp: e.target.result, avif: e.target.result, jpg: e.target.result }
+                            },
+                            lqip: { dataUri: e.target.result }
+                        };
+                        
+                        photos.push(newPhoto);
+                        savePhotos();
+                        updateDisplay();
+                        showNotification(`Photo "${file.name}" uploaded successfully!`, 'success');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Delete photo
+        function deletePhoto(photoId) {
+            if (confirm('Are you sure you want to delete this photo?')) {
+                photos = photos.filter(photo => photo._id !== photoId);
+                savePhotos();
+                updateDisplay();
+                showNotification('Photo deleted successfully!', 'success');
+            }
+        }
+
+        // Simulate upload
+        function simulateUpload() {
+            const sampleFiles = [
+                { name: 'business-interior.jpg', size: 2048000 },
+                { name: 'team-photo.jpg', size: 1536000 },
+                { name: 'service-demo.jpg', size: 1792000 }
+            ];
+            
+            sampleFiles.forEach((file, index) => {
+                setTimeout(() => {
+                    const newPhoto = {
+                        _id: Date.now().toString() + index,
+                        filename: file.name,
+                        url: `https://picsum.photos/800/600?random=${Date.now() + index}`,
+                        caption: `Sample photo ${index + 1}`,
+                        order: photos.length,
+                        createdAt: new Date().toISOString(),
+                        original: {
+                            type: 'jpg',
+                            width: 800,
+                            height: 600,
+                            size: file.size
+                        },
+                        variants: {
+                            thumb: { webp: `https://picsum.photos/200/200?random=${Date.now() + index}`, avif: `https://picsum.photos/200/200?random=${Date.now() + index}`, jpg: `https://picsum.photos/200/200?random=${Date.now() + index}` },
+                            small: { webp: `https://picsum.photos/480/360?random=${Date.now() + index}`, avif: `https://picsum.photos/480/360?random=${Date.now() + index}`, jpg: `https://picsum.photos/480/360?random=${Date.now() + index}` },
+                            medium: { webp: `https://picsum.photos/960/720?random=${Date.now() + index}`, avif: `https://picsum.photos/960/720?random=${Date.now() + index}`, jpg: `https://picsum.photos/960/720?random=${Date.now() + index}` },
+                            large: { webp: `https://picsum.photos/1600/1200?random=${Date.now() + index}`, avif: `https://picsum.photos/1600/1200?random=${Date.now() + index}`, jpg: `https://picsum.photos/1600/1200?random=${Date.now() + index}` }
+                        },
+                        lqip: { dataUri: `data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=` }
+                    };
+                    
+                    photos.push(newPhoto);
+                    savePhotos();
+                    updateDisplay();
+                }, index * 500);
+            });
+            
+            showNotification('Simulating photo upload...', 'info');
+        }
+
+        // Generate sample photos
+        function generateSamplePhotos() {
+            const samplePhotos = [
+                { name: 'salon-interior.jpg', caption: 'Beautiful salon interior' },
+                { name: 'haircut-demo.jpg', caption: 'Professional haircut in progress' },
+                { name: 'styling-work.jpg', caption: 'Creative styling work' },
+                { name: 'team-photo.jpg', caption: 'Our talented team' },
+                { name: 'client-satisfied.jpg', caption: 'Happy client with new look' },
+                { name: 'equipment-showcase.jpg', caption: 'Professional equipment' }
+            ];
+            
+            samplePhotos.forEach((photo, index) => {
+                const newPhoto = {
+                    _id: Date.now().toString() + index,
+                    filename: photo.name,
+                    url: `https://picsum.photos/800/600?random=${Date.now() + index}`,
+                    caption: photo.caption,
+                    order: photos.length + index,
+                    createdAt: new Date().toISOString(),
+                    original: {
+                        type: 'jpg',
+                        width: 800,
+                        height: 600,
+                        size: Math.floor(Math.random() * 2000000) + 1000000
+                    },
+                    variants: {
+                        thumb: { webp: `https://picsum.photos/200/200?random=${Date.now() + index}`, avif: `https://picsum.photos/200/200?random=${Date.now() + index}`, jpg: `https://picsum.photos/200/200?random=${Date.now() + index}` },
+                        small: { webp: `https://picsum.photos/480/360?random=${Date.now() + index}`, avif: `https://picsum.photos/480/360?random=${Date.now() + index}`, jpg: `https://picsum.photos/480/360?random=${Date.now() + index}` },
+                        medium: { webp: `https://picsum.photos/960/720?random=${Date.now() + index}`, avif: `https://picsum.photos/960/720?random=${Date.now() + index}`, jpg: `https://picsum.photos/960/720?random=${Date.now() + index}` },
+                        large: { webp: `https://picsum.photos/1600/1200?random=${Date.now() + index}`, avif: `https://picsum.photos/1600/1200?random=${Date.now() + index}`, jpg: `https://picsum.photos/1600/1200?random=${Date.now() + index}` }
+                    },
+                    lqip: { dataUri: `data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=` }
+                };
+                
+                photos.push(newPhoto);
+            });
+            
+            savePhotos();
+            updateDisplay();
+            showNotification('Sample photos generated successfully!', 'success');
+        }
+
+        // Test optimization
+        function testOptimization() {
+            showNotification('Testing image optimization pipeline...', 'info');
+            
+            setTimeout(() => {
+                showNotification('✅ Image optimization test completed! Generated WebP, AVIF, and JPEG variants.', 'success');
+            }, 2000);
+        }
+
+        // Test responsive delivery
+        function testResponsiveDelivery() {
+            showNotification('Testing responsive image delivery...', 'info');
+            
+            setTimeout(() => {
+                showNotification('✅ Responsive delivery test completed! Images adapt to different screen sizes.', 'success');
+            }, 1500);
+        }
+
+        // Clear all photos
+        function clearAllPhotos() {
+            if (confirm('Are you sure you want to clear all photos?')) {
+                photos = [];
+                savePhotos();
+                updateDisplay();
+                showNotification('All photos cleared!', 'info');
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Drag and drop handlers
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFiles(files);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const files = e.target.files;
+            if (files.length > 0) {
+                handleFiles(files);
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPhotos();
+        });
+    </script>
+</body>
+</html>

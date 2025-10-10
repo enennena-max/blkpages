@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to BlkPages</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .welcome-message {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .intro-text {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        .business-list {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .business-list h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .business-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 12px;
+            transition: box-shadow 0.2s ease;
+        }
+        .business-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .business-item:last-child {
+            margin-bottom: 0;
+        }
+        .business-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .business-details {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .business-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .business-link:hover {
+            text-decoration: underline;
+        }
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .browse-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s ease;
+        }
+        .browse-button:hover {
+            transform: translateY(-2px);
+        }
+        .support-section {
+            background: #e8f4fd;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .support-section h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        .support-section p {
+            margin: 0;
+            color: #555;
+            font-size: 14px;
+        }
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .footer p {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .social-links {
+            margin-top: 20px;
+        }
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #bdc3c7;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .empty-businesses {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        .empty-businesses h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .empty-businesses p {
+            margin: 0;
+            font-size: 14px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 0;
+            }
+            .header, .content, .footer {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .business-list {
+                padding: 20px;
+            }
+            .browse-button {
+                display: block;
+                text-align: center;
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to BlkPages!</h1>
+            <p>Discover amazing Black-owned businesses in your area</p>
+        </div>
+        
+        <div class="content">
+            <div class="welcome-message">
+                Hi <%= customerName %>,
+            </div>
+            
+            <p class="intro-text">
+                We're excited to have you on board! BlkPages is your go-to place to find local Black-owned businesses in your area. 
+                Whether you're looking for a new restaurant, salon, or service provider, we've got you covered.
+            </p>
+            
+            <% if (localBusinesses && localBusinesses.length > 0) { %>
+                <div class="business-list">
+                    <h3>🏪 New Businesses in Your Area</h3>
+                    <% localBusinesses.forEach(business => { %>
+                        <div class="business-item">
+                            <div class="business-name"><%= business.name %></div>
+                            <div class="business-details">
+                                <%= business.category %> — <%= business.town %>
+                            </div>
+                            <a href="<%= business.profileUrl %>" class="business-link">View Profile →</a>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="business-list">
+                    <div class="empty-businesses">
+                        <h4>🌱 Growing Community</h4>
+                        <p>We're working hard to bring more Black-owned businesses to your area. Check back soon for new additions!</p>
+                    </div>
+                </div>
+            <% } %>
+            
+            <div class="cta-section">
+                <a href="<%= browseLink %>" class="browse-button">
+                    🔍 Browse All Local Businesses
+                </a>
+            </div>
+            
+            <div class="support-section">
+                <h4>💬 Need Help?</h4>
+                <p>
+                    If you ever need help finding the perfect business or want personalized recommendations, 
+                    feel free to reach out — we're here for you! You can contact us at 
+                    <a href="mailto:support@blkpages.co.uk">support@blkpages.co.uk</a> or visit our help center.
+                </p>
+            </div>
+            
+            <p>Welcome to the BlkPages community!</p>
+            
+            <p>Best regards,<br>
+            <strong>The BlkPages Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 BlkPages. All rights reserved.</p>
+            <p>You're receiving this email because you registered on BlkPages.</p>
+            <div class="social-links">
+                <a href="<%= appUrl %>">Website</a>
+                <a href="mailto:support@blkpages.co.uk">Support</a>
+                <a href="<%= appUrl %>/privacy">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

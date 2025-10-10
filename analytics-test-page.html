@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics System Test - BLKPAGES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        .test-section {
+            background: #2a2a2a;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+        .test-section h2 {
+            color: #1E90FF;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .test-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        .test-card h3 {
+            color: #1E90FF;
+            margin-bottom: 1rem;
+        }
+        .test-card p {
+            color: #9CA3AF;
+            margin-bottom: 1rem;
+        }
+        button {
+            background: #1E90FF;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #00BFFF;
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: #28A745;
+        }
+        .btn-warning {
+            background: #FFC107;
+            color: #000;
+        }
+        .btn-danger {
+            background: #DC2626;
+        }
+        .btn-secondary {
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid #1E90FF;
+            color: #1E90FF;
+        }
+        .btn-secondary:hover {
+            background: #1E90FF;
+            color: white;
+        }
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-weight: bold;
+        }
+        .status.success {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28A745;
+            border: 1px solid #28A745;
+        }
+        .status.error {
+            background: rgba(220, 38, 38, 0.2);
+            color: #DC2626;
+            border: 1px solid #DC2626;
+        }
+        .status.warning {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid #FFC107;
+        }
+        .console-output {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #00ff00;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        .analytics-display {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #00ff00;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        .step {
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid rgba(30, 144, 255, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .step h4 {
+            color: #1E90FF;
+            margin-bottom: 0.5rem;
+        }
+        .step p {
+            color: #9CA3AF;
+            margin-bottom: 0.5rem;
+        }
+        .step code {
+            background: #000;
+            color: #00ff00;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Analytics System Test</h1>
+            <p>Test the complete analytics tracking system to ensure everything is working correctly</p>
+        </div>
+        
+        <!-- System Status -->
+        <div class="test-section">
+            <h2>🔍 System Status Check</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Backend API Test</h3>
+                    <p>Test if the analytics API endpoints are working</p>
+                    <button onclick="testBackendAPI()">Test Backend API</button>
+                    <div id="backendStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>Database Connection</h3>
+                    <p>Check if MongoDB connection is working</p>
+                    <button onclick="testDatabaseConnection()">Test Database</button>
+                    <div id="databaseStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>Analytics Data</h3>
+                    <p>View current analytics data in the system</p>
+                    <button onclick="viewAnalyticsData()">View Data</button>
+                    <div id="analyticsData"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tracking Tests -->
+        <div class="test-section">
+            <h2>📊 Analytics Tracking Tests</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Profile View Tracking</h3>
+                    <p>Test recording profile views</p>
+                    <button onclick="testProfileView()">Record Profile View</button>
+                    <button onclick="testMultipleProfileViews()" class="btn-secondary">Record 5 Views</button>
+                    <div id="profileViewStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>Search Impression Tracking</h3>
+                    <p>Test recording search impressions</p>
+                    <button onclick="testSearchImpression()">Record Search Impression</button>
+                    <button onclick="testMultipleSearchImpressions()" class="btn-secondary">Record 3 Impressions</button>
+                    <div id="searchImpressionStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>Contact Click Tracking</h3>
+                    <p>Test recording contact clicks</p>
+                    <button onclick="testContactClick()">Record Contact Click</button>
+                    <button onclick="testMultipleContactClicks()" class="btn-secondary">Record 2 Clicks</button>
+                    <div id="contactClickStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>Enquiry Tracking</h3>
+                    <p>Test recording enquiries</p>
+                    <button onclick="testEnquiry()">Record Enquiry</button>
+                    <button onclick="testMultipleEnquiries()" class="btn-secondary">Record 2 Enquiries</button>
+                    <div id="enquiryStatus"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Complete System Test -->
+        <div class="test-section">
+            <h2>🚀 Complete System Test</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Full Analytics Test</h3>
+                    <p>Test all tracking functions and view results</p>
+                    <button onclick="runFullTest()" class="btn-success">Run Full Test</button>
+                    <button onclick="clearAllData()" class="btn-danger">Clear All Data</button>
+                    <div id="fullTestStatus"></div>
+                </div>
+                
+                <div class="test-card">
+                    <h3>Real-time Dashboard</h3>
+                    <p>Open the analytics dashboard to see live data</p>
+                    <button onclick="openDashboard()" class="btn-warning">Open Dashboard</button>
+                    <button onclick="openBusinessProfile()" class="btn-secondary">Open Business Profile</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Step-by-Step Instructions -->
+        <div class="test-section">
+            <h2>📋 Step-by-Step Testing Instructions</h2>
+            
+            <div class="step">
+                <h4>Step 1: Start the Backend Server</h4>
+                <p>Make sure your Node.js server is running:</p>
+                <code>npm start</code>
+                <p>Server should be running on <code>http://localhost:5000</code></p>
+            </div>
+            
+            <div class="step">
+                <h4>Step 2: Test Backend API</h4>
+                <p>Click "Test Backend API" above to verify the server is responding</p>
+                <p>You should see ✅ "Backend API is working"</p>
+            </div>
+            
+            <div class="step">
+                <h4>Step 3: Test Database Connection</h4>
+                <p>Click "Test Database" to check MongoDB connection</p>
+                <p>You should see ✅ "Database connection successful"</p>
+            </div>
+            
+            <div class="step">
+                <h4>Step 4: Record Test Events</h4>
+                <p>Click the tracking test buttons to record analytics events</p>
+                <p>Each button should show ✅ "Event recorded successfully"</p>
+            </div>
+            
+            <div class="step">
+                <h4>Step 5: View Analytics Data</h4>
+                <p>Click "View Data" to see the recorded analytics</p>
+                <p>You should see JSON data with your recorded events</p>
+            </div>
+            
+            <div class="step">
+                <h4>Step 6: Open Real-time Dashboard</h4>
+                <p>Click "Open Dashboard" to see the analytics dashboard</p>
+                <p>You should see live metrics updating in real-time</p>
+            </div>
+        </div>
+        
+        <!-- Console Output -->
+        <div class="test-section">
+            <h2>📝 Console Output</h2>
+            <div class="console-output" id="consoleOutput">
+                Analytics Test Page loaded. Ready to test the system...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const businessId = 'test-business-123';
+        const API_BASE_URL = 'http://localhost:5000';
+        
+        // Log to console output
+        function logToConsole(message) {
+            const consoleOutput = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            consoleOutput.innerHTML += `[${timestamp}] ${message}\n`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        // Test backend API
+        async function testBackendAPI() {
+            const statusDiv = document.getElementById('backendStatus');
+            logToConsole('Testing backend API...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusDiv.innerHTML = '<div class="status success">✅ Backend API is working</div>';
+                    logToConsole('Backend API test successful');
+                } else {
+                    statusDiv.innerHTML = '<div class="status error">❌ Backend API error</div>';
+                    logToConsole('Backend API test failed');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="status error">❌ Cannot connect to backend</div>';
+                logToConsole(`Backend API error: ${error.message}`);
+            }
+        }
+        
+        // Test database connection
+        async function testDatabaseConnection() {
+            const statusDiv = document.getElementById('databaseStatus');
+            logToConsole('Testing database connection...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/analytics?businessId=${businessId}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusDiv.innerHTML = '<div class="status success">✅ Database connection successful</div>';
+                    logToConsole('Database connection test successful');
+                } else {
+                    statusDiv.innerHTML = '<div class="status error">❌ Database connection failed</div>';
+                    logToConsole('Database connection test failed');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="status error">❌ Cannot connect to database</div>';
+                logToConsole(`Database connection error: ${error.message}`);
+            }
+        }
+        
+        // View analytics data
+        async function viewAnalyticsData() {
+            const dataDiv = document.getElementById('analyticsData');
+            logToConsole('Fetching analytics data...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/analytics?businessId=${businessId}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    dataDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    logToConsole('Analytics data fetched successfully');
+                } else {
+                    dataDiv.innerHTML = '<div class="status error">❌ Failed to fetch analytics data</div>';
+                    logToConsole('Failed to fetch analytics data');
+                }
+            } catch (error) {
+                dataDiv.innerHTML = '<div class="status error">❌ Error fetching analytics data</div>';
+                logToConsole(`Analytics data error: ${error.message}`);
+            }
+        }
+        
+        // Test profile view tracking
+        async function testProfileView() {
+            const statusDiv = document.getElementById('profileViewStatus');
+            logToConsole('Testing profile view tracking...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/record-event`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ businessId, metricType: 'profileView' })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    statusDiv.innerHTML = '<div class="status success">✅ Profile view recorded successfully</div>';
+                    logToConsole('Profile view tracking test successful');
+                } else {
+                    statusDiv.innerHTML = '<div class="status error">❌ Failed to record profile view</div>';
+                    logToConsole('Profile view tracking test failed');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="status error">❌ Error recording profile view</div>';
+                logToConsole(`Profile view tracking error: ${error.message}`);
+            }
+        }
+        
+        // Test multiple profile views
+        async function testMultipleProfileViews() {
+            logToConsole('Recording multiple profile views...');
+            for (let i = 0; i < 5; i++) {
+                await testProfileView();
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
+        
+        // Test search impression tracking
+        async function testSearchImpression() {
+            const statusDiv = document.getElementById('searchImpressionStatus');
+            logToConsole('Testing search impression tracking...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/record-event`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ businessId, metricType: 'searchImpression' })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    statusDiv.innerHTML = '<div class="status success">✅ Search impression recorded successfully</div>';
+                    logToConsole('Search impression tracking test successful');
+                } else {
+                    statusDiv.innerHTML = '<div class="status error">❌ Failed to record search impression</div>';
+                    logToConsole('Search impression tracking test failed');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="status error">❌ Error recording search impression</div>';
+                logToConsole(`Search impression tracking error: ${error.message}`);
+            }
+        }
+        
+        // Test multiple search impressions
+        async function testMultipleSearchImpressions() {
+            logToConsole('Recording multiple search impressions...');
+            for (let i = 0; i < 3; i++) {
+                await testSearchImpression();
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
+        
+        // Test contact click tracking
+        async function testContactClick() {
+            const statusDiv = document.getElementById('contactClickStatus');
+            logToConsole('Testing contact click tracking...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/record-event`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ businessId, metricType: 'contactClick' })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    statusDiv.innerHTML = '<div class="status success">✅ Contact click recorded successfully</div>';
+                    logToConsole('Contact click tracking test successful');
+                } else {
+                    statusDiv.innerHTML = '<div class="status error">❌ Failed to record contact click</div>';
+                    logToConsole('Contact click tracking test failed');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="status error">❌ Error recording contact click</div>';
+                logToConsole(`Contact click tracking error: ${error.message}`);
+            }
+        }
+        
+        // Test multiple contact clicks
+        async function testMultipleContactClicks() {
+            logToConsole('Recording multiple contact clicks...');
+            for (let i = 0; i < 2; i++) {
+                await testContactClick();
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
+        
+        // Test enquiry tracking
+        async function testEnquiry() {
+            const statusDiv = document.getElementById('enquiryStatus');
+            logToConsole('Testing enquiry tracking...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/record-event`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ businessId, metricType: 'enquiryReceived' })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    statusDiv.innerHTML = '<div class="status success">✅ Enquiry recorded successfully</div>';
+                    logToConsole('Enquiry tracking test successful');
+                } else {
+                    statusDiv.innerHTML = '<div class="status error">❌ Failed to record enquiry</div>';
+                    logToConsole('Enquiry tracking test failed');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="status error">❌ Error recording enquiry</div>';
+                logToConsole(`Enquiry tracking error: ${error.message}`);
+            }
+        }
+        
+        // Test multiple enquiries
+        async function testMultipleEnquiries() {
+            logToConsole('Recording multiple enquiries...');
+            for (let i = 0; i < 2; i++) {
+                await testEnquiry();
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
+        
+        // Run full test
+        async function runFullTest() {
+            const statusDiv = document.getElementById('fullTestStatus');
+            logToConsole('Running full analytics test...');
+            
+            try {
+                // Test all tracking functions
+                await testProfileView();
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                await testSearchImpression();
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                await testContactClick();
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                await testEnquiry();
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Fetch and display results
+                const response = await fetch(`${API_BASE_URL}/api/analytics?businessId=${businessId}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusDiv.innerHTML = '<div class="status success">✅ Full test completed successfully!</div>';
+                    statusDiv.innerHTML += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    logToConsole('Full analytics test completed successfully');
+                } else {
+                    statusDiv.innerHTML = '<div class="status error">❌ Full test failed</div>';
+                    logToConsole('Full analytics test failed');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="status error">❌ Full test error</div>';
+                logToConsole(`Full test error: ${error.message}`);
+            }
+        }
+        
+        // Clear all data
+        async function clearAllData() {
+            logToConsole('Clearing all analytics data...');
+            // Note: This would require a DELETE endpoint in the real API
+            alert('Data clearing not implemented in this test. In production, you would need a DELETE endpoint.');
+        }
+        
+        // Open dashboard
+        function openDashboard() {
+            window.open('analytics-dashboard-realtime.html', '_blank');
+            logToConsole('Opening analytics dashboard...');
+        }
+        
+        // Open business profile
+        function openBusinessProfile() {
+            window.open('business-profile-with-tracking.html', '_blank');
+            logToConsole('Opening business profile with tracking...');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            logToConsole('Analytics Test Page initialized');
+            logToConsole('Make sure your backend server is running on http://localhost:5000');
+        });
+    </script>
+</body>
+</html>
