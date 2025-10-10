@@ -1,167 +1,279 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './BusinessServicesDashboard.css';
 
-function getBusinessIdFromURL() {
-    const u = new URL(window.location.href);
-    return u.searchParams.get('businessId') || 'royalHairStudio';
-}
-
-export default function BusinessServicesDashboard() {
-    const businessId = getBusinessIdFromURL();
-    const [summary, setSummary] = useState({ 
-        total: 0, 
-        active: 0, 
-        featured: 0, 
-        averagePrice: 0, 
-        visible: 0 
+const BusinessServicesDashboard = () => {
+    const [stats, setStats] = useState({
+        active: 0,
+        pending: 0,
+        rejected: 0,
+        archived: 0
     });
-    const [list, setList] = useState([]);
-    const [selected, setSelected] = useState([]);
-    const [showAdd, setShowAdd] = useState(false);
-    const [showBulk, setShowBulk] = useState(false);
+    const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [activeTab, setActiveTab] = useState('Active');
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [editingService, setEditingService] = useState(null);
+    const [newServicesCount, setNewServicesCount] = useState(0);
+    
+    const wsRef = useRef(null);
+    const businessId = getBusinessIdFromURL();
 
-    const fetchAll = async () => {
+    // Get business ID from URL or use consistent business ID
+    function getBusinessIdFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('businessId') || 'royal-hair-studio';
+    }
+
+    // Fetch service statistics
+    const fetchStats = async () => {
         try {
-            setLoading(true);
-            const [summaryRes, listRes] = await Promise.all([
-                fetch(`/api/services/summary?businessId=${businessId}`),
-                fetch(`/api/services/list?businessId=${businessId}`)
-            ]);
-            
-            const summaryData = await summaryRes.json();
-            const listData = await listRes.json();
-            
-            if (summaryData.success) {
-                setSummary(summaryData);
-            }
-            setList(listData);
-            setError(null);
-        } catch (err) {
-            console.error('Error fetching data:', err);
-            setError('Failed to load services data');
-        } finally {
-            setLoading(false);
+            const response = await fetch(`/api/businesses/${businessId}/service-stats`);
+            const data = await response.json();
+            setStats(data);
+        } catch (error) {
+            console.error('Error fetching service stats:', error);
         }
+    };
+
+    // Fetch services list
+    const fetchServices = async (status = null) => {
+        try {
+            const url = status 
+                ? `/api/businesses/${businessId}/services?status=${encodeURIComponent(status)}`
+                : `/api/businesses/${businessId}/services`;
+            const response = await fetch(url);
+            const data = await response.json();
+            setServices(data);
+        } catch (error) {
+            console.error('Error fetching services:', error);
+        }
+    };
+
+    // Fetch all data
+    const fetchAllData = async () => {
+        setLoading(true);
+        await Promise.all([fetchStats(), fetchServices(activeTab)]);
+        setLoading(false);
+    };
+
+    // Initialize WebSocket connection
+    const initializeWebSocket = () => {
+        const wsUrl = `ws://localhost:5000`;
+        wsRef.current = new WebSocket(wsUrl);
+
+        wsRef.current.onopen = () => {
+            console.log('Services WebSocket connected');
+            // Join business room
+            wsRef.current.send(JSON.stringify({
+                type: 'join_business',
+                businessId: businessId
+            }));
+        };
+
+        wsRef.current.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            
+            if (data.type === 'new_service') {
+                // Add new service to the list
+                const newService = {
+                    id: data.id,
+                    name: data.name,
+                    category: data.category,
+                    price: data.price,
+                    duration: data.duration,
+                    status: data.status,
+                    last_updated: data.last_updated,
+                    description: data.description || '',
+                    image_url: data.image_url || null
+                };
+                
+                setServices(prev => [newService, ...prev]);
+                setNewServicesCount(prev => prev + 1);
+                
+                // Update stats
+                fetchStats();
+                
+                // Show notification
+                showNewServiceNotification(newService);
+            } else if (data.type === 'service_updated') {
+                // Update existing service in the list
+                setServices(prev => prev.map(service => 
+                    service.id === data.id ? data.service : service
+                ));
+                
+                // Update stats
+                fetchStats();
+                
+                // Show update notification
+                showServiceUpdateNotification(data);
+            } else if (data.type === 'service_deleted') {
+                // Remove service from the list
+                setServices(prev => prev.filter(service => service.id !== data.id));
+                
+                // Update stats
+                fetchStats();
+            }
+        };
+
+        wsRef.current.onclose = () => {
+            console.log('Services WebSocket disconnected, reconnecting...');
+            setTimeout(initializeWebSocket, 3000);
+        };
+
+        wsRef.current.onerror = (error) => {
+            console.error('Services WebSocket error:', error);
+        };
+    };
+
+    // Show notification for new service
+    const showNewServiceNotification = (service) => {
+        const notification = document.createElement('div');
+        notification.className = 'new-service-notification';
+        notification.innerHTML = `
+            <div class="notification-content">
+                <strong>New Service!</strong>
+                <p>${service.name} added to ${service.status}</p>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    };
+
+    // Show notification for service update
+    const showServiceUpdateNotification = (data) => {
+        const notification = document.createElement('div');
+        notification.className = 'service-update-notification';
+        notification.innerHTML = `
+            <div class="notification-content">
+                <strong>Service Updated!</strong>
+                <p>${data.service.name} is now ${data.service.status}</p>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    };
+
+    // Handle tab change
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        fetchServices(tab);
+    };
+
+    // Handle service status change
+    const handleStatusChange = async (serviceId, newStatus) => {
+        try {
+            const response = await fetch(`/api/services/${serviceId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+            
+            if (response.ok) {
+                // Update local state immediately
+                setServices(prev => prev.map(service => 
+                    service.id === serviceId 
+                        ? { ...service, status: newStatus, last_updated: new Date().toISOString() }
+                        : service
+                ));
+                
+                // Update stats
+                fetchStats();
+            }
+        } catch (error) {
+            console.error('Error updating service status:', error);
+        }
+    };
+
+    // Handle service deletion
+    const handleDeleteService = async (serviceId) => {
+        if (confirm('Are you sure you want to delete this service?')) {
+            try {
+                const response = await fetch(`/api/services/${serviceId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    // Remove from local state
+                    setServices(prev => prev.filter(service => service.id !== serviceId));
+                    
+                    // Update stats
+                    fetchStats();
+                }
+            } catch (error) {
+                console.error('Error deleting service:', error);
+            }
+        }
+    };
+
+    // Format date
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('en-GB', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    // Format currency
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat('en-GB', {
+            style: 'currency',
+            currency: 'GBP'
+        }).format(amount);
+    };
+
+    // Get status badge class
+    const getStatusBadgeClass = (status) => {
+        switch (status) {
+            case 'Active':
+                return 'status-badge active';
+            case 'Pending Approval':
+                return 'status-badge pending';
+            case 'Rejected':
+                return 'status-badge rejected';
+            case 'Archived':
+                return 'status-badge archived';
+            default:
+                return 'status-badge';
+        }
+    };
+
+    // Clear new services count
+    const clearNewServicesCount = () => {
+        setNewServicesCount(0);
     };
 
     useEffect(() => {
-        fetchAll();
-        const interval = setInterval(fetchAll, 60000); // Refresh every 60 seconds
-        return () => clearInterval(interval);
-    }, [businessId]);
-
-    const toggleSelect = (id) => {
-        setSelected(prev => 
-            prev.includes(id) 
-                ? prev.filter(x => x !== id) 
-                : [...prev, id]
-        );
-    };
-
-    const handleCreate = async (payload) => {
-        try {
-            const response = await fetch('/api/services/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ businessId, ...payload })
-            });
-            
-            const result = await response.json();
-            if (result.success) {
-                setShowAdd(false);
-                fetchAll();
-            } else {
-                alert('Failed to create service: ' + result.error);
-            }
-        } catch (err) {
-            console.error('Error creating service:', err);
-            alert('Failed to create service');
-        }
-    };
-
-    const handleInlineUpdate = async (serviceId, patch) => {
-        try {
-            const response = await fetch('/api/services/update', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ serviceId, ...patch })
-            });
-            
-            const result = await response.json();
-            if (result.success) {
-                fetchAll();
-            } else {
-                alert('Failed to update service: ' + result.error);
-            }
-        } catch (err) {
-            console.error('Error updating service:', err);
-            alert('Failed to update service');
-        }
-    };
-
-    const handleBulk = async (patch) => {
-        try {
-            const response = await fetch('/api/services/bulk-update', {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ businessId, serviceIds: selected, patch })
-            });
-            
-            const result = await response.json();
-            if (result.success) {
-                setShowBulk(false);
-                setSelected([]);
-                fetchAll();
-            } else {
-                alert('Failed to bulk update services: ' + result.error);
-            }
-        } catch (err) {
-            console.error('Error bulk updating services:', err);
-            alert('Failed to bulk update services');
-        }
-    };
-
-    const handleDelete = async (serviceId) => {
-        if (!confirm('Are you sure you want to delete this service?')) return;
+        fetchAllData();
+        initializeWebSocket();
         
-        try {
-            const response = await fetch(`/api/services/delete?serviceId=${serviceId}`, {
-                method: 'DELETE'
-            });
-            
-            const result = await response.json();
-            if (result.success) {
-                fetchAll();
-            } else {
-                alert('Failed to delete service: ' + result.error);
+        // Polling fallback every 30 seconds
+        const pollInterval = setInterval(fetchAllData, 30000);
+        
+        return () => {
+            clearInterval(pollInterval);
+            if (wsRef.current) {
+                wsRef.current.close();
             }
-        } catch (err) {
-            console.error('Error deleting service:', err);
-            alert('Failed to delete service');
-        }
-    };
+        };
+    }, [activeTab]);
 
     if (loading) {
         return (
             <div className="services-dashboard">
-                <div className="loading-container">
-                    <div className="loading-spinner"></div>
-                    <p>Loading services...</p>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="services-dashboard">
-                <div className="error-container">
-                    <h3>Error Loading Services</h3>
-                    <p>{error}</p>
-                    <button onClick={fetchAll} className="retry-btn">Retry</button>
-                </div>
+                <div className="loading">Loading services...</div>
             </div>
         );
     }
@@ -169,266 +281,257 @@ export default function BusinessServicesDashboard() {
     return (
         <div className="services-dashboard">
             <div className="dashboard-header">
-                <h2>Service Management</h2>
-                <p>Manage your business services, pricing, and availability</p>
+                <h1>Services Management</h1>
+                <p>Manage your business services and track their status</p>
             </div>
 
+            {/* Stats Cards */}
             <div className="stats-grid">
-                <Stat title="Total Services" value={summary.total} />
-                <Stat title="Active Services" value={summary.active} />
-                <Stat title="Featured Services" value={summary.featured} />
-                <Stat title="Average Price" value={`£${summary.averagePrice.toFixed(2)}`} />
-                <Stat title="Visible Services" value={summary.visible} />
+                <div className="stat-card">
+                    <div className="stat-icon">✅</div>
+                    <div className="stat-content">
+                        <h3>{stats.active}</h3>
+                        <p>Active Services</p>
+                    </div>
+                </div>
+                
+                <div className="stat-card">
+                    <div className="stat-icon">⏳</div>
+                    <div className="stat-content">
+                        <h3>{stats.pending}</h3>
+                        <p>Pending Approval</p>
+                    </div>
+                </div>
+                
+                <div className="stat-card">
+                    <div className="stat-icon">❌</div>
+                    <div className="stat-content">
+                        <h3>{stats.rejected}</h3>
+                        <p>Rejected</p>
+                    </div>
+                </div>
+                
+                <div className="stat-card">
+                    <div className="stat-icon">📁</div>
+                    <div className="stat-content">
+                        <h3>{stats.archived}</h3>
+                        <p>Archived</p>
+                    </div>
+                </div>
             </div>
 
-            <div className="quick-actions">
-                <button 
-                    className="action-btn primary" 
-                    onClick={() => setShowAdd(true)}
-                >
-                    + Add New Service
-                </button>
-                <button 
-                    className="action-btn secondary" 
-                    onClick={() => setShowBulk(true)} 
-                    disabled={!selected.length}
-                >
-                    Bulk Edit ({selected.length})
-                </button>
-                <button 
-                    className="action-btn tertiary" 
-                    onClick={() => setSelected([])}
-                    disabled={!selected.length}
-                >
-                    Clear Selection
-                </button>
-            </div>
+            {/* Services Section */}
+            <div className="services-section">
+                <div className="section-header">
+                    <h2>Services</h2>
+                    <div className="header-actions">
+                        {newServicesCount > 0 && (
+                            <button 
+                                className="new-services-badge"
+                                onClick={clearNewServicesCount}
+                            >
+                                {newServicesCount} new
+                            </button>
+                        )}
+                        <button 
+                            className="btn btn-primary"
+                            onClick={() => setShowAddModal(true)}
+                        >
+                            + Add Service
+                        </button>
+                    </div>
+                </div>
 
-            <div className="services-table-container">
-                <table className="services-table">
-                    <thead>
-                        <tr>
-                            <th className="checkbox-col">
-                                <input 
-                                    type="checkbox" 
-                                    checked={selected.length === list.length && list.length > 0}
-                                    onChange={(e) => {
-                                        if (e.target.checked) {
-                                            setSelected(list.map(s => s._id));
-                                        } else {
-                                            setSelected([]);
-                                        }
-                                    }}
-                                />
-                            </th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Duration</th>
-                            <th>Price</th>
-                            <th>Active</th>
-                            <th>Featured</th>
-                            <th>Published</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {list.length === 0 ? (
-                            <tr>
-                                <td colSpan="9" className="empty-state">
-                                    <div className="empty-content">
-                                        <div className="empty-icon">📋</div>
-                                        <h3>No Services Yet</h3>
-                                        <p>Add your first service to get started</p>
+                {/* Tabs */}
+                <div className="tabs">
+                    <button 
+                        className={`tab ${activeTab === 'Active' ? 'active' : ''}`}
+                        onClick={() => handleTabChange('Active')}
+                    >
+                        Active ({stats.active})
+                    </button>
+                    <button 
+                        className={`tab ${activeTab === 'Pending Approval' ? 'active' : ''}`}
+                        onClick={() => handleTabChange('Pending Approval')}
+                    >
+                        Pending Approval ({stats.pending})
+                    </button>
+                    <button 
+                        className={`tab ${activeTab === 'Rejected' ? 'active' : ''}`}
+                        onClick={() => handleTabChange('Rejected')}
+                    >
+                        Rejected ({stats.rejected})
+                    </button>
+                    <button 
+                        className={`tab ${activeTab === 'Archived' ? 'active' : ''}`}
+                        onClick={() => handleTabChange('Archived')}
+                    >
+                        Archived ({stats.archived})
+                    </button>
+                </div>
+
+                {/* Services Grid */}
+                <div className="services-grid">
+                    {services.length === 0 ? (
+                        <div className="no-services">
+                            <p>No services in this category yet.</p>
+                        </div>
+                    ) : (
+                        services.map((service) => (
+                            <div key={service.id} className="service-card">
+                                {service.image_url && (
+                                    <div className="service-image">
+                                        <img src={service.image_url} alt={service.name} />
+                                    </div>
+                                )}
+                                
+                                <div className="service-content">
+                                    <div className="service-header">
+                                        <h3>{service.name}</h3>
+                                        <span className={getStatusBadgeClass(service.status)}>
+                                            {service.status}
+                                        </span>
+                                    </div>
+                                    
+                                    <div className="service-details">
+                                        <p className="service-category">{service.category}</p>
+                                        <p className="service-price">{formatCurrency(service.price)}</p>
+                                        <p className="service-duration">{service.duration}</p>
+                                        {service.description && (
+                                            <p className="service-description">{service.description}</p>
+                                        )}
+                                        <p className="service-updated">Updated: {formatDate(service.last_updated)}</p>
+                                    </div>
+                                    
+                                    <div className="service-actions">
                                         <button 
-                                            className="action-btn primary"
-                                            onClick={() => setShowAdd(true)}
+                                            className="btn btn-secondary"
+                                            onClick={() => setEditingService(service)}
                                         >
-                                            Add Service
+                                            Edit
+                                        </button>
+                                        
+                                        {service.status === 'Active' && (
+                                            <button 
+                                                className="btn btn-warning"
+                                                onClick={() => handleStatusChange(service.id, 'Archived')}
+                                            >
+                                                Archive
+                                            </button>
+                                        )}
+                                        
+                                        {service.status === 'Pending Approval' && (
+                                            <button 
+                                                className="btn btn-success"
+                                                onClick={() => handleStatusChange(service.id, 'Active')}
+                                            >
+                                                Approve
+                                            </button>
+                                        )}
+                                        
+                                        {service.status === 'Rejected' && (
+                                            <button 
+                                                className="btn btn-primary"
+                                                onClick={() => handleStatusChange(service.id, 'Pending Approval')}
+                                            >
+                                                Resubmit
+                                            </button>
+                                        )}
+                                        
+                                        <button 
+                                            className="btn btn-danger"
+                                            onClick={() => handleDeleteService(service.id)}
+                                        >
+                                            Delete
                                         </button>
                                     </div>
-                                </td>
-                            </tr>
-                        ) : (
-                            list.map(service => (
-                                <tr key={service._id} className={selected.includes(service._id) ? 'selected' : ''}>
-                                    <td className="checkbox-col">
-                                        <input 
-                                            type="checkbox" 
-                                            checked={selected.includes(service._id)}
-                                            onChange={() => toggleSelect(service._id)}
-                                        />
-                                    </td>
-                                    <td className="name-col">
-                                        <input 
-                                            type="text" 
-                                            value={service.name}
-                                            onChange={(e) => handleInlineUpdate(service._id, { name: e.target.value })}
-                                            className="inline-input"
-                                        />
-                                    </td>
-                                    <td className="category-col">
-                                        <input 
-                                            type="text" 
-                                            value={service.category || ''}
-                                            onChange={(e) => handleInlineUpdate(service._id, { category: e.target.value })}
-                                            className="inline-input"
-                                            placeholder="Category"
-                                        />
-                                    </td>
-                                    <td className="duration-col">
-                                        <div className="duration-input">
-                                            <input 
-                                                type="number" 
-                                                value={service.durationMinutes}
-                                                onChange={(e) => handleInlineUpdate(service._id, { durationMinutes: Number(e.target.value) })}
-                                                className="inline-input number"
-                                                min="1"
-                                            />
-                                            <span>min</span>
-                                        </div>
-                                    </td>
-                                    <td className="price-col">
-                                        <div className="price-input">
-                                            <span>£</span>
-                                            <input 
-                                                type="number" 
-                                                step="0.01"
-                                                value={service.priceGBP}
-                                                onChange={(e) => handleInlineUpdate(service._id, { priceGBP: Number(e.target.value) })}
-                                                className="inline-input number"
-                                                min="0"
-                                            />
-                                        </div>
-                                    </td>
-                                    <td className="status-col">
-                                        <label className="toggle">
-                                            <input 
-                                                type="checkbox" 
-                                                checked={service.active}
-                                                onChange={(e) => handleInlineUpdate(service._id, { active: e.target.checked })}
-                                            />
-                                            <span className="toggle-slider"></span>
-                                        </label>
-                                    </td>
-                                    <td className="status-col">
-                                        <label className="toggle">
-                                            <input 
-                                                type="checkbox" 
-                                                checked={service.featured}
-                                                onChange={(e) => handleInlineUpdate(service._id, { featured: e.target.checked })}
-                                            />
-                                            <span className="toggle-slider"></span>
-                                        </label>
-                                    </td>
-                                    <td className="status-col">
-                                        <label className="toggle">
-                                            <input 
-                                                type="checkbox" 
-                                                checked={service.published}
-                                                onChange={(e) => handleInlineUpdate(service._id, { published: e.target.checked })}
-                                            />
-                                            <span className="toggle-slider"></span>
-                                        </label>
-                                    </td>
-                                    <td className="actions-col">
-                                        <button 
-                                            className="delete-btn"
-                                            onClick={() => handleDelete(service._id)}
-                                            title="Delete service"
-                                        >
-                                            🗑️
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
             </div>
 
-            {showAdd && (
+            {/* Add Service Modal */}
+            {showAddModal && (
                 <AddServiceModal 
-                    businessId={businessId} 
-                    onClose={() => setShowAdd(false)} 
-                    onCreate={handleCreate} 
+                    businessId={businessId}
+                    onClose={() => setShowAddModal(false)}
+                    onSuccess={() => {
+                        setShowAddModal(false);
+                        fetchAllData();
+                    }}
                 />
             )}
-            {showBulk && (
-                <BulkEditModal 
-                    onClose={() => setShowBulk(false)} 
-                    onApply={handleBulk}
-                    selectedCount={selected.length}
+
+            {/* Edit Service Modal */}
+            {editingService && (
+                <EditServiceModal 
+                    service={editingService}
+                    onClose={() => setEditingService(null)}
+                    onSuccess={() => {
+                        setEditingService(null);
+                        fetchAllData();
+                    }}
                 />
             )}
         </div>
     );
-}
+};
 
-function Stat({ title, value }) {
-    return (
-        <div className="stat">
-            <h4>{title}</h4>
-            <p>{value}</p>
-        </div>
-    );
-}
-
-function AddServiceModal({ businessId, onClose, onCreate }) {
-    const [form, setForm] = useState({
+// Add Service Modal Component
+const AddServiceModal = ({ businessId, onClose, onSuccess }) => {
+    const [formData, setFormData] = useState({
         name: '',
-        description: '',
         category: '',
-        durationMinutes: 30,
-        priceGBP: 0,
-        active: true,
-        featured: false,
-        published: true
+        price: '',
+        duration: '',
+        description: '',
+        image_url: ''
     });
-    const [loading, setLoading] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || form.priceGBP < 0 || form.durationMinutes <= 0) {
-            alert('Please fill in all required fields correctly');
-            return;
-        }
-
-        setLoading(true);
+        setSubmitting(true);
+        
         try {
-            await onCreate(form);
-        } finally {
-            setLoading(false);
+            const response = await fetch('/api/services', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    businessId,
+                    ...formData
+                })
+            });
+            
+            if (response.ok) {
+                onSuccess();
+            }
+        } catch (error) {
+            console.error('Error creating service:', error);
         }
+        setSubmitting(false);
     };
 
     return (
-        <div className="modal">
-            <div className="modal-backdrop" onClick={onClose}></div>
-            <div className="modal-card">
+        <div className="modal-overlay">
+            <div className="modal">
                 <div className="modal-header">
                     <h3>Add New Service</h3>
-                    <button className="close-btn" onClick={onClose}>×</button>
+                    <button className="modal-close" onClick={onClose}>×</button>
                 </div>
                 
                 <form onSubmit={handleSubmit} className="modal-form">
                     <div className="form-group">
-                        <label>Service Name *</label>
+                        <label>Service Name</label>
                         <input 
                             type="text" 
-                            value={form.name}
-                            onChange={(e) => setForm({...form, name: e.target.value})}
-                            placeholder="e.g., Hair Cut & Style"
+                            value={formData.name}
+                            onChange={(e) => setFormData({...formData, name: e.target.value})}
                             required
-                        />
-                    </div>
-                    
-                    <div className="form-group">
-                        <label>Description</label>
-                        <textarea 
-                            value={form.description}
-                            onChange={(e) => setForm({...form, description: e.target.value})}
-                            placeholder="Describe your service..."
-                            rows="3"
                         />
                     </div>
                     
@@ -436,209 +539,185 @@ function AddServiceModal({ businessId, onClose, onCreate }) {
                         <label>Category</label>
                         <input 
                             type="text" 
-                            value={form.category}
-                            onChange={(e) => setForm({...form, category: e.target.value})}
-                            placeholder="e.g., Hair & Beauty"
+                            value={formData.category}
+                            onChange={(e) => setFormData({...formData, category: e.target.value})}
+                            required
                         />
                     </div>
                     
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label>Duration (minutes) *</label>
-                            <input 
-                                type="number" 
-                                value={form.durationMinutes}
-                                onChange={(e) => setForm({...form, durationMinutes: Number(e.target.value)})}
-                                min="1"
-                                required
-                            />
-                        </div>
-                        
-                        <div className="form-group">
-                            <label>Price (£) *</label>
-                            <input 
-                                type="number" 
-                                step="0.01"
-                                value={form.priceGBP}
-                                onChange={(e) => setForm({...form, priceGBP: Number(e.target.value)})}
-                                min="0"
-                                required
-                            />
-                        </div>
-                    </div>
-                    
-                    <div className="form-checkboxes">
-                        <label className="checkbox-label">
-                            <input 
-                                type="checkbox" 
-                                checked={form.active}
-                                onChange={(e) => setForm({...form, active: e.target.checked})}
-                            />
-                            <span className="checkmark"></span>
-                            Active (available for booking)
-                        </label>
-                        
-                        <label className="checkbox-label">
-                            <input 
-                                type="checkbox" 
-                                checked={form.featured}
-                                onChange={(e) => setForm({...form, featured: e.target.checked})}
-                            />
-                            <span className="checkmark"></span>
-                            Featured (highlighted on profile)
-                        </label>
-                        
-                        <label className="checkbox-label">
-                            <input 
-                                type="checkbox" 
-                                checked={form.published}
-                                onChange={(e) => setForm({...form, published: e.target.checked})}
-                            />
-                            <span className="checkmark"></span>
-                            Published (visible to customers)
-                        </label>
-                    </div>
-                    
-                    <div className="modal-actions">
-                        <button type="button" onClick={onClose} className="cancel-btn">
-                            Cancel
-                        </button>
-                        <button type="submit" className="submit-btn" disabled={loading}>
-                            {loading ? 'Creating...' : 'Create Service'}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
-}
-
-function BulkEditModal({ onClose, onApply, selectedCount }) {
-    const [patch, setPatch] = useState({
-        priceGBP: '',
-        durationMinutes: '',
-        active: null,
-        featured: null,
-        published: null,
-        category: ''
-    });
-    const [loading, setLoading] = useState(false);
-
-    const cleanPatch = () => {
-        const p = {};
-        if (patch.priceGBP !== '') p.priceGBP = Number(patch.priceGBP);
-        if (patch.durationMinutes !== '') p.durationMinutes = Number(patch.durationMinutes);
-        ['active', 'featured', 'published', 'category'].forEach(field => {
-            if (patch[field] !== null && patch[field] !== '') p[field] = patch[field];
-        });
-        return p;
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const cleanPatchData = cleanPatch();
-        if (Object.keys(cleanPatchData).length === 0) {
-            alert('Please select at least one field to update');
-            return;
-        }
-
-        setLoading(true);
-        try {
-            await onApply(cleanPatchData);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <div className="modal">
-            <div className="modal-backdrop" onClick={onClose}></div>
-            <div className="modal-card">
-                <div className="modal-header">
-                    <h3>Bulk Edit Services ({selectedCount} selected)</h3>
-                    <button className="close-btn" onClick={onClose}>×</button>
-                </div>
-                
-                <form onSubmit={handleSubmit} className="modal-form">
                     <div className="form-row">
                         <div className="form-group">
                             <label>Price (£)</label>
                             <input 
                                 type="number" 
                                 step="0.01"
-                                value={patch.priceGBP}
-                                onChange={(e) => setPatch({...patch, priceGBP: e.target.value})}
-                                placeholder="Leave empty for no change"
+                                value={formData.price}
+                                onChange={(e) => setFormData({...formData, price: e.target.value})}
+                                required
                             />
                         </div>
                         
                         <div className="form-group">
-                            <label>Duration (minutes)</label>
+                            <label>Duration</label>
                             <input 
-                                type="number" 
-                                value={patch.durationMinutes}
-                                onChange={(e) => setPatch({...patch, durationMinutes: e.target.value})}
-                                placeholder="Leave empty for no change"
+                                type="text" 
+                                value={formData.duration}
+                                onChange={(e) => setFormData({...formData, duration: e.target.value})}
+                                placeholder="e.g., 45 mins"
+                                required
                             />
                         </div>
                     </div>
                     
                     <div className="form-group">
-                        <label>Category</label>
-                        <input 
-                            type="text" 
-                            value={patch.category}
-                            onChange={(e) => setPatch({...patch, category: e.target.value})}
-                            placeholder="Leave empty for no change"
+                        <label>Description</label>
+                        <textarea 
+                            value={formData.description}
+                            onChange={(e) => setFormData({...formData, description: e.target.value})}
+                            rows="3"
                         />
                     </div>
                     
                     <div className="form-group">
-                        <label>Active Status</label>
-                        <select 
-                            value={patch.active ?? ''} 
-                            onChange={(e) => setPatch({...patch, active: e.target.value === '' ? null : (e.target.value === 'true')})}
-                        >
-                            <option value="">No change</option>
-                            <option value="true">Set to Active</option>
-                            <option value="false">Set to Inactive</option>
-                        </select>
-                    </div>
-                    
-                    <div className="form-group">
-                        <label>Featured Status</label>
-                        <select 
-                            value={patch.featured ?? ''} 
-                            onChange={(e) => setPatch({...patch, featured: e.target.value === '' ? null : (e.target.value === 'true')})}
-                        >
-                            <option value="">No change</option>
-                            <option value="true">Set to Featured</option>
-                            <option value="false">Remove from Featured</option>
-                        </select>
-                    </div>
-                    
-                    <div className="form-group">
-                        <label>Published Status</label>
-                        <select 
-                            value={patch.published ?? ''} 
-                            onChange={(e) => setPatch({...patch, published: e.target.value === '' ? null : (e.target.value === 'true')})}
-                        >
-                            <option value="">No change</option>
-                            <option value="true">Set to Published</option>
-                            <option value="false">Set to Unpublished</option>
-                        </select>
+                        <label>Image URL (Optional)</label>
+                        <input 
+                            type="url" 
+                            value={formData.image_url}
+                            onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                        />
                     </div>
                     
                     <div className="modal-actions">
-                        <button type="button" onClick={onClose} className="cancel-btn">
+                        <button type="button" className="btn btn-secondary" onClick={onClose}>
                             Cancel
                         </button>
-                        <button type="submit" className="submit-btn" disabled={loading}>
-                            {loading ? 'Updating...' : 'Apply Changes'}
+                        <button type="submit" className="btn btn-primary" disabled={submitting}>
+                            {submitting ? 'Adding...' : 'Add Service'}
                         </button>
                     </div>
                 </form>
             </div>
         </div>
     );
-}
+};
+
+// Edit Service Modal Component
+const EditServiceModal = ({ service, onClose, onSuccess }) => {
+    const [formData, setFormData] = useState({
+        name: service.name,
+        category: service.category,
+        price: service.price,
+        duration: service.duration,
+        description: service.description,
+        image_url: service.image_url || ''
+    });
+    const [submitting, setSubmitting] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        
+        try {
+            const response = await fetch(`/api/services/${service.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            if (response.ok) {
+                onSuccess();
+            }
+        } catch (error) {
+            console.error('Error updating service:', error);
+        }
+        setSubmitting(false);
+    };
+
+    return (
+        <div className="modal-overlay">
+            <div className="modal">
+                <div className="modal-header">
+                    <h3>Edit Service</h3>
+                    <button className="modal-close" onClick={onClose}>×</button>
+                </div>
+                
+                <form onSubmit={handleSubmit} className="modal-form">
+                    <div className="form-group">
+                        <label>Service Name</label>
+                        <input 
+                            type="text" 
+                            value={formData.name}
+                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                            required
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label>Category</label>
+                        <input 
+                            type="text" 
+                            value={formData.category}
+                            onChange={(e) => setFormData({...formData, category: e.target.value})}
+                            required
+                        />
+                    </div>
+                    
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label>Price (£)</label>
+                            <input 
+                                type="number" 
+                                step="0.01"
+                                value={formData.price}
+                                onChange={(e) => setFormData({...formData, price: e.target.value})}
+                                required
+                            />
+                        </div>
+                        
+                        <div className="form-group">
+                            <label>Duration</label>
+                            <input 
+                                type="text" 
+                                value={formData.duration}
+                                onChange={(e) => setFormData({...formData, duration: e.target.value})}
+                                placeholder="e.g., 45 mins"
+                                required
+                            />
+                        </div>
+                    </div>
+                    
+                    <div className="form-group">
+                        <label>Description</label>
+                        <textarea 
+                            value={formData.description}
+                            onChange={(e) => setFormData({...formData, description: e.target.value})}
+                            rows="3"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label>Image URL (Optional)</label>
+                        <input 
+                            type="url" 
+                            value={formData.image_url}
+                            onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                        />
+                    </div>
+                    
+                    <div className="modal-actions">
+                        <button type="button" className="btn btn-secondary" onClick={onClose}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="btn btn-primary" disabled={submitting}>
+                            {submitting ? 'Updating...' : 'Update Service'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default BusinessServicesDashboard;

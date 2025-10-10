@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Settings - BlkPages</title>
+    <link rel="stylesheet" href="frontend/src/components/BusinessSettingsDashboard.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #1E90FF, #9c27b0);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 144, 255, 0.3);
+        }
+        
+        .back-button i {
+            font-size: 0.8rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <a href="business-dashboard.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Dashboard
+    </a>
+    
+    <!-- Settings Dashboard Component -->
+    <div id="settings-dashboard"></div>
+    
+    <!-- React and Component Scripts -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // Business Settings Dashboard Component
+        const BusinessSettingsDashboard = () => {
+            const [settings, setSettings] = useState({
+                business_name: '',
+                description: '',
+                email: '',
+                phone: '',
+                address: '',
+                opening_hours: '',
+                instagram: '',
+                facebook: '',
+                website: '',
+                package_type: 'Free'
+            });
+            const [loading, setLoading] = useState(true);
+            const [saving, setSaving] = useState(false);
+            const [errors, setErrors] = useState({});
+            const [hasChanges, setHasChanges] = useState(false);
+            const [originalSettings, setOriginalSettings] = useState({});
+            
+            const wsRef = useRef(null);
+            const businessId = 'royal-hair-studio'; // Replace with actual business ID logic
+
+            // Fetch business settings
+            const fetchSettings = async () => {
+                try {
+                    const response = await fetch(`/api/businesses/${businessId}/settings`);
+                    const data = await response.json();
+                    setSettings(data);
+                    setOriginalSettings(data);
+                    setErrors({});
+                } catch (error) {
+                    console.error('Error fetching settings:', error);
+                    showNotification('Error loading settings', 'error');
+                }
+            };
+
+            // Initialize WebSocket connection
+            const initializeWebSocket = () => {
+                const wsUrl = `ws://localhost:5000`;
+                wsRef.current = new WebSocket(wsUrl);
+
+                wsRef.current.onopen = () => {
+                    console.log('Settings WebSocket connected');
+                    // Join business room
+                    wsRef.current.send(JSON.stringify({
+                        type: 'join_business',
+                        businessId: businessId
+                    }));
+                };
+
+                wsRef.current.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'settings_updated') {
+                        // Update settings if they were updated by another session
+                        setSettings(data.settings);
+                        setOriginalSettings(data.settings);
+                        setHasChanges(false);
+                        showNotification('Settings updated from another session', 'info');
+                    }
+                };
+
+                wsRef.current.onclose = () => {
+                    console.log('Settings WebSocket disconnected, reconnecting...');
+                    setTimeout(initializeWebSocket, 3000);
+                };
+
+                wsRef.current.onerror = (error) => {
+                    console.error('Settings WebSocket error:', error);
+                };
+            };
+
+            // Show notification
+            const showNotification = (message, type = 'success') => {
+                const notification = document.createElement('div');
+                notification.className = `settings-notification ${type}`;
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <strong>${type === 'success' ? 'Success!' : type === 'error' ? 'Error!' : 'Info!'}</strong>
+                        <p>${message}</p>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            };
+
+            // Validate form
+            const validateForm = () => {
+                const newErrors = {};
+                
+                if (!settings.business_name.trim()) {
+                    newErrors.business_name = 'Business name is required';
+                }
+                
+                if (!settings.email.trim()) {
+                    newErrors.email = 'Email is required';
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(settings.email)) {
+                    newErrors.email = 'Please enter a valid email address';
+                }
+                
+                if (!settings.phone.trim()) {
+                    newErrors.phone = 'Phone number is required';
+                }
+                
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            };
+
+            // Handle input change
+            const handleInputChange = (field, value) => {
+                setSettings(prev => ({
+                    ...prev,
+                    [field]: value
+                }));
+                
+                // Check if there are changes
+                const newSettings = { ...settings, [field]: value };
+                const hasChanges = JSON.stringify(newSettings) !== JSON.stringify(originalSettings);
+                setHasChanges(hasChanges);
+                
+                // Clear error for this field
+                if (errors[field]) {
+                    setErrors(prev => ({
+                        ...prev,
+                        [field]: ''
+                    }));
+                }
+            };
+
+            // Save settings
+            const saveSettings = async () => {
+                if (!validateForm()) {
+                    showNotification('Please fix the errors before saving', 'error');
+                    return;
+                }
+                
+                setSaving(true);
+                
+                try {
+                    const response = await fetch(`/api/businesses/${businessId}/settings`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(settings)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        setOriginalSettings(settings);
+                        setHasChanges(false);
+                        showNotification('Settings saved successfully!', 'success');
+                    } else {
+                        showNotification(data.error || 'Failed to save settings', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error saving settings:', error);
+                    showNotification('Error saving settings', 'error');
+                }
+                
+                setSaving(false);
+            };
+
+            // Reset form
+            const resetForm = () => {
+                if (confirm('Are you sure you want to discard your changes?')) {
+                    setSettings(originalSettings);
+                    setHasChanges(false);
+                    setErrors({});
+                }
+            };
+
+            useEffect(() => {
+                fetchSettings();
+                initializeWebSocket();
+                
+                return () => {
+                    if (wsRef.current) {
+                        wsRef.current.close();
+                    }
+                };
+            }, []);
+
+            if (loading) {
+                return React.createElement('div', { className: 'settings-dashboard' },
+                    React.createElement('div', { className: 'loading' }, 'Loading settings...')
+                );
+            }
+
+            return React.createElement('div', { className: 'settings-dashboard' },
+                React.createElement('div', { className: 'dashboard-header' },
+                    React.createElement('h1', null, 'Business Settings'),
+                    React.createElement('p', null, 'Manage your business information and preferences')
+                ),
+
+                // Package Notice
+                React.createElement('div', { className: 'package-notice' },
+                    React.createElement('div', { className: 'notice-content' },
+                        React.createElement('i', { className: 'fas fa-info-circle' }),
+                        React.createElement('div', null,
+                            React.createElement('strong', null, 'You are on the Free Package'),
+                            React.createElement('p', null, 'Upgrade to unlock advanced settings like staff management, payment preferences, and custom branding.')
+                        ),
+                        React.createElement('button', { className: 'btn btn-primary' }, 'Upgrade Now')
+                    )
+                ),
+
+                // Settings Form
+                React.createElement('div', { className: 'settings-form' },
+                    React.createElement('div', { className: 'form-section' },
+                        React.createElement('h3', null, 'Basic Information'),
+                        
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { htmlFor: 'business_name' }, 'Business Name *'),
+                            React.createElement('input', {
+                                type: 'text',
+                                id: 'business_name',
+                                value: settings.business_name,
+                                onChange: (e) => handleInputChange('business_name', e.target.value),
+                                className: errors.business_name ? 'error' : '',
+                                placeholder: 'Enter your business name'
+                            }),
+                            errors.business_name && React.createElement('span', { className: 'error-message' }, errors.business_name)
+                        ),
+                        
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { htmlFor: 'description' }, 'Business Description'),
+                            React.createElement('textarea', {
+                                id: 'description',
+                                value: settings.description,
+                                onChange: (e) => handleInputChange('description', e.target.value),
+                                rows: 3,
+                                placeholder: 'Describe your business and services'
+                            })
+                        )
+                    ),
+
+                    React.createElement('div', { className: 'form-section' },
+                        React.createElement('h3', null, 'Contact Information'),
+                        
+                        React.createElement('div', { className: 'form-row' },
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { htmlFor: 'email' }, 'Email Address *'),
+                                React.createElement('input', {
+                                    type: 'email',
+                                    id: 'email',
+                                    value: settings.email,
+                                    onChange: (e) => handleInputChange('email', e.target.value),
+                                    className: errors.email ? 'error' : '',
+                                    placeholder: 'info@yourbusiness.co.uk'
+                                }),
+                                errors.email && React.createElement('span', { className: 'error-message' }, errors.email)
+                            ),
+                            
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { htmlFor: 'phone' }, 'Phone Number *'),
+                                React.createElement('input', {
+                                    type: 'tel',
+                                    id: 'phone',
+                                    value: settings.phone,
+                                    onChange: (e) => handleInputChange('phone', e.target.value),
+                                    className: errors.phone ? 'error' : '',
+                                    placeholder: '020 1234 5678'
+                                }),
+                                errors.phone && React.createElement('span', { className: 'error-message' }, errors.phone)
+                            )
+                        ),
+                        
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { htmlFor: 'address' }, 'Business Address'),
+                            React.createElement('input', {
+                                type: 'text',
+                                id: 'address',
+                                value: settings.address,
+                                onChange: (e) => handleInputChange('address', e.target.value),
+                                placeholder: '123 High Street, London SE13'
+                            })
+                        )
+                    ),
+
+                    React.createElement('div', { className: 'form-section' },
+                        React.createElement('h3', null, 'Business Hours'),
+                        
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { htmlFor: 'opening_hours' }, 'Opening Hours'),
+                            React.createElement('input', {
+                                type: 'text',
+                                id: 'opening_hours',
+                                value: settings.opening_hours,
+                                onChange: (e) => handleInputChange('opening_hours', e.target.value),
+                                placeholder: 'Mon–Sat 9:00–18:00'
+                            }),
+                            React.createElement('small', null, 'Example: Mon–Sat 9:00–18:00, Sun 10:00–16:00')
+                        )
+                    ),
+
+                    React.createElement('div', { className: 'form-section' },
+                        React.createElement('h3', null, 'Social Media & Website'),
+                        
+                        React.createElement('div', { className: 'form-row' },
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { htmlFor: 'instagram' }, 'Instagram'),
+                                React.createElement('input', {
+                                    type: 'text',
+                                    id: 'instagram',
+                                    value: settings.instagram,
+                                    onChange: (e) => handleInputChange('instagram', e.target.value),
+                                    placeholder: '@yourbusiness'
+                                })
+                            ),
+                            
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { htmlFor: 'facebook' }, 'Facebook'),
+                                React.createElement('input', {
+                                    type: 'text',
+                                    id: 'facebook',
+                                    value: settings.facebook,
+                                    onChange: (e) => handleInputChange('facebook', e.target.value),
+                                    placeholder: 'facebook.com/yourbusiness'
+                                })
+                            )
+                        ),
+                        
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { htmlFor: 'website' }, 'Website'),
+                            React.createElement('input', {
+                                type: 'url',
+                                id: 'website',
+                                value: settings.website,
+                                onChange: (e) => handleInputChange('website', e.target.value),
+                                placeholder: 'https://www.yourbusiness.co.uk'
+                            })
+                        )
+                    ),
+
+                    // Form Actions
+                    React.createElement('div', { className: 'form-actions' },
+                        React.createElement('button', {
+                            type: 'button',
+                            className: 'btn btn-secondary',
+                            onClick: resetForm,
+                            disabled: !hasChanges || saving
+                        }, 'Reset'),
+                        React.createElement('button', {
+                            type: 'button',
+                            className: 'btn btn-primary',
+                            onClick: saveSettings,
+                            disabled: !hasChanges || saving
+                        }, saving ? 'Saving...' : 'Save Changes')
+                    )
+                ),
+
+                // Advanced Settings (Disabled for Free Package)
+                React.createElement('div', { className: 'advanced-settings' },
+                    React.createElement('h3', null, 'Advanced Settings'),
+                    React.createElement('div', { className: 'disabled-notice' },
+                        React.createElement('i', { className: 'fas fa-lock' }),
+                        React.createElement('p', null, 'Advanced settings are available with Starter or Professional packages')
+                    ),
+                    
+                    React.createElement('div', { className: 'disabled-features' },
+                        React.createElement('div', { className: 'feature-item' },
+                            React.createElement('i', { className: 'fas fa-users' }),
+                            React.createElement('span', null, 'Staff Management')
+                        ),
+                        React.createElement('div', { className: 'feature-item' },
+                            React.createElement('i', { className: 'fas fa-credit-card' }),
+                            React.createElement('span', null, 'Payment Preferences')
+                        ),
+                        React.createElement('div', { className: 'feature-item' },
+                            React.createElement('i', { className: 'fas fa-palette' }),
+                            React.createElement('span', null, 'Custom Branding')
+                        ),
+                        React.createElement('div', { className: 'feature-item' },
+                            React.createElement('i', { className: 'fas fa-bell' }),
+                            React.createElement('span', null, 'Notification Settings')
+                        )
+                    )
+                )
+            );
+        };
+
+        // Render the dashboard
+        ReactDOM.render(React.createElement(BusinessSettingsDashboard), document.getElementById('settings-dashboard'));
+    </script>
+</body>
+</html>

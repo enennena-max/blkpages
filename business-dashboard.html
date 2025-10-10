@@ -21,6 +21,9 @@
     <!-- Waiting List Offer System -->
     <script src="backend/waiting-list-offer-system.js"></script>
     <script src="backend/booking-cancellation-system.js"></script>
+    
+    <!-- Review Data Synchronization -->
+    <script src="review-data-sync.js"></script>
     <style>
         * { 
             margin: 0; 
@@ -3788,11 +3791,14 @@
                     <i class="fas fa-star"></i> Reviews
                     <span class="badge" id="reviewsBadge" style="display: none;">1 new</span>
                 </a></li>
-                <li><a href="#" onclick="showSection('payouts')">
+                <li><a href="business-payouts-dashboard.html">
                     <i class="fas fa-credit-card"></i> Payouts
                 </a></li>
                 <li><a href="business-analytics-dashboard.html">
                     <i class="fas fa-chart-bar"></i> Analytics
+                </a></li>
+                <li><a href="business-settings-dashboard.html">
+                    <i class="fas fa-cog"></i> Settings
                 </a></li>
                 <li><a href="#" onclick="showSection('waiting-list')">
                     <i class="fas fa-clock"></i> Waiting List
@@ -5630,12 +5636,198 @@ Refunds are returned to your original payment method within 5–10 business days
                 badge.style.display = 'none';
             }
         }
+
+        // Live Review Data System using shared sync utility
+        let reviewDataUnsubscribe = null;
+
+        // Update dashboard stat cards with review data
+        function updateDashboardReviewStats(stats) {
+            // Find and update the review-related stat cards
+            const statCards = document.querySelectorAll('.stat-card');
+            
+            statCards.forEach(card => {
+                const title = card.querySelector('p');
+                if (title) {
+                    const titleText = title.textContent.toLowerCase();
+                    
+                    if (titleText.includes('rating')) {
+                        const valueElement = card.querySelector('h3');
+                        if (valueElement) {
+                            valueElement.textContent = stats.average_rating.toFixed(1);
+                            highlightStatCard(card);
+                        }
+                    } else if (titleText.includes('reviews') && !titleText.includes('pending')) {
+                        const valueElement = card.querySelector('h3');
+                        if (valueElement) {
+                            valueElement.textContent = stats.total_reviews;
+                            highlightStatCard(card);
+                        }
+                    } else if (titleText.includes('this month')) {
+                        const valueElement = card.querySelector('h3');
+                        if (valueElement) {
+                            valueElement.textContent = stats.reviews_this_month;
+                            highlightStatCard(card);
+                        }
+                    } else if (titleText.includes('positive')) {
+                        const valueElement = card.querySelector('h3');
+                        if (valueElement) {
+                            valueElement.textContent = `${stats.positive_percentage}%`;
+                            highlightStatCard(card);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Add highlight effect to stat cards when updated
+        function highlightStatCard(card) {
+            card.style.transition = 'all 0.3s ease';
+            card.style.transform = 'scale(1.05)';
+            card.style.boxShadow = '0 8px 25px rgba(30, 144, 255, 0.3)';
+            
+            setTimeout(() => {
+                card.style.transform = 'scale(1)';
+                card.style.boxShadow = '';
+            }, 500);
+        }
+
+        // Initialize review data synchronization
+        function initializeReviewDataSync() {
+            if (window.reviewDataSync) {
+                // Subscribe to data updates
+                reviewDataUnsubscribe = window.reviewDataSync.subscribe((data) => {
+                    switch (data.type) {
+                        case 'stats_update':
+                            updateDashboardReviewStats(data.stats);
+                            break;
+                        case 'new_review':
+                            updateReviewsBadge(data.newReviewsCount);
+                            showNewReviewNotification(data.review);
+                            break;
+                        case 'clear_new_reviews':
+                            updateReviewsBadge(0);
+                            break;
+                    }
+                });
+            } else {
+                console.warn('Review data sync not available, falling back to polling');
+                // Fallback to polling if sync utility not available
+                setInterval(async () => {
+                    try {
+                        const response = await fetch('/api/businesses/royal-hair-studio/review-stats');
+                        const stats = await response.json();
+                        updateDashboardReviewStats(stats);
+                    } catch (error) {
+                        console.error('Error fetching review stats:', error);
+                    }
+                }, 30000);
+            }
+        }
+
+        function updateReviewsBadge(count = null) {
+            const badge = document.getElementById('reviewsBadge');
+            const newReviewsCount = count !== null ? count : (window.reviewDataSync ? window.reviewDataSync.getNewReviewsCount() : 0);
+            
+            if (newReviewsCount > 0) {
+                badge.textContent = `${newReviewsCount} new`;
+                badge.style.display = 'inline-block';
+                badge.style.background = 'linear-gradient(135deg, #ff6b6b, #ff8e8e)';
+                badge.style.animation = 'pulse 2s infinite';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function clearNewReviewsCount() {
+            if (window.reviewDataSync) {
+                window.reviewDataSync.clearNewReviewsCount();
+            }
+        }
+
+        function showNewReviewNotification(review) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'new-review-notification';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <strong>New Review!</strong>
+                    <p>${review.reviewerName} left a ${review.rating}-star review</p>
+                </div>
+            `;
+            
+            // Add notification styles if not already present
+            if (!document.getElementById('notification-styles')) {
+                const styles = document.createElement('style');
+                styles.id = 'notification-styles';
+                styles.textContent = `
+                    .new-review-notification {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+                        color: white;
+                        padding: 1rem 1.5rem;
+                        border-radius: 12px;
+                        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+                        z-index: 1000;
+                        animation: slideInFromRight 0.3s ease-out;
+                        max-width: 300px;
+                    }
+                    
+                    @keyframes slideInFromRight {
+                        from {
+                            opacity: 0;
+                            transform: translateX(100%);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+                    
+                    .notification-content strong {
+                        display: block;
+                        margin-bottom: 0.25rem;
+                        font-size: 1rem;
+                    }
+                    
+                    .notification-content p {
+                        margin: 0;
+                        font-size: 0.9rem;
+                        opacity: 0.9;
+                    }
+                `;
+                document.head.appendChild(styles);
+            }
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
         
-        // Initialize reviews badge
+        // Initialize reviews badge and live data
         document.addEventListener('DOMContentLoaded', function() {
             updatePendingCount();
             loadBookingOptions();
+            
+            // Initialize review data system
+            initializeReviewDataSystem();
+            
+            // Clear new reviews count when Reviews link is clicked
+            const reviewsLink = document.querySelector('a[href="business-reviews-dashboard.html"]');
+            if (reviewsLink) {
+                reviewsLink.addEventListener('click', clearNewReviewsCount);
+            }
         });
+
+        // Initialize the complete review data system
+        function initializeReviewDataSystem() {
+            // Initialize review data synchronization
+            initializeReviewDataSync();
+        }
         
         function loadBookingOptions() {
             const payAtVenueEnabled = localStorage.getItem('royalHairStudioPayAtVenue');
