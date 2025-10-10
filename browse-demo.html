@@ -379,6 +379,18 @@
             }
         }
         
+        // Helper function to determine business tier
+        function getBusinessTier(business) {
+            if (business.subscription === 'free' || !business.subscription) {
+                return 'basic';
+            } else if (business.subscription === 'starter') {
+                return 'starter';
+            } else if (business.subscription === 'professional' || business.subscription === 'premium') {
+                return 'professional';
+            }
+            return 'basic'; // Default fallback
+        }
+
         function displayBusinesses() {
             const container = document.getElementById('businessesContainer');
             
@@ -395,23 +407,121 @@
             
             container.innerHTML = `
                 <div class="businesses-grid">
-                    ${filteredBusinesses.map(business => `
-                        <div class="business-card">
-                            <h4>${business.name}</h4>
-                            <span class="category">${business.category.charAt(0).toUpperCase() + business.category.slice(1)}</span>
-                            <div class="location">
-                                <i class="fas fa-map-marker-alt"></i> ${business.location}
+                    ${filteredBusinesses.map(business => {
+                        const tier = getBusinessTier(business);
+                        const categoryColor = business.category === 'hair' ? 'neon-pink' : 
+                                             business.category === 'barber' ? 'neon-blue' : 
+                                             business.category === 'beauty' ? 'neon-green' : 'neon-purple';
+                        const categoryIcon = business.category === 'hair' ? 'fas fa-cut' : 
+                                           business.category === 'barber' ? 'fas fa-cut' : 
+                                           business.category === 'beauty' ? 'fas fa-spa' : 'fas fa-star';
+                        
+                        if (tier === 'basic') {
+                            // Basic card - NO links, NO images, informational only
+                            return `
+                            <div class="business-card bg-dark-grey rounded-2xl p-4 border border-white/10 transition-all duration-300 hover:border-gold/30 hover:shadow-lg hover:shadow-gold/10" role="article" aria-label="Basic business listing for ${business.name}" style="cursor: default;">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="text-lg font-bold text-white">${business.name}</h4>
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-${categoryColor}/20 text-${categoryColor} border border-${categoryColor}/30">
+                                        ${business.category.charAt(0).toUpperCase() + business.category.slice(1)}
+                                    </span>
+                                </div>
+                                <div class="space-y-2">
+                                    ${business.location ? `
+                                    <p class="text-light-grey text-sm flex items-center">
+                                        <i class="fas fa-map-marker-alt mr-2 w-4"></i>
+                                        ${business.location}
+                                    </p>` : ''}
+                                    ${business.phone ? `
+                                    <p class="text-light-grey text-sm flex items-center">
+                                        <i class="fas fa-phone mr-2 w-4"></i>
+                                        ${business.phone}
+                                    </p>` : ''}
+                                    ${business.email ? `
+                                    <p class="text-light-grey text-sm flex items-center">
+                                        <i class="fas fa-envelope mr-2 w-4"></i>
+                                        ${business.email}
+                                    </p>` : ''}
+                                </div>
+                                <div class="text-center mt-4">
+                                    <p class="text-light-grey text-sm">Contact the business directly for enquiries</p>
+                                </div>
                             </div>
-                            <div class="description">${business.description || 'Professional services'}</div>
-                            <div class="contact">
-                                <i class="fas fa-phone"></i> ${business.phone}<br>
-                                <i class="fas fa-envelope"></i> ${business.email}
+                            `;
+                        } else {
+                            // Starter/Professional card - with image, links, and Book Now button
+                            const businessSlug = business.id || business.name.toLowerCase().replace(/\s+/g, '-');
+                            const profileUrl = `/business/${businessSlug}`;
+                            
+                            return `
+                            <div class="business-card bg-dark-grey rounded-2xl p-6 border border-white/10 transition-all duration-300 hover:border-gold/30 hover:shadow-lg hover:shadow-gold/10" 
+                                 data-business-id="${business.id || business.name}" 
+                                 role="article" 
+                                 aria-label="Premium business listing for ${business.name}">
+                                <div class="mb-4">
+                                    <img src="${business.image || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop&crop=center'}" 
+                                         alt="${business.name}" 
+                                         class="w-full h-48 object-cover rounded-lg">
+                                </div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-xl font-bold text-white">
+                                        <a href="${profileUrl}" class="hover:text-gold transition-colors duration-300">${business.name}</a>
+                                    </h4>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="bg-gradient-to-r from-gold to-gold-dark text-black text-xs px-2 py-1 rounded-full font-semibold">
+                                            ${tier === 'professional' ? 'Professional' : 'Starter'}
+                                        </span>
+                                        ${business.hasOffer ? `
+                                        <span class="px-2 py-1 rounded-full text-xs font-medium bg-gold/20 text-gold border border-gold/40 backdrop-blur-sm shadow-sm hover:shadow-gold/30 transition-all duration-300">
+                                            <i class="fas fa-tag mr-1"></i>Offer
+                                        </span>` : ''}
+                                    </div>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <div class="flex text-gold mr-2">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="text-light-grey text-sm">${business.rating || '4.8'} (${business.reviews || '127'} reviews)</span>
+                                </div>
+                                <p class="text-${categoryColor} text-sm font-medium mb-2">
+                                    <i class="${categoryIcon} mr-1"></i>
+                                    ${business.category.charAt(0).toUpperCase() + business.category.slice(1)}
+                                </p>
+                                <p class="text-light-grey text-sm mb-4 flex items-center">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>
+                                    ${business.location}
+                                </p>
+                                <div class="flex space-x-3">
+                                    <button onclick="goToBusinessProfile('${businessSlug}')" 
+                                            class="flex-1 py-3 rounded-lg bg-gradient-to-r from-gold to-gold-dark text-black font-semibold hover:from-gold-dark hover:to-gold transition-all duration-300 shadow-lg hover:shadow-xl">
+                                        Book Now
+                                    </button>
+                                    ${business.phone ? `
+                                    <button onclick="callBusiness('${business.phone}')" 
+                                            class="px-4 py-3 rounded-lg border border-white/20 text-white hover:bg-white/10 hover:border-gold/50 transition-all duration-300">
+                                        <i class="fas fa-phone"></i>
+                                    </button>` : ''}
+                                </div>
                             </div>
-                            <span class="subscription ${business.subscription}">${business.subscription.toUpperCase()}</span>
-                        </div>
-                    `).join('')}
+                            `;
+                        }
+                    }).join('')}
                 </div>
             `;
+        }
+
+        function goToBusinessProfile(businessSlug) {
+            // Redirect to business profile page where customers can add services
+            window.location.href = `/business/${businessSlug}`;
+        }
+
+        function callBusiness(phoneNumber) {
+            // Open phone dialer with business phone number
+            window.location.href = `tel:${phoneNumber}`;
         }
         
         // Auto-refresh when page loads

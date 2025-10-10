@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Booking - BlkPages</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'poppins': ['Poppins', 'sans-serif']
+                    },
+                    colors: {
+                        'charcoal': '#121212',
+                        'dark-grey': '#1A1A1A',
+                        'light-grey': '#CCCCCC',
+                        'gold': '#D4AF37',
+                        'gold-dark': '#B8860B',
+                        'neon-pink': '#FF3CAC',
+                        'neon-blue': '#2B86C5',
+                        'neon-green': '#4ADE80',
+                        'neon-purple': '#784BA0'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 20px rgba(212, 175, 55, 0.2)' },
+                            '100%': { boxShadow: '0 0 30px rgba(212, 175, 55, 0.4)' }
+                        },
+                        pulseSubtle: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.8' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom gradient backgrounds */
+        .gradient-bg {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%, #000000 100%);
+        }
+        
+        .card-gradient {
+            background: linear-gradient(145deg, 
+                rgba(26,26,26,0.95) 0%, 
+                rgba(42,42,42,0.9) 50%, 
+                rgba(26,26,26,0.95) 100%);
+        }
+        
+        .gold-gradient {
+            background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3), 
+                        0 0 40px rgba(212, 175, 55, 0.2), 
+                        0 0 60px rgba(212, 175, 55, 0.1);
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        .border-glow {
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Header backdrop blur effect */
+        .header-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #D4AF37, #FFD700);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #FFD700, #D4AF37);
+        }
+
+        /* Service selection styles */
+        .service-option {
+            transition: all 0.3s ease;
+        }
+        
+        .service-option:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+        }
+        
+        .service-option.selected {
+            border-color: #D4AF37;
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+        }
+        
+        .time-slot {
+            transition: all 0.3s ease;
+        }
+        
+        .time-slot:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+        }
+        
+        .time-slot.selected {
+            border-color: #D4AF37;
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+        }
+        
+        .time-slot.unavailable {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modal animations */
+        .modal-overlay {
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+        }
+        
+        .modal-content {
+            transition: all 0.3s ease;
+            transform: scale(0.9) translateY(20px);
+        }
+        
+        .modal-content.show {
+            transform: scale(1) translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-inter">
+    <!-- Fixed Header -->
+    <header class="fixed top-0 w-full z-50 bg-black header-blur border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-white hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)]">
+                        BlkPages
+                    </a>
+                </div>
+                
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="search-results-new.html" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)] font-medium">
+                        Browse
+                    </a>
+                    <a href="offers.html" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)] font-medium">
+                        Offers
+                    </a>
+                    <a href="business-register.html" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)] font-medium">
+                        Add Business
+                    </a>
+                    <a href="customer-login.html" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)] font-medium">
+                        Sign In
+                    </a>
+                    <a href="customer-dashboard.html" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)]">
+                        <i class="fas fa-user-circle text-xl"></i>
+                    </a>
+                    <a href="#" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)] relative">
+                        <i class="fas fa-shopping-basket text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-gold text-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">3</span>
+                    </a>
+                </nav>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-white/60 hover:text-gold transition-all duration-300">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="md:hidden hidden bg-black/95 header-blur border-t border-white/10">
+                <div class="px-4 py-4 space-y-4">
+                    <a href="search-results-new.html" class="block text-white/60 hover:text-gold transition-all duration-300 font-medium">Browse</a>
+                    <a href="offers.html" class="block text-white/60 hover:text-gold transition-all duration-300 font-medium">Offers</a>
+                    <a href="business-register.html" class="block text-white/60 hover:text-gold transition-all duration-300 font-medium">Add Business</a>
+                    <a href="customer-login.html" class="block text-white/60 hover:text-gold transition-all duration-300 font-medium">Sign In</a>
+                    <a href="customer-dashboard.html" class="block text-white/60 hover:text-gold transition-all duration-300 font-medium">Profile</a>
+                    <a href="#" class="block text-white/60 hover:text-gold transition-all duration-300 font-medium">Basket (3)</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Indicator -->
+    <div class="fixed top-16 w-full z-40 bg-black/80 header-blur border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex items-center justify-center space-x-8">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-gold text-black flex items-center justify-center text-sm font-bold">1</div>
+                    <span class="text-gold font-medium">Review</span>
+                </div>
+                <div class="w-12 h-0.5 bg-white/20"></div>
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center text-sm font-bold">2</div>
+                    <span class="text-white/60">Payment</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">Complete Your Booking</h1>
+                <p class="text-light-grey">Review your selection and choose your preferred time slot</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Booking Form -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Business Info -->
+                    <div class="card-gradient rounded-3xl p-6 border-glow">
+                        <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+                            <i class="fas fa-building mr-3 text-gold"></i>
+                            Business Details
+                        </h2>
+                        <div id="businessInfo" class="space-y-3">
+                            <!-- Business info will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Service Selection -->
+                    <div class="card-gradient rounded-3xl p-6 border-glow">
+                        <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-cut mr-3 text-gold"></i>
+                            Select Service
+                        </h2>
+                        <div class="space-y-4">
+                            <div class="service-option bg-dark-grey/50 rounded-2xl p-4 border border-white/10 cursor-pointer hover:border-gold/50 transition-all duration-300" 
+                                 data-service="hair-cut" data-price="35" data-duration="60">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Hair Cut & Style</h3>
+                                        <p class="text-light-grey text-sm">Professional cuts and styling for all hair types</p>
+                                        <p class="text-gold text-xs font-medium mt-1">Click to add</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-gold font-bold">£35</div>
+                                        <div class="text-light-grey text-sm">60 mins</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="service-option bg-dark-grey/50 rounded-2xl p-4 border border-white/10 cursor-pointer hover:border-gold/50 transition-all duration-300" 
+                                 data-service="hair-color" data-price="80" data-duration="120">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Hair Coloring</h3>
+                                        <p class="text-light-grey text-sm">Full color, highlights, and color correction</p>
+                                        <p class="text-gold text-xs font-medium mt-1">Click to add</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-gold font-bold">£80</div>
+                                        <div class="text-light-grey text-sm">120 mins</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="service-option bg-dark-grey/50 rounded-2xl p-4 border border-white/10 cursor-pointer hover:border-gold/50 transition-all duration-300" 
+                                 data-service="hair-treatment" data-price="45" data-duration="90">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Hair Treatment</h3>
+                                        <p class="text-light-grey text-sm">Deep conditioning and repair treatments</p>
+                                        <p class="text-gold text-xs font-medium mt-1">Click to add</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-gold font-bold">£45</div>
+                                        <div class="text-light-grey text-sm">90 mins</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="service-option bg-dark-grey/50 rounded-2xl p-4 border border-white/10 cursor-pointer hover:border-gold/50 transition-all duration-300" 
+                                 data-service="special-occasion" data-price="120" data-duration="180">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-white">Special Occasion</h3>
+                                        <p class="text-light-grey text-sm">Wedding and event styling</p>
+                                        <p class="text-gold text-xs font-medium mt-1">Click to add</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-gold font-bold">£120</div>
+                                        <div class="text-light-grey text-sm">180 mins</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Date & Time Selection -->
+                    <div class="card-gradient rounded-3xl p-6 border-glow">
+                        <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-calendar-alt mr-3 text-gold"></i>
+                            Select Date & Time
+                        </h2>
+                        
+                        <!-- Date Selection -->
+                        <div class="mb-6">
+                            <label class="block text-white font-medium mb-3">Choose Date</label>
+                            <input type="date" id="bookingDate" 
+                                   class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
+                                   min="">
+                        </div>
+                        
+                        <!-- Time Slots -->
+                        <div>
+                            <label class="block text-white font-medium mb-3">Available Times</label>
+                            <div id="timeSlots" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                <!-- Time slots will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Details -->
+                    <div class="card-gradient rounded-3xl p-6 border-glow">
+                        <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-user mr-3 text-gold"></i>
+                            Your Details
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-white font-medium mb-2">First Name</label>
+                                <input type="text" id="firstName" 
+                                       class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
+                                       placeholder="Enter your first name" required>
+                            </div>
+                            <div>
+                                <label class="block text-white font-medium mb-2">Last Name</label>
+                                <input type="text" id="lastName" 
+                                       class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
+                                       placeholder="Enter your last name" required>
+                            </div>
+                            <div>
+                                <label class="block text-white font-medium mb-2">Email</label>
+                                <input type="email" id="email" 
+                                       class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
+                                       placeholder="Enter your email" required>
+                            </div>
+                            <div>
+                                <label class="block text-white font-medium mb-2">Phone</label>
+                                <input type="tel" id="phone" 
+                                       class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
+                                       placeholder="Enter your phone number" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <label class="block text-white font-medium mb-2">Special Requests (Optional)</label>
+                            <textarea id="specialRequests" rows="3"
+                                      class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
+                                      placeholder="Any special requests or notes..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Summary -->
+                <div class="space-y-6">
+                    <!-- Summary Card -->
+                    <div class="card-gradient rounded-3xl p-6 border-glow sticky top-24">
+                        <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-receipt mr-3 text-gold"></i>
+                            Booking Summary
+                        </h2>
+                        
+                        <div id="bookingSummary" class="space-y-4">
+                            <!-- Summary will be populated by JavaScript -->
+                        </div>
+                        
+                        <!-- Special Offer -->
+                        <div id="offerSection" class="mt-6 p-4 rounded-xl bg-gold/10 border border-gold/30 hidden">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gold font-medium">First Visit Discount</p>
+                                    <p class="text-light-grey text-sm">20% off your first booking</p>
+                                </div>
+                                <span class="text-gold font-bold" id="discountAmount">-£0</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Total -->
+                        <div class="mt-6 pt-4 border-t border-white/20">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xl font-bold text-white">Total</span>
+                                <span class="text-2xl font-bold text-gold" id="totalAmount">£0</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Continue Button -->
+                        <button onclick="proceedToPayment()" 
+                                class="w-full mt-6 py-4 rounded-xl gold-gradient text-black font-bold hover:shadow-lg hover:shadow-gold/30 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                                id="continueBtn" disabled>
+                            <i class="fas fa-credit-card mr-2"></i>Continue to Payment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Waiting List Modal -->
+    <div id="waitingListModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl p-8 max-w-md w-full border-2 border-gold shadow-[0_0_20px_rgba(212,175,55,0.25)] modal-content relative">
+                <!-- Modal Header -->
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gold/10 flex items-center justify-center">
+                        <i class="fas fa-clock text-gold text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">This service is currently on a waiting list.</h2>
+                    <p class="text-gray-600">Please select an alternative date/time, or sign in/sign up to join the waiting list.</p>
+                </div>
+                
+                <!-- Modal Buttons -->
+                <div class="space-y-3 mb-6">
+                    <button onclick="selectDifferentTime()" 
+                            class="w-full py-3 px-6 rounded-xl border-2 border-gold text-gray-900 font-semibold hover:bg-gold/10 transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-calendar-alt mr-2"></i>Select Different Date/Time
+                    </button>
+                    
+                    <button onclick="joinWaitingList()" 
+                            class="w-full py-3 px-6 rounded-xl gold-gradient text-black font-semibold hover:shadow-lg hover:shadow-gold/30 transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-user-plus mr-2"></i>Sign In/Sign Up to Join Waiting List
+                    </button>
+                </div>
+                
+                <!-- Close Button -->
+                <button onclick="closeWaitingListModal()" 
+                        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Waiting List Confirmation Modal -->
+    <div id="waitingListConfirmationModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl p-8 max-w-md w-full border-2 border-gold shadow-[0_0_20px_rgba(212,175,55,0.25)] modal-content relative">
+                <!-- Modal Header -->
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
+                        <i class="fas fa-check text-green-600 text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">You have joined the waiting list!</h2>
+                    <p class="text-gray-600" id="waitingListServiceName">You have joined the waiting list for <span class="font-semibold text-gold">Hair Cut & Style</span>.</p>
+                </div>
+                
+                <!-- Modal Buttons -->
+                <div class="space-y-3 mb-6">
+                    <button onclick="viewWaitingListStatus()" 
+                            class="w-full py-3 px-6 rounded-xl gold-gradient text-black font-semibold hover:shadow-lg hover:shadow-gold/30 transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-list mr-2"></i>View Waiting List Status
+                    </button>
+                    
+                    <button onclick="closeWaitingListConfirmationModal()" 
+                            class="w-full py-3 px-6 rounded-xl border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-all duration-300">
+                        <i class="fas fa-home mr-2"></i>Back to Home
+                    </button>
+                </div>
+                
+                <!-- Close Button -->
+                <button onclick="closeWaitingListConfirmationModal()" 
+                        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedService = null;
+        let selectedDate = null;
+        let selectedTime = null;
+        let businessInfo = null;
+        let basketItems = JSON.parse(localStorage.getItem('basketItems') || '[]');
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBusinessInfo();
+            setupServiceSelection();
+            setupDateSelection();
+            setupFormValidation();
+            setupModalEventListeners();
+            updateBasketCount();
+            fillTestCustomerDetails();
+        });
+
+        // Setup modal event listeners
+        function setupModalEventListeners() {
+            // ESC key to close modals
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    const waitingListModal = document.getElementById('waitingListModal');
+                    const confirmationModal = document.getElementById('waitingListConfirmationModal');
+                    
+                    if (!waitingListModal.classList.contains('hidden')) {
+                        closeWaitingListModal();
+                    } else if (!confirmationModal.classList.contains('hidden')) {
+                        closeWaitingListConfirmationModal();
+                    }
+                }
+            });
+
+            // Background click to close modals
+            document.getElementById('waitingListModal').addEventListener('click', function(event) {
+                if (event.target === this) {
+                    closeWaitingListModal();
+                }
+            });
+
+            document.getElementById('waitingListConfirmationModal').addEventListener('click', function(event) {
+                if (event.target === this) {
+                    closeWaitingListConfirmationModal();
+                }
+            });
+        }
+
+        // Load business info from localStorage
+        function loadBusinessInfo() {
+            const stored = localStorage.getItem('selectedBusiness');
+            if (stored) {
+                businessInfo = JSON.parse(stored);
+                displayBusinessInfo();
+            } else {
+                // Fallback data
+                businessInfo = {
+                    name: 'Royal Hair Studio',
+                    location: '123 Hair Street, London, SW1A 1AA',
+                    phone: '+44 20 7123 4567',
+                    hasOffer: true,
+                    offerDiscount: 20
+                };
+                displayBusinessInfo();
+            }
+        }
+
+        // Display business info
+        function displayBusinessInfo() {
+            const container = document.getElementById('businessInfo');
+            container.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-white">${businessInfo.name}</h3>
+                        <p class="text-light-grey text-sm">${businessInfo.location}</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="flex text-gold">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="text-light-grey text-sm">${businessInfo.rating || 4.9} (${businessInfo.reviews || 127} reviews)</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Setup service selection
+        function setupServiceSelection() {
+            const serviceOptions = document.querySelectorAll('.service-option');
+            serviceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove previous selection
+                    serviceOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                        const clickText = opt.querySelector('.text-gold.text-xs');
+                        if (clickText) {
+                            clickText.textContent = 'Click to add';
+                        }
+                    });
+                    
+                    // Add selection to clicked option
+                    this.classList.add('selected');
+                    
+                    // Update text to show selected
+                    const clickText = this.querySelector('.text-gold.text-xs');
+                    if (clickText) {
+                        clickText.textContent = 'Selected ✓';
+                    }
+                    
+                    // Store selected service
+                    selectedService = {
+                        id: this.dataset.service,
+                        name: this.querySelector('h3').textContent,
+                        price: parseInt(this.dataset.price),
+                        duration: parseInt(this.dataset.duration)
+                    };
+                    
+                    updateBookingSummary();
+                    checkFormCompletion();
+                });
+            });
+        }
+
+        // Setup date selection
+        function setupDateSelection() {
+            const dateInput = document.getElementById('bookingDate');
+            
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.min = today;
+            
+            // Set default date to today for testing
+            dateInput.value = today;
+            selectedDate = today;
+            
+            dateInput.addEventListener('change', function() {
+                selectedDate = this.value;
+                generateTimeSlots();
+                checkFormCompletion();
+            });
+            
+            // Generate initial time slots
+            generateTimeSlots();
+        }
+
+        // Generate time slots based on mock availability data
+        function generateTimeSlots() {
+            if (!selectedDate) return;
+            
+            const timeSlotsContainer = document.getElementById('timeSlots');
+            const businessId = businessInfo ? businessInfo.slug : 'royal-hair-studio';
+            const serviceId = selectedService ? selectedService.id : 'hair-cut';
+            
+            // Get availability data for this business, service, and date
+            const businessData = mockAvailabilityData[businessId];
+            const serviceData = businessData ? businessData[serviceId] : null;
+            const dayData = serviceData ? serviceData[selectedDate] : null;
+            
+            let slotsHTML = '';
+            
+            if (!dayData) {
+                // Default slots if no data
+                const defaultSlots = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'];
+                slotsHTML = defaultSlots.map(time => `
+                    <div class="time-slot bg-dark-grey/50 rounded-xl p-3 border border-white/10 cursor-pointer text-center hover:border-gold/50 transition-all duration-300" 
+                         data-time="${time}">
+                        <span class="text-white font-medium">${time}</span>
+                    </div>
+                `).join('');
+            } else if (dayData.status === 'closed') {
+                // Business is closed
+                slotsHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <i class="fas fa-calendar-times text-4xl text-gray-500 mb-4"></i>
+                        <p class="text-gray-500 text-lg font-medium">Closed</p>
+                        <p class="text-gray-400 text-sm">This business is closed on this date</p>
+                    </div>
+                `;
+            } else if (dayData.status === 'fully-booked') {
+                // Fully booked with waiting list
+                slotsHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <i class="fas fa-clock text-4xl text-gold mb-4"></i>
+                        <p class="text-gold text-lg font-medium">Fully Booked</p>
+                        <p class="text-gray-400 text-sm">Join the waiting list for this date</p>
+                        <button onclick="openWaitingListModal()" 
+                                class="mt-4 px-6 py-2 rounded-xl gold-gradient text-black font-semibold hover:shadow-lg hover:shadow-gold/30 transition-all duration-300">
+                            Join Waiting List
+                        </button>
+                    </div>
+                `;
+            } else if (dayData.status === 'available') {
+                // Available slots
+                const allSlots = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'];
+                slotsHTML = allSlots.map(time => {
+                    const isAvailable = dayData.slots.includes(time);
+                    const slotClass = isAvailable 
+                        ? 'time-slot bg-dark-grey/50 rounded-xl p-3 border border-white/10 cursor-pointer text-center hover:border-gold/50 transition-all duration-300'
+                        : 'time-slot bg-dark-grey/30 rounded-xl p-3 border border-gray-600/30 text-center opacity-50 cursor-not-allowed';
+                    
+                    return `
+                        <div class="${slotClass}" data-time="${time}" data-available="${isAvailable}">
+                            <span class="text-white font-medium">${time}</span>
+                            ${!isAvailable ? '<span class="block text-xs text-gray-500 mt-1">Unavailable</span>' : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            timeSlotsContainer.innerHTML = slotsHTML;
+            
+            // Add click handlers to all time slots
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.addEventListener('click', function() {
+                    const time = this.dataset.time;
+                    const isAvailable = this.dataset.available === 'true';
+                    
+                    if (!isAvailable) {
+                        // Show waiting list modal for full slots
+                        openWaitingListModal();
+                        return;
+                    }
+                    
+                    // Remove previous selection
+                    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                    
+                    // Add selection to clicked slot
+                    this.classList.add('selected');
+                    
+                    selectedTime = time;
+                    updateBookingSummary();
+                    checkFormCompletion();
+                });
+            });
+        }
+
+        // Update booking summary
+        function updateBookingSummary() {
+            const summaryContainer = document.getElementById('bookingSummary');
+            const totalElement = document.getElementById('totalAmount');
+            const discountElement = document.getElementById('discountAmount');
+            const offerSection = document.getElementById('offerSection');
+            
+            let summaryHTML = '';
+            let total = 0;
+            
+            if (selectedService) {
+                summaryHTML += `
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white font-medium">${selectedService.name}</p>
+                            <p class="text-light-grey text-sm">${selectedService.duration} minutes</p>
+                        </div>
+                        <span class="text-gold font-bold">£${selectedService.price}</span>
+                    </div>
+                `;
+                total = selectedService.price;
+            }
+            
+            if (selectedDate && selectedTime) {
+                const date = new Date(selectedDate);
+                const formattedDate = date.toLocaleDateString('en-GB', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                summaryHTML += `
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white font-medium">Date & Time</p>
+                            <p class="text-light-grey text-sm">${formattedDate} at ${selectedTime}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            summaryContainer.innerHTML = summaryHTML;
+            
+            // Handle special offer
+            if (businessInfo.hasOffer && selectedService) {
+                const discount = Math.round(total * (businessInfo.offerDiscount / 100));
+                total -= discount;
+                
+                discountElement.textContent = `-£${discount}`;
+                offerSection.classList.remove('hidden');
+            } else {
+                offerSection.classList.add('hidden');
+            }
+            
+            totalElement.textContent = `£${total}`;
+        }
+
+        // Setup form validation
+        function setupFormValidation() {
+            const inputs = ['firstName', 'lastName', 'email', 'phone'];
+            inputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                input.addEventListener('input', checkFormCompletion);
+            });
+        }
+
+        // Check if form is complete
+        function checkFormCompletion() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            
+            const isComplete = selectedService && selectedDate && selectedTime && 
+                              firstName && lastName && email && phone;
+            
+            const continueBtn = document.getElementById('continueBtn');
+            continueBtn.disabled = !isComplete;
+        }
+
+        // Create basket item
+        function createBasketItem() {
+            if (!selectedService || !selectedDate || !selectedTime || !businessInfo) {
+                return null;
+            }
+
+            const basketItem = {
+                serviceId: selectedService.id,
+                businessId: businessInfo.id,
+                name: selectedService.name,
+                price: selectedService.price,
+                date: selectedDate,
+                time: selectedTime,
+                payMode: 'pending' // Will be updated after payment
+            };
+
+            return basketItem;
+        }
+
+        // Add item to basket
+        function addToBasket(basketItem) {
+            basketItems.push(basketItem);
+            localStorage.setItem('basketItems', JSON.stringify(basketItems));
+            updateBasketCount();
+        }
+
+        // Update basket count in header
+        function updateBasketCount() {
+            const basketCount = basketItems.length;
+            const basketCountElements = document.querySelectorAll('.basket-count');
+            basketCountElements.forEach(element => {
+                element.textContent = basketCount;
+            });
+        }
+
+        // Proceed to payment
+        function proceedToPayment() {
+            const basketItem = createBasketItem();
+            if (!basketItem) {
+                alert('Please complete all required fields');
+                return;
+            }
+
+            // Add to basket
+            addToBasket(basketItem);
+
+            const bookingData = {
+                business: businessInfo,
+                service: selectedService,
+                date: selectedDate,
+                time: selectedTime,
+                customer: {
+                    firstName: document.getElementById('firstName').value.trim(),
+                    lastName: document.getElementById('lastName').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    specialRequests: document.getElementById('specialRequests').value.trim()
+                },
+                total: calculateTotal(),
+                basketItem: basketItem
+            };
+            
+            localStorage.setItem('bookingData', JSON.stringify(bookingData));
+            window.location.href = 'payment-page.html';
+        }
+
+        // Calculate total with discount
+        function calculateTotal() {
+            let total = selectedService ? selectedService.price : 0;
+            
+            if (businessInfo.hasOffer && selectedService) {
+                const discount = Math.round(total * (businessInfo.offerDiscount / 100));
+                total -= discount;
+            }
+            
+            return total;
+        }
+
+        // Go back to business profile
+        function goBack() {
+            window.history.back();
+        }
+
+        // Open waiting list modal
+        function openWaitingListModal() {
+            const modal = document.getElementById('waitingListModal');
+            modal.classList.remove('hidden');
+            
+            // Add show classes for animation
+            setTimeout(() => {
+                modal.classList.add('show');
+                const modalContent = modal.querySelector('.modal-content');
+                modalContent.classList.add('show');
+            }, 10);
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close waiting list modal
+        function closeWaitingListModal() {
+            const modal = document.getElementById('waitingListModal');
+            const modalContent = modal.querySelector('.modal-content');
+            
+            // Remove show classes for animation
+            modal.classList.remove('show');
+            modalContent.classList.remove('show');
+            
+            // Hide modal after animation
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+            
+            // Restore body scroll
+            document.body.style.overflow = '';
+        }
+
+        // Open waiting list confirmation modal
+        function openWaitingListConfirmationModal() {
+            const modal = document.getElementById('waitingListConfirmationModal');
+            const serviceNameElement = document.getElementById('waitingListServiceName');
+            
+            // Update service name in confirmation
+            if (selectedService) {
+                serviceNameElement.innerHTML = `You have joined the waiting list for <span class="font-semibold text-gold">${selectedService.name}</span>.`;
+            }
+            
+            modal.classList.remove('hidden');
+            
+            // Add show classes for animation
+            setTimeout(() => {
+                modal.classList.add('show');
+                const modalContent = modal.querySelector('.modal-content');
+                modalContent.classList.add('show');
+            }, 10);
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close waiting list confirmation modal
+        function closeWaitingListConfirmationModal() {
+            const modal = document.getElementById('waitingListConfirmationModal');
+            const modalContent = modal.querySelector('.modal-content');
+            
+            // Remove show classes for animation
+            modal.classList.remove('show');
+            modalContent.classList.remove('show');
+            
+            // Hide modal after animation
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+            
+            // Restore body scroll
+            document.body.style.overflow = '';
+        }
+
+        // Select different time slot
+        function selectDifferentTime() {
+            closeWaitingListModal();
+            // Clear current selection to allow user to select again
+            selectedTime = null;
+            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+            updateBookingSummary();
+            checkFormCompletion();
+        }
+
+        // Join waiting list (redirect to auth)
+        function joinWaitingList() {
+            const serviceId = businessInfo ? businessInfo.slug : 'royal-hair-studio';
+            window.location.href = `/auth/signin?redirect=/waiting-list/${serviceId}`;
+        }
+
+        // View waiting list status
+        function viewWaitingListStatus() {
+            window.location.href = '/customer-dashboard.html#waiting-list';
+        }
+
+        // Mock availability data for all businesses and services
+        const mockAvailabilityData = {
+            'royal-hair-studio': {
+                'hair-cut': {
+                    '2024-01-15': { status: 'fully-booked', waitingList: true },
+                    '2024-01-16': { status: 'available', slots: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'] },
+                    '2024-01-17': { status: 'closed' },
+                    '2024-01-18': { status: 'available', slots: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'] },
+                    '2024-01-19': { status: 'fully-booked', waitingList: true },
+                    '2024-01-20': { status: 'available', slots: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'] },
+                    '2024-01-21': { status: 'closed' }
+                },
+                'hair-color': {
+                    '2024-01-15': { status: 'available', slots: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'] },
+                    '2024-01-16': { status: 'fully-booked', waitingList: true },
+                    '2024-01-17': { status: 'available', slots: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'] },
+                    '2024-01-18': { status: 'closed' },
+                    '2024-01-19': { status: 'available', slots: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'] },
+                    '2024-01-20': { status: 'fully-booked', waitingList: true },
+                    '2024-01-21': { status: 'available', slots: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'] }
+                },
+                'hair-treatment': {
+                    '2024-01-15': { status: 'available', slots: ['09:00', '10:30', '12:00', '13:30', '15:00', '16:30'] },
+                    '2024-01-16': { status: 'available', slots: ['09:00', '10:30', '12:00', '13:30', '15:00', '16:30'] },
+                    '2024-01-17': { status: 'fully-booked', waitingList: true },
+                    '2024-01-18': { status: 'available', slots: ['09:00', '10:30', '12:00', '13:30', '15:00', '16:30'] },
+                    '2024-01-19': { status: 'closed' },
+                    '2024-01-20': { status: 'available', slots: ['09:00', '10:30', '12:00', '13:30', '15:00', '16:30'] },
+                    '2024-01-21': { status: 'fully-booked', waitingList: true }
+                },
+                'special-occasion': {
+                    '2024-01-15': { status: 'closed' },
+                    '2024-01-16': { status: 'available', slots: ['09:00', '12:00', '15:00'] },
+                    '2024-01-17': { status: 'available', slots: ['09:00', '12:00', '15:00'] },
+                    '2024-01-18': { status: 'fully-booked', waitingList: true },
+                    '2024-01-19': { status: 'available', slots: ['09:00', '12:00', '15:00'] },
+                    '2024-01-20': { status: 'closed' },
+                    '2024-01-21': { status: 'available', slots: ['09:00', '12:00', '15:00'] }
+                }
+            },
+            'elite-barber': {
+                'hair-cut': {
+                    '2024-01-15': { status: 'available', slots: ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00'] },
+                    '2024-01-16': { status: 'fully-booked', waitingList: true },
+                    '2024-01-17': { status: 'available', slots: ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00'] },
+                    '2024-01-18': { status: 'closed' },
+                    '2024-01-19': { status: 'available', slots: ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00'] },
+                    '2024-01-20': { status: 'fully-booked', waitingList: true },
+                    '2024-01-21': { status: 'closed' }
+                }
+            },
+            'glamour-beauty': {
+                'hair-cut': {
+                    '2024-01-15': { status: 'fully-booked', waitingList: true },
+                    '2024-01-16': { status: 'available', slots: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'] },
+                    '2024-01-17': { status: 'available', slots: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'] },
+                    '2024-01-18': { status: 'closed' },
+                    '2024-01-19': { status: 'fully-booked', waitingList: true },
+                    '2024-01-20': { status: 'available', slots: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'] },
+                    '2024-01-21': { status: 'available', slots: ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'] }
+                }
+            }
+        };
+
+        // Check if time slot is available (extended with mock data)
+        function checkTimeSlotAvailability(date, time) {
+            const businessId = businessInfo ? businessInfo.slug : 'royal-hair-studio';
+            const serviceId = selectedService ? selectedService.id : 'hair-cut';
+            
+            // Get availability data for this business and service
+            const businessData = mockAvailabilityData[businessId];
+            if (!businessData) return true; // Default to available if no data
+            
+            const serviceData = businessData[serviceId];
+            if (!serviceData) return true; // Default to available if no data
+            
+            const dayData = serviceData[date];
+            if (!dayData) return true; // Default to available if no data
+            
+            // Check status
+            if (dayData.status === 'closed') {
+                return false; // No availability, no waiting list
+            }
+            
+            if (dayData.status === 'fully-booked') {
+                return false; // No availability, but waiting list active
+            }
+            
+            if (dayData.status === 'available') {
+                return dayData.slots.includes(time);
+            }
+            
+            return true; // Default fallback
+        }
+
+        // Check if waiting list is active for a date/time
+        function isWaitingListActive(date, time) {
+            const businessId = businessInfo ? businessInfo.slug : 'royal-hair-studio';
+            const serviceId = selectedService ? selectedService.id : 'hair-cut';
+            
+            const businessData = mockAvailabilityData[businessId];
+            if (!businessData) return false;
+            
+            const serviceData = businessData[serviceId];
+            if (!serviceData) return false;
+            
+            const dayData = serviceData[date];
+            if (!dayData) return false;
+            
+            return dayData.status === 'fully-booked' && dayData.waitingList === true;
+        }
+
+        // Check if business is closed for a date
+        function isBusinessClosed(date) {
+            const businessId = businessInfo ? businessInfo.slug : 'royal-hair-studio';
+            const serviceId = selectedService ? selectedService.id : 'hair-cut';
+            
+            const businessData = mockAvailabilityData[businessId];
+            if (!businessData) return false;
+            
+            const serviceData = businessData[serviceId];
+            if (!serviceData) return false;
+            
+            const dayData = serviceData[date];
+            if (!dayData) return false;
+            
+            return dayData.status === 'closed';
+        }
+
+        // Demo function to simulate successful sign-in and show confirmation
+        function simulateSuccessfulSignIn() {
+            // This would be called after successful authentication
+            // For demo purposes, we'll show the confirmation modal
+            closeWaitingListModal();
+            setTimeout(() => {
+                openWaitingListConfirmationModal();
+            }, 100);
+        }
+
+        // Demo function to test waiting list flow
+        function testWaitingListFlow() {
+            console.log('Testing Waiting List Flow:');
+            console.log('1. Select a full time slot (14:00 on 2024-01-15)');
+            console.log('2. Waiting list modal should appear');
+            console.log('3. Click "Sign In/Sign Up to Join Waiting List"');
+            console.log('4. After successful auth, confirmation modal should appear');
+            
+            // For demo: simulate the full flow
+            selectedDate = '2024-01-15';
+            selectedTime = '14:00';
+            openWaitingListModal();
+        }
+
+        // Demo function to test availability scenarios
+        function testAvailabilityScenarios() {
+            console.log('🎯 Mock Availability Data Test:');
+            console.log('\n📅 Royal Hair Studio - Hair Cut:');
+            console.log('• 2024-01-15: Fully Booked (Waiting List Active)');
+            console.log('• 2024-01-16: Available (18 slots)');
+            console.log('• 2024-01-17: Closed');
+            console.log('• 2024-01-18: Available (18 slots)');
+            console.log('• 2024-01-19: Fully Booked (Waiting List Active)');
+            console.log('• 2024-01-20: Available (18 slots)');
+            console.log('• 2024-01-21: Closed');
+            
+            console.log('\n📅 Royal Hair Studio - Hair Color:');
+            console.log('• 2024-01-15: Available (8 slots)');
+            console.log('• 2024-01-16: Fully Booked (Waiting List Active)');
+            console.log('• 2024-01-17: Available (8 slots)');
+            console.log('• 2024-01-18: Closed');
+            console.log('• 2024-01-19: Available (8 slots)');
+            console.log('• 2024-01-20: Fully Booked (Waiting List Active)');
+            console.log('• 2024-01-21: Available (8 slots)');
+            
+            console.log('\n📅 Elite Barber - Hair Cut:');
+            console.log('• 2024-01-15: Available (21 slots)');
+            console.log('• 2024-01-16: Fully Booked (Waiting List Active)');
+            console.log('• 2024-01-17: Available (21 slots)');
+            console.log('• 2024-01-18: Closed');
+            console.log('• 2024-01-19: Available (21 slots)');
+            console.log('• 2024-01-20: Fully Booked (Waiting List Active)');
+            console.log('• 2024-01-21: Closed');
+            
+            console.log('\n🧪 Test Instructions:');
+            console.log('1. Select different dates to see various states');
+            console.log('2. Try 2024-01-15 for fully booked (waiting list)');
+            console.log('3. Try 2024-01-17 for closed business');
+            console.log('4. Try 2024-01-16 for available slots');
+            console.log('5. Switch between different services to see different patterns');
+        }
+
+        // Get availability summary for a business
+        function getAvailabilitySummary(businessId, serviceId) {
+            const businessData = mockAvailabilityData[businessId];
+            if (!businessData) return null;
+            
+            const serviceData = businessData[serviceId];
+            if (!serviceData) return null;
+            
+            const summary = {
+                totalDays: Object.keys(serviceData).length,
+                availableDays: 0,
+                fullyBookedDays: 0,
+                closedDays: 0,
+                waitingListDays: 0
+            };
+            
+            Object.values(serviceData).forEach(dayData => {
+                if (dayData.status === 'available') summary.availableDays++;
+                if (dayData.status === 'fully-booked') summary.fullyBookedDays++;
+                if (dayData.status === 'closed') summary.closedDays++;
+                if (dayData.waitingList) summary.waitingListDays++;
+            });
+            
+            return summary;
+        }
+
+        // Display basket items (for debugging/demo)
+        function displayBasketItems() {
+            console.log('Current Basket Items:');
+            basketItems.forEach((item, index) => {
+                console.log(`${index + 1}. ${item.name} - ${item.date} at ${item.time} - £${item.price} - Payment: ${item.payMode}`);
+            });
+            return basketItems;
+        }
+
+        // Clear basket (for testing)
+        function clearBasket() {
+            basketItems = [];
+            localStorage.setItem('basketItems', JSON.stringify(basketItems));
+            updateBasketCount();
+            console.log('Basket cleared');
+        }
+
+        // Get basket summary
+        function getBasketSummary() {
+            const totalItems = basketItems.length;
+            const totalValue = basketItems.reduce((sum, item) => sum + item.price, 0);
+            const pendingItems = basketItems.filter(item => item.payMode === 'pending').length;
+            const paidItems = basketItems.filter(item => item.payMode !== 'pending').length;
+            
+            return {
+                totalItems,
+                totalValue,
+                pendingItems,
+                paidItems
+            };
+        }
+
+        // Fill test customer details for easy testing
+        function fillTestCustomerDetails() {
+            // Test customer data
+            const testCustomer = {
+                firstName: 'John',
+                lastName: 'Smith',
+                email: 'john.smith@example.com',
+                phone: '+44 7123 456789',
+                specialRequests: 'Please use organic products if possible. I have sensitive skin.'
+            };
+            
+            // Fill in the form fields
+            document.getElementById('firstName').value = testCustomer.firstName;
+            document.getElementById('lastName').value = testCustomer.lastName;
+            document.getElementById('email').value = testCustomer.email;
+            document.getElementById('phone').value = testCustomer.phone;
+            document.getElementById('specialRequests').value = testCustomer.specialRequests;
+            
+            // Trigger form validation to enable continue button when service/time are selected
+            checkFormCompletion();
+            
+            console.log('✅ Test customer details filled in:');
+            console.log(`Name: ${testCustomer.firstName} ${testCustomer.lastName}`);
+            console.log(`Email: ${testCustomer.email}`);
+            console.log(`Phone: ${testCustomer.phone}`);
+            console.log('📝 Now select a service and time slot to test the booking flow!');
+        }
+    </script>
+</body>
+</html>

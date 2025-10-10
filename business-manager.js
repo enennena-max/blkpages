@@ -6,10 +6,12 @@ class BusinessManager {
     }
     
     init() {
-        // Initialize with demo businesses if none exist
-        if (!this.getBusinesses().length) {
-            this.initializeDemoBusinesses();
-        }
+        // Always initialize with demo businesses for testing
+        console.log('Initializing business manager...');
+        this.initializeDemoBusinesses();
+        const businesses = this.getBusinesses();
+        console.log('Business manager initialized with', businesses.length, 'businesses');
+        console.log('Business names:', businesses.map(b => b.name));
     }
     
     // Get all businesses from localStorage
@@ -151,6 +153,7 @@ class BusinessManager {
     // Initialize with demo businesses
     initializeDemoBusinesses() {
         const demoBusinesses = [
+            // Professional Tier Businesses (3)
             { 
                 id: 'demo_1',
                 name: "Royal Hair Studio", 
@@ -163,7 +166,7 @@ class BusinessManager {
                 hasPhoto: true,
                 hasBooking: true,
                 featured: true,
-                description: "Premium hair styling and cutting services",
+                description: "Premium hair styling and cutting services with advanced booking system",
                 phone: "+44 20 1234 5678",
                 email: "info@royalhair.com",
                 address: "123 Main Street",
@@ -185,7 +188,7 @@ class BusinessManager {
                 hasPhoto: true,
                 hasBooking: true,
                 featured: true,
-                description: "Traditional and modern barbering services",
+                description: "Traditional and modern barbering services with full payment integration",
                 phone: "+44 20 2345 6789",
                 email: "hello@elitebarber.com",
                 address: "456 High Street",
@@ -207,7 +210,7 @@ class BusinessManager {
                 hasPhoto: true,
                 hasBooking: true,
                 featured: true,
-                description: "Full-service beauty salon and spa treatments",
+                description: "Full-service beauty salon and spa treatments with business insights",
                 phone: "+44 20 3456 7890",
                 email: "book@glamourbeauty.com",
                 address: "789 Queen Street",
@@ -217,8 +220,78 @@ class BusinessManager {
                 dateCreated: new Date().toISOString(),
                 status: 'active'
             },
+            
+            // Starter Tier Businesses (3)
             { 
                 id: 'demo_4',
+                name: "Style Studio", 
+                category: "hairdresser", 
+                rating: 4.5, 
+                reviews: 45,
+                location: "321 Style Avenue, London",
+                image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=400&h=250&fit=crop&crop=center",
+                subscription: "starter",
+                hasPhoto: true,
+                hasBooking: true,
+                featured: false,
+                description: "Modern hair styling with basic booking system",
+                phone: "+44 20 4567 8901",
+                email: "info@stylestudio.com",
+                address: "321 Style Avenue",
+                city: "London",
+                state: "Greater London",
+                zipCode: "SW3 4AB",
+                dateCreated: new Date().toISOString(),
+                status: 'active'
+            },
+            { 
+                id: 'demo_5',
+                name: "Classic Cuts", 
+                category: "barber", 
+                rating: 4.3, 
+                reviews: 32,
+                location: "654 Barber Lane, London",
+                image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=250&fit=crop&crop=center",
+                subscription: "starter",
+                hasPhoto: true,
+                hasBooking: true,
+                featured: false,
+                description: "Traditional barbering with enhanced profile visibility",
+                phone: "+44 20 5678 9012",
+                email: "book@classiccuts.com",
+                address: "654 Barber Lane",
+                city: "London",
+                state: "Greater London",
+                zipCode: "E2 5CD",
+                dateCreated: new Date().toISOString(),
+                status: 'active'
+            },
+            { 
+                id: 'demo_6',
+                name: "Beauty Haven", 
+                category: "beauty", 
+                rating: 4.4, 
+                reviews: 67,
+                location: "987 Beauty Road, London",
+                image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=250&fit=crop&crop=center",
+                subscription: "starter",
+                hasPhoto: true,
+                hasBooking: true,
+                featured: false,
+                description: "Beauty treatments with photo gallery and customer reviews",
+                phone: "+44 20 6789 0123",
+                email: "hello@beautyhaven.com",
+                address: "987 Beauty Road",
+                city: "London",
+                state: "Greater London",
+                zipCode: "W4 6EF",
+                dateCreated: new Date().toISOString(),
+                status: 'active'
+            },
+            
+            // Basic/Free Tier Businesses (2)
+            { 
+                id: 'demo_7',
                 name: "Perfect Nails", 
                 category: "nail", 
                 rating: 0,
@@ -238,11 +311,42 @@ class BusinessManager {
                 zipCode: "NW1 6XE",
                 dateCreated: new Date().toISOString(),
                 status: 'active'
+            },
+            { 
+                id: 'demo_8',
+                name: "Quick Cuts", 
+                category: "barber", 
+                rating: 0,
+                reviews: 0,
+                location: "555 Quick Street, London",
+                image: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400&h=250&fit=crop&crop=center",
+                subscription: "free",
+                hasPhoto: false,
+                hasBooking: false,
+                featured: false,
+                description: "Fast and affordable haircuts",
+                phone: "+44 20 8765 4321",
+                email: "contact@quickcuts.com",
+                address: "555 Quick Street",
+                city: "London",
+                state: "Greater London",
+                zipCode: "SE1 7GH",
+                dateCreated: new Date().toISOString(),
+                status: 'active'
             }
         ];
         
         this.saveBusinesses(demoBusinesses);
-        console.log('Demo businesses initialized');
+        console.log('8 demo businesses initialized with different tiers');
+        
+        // Force refresh the page if we're on search-results
+        if (typeof window !== 'undefined' && window.location.pathname.includes('search-results')) {
+            setTimeout(() => {
+                if (typeof window.initializeSearch === 'function') {
+                    window.initializeSearch();
+                }
+            }, 100);
+        }
     }
     
     // Get businesses by category

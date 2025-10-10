@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse - BlkPages</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/output.css">
+    
+    <!-- Business Manager -->
+    <script src="business-manager.js"></script>
+    
+    <!-- Analytics Tracking System -->
+    <script src="analytics-tracker.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'poppins': ['Poppins', 'sans-serif']
+                    },
+                    colors: {
+                        'charcoal': '#121212',
+                        'dark-grey': '#1A1A1A',
+                        'light-grey': '#CCCCCC',
+                        'gold': '#D4AF37',
+                        'neon-pink': '#FF3CAC',
+                        'neon-blue': '#2B86C5',
+                        'neon-green': '#4ADE80',
+                        'neon-purple': '#784BA0'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 20px rgba(212, 175, 55, 0.2)' },
+                            '100%': { boxShadow: '0 0 30px rgba(212, 175, 55, 0.4)' }
+                        },
+                        pulseSubtle: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.8' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom gradient backgrounds */
+        .gradient-bg {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%, #000000 100%);
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, 
+                rgba(0,0,0,0.9) 0%, 
+                rgba(26,26,26,0.8) 25%, 
+                rgba(42,42,42,0.7) 50%, 
+                rgba(26,26,26,0.8) 75%, 
+                rgba(0,0,0,0.9) 100%);
+        }
+        
+        .card-gradient {
+            background: linear-gradient(145deg, 
+                rgba(26,26,26,0.95) 0%, 
+                rgba(42,42,42,0.9) 50%, 
+                rgba(26,26,26,0.95) 100%);
+        }
+        
+        .gold-gradient {
+            background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3), 
+                        0 0 40px rgba(212, 175, 55, 0.2), 
+                        0 0 60px rgba(212, 175, 55, 0.1);
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        .border-glow {
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Header backdrop blur effect */
+        .header-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #D4AF37, #FFD700);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #FFD700, #D4AF37);
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-inter">
+    <!-- Fixed Header -->
+    <header class="fixed top-0 w-full z-50 bg-black header-blur border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-white hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)]">
+                        BlkPages
+                    </a>
+                </div>
+                
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="search-results-new.html" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)] font-medium">
+                        Browse
+                    </a>
+                    <a href="offers.html" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)] font-medium">
+                        Offers
+                    </a>
+                    <a href="business-register.html" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)] font-medium">
+                        Add Business
+                    </a>
+                    <a href="customer-login.html" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)] font-medium">
+                        Sign In
+                    </a>
+                    <a href="customer-dashboard.html" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)]">
+                        <i class="fas fa-user-circle text-xl"></i>
+                    </a>
+                    <a href="#" class="text-white/60 hover:text-gold transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(212,175,55,0.5)] relative">
+                        <i class="fas fa-shopping-basket text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-gold text-black text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">3</span>
+                    </a>
+                </nav>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-white/60 hover:text-gold transition-all duration-300">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="md:hidden hidden bg-black/95 header-blur border-t border-white/10">
+                <div class="px-4 py-4 space-y-4">
+                    <a href="search-results-new.html" class="block text-white/60 hover:text-gold transition-all duration-300 font-medium">Browse</a>
+                    <a href="offers.html" class="block text-white/60 hover:text-gold transition-all duration-300 font-medium">Offers</a>
+                    <a href="business-register.html" class="block text-white/60 hover:text-gold transition-all duration-300 font-medium">Add Business</a>
+                    <a href="customer-login.html" class="block text-white/60 hover:text-gold transition-all duration-300 font-medium">Sign In</a>
+                    <a href="customer-dashboard.html" class="block text-white/60 hover:text-gold transition-all duration-300 font-medium">Profile</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="pt-20 pb-24 relative overflow-hidden" style="background: radial-gradient(circle at center, rgba(212,175,55,0.15) 0%, #000 100%);">
+        <!-- Background Elements -->
+        <div class="absolute inset-0">
+            <div class="absolute top-20 left-10 w-32 h-32 bg-gold/10 rounded-full blur-xl animate-float"></div>
+            <div class="absolute top-40 right-20 w-24 h-24 bg-neon-pink/10 rounded-full blur-lg animate-float" style="animation-delay: 2s;"></div>
+            <div class="absolute bottom-20 left-1/4 w-40 h-40 bg-neon-blue/10 rounded-full blur-2xl animate-float" style="animation-delay: 4s;"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6 text-white animate-fade-in">
+                    Find Your Perfect Business
+                </h1>
+                <p class="text-xl mb-12 text-[#D1D1D1] animate-slide-up">
+                    Search for businesses near you.
+                </p>
+                
+                <!-- Search Bar -->
+                <div class="max-w-4xl mx-auto animate-slide-up">
+                    <div class="card-gradient rounded-3xl p-4 md:p-8 border-glow">
+                        <!-- Mobile: Full-width stacked layout -->
+                        <div class="block md:hidden space-y-4">
+                            <!-- Business Search -->
+                            <input type="text" 
+                                   id="businessSearchMobile" 
+                                   placeholder="Search for premium businesses..."
+                                   class="w-full px-6 py-4 rounded-md bg-[#111] border border-white/20 text-white placeholder-white focus:outline-none focus:border-[#D4AF37] focus:shadow-[0_0_10px_rgba(212,175,55,0.25)] transition-all duration-300 text-lg">
+                            
+                            <!-- Location Search -->
+                            <input type="text" 
+                                   id="locationSearchMobile" 
+                                   placeholder="Location"
+                                   class="w-full px-6 py-4 rounded-md bg-[#111] border border-white/20 text-white placeholder-white focus:outline-none focus:border-[#D4AF37] focus:shadow-[0_0_10px_rgba(212,175,55,0.25)] transition-all duration-300 text-lg">
+                            
+                            <!-- Search Button -->
+                            <button onclick="performSearch()" 
+                                    class="w-full px-8 py-4 rounded-md bg-[#D4AF37] text-black font-bold text-lg hover:bg-black hover:text-[#D4AF37] hover:scale-[1.03] transition-all duration-300">
+                                <i class="fas fa-search mr-2"></i>Search
+                            </button>
+                            
+                            <!-- Near Me Button -->
+                            <button onclick="findNearMe()" 
+                                    class="w-full px-8 py-4 rounded-md bg-black border border-[#D4AF37] text-white font-bold text-lg hover:scale-[1.03] transition-all duration-300">
+                                <i class="fas fa-map-marker-alt mr-2"></i>Near Me
+                            </button>
+                        </div>
+                        
+                        <!-- Desktop: Grid layout -->
+                        <div class="hidden md:block">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <!-- Business Search -->
+                                <div class="md:col-span-2">
+                                    <input type="text" 
+                                           id="businessSearch" 
+                                           placeholder="Search for premium businesses..."
+                                           class="w-full px-6 py-4 rounded-md bg-[#111] border border-white/20 text-white placeholder-white focus:outline-none focus:border-[#D4AF37] focus:shadow-[0_0_10px_rgba(212,175,55,0.25)] transition-all duration-300 text-lg">
+                                </div>
+                                
+                                <!-- Location Search -->
+                                <div>
+                                    <input type="text" 
+                                           id="locationSearch" 
+                                           placeholder="Location"
+                                           class="w-full px-6 py-4 rounded-md bg-[#111] border border-white/20 text-white placeholder-white focus:outline-none focus:border-[#D4AF37] focus:shadow-[0_0_10px_rgba(212,175,55,0.25)] transition-all duration-300 text-lg">
+                                </div>
+                                
+                                <!-- Search Button -->
+                                <div>
+                                    <button onclick="performSearch()" 
+                                            class="w-full px-8 py-4 rounded-md bg-[#D4AF37] text-black font-bold text-lg hover:bg-black hover:text-[#D4AF37] hover:scale-[1.03] transition-all duration-300">
+                                        <i class="fas fa-search mr-2"></i>Search
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                            <!-- Near Me Button -->
+                            <div class="flex justify-center mb-8">
+                                <button onclick="findNearMe()" 
+                                        class="px-8 py-4 rounded-md bg-black border border-[#D4AF37] text-white font-bold text-lg hover:scale-[1.03] transition-all duration-300">
+                                    <i class="fas fa-map-marker-alt mr-2"></i>Near Me
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Filter Dropdowns - Mobile: Hidden by default, shown via sticky button -->
+                        <div id="mobileFilters" class="hidden md:hidden space-y-4 mb-6">
+                            <!-- Category Filter -->
+                            <select id="categoryFilterMobile" onchange="applyFilters()" 
+                                    class="w-full px-4 py-3 rounded-md bg-[#111] border border-[#D4AF37] text-white focus:outline-none focus:shadow-[0_0_10px_rgba(212,175,55,0.25)] hover:shadow-[0_0_10px_rgba(212,175,55,0.25)] transition-all duration-300">
+                                <option value="">All Categories</option>
+                                <option value="hair">Hair & Beauty</option>
+                                <option value="barber">Barbering</option>
+                                <option value="beauty">Spa & Wellness</option>
+                                <option value="nails">Nail Art</option>
+                            </select>
+                            
+                            <!-- Location Filter -->
+                            <select id="locationFilterMobile" onchange="applyFilters()" 
+                                    class="w-full px-4 py-3 rounded-md bg-[#111] border border-[#D4AF37] text-white focus:outline-none focus:shadow-[0_0_10px_rgba(212,175,55,0.25)] hover:shadow-[0_0_10px_rgba(212,175,55,0.25)] transition-all duration-300">
+                                <option value="">All Locations</option>
+                                <option value="london">London</option>
+                                <option value="manchester">Manchester</option>
+                                <option value="birmingham">Birmingham</option>
+                                <option value="liverpool">Liverpool</option>
+                            </select>
+                            
+                            <!-- Sort By Filter -->
+                            <select id="sortByFilterMobile" onchange="applyFilters()" 
+                                    class="w-full px-4 py-3 rounded-md bg-[#111] border border-[#D4AF37] text-white focus:outline-none focus:shadow-[0_0_10px_rgba(212,175,55,0.25)] hover:shadow-[0_0_10px_rgba(212,175,55,0.25)] transition-all duration-300">
+                                <option value="relevance">Sort By Relevance</option>
+                                <option value="rating">Highest Rated</option>
+                                <option value="distance">Nearest First</option>
+                                <option value="name">Name A-Z</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Filter Dropdowns - Desktop -->
+                        <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-6">
+                            <!-- Category Filter -->
+                            <div>
+                                <select id="categoryFilter" onchange="applyFilters()" 
+                                        class="w-full px-4 py-3 rounded-md bg-[#111] border border-[#D4AF37] text-white focus:outline-none focus:shadow-[0_0_10px_rgba(212,175,55,0.25)] hover:shadow-[0_0_10px_rgba(212,175,55,0.25)] transition-all duration-300">
+                                    <option value="">All Categories</option>
+                                    <option value="hair">Hair & Beauty</option>
+                                    <option value="barber">Barbering</option>
+                                    <option value="beauty">Spa & Wellness</option>
+                                    <option value="nails">Nail Art</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Location Filter -->
+                            <div>
+                                <select id="locationFilter" onchange="applyFilters()" 
+                                        class="w-full px-4 py-3 rounded-md bg-[#111] border border-[#D4AF37] text-white focus:outline-none focus:shadow-[0_0_10px_rgba(212,175,55,0.25)] hover:shadow-[0_0_10px_rgba(212,175,55,0.25)] transition-all duration-300">
+                                    <option value="">All Locations</option>
+                                    <option value="london">London</option>
+                                    <option value="manchester">Manchester</option>
+                                    <option value="birmingham">Birmingham</option>
+                                    <option value="liverpool">Liverpool</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Sort By Filter -->
+                            <div>
+                                <select id="sortByFilter" onchange="applyFilters()" 
+                                        class="w-full px-4 py-3 rounded-md bg-[#111] border border-[#D4AF37] text-white focus:outline-none focus:shadow-[0_0_10px_rgba(212,175,55,0.25)] hover:shadow-[0_0_10px_rgba(212,175,55,0.25)] transition-all duration-300">
+                                    <option value="relevance">Sort By Relevance</option>
+                                    <option value="rating">Highest Rated</option>
+                                    <option value="distance">Nearest First</option>
+                                    <option value="name">Name A-Z</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Filters -->
+                        <div class="mt-6 flex flex-wrap gap-3 justify-center">
+                            <button onclick="filterByCategory('hair')" class="px-6 py-3 rounded-full bg-neon-pink/20 text-neon-pink border border-neon-pink/30 hover:bg-neon-pink/30 hover:shadow-lg hover:shadow-neon-pink/20 transition-all duration-300">
+                                <i class="fas fa-cut mr-2"></i>Hair & Beauty
+                            </button>
+                            <button onclick="filterByCategory('barber')" class="px-6 py-3 rounded-full bg-neon-blue/20 text-neon-blue border border-neon-blue/30 hover:bg-neon-blue/30 hover:shadow-lg hover:shadow-neon-blue/20 transition-all duration-300">
+                                <i class="fas fa-cut mr-2"></i>Barbering
+                            </button>
+                            <button onclick="filterByCategory('beauty')" class="px-6 py-3 rounded-full bg-neon-green/20 text-neon-green border border-neon-green/30 hover:bg-neon-green/30 hover:shadow-lg hover:shadow-neon-green/20 transition-all duration-300">
+                                <i class="fas fa-spa mr-2"></i>Spa & Wellness
+                            </button>
+                            <button onclick="filterByCategory('nails')" class="px-6 py-3 rounded-full bg-neon-purple/20 text-neon-purple border border-neon-purple/30 hover:bg-neon-purple/30 hover:shadow-lg hover:shadow-neon-purple/20 transition-all duration-300">
+                                <i class="fas fa-hand-paper mr-2"></i>Nail Art
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gradient Transition -->
+    <div class="py-16" style="background: linear-gradient(to bottom, #000 0%, #111 40%, #FFF 100%); border-top: 1px solid rgba(212,175,55,0.3);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Transition content can go here if needed -->
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Results Header -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
+                <div class="animate-fade-in">
+                    <h2 class="text-4xl font-bold text-black mb-4">Premium Business Directory</h2>
+                    <p class="text-gray-600 text-lg" id="resultsCount">Loading premium businesses...</p>
+                </div>
+                
+                <!-- Sort and Filter Controls -->
+                <div class="flex flex-wrap gap-4 mt-6 md:mt-0 animate-slide-up">
+                    <!-- Sort Dropdown -->
+                    <div class="relative">
+                        <select id="sortSelect" onchange="sortResults()" class="px-6 py-3 rounded-xl bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all duration-300">
+                            <option value="relevance">Sort by Relevance</option>
+                            <option value="rating">Highest Rated</option>
+                            <option value="distance">Nearest First</option>
+                            <option value="name">Name A-Z</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Filter Toggle -->
+                    <button onclick="toggleFilters()" class="px-6 py-3 rounded-xl bg-white border border-gray-300 text-black hover:bg-gray-50 hover:border-gold/50 transition-all duration-300">
+                        <i class="fas fa-filter mr-2"></i>Advanced Filters
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Advanced Filters Panel -->
+            <div id="filtersPanel" class="hidden mb-12 bg-gray-50 rounded-3xl p-8 border border-gray-200 animate-slide-up">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- Rating Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-black mb-3">Minimum Rating</label>
+                        <select id="ratingFilter" onchange="applyFilters()" class="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all duration-300">
+                            <option value="">Any Rating</option>
+                            <option value="4.5">4.5+ Stars</option>
+                            <option value="4.0">4.0+ Stars</option>
+                            <option value="3.5">3.5+ Stars</option>
+                            <option value="3.0">3.0+ Stars</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Distance Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-black mb-3">Distance</label>
+                        <select id="distanceFilter" onchange="applyFilters()" class="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all duration-300">
+                            <option value="5">Within 5 miles</option>
+                            <option value="10">Within 10 miles</option>
+                            <option value="25">Within 25 miles</option>
+                            <option value="50">Within 50 miles</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Price Range -->
+                    <div>
+                        <label class="block text-sm font-medium text-black mb-3">Price Range</label>
+                        <select id="priceFilter" onchange="applyFilters()" class="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition-all duration-300">
+                            <option value="">Any Price</option>
+                            <option value="budget">£ - Budget</option>
+                            <option value="mid">££ - Mid Range</option>
+                            <option value="premium">£££ - Premium</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Clear Filters -->
+                    <div class="flex items-end">
+                        <button onclick="clearFilters()" class="w-full px-6 py-3 rounded-xl bg-white border border-gray-300 text-black hover:bg-gray-50 hover:border-gold/50 transition-all duration-300">
+                            <i class="fas fa-times mr-2"></i>Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Business Results -->
+            <div id="businessResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <!-- Business cards will be populated here -->
+            </div>
+            
+            <!-- Loading State -->
+            <div id="loadingState" class="text-center py-16">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
+                <p class="text-gray-600 mt-6 text-lg">Loading premium businesses...</p>
+            </div>
+            
+            <!-- No Results State -->
+            <div id="noResultsState" class="hidden text-center py-16">
+                <div class="w-24 h-24 mx-auto mb-6 bg-gold/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-search text-4xl text-gold"></i>
+                </div>
+                <h3 class="text-3xl font-bold text-black mb-4">No businesses found</h3>
+                <p class="text-gray-600 mb-8 text-lg">Try adjusting your search criteria or filters</p>
+                <button onclick="clearFilters()" class="px-8 py-4 rounded-2xl gold-gradient text-black font-bold text-lg hover:shadow-lg hover:shadow-gold/30 transition-all duration-300 transform hover:scale-105">
+                    Clear All Filters
+                </button>
+            </div>
+            
+            <!-- Pagination -->
+            <div id="pagination" class="mt-16 flex justify-center">
+                <!-- Pagination will be populated here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Sticky Filter Button -->
+    <div class="fixed bottom-6 left-6 right-6 md:hidden z-40">
+        <button onclick="toggleMobileFilters()" 
+                class="w-full py-4 px-6 rounded-2xl bg-[#D4AF37] text-black font-bold text-lg shadow-lg hover:bg-black hover:text-[#D4AF37] transition-all duration-300 transform hover:scale-105">
+            <i class="fas fa-filter mr-2"></i>Filters
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-gray-300 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-gold rounded-full flex items-center justify-center">
+                            <i class="fas fa-gem text-black text-lg"></i>
+                        </div>
+                        <span class="text-xl font-bold text-white">BlkPages</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">Supporting Black-owned businesses and connecting communities.</p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-400 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)] transition-all duration-300">About</a></li>
+                        <li><a href="contact.html" class="text-gray-400 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)] transition-all duration-300">Contact</a></li>
+                        <li><a href="privacy.html" class="text-gray-400 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)] transition-all duration-300">Privacy</a></li>
+                        <li><a href="terms.html" class="text-gray-400 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)] transition-all duration-300">Terms</a></li>
+                        <li><a href="blog.html" class="text-gray-400 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)] transition-all duration-300">Blog</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Support -->
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="faq.html" class="text-gray-400 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)] transition-all duration-300">FAQ</a></li>
+                        <li><a href="business-register.html" class="text-gray-400 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)] transition-all duration-300">Add Business</a></li>
+                        <li><a href="customer-login.html" class="text-gray-400 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)] transition-all duration-300">Sign In</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">© 2025 BlkPages – Supporting Black-owned Businesses</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        let allBusinesses = [];
+        let filteredBusinesses = [];
+        let currentPage = 1;
+        const businessesPerPage = 9;
+        let currentFilters = {
+            search: '',
+            location: '',
+            category: '',
+            rating: '',
+            distance: '5',
+            price: '',
+            sortBy: 'relevance'
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBusinesses();
+            setupEventListeners();
+            addScrollEffect();
+        });
+
+        // Add scroll effect to header
+        function addScrollEffect() {
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 100) {
+                    header.classList.add('bg-black/95');
+                } else {
+                    header.classList.remove('bg-black/95');
+                }
+            });
+        }
+
+        // Load businesses from business manager
+        function loadBusinesses() {
+            try {
+                // Try to get businesses from business manager
+                if (typeof BusinessManager !== 'undefined') {
+                    const businessManager = new BusinessManager();
+                    allBusinesses = businessManager.getBusinesses();
+                } else {
+                    // Fallback demo data
+                    allBusinesses = getDemoBusinesses();
+                }
+                
+                filteredBusinesses = [...allBusinesses];
+                displayResults();
+                hideLoading();
+            } catch (error) {
+                console.error('Error loading businesses:', error);
+                allBusinesses = getDemoBusinesses();
+                filteredBusinesses = [...allBusinesses];
+                displayResults();
+                hideLoading();
+            }
+        }
+
+        // Demo business data with premium styling
+        function getDemoBusinesses() {
+            return [
+                {
+                    id: 'demo_1',
+                    name: "Royal Hair Studio",
+                    category: "hair",
+                    rating: 4.9,
+                    reviews: 127,
+                    location: "123 Main Street, London",
+                    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&h=300&fit=crop&crop=center",
+                    subscription: "professional",
+                    price: "premium",
+                    description: "Premium hair styling and cutting services with advanced booking system",
+                    phone: "+44 20 1234 5678",
+                    email: "info@royalhair.com",
+                    address: "123 Main Street, London",
+                    services: ["Hair Cut", "Coloring", "Styling", "Extensions"],
+                    hours: "Mon-Sat: 9AM-7PM",
+                    premium: true,
+                    hasOffer: true,
+                    offerText: "20% Off First Visit"
+                },
+                {
+                    id: 'demo_2',
+                    name: "Elite Barber Shop",
+                    category: "barber",
+                    rating: 4.7,
+                    reviews: 89,
+                    location: "456 High Street, London",
+                    image: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=500&h=300&fit=crop&crop=center",
+                    subscription: "starter",
+                    price: "mid",
+                    description: "Traditional barbering with modern techniques",
+                    phone: "+44 20 2345 6789",
+                    email: "contact@elitebarber.com",
+                    address: "456 High Street, London",
+                    services: ["Hair Cut", "Beard Trim", "Shave", "Styling"],
+                    hours: "Mon-Sat: 8AM-6PM",
+                    premium: false
+                },
+                {
+                    id: 'demo_3',
+                    name: "Glamour Beauty",
+                    category: "beauty",
+                    rating: 4.8,
+                    reviews: 156,
+                    location: "789 Oxford Street, London",
+                    image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=500&h=300&fit=crop&crop=center",
+                    subscription: "professional",
+                    price: "premium",
+                    description: "Full-service beauty salon with premium treatments",
+                    phone: "+44 20 3456 7890",
+                    email: "info@glamourbeauty.com",
+                    address: "789 Oxford Street, London",
+                    services: ["Facial", "Massage", "Manicure", "Pedicure"],
+                    hours: "Mon-Sun: 10AM-8PM",
+                    premium: true,
+                    hasOffer: true,
+                    offerText: "Free Consultation"
+                },
+                {
+                    id: 'demo_4',
+                    name: "Style Studio",
+                    category: "hair",
+                    rating: 4.6,
+                    reviews: 73,
+                    location: "321 King's Road, London",
+                    image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=500&h=300&fit=crop&crop=center",
+                    subscription: "starter",
+                    price: "mid",
+                    description: "Contemporary hair styling and coloring",
+                    phone: "+44 20 4567 8901",
+                    email: "hello@stylestudio.com",
+                    address: "321 King's Road, London",
+                    services: ["Hair Cut", "Coloring", "Highlights", "Treatment"],
+                    hours: "Tue-Sat: 9AM-6PM",
+                    premium: false
+                },
+                {
+                    id: 'demo_5',
+                    name: "Classic Cuts",
+                    category: "barber",
+                    rating: 4.5,
+                    reviews: 45,
+                    location: "654 Baker Street, London",
+                    image: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=500&h=300&fit=crop&crop=center",
+                    subscription: "free",
+                    price: "budget",
+                    description: "Traditional barber shop with classic cuts",
+                    phone: "+44 20 5678 9012",
+                    email: "info@classiccuts.com",
+                    address: "654 Baker Street, London",
+                    services: ["Hair Cut", "Beard Trim", "Mustache"],
+                    hours: "Mon-Fri: 8AM-5PM",
+                    premium: false
+                },
+                {
+                    id: 'demo_6',
+                    name: "Beauty Haven",
+                    category: "beauty",
+                    rating: 4.9,
+                    reviews: 203,
+                    location: "987 Regent Street, London",
+                    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&h=300&fit=crop&crop=center",
+                    subscription: "professional",
+                    price: "premium",
+                    description: "Luxury beauty treatments and spa services",
+                    phone: "+44 20 6789 0123",
+                    email: "contact@beautyhaven.com",
+                    address: "987 Regent Street, London",
+                    services: ["Spa Treatment", "Facial", "Massage", "Body Treatment"],
+                    hours: "Mon-Sun: 9AM-9PM",
+                    premium: true,
+                    hasOffer: true,
+                    offerText: "Buy 2 Get 1 Free"
+                },
+                {
+                    id: 'demo_7',
+                    name: "Perfect Nails",
+                    category: "nails",
+                    rating: 4.4,
+                    reviews: 67,
+                    location: "147 Bond Street, London",
+                    image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=500&h=300&fit=crop&crop=center",
+                    subscription: "starter",
+                    price: "mid",
+                    description: "Professional nail art and manicure services",
+                    phone: "+44 20 7890 1234",
+                    email: "info@perfectnails.com",
+                    address: "147 Bond Street, London",
+                    services: ["Manicure", "Pedicure", "Nail Art", "Gel Polish"],
+                    hours: "Mon-Sat: 10AM-7PM",
+                    premium: false
+                },
+                {
+                    id: 'demo_8',
+                    name: "Quick Cuts",
+                    category: "barber",
+                    rating: 4.2,
+                    reviews: 23,
+                    location: "555 Quick Street, London",
+                    image: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=500&h=300&fit=crop&crop=center",
+                    subscription: "free",
+                    price: "budget",
+                    description: "Fast and affordable haircuts",
+                    phone: "+44 20 8765 4321",
+                    email: "contact@quickcuts.com",
+                    address: "555 Quick Street, London",
+                    services: ["Hair Cut", "Quick Trim"],
+                    hours: "Mon-Sat: 7AM-4PM",
+                    premium: false
+                },
+                {
+                    id: 'demo_9',
+                    name: "Luxury Spa",
+                    category: "beauty",
+                    rating: 4.7,
+                    reviews: 134,
+                    location: "888 Mayfair, London",
+                    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=500&h=300&fit=crop&crop=center",
+                    subscription: "professional",
+                    price: "premium",
+                    description: "Exclusive spa treatments in luxury setting",
+                    phone: "+44 20 9999 8888",
+                    email: "info@luxuryspa.com",
+                    address: "888 Mayfair, London",
+                    services: ["Luxury Facial", "Hot Stone Massage", "Body Wrap", "Aromatherapy"],
+                    hours: "Mon-Sun: 8AM-10PM",
+                    premium: true
+                }
+            ];
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search input listeners
+            document.getElementById('businessSearch').addEventListener('input', debounce(performSearch, 300));
+            document.getElementById('locationSearch').addEventListener('input', debounce(performSearch, 300));
+        }
+
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Perform search
+        function performSearch() {
+            currentFilters.search = document.getElementById('businessSearch').value.toLowerCase();
+            currentFilters.location = document.getElementById('locationSearch').value.toLowerCase();
+            
+            applyFilters();
+        }
+
+        // Filter by category
+        function filterByCategory(category) {
+            currentFilters.category = category;
+            applyFilters();
+        }
+
+        // Find near me function
+        function findNearMe() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    localStorage.setItem('userLat', position.coords.latitude);
+                    localStorage.setItem('userLng', position.coords.longitude);
+                    localStorage.setItem('userLocation', 'Current Location');
+                    
+                    // Redirect to search results page with "near me" parameter
+                    window.location.href = 'search-results-new.html?nearme=true';
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+
+
+        // Apply all filters
+        function applyFilters() {
+            // Get filter values from dropdowns (both mobile and desktop)
+            const categoryFilter = document.getElementById('categoryFilter') || document.getElementById('categoryFilterMobile');
+            const locationFilter = document.getElementById('locationFilter') || document.getElementById('locationFilterMobile');
+            const sortByFilter = document.getElementById('sortByFilter') || document.getElementById('sortByFilterMobile');
+            
+            if (categoryFilter) currentFilters.category = categoryFilter.value;
+            if (locationFilter) currentFilters.location = locationFilter.value;
+            if (sortByFilter) currentFilters.sortBy = sortByFilter.value;
+            
+            filteredBusinesses = allBusinesses.filter(business => {
+                // Search filter
+                const matchesSearch = !currentFilters.search || 
+                    business.name.toLowerCase().includes(currentFilters.search) ||
+                    business.description.toLowerCase().includes(currentFilters.search) ||
+                    business.services.some(service => service.toLowerCase().includes(currentFilters.search));
+
+                // Location filter
+                const matchesLocation = !currentFilters.location ||
+                    business.location.toLowerCase().includes(currentFilters.location) ||
+                    business.address.toLowerCase().includes(currentFilters.location);
+
+                // Category filter
+                const matchesCategory = !currentFilters.category || business.category === currentFilters.category;
+
+                // Rating filter
+                const matchesRating = !currentFilters.rating || business.rating >= parseFloat(currentFilters.rating);
+
+                // Price filter
+                const matchesPrice = !currentFilters.price || business.price === currentFilters.price;
+
+                return matchesSearch && matchesLocation && matchesCategory && matchesRating && matchesPrice;
+            });
+
+            // Sort results
+            sortResults();
+            
+            // Reset to first page
+            currentPage = 1;
+            
+            // Display results
+            displayResults();
+        }
+
+        // Sort results
+        function sortResults() {
+            // Check for both sortSelect and sortByFilter elements
+            const sortSelect = document.getElementById('sortSelect');
+            const sortByFilter = document.getElementById('sortByFilter');
+            const sortBy = sortByFilter ? sortByFilter.value : (sortSelect ? sortSelect.value : 'relevance');
+            
+            filteredBusinesses.sort((a, b) => {
+                switch (sortBy) {
+                    case 'rating':
+                        return b.rating - a.rating;
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'distance':
+                        // For demo purposes, randomize distance
+                        return Math.random() - 0.5;
+                    default: // relevance
+                        return 0;
+                }
+            });
+            
+            displayResults();
+        }
+
+        // Display results
+        function displayResults() {
+            const resultsContainer = document.getElementById('businessResults');
+            const resultsCount = document.getElementById('resultsCount');
+            const loadingState = document.getElementById('loadingState');
+            const noResultsState = document.getElementById('noResultsState');
+            
+            // Update results count
+            resultsCount.textContent = `${filteredBusinesses.length} premium businesses found`;
+            
+            // Hide loading state
+            loadingState.classList.add('hidden');
+            
+            if (filteredBusinesses.length === 0) {
+                // Show no results state
+                resultsContainer.innerHTML = '';
+                noResultsState.classList.remove('hidden');
+                return;
+            }
+            
+            // Hide no results state
+            noResultsState.classList.add('hidden');
+            
+            // Calculate pagination
+            const startIndex = (currentPage - 1) * businessesPerPage;
+            const endIndex = startIndex + businessesPerPage;
+            const businessesToShow = filteredBusinesses.slice(startIndex, endIndex);
+            
+            // Generate business cards
+            resultsContainer.innerHTML = businessesToShow.map(business => createBusinessCard(business)).join('');
+            
+            // Update pagination
+            updatePagination();
+        }
+
+        // Helper function to determine business tier
+        function getBusinessTier(business) {
+            if (business.subscription === 'free' || !business.subscription) {
+                return 'basic';
+            } else if (business.subscription === 'starter') {
+                return 'starter';
+            } else if (business.subscription === 'professional' || business.subscription === 'premium') {
+                return 'professional';
+            }
+            return 'basic'; // Default fallback
+        }
+
+        // Create business card HTML with tier-based styling
+        function createBusinessCard(business) {
+            const tier = getBusinessTier(business);
+            const categoryColors = {
+                hair: 'neon-pink',
+                barber: 'neon-blue',
+                beauty: 'neon-green',
+                nails: 'neon-purple'
+            };
+            
+            const categoryIcons = {
+                hair: 'fas fa-cut',
+                barber: 'fas fa-cut',
+                beauty: 'fas fa-spa',
+                nails: 'fas fa-hand-paper'
+            };
+            
+            const priceSymbols = {
+                budget: '£',
+                mid: '££',
+                premium: '£££'
+            };
+            
+            const categoryColor = categoryColors[business.category] || 'neon-purple';
+            const categoryIcon = categoryIcons[business.category] || 'fas fa-star';
+            const priceSymbol = priceSymbols[business.price] || '£';
+            
+            if (tier === 'basic') {
+                // Basic card - NO links, NO images, informational only
+                return `
+                <div class="bg-dark-grey rounded-2xl p-4 border border-white/10 transition-all duration-300 hover:border-gold/30 hover:shadow-lg hover:shadow-gold/10" role="article" aria-label="Basic business listing for ${business.name}" style="cursor: default;">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-white">${business.name}</h3>
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-${categoryColor}/20 text-${categoryColor} border border-${categoryColor}/30">
+                            ${business.category.charAt(0).toUpperCase() + business.category.slice(1)}
+                        </span>
+                    </div>
+                    <div class="space-y-2">
+                        ${business.location ? `
+                        <p class="text-light-grey text-sm flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2 w-4"></i>
+                            ${business.location}
+                        </p>` : ''}
+                        ${business.phone ? `
+                        <p class="text-light-grey text-sm flex items-center">
+                            <i class="fas fa-phone mr-2 w-4"></i>
+                            ${business.phone}
+                        </p>` : ''}
+                        ${business.email ? `
+                        <p class="text-light-grey text-sm flex items-center">
+                            <i class="fas fa-envelope mr-2 w-4"></i>
+                            ${business.email}
+                        </p>` : ''}
+                    </div>
+                    <div class="text-center mt-4">
+                        <p class="text-light-grey text-sm">Contact the business directly for enquiries</p>
+                    </div>
+                </div>
+                `;
+            } else {
+                // Starter/Professional card - preserve original premium styling
+                const businessSlug = business.id || business.name.toLowerCase().replace(/\s+/g, '-');
+                const profileUrl = `/business/${businessSlug}`;
+                
+                return `
+                <div class="card-gradient rounded-3xl p-6 border-glow hover:border-gold/50 transition-all duration-500 hover:shadow-2xl hover:shadow-gold/20 group transform hover:scale-105 animate-fade-in md:hover:scale-110">
+                    <!-- Business Image -->
+                    <div class="relative mb-6 overflow-hidden rounded-2xl">
+                        <img src="${business.image}" 
+                             alt="${business.name}" 
+                             class="w-full h-56 object-cover rounded-3xl group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500&h=300&fit=crop&crop=center'">
+                        
+                        <!-- Tier Badge -->
+                        <div class="absolute top-4 left-4">
+                            <span class="px-4 py-2 rounded-full text-sm font-bold gold-gradient text-black border border-gold/50">
+                                <i class="fas fa-crown mr-1"></i>${tier === 'professional' ? 'Professional' : 'Starter'}
+                            </span>
+                        </div>
+                        
+                        <!-- Offer Badge -->
+                        ${business.hasOffer ? `
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-gold/20 text-gold border border-gold/40 backdrop-blur-sm shadow-sm hover:shadow-gold/30 transition-all duration-300">
+                                <i class="fas fa-tag mr-1"></i>Offer
+                            </span>
+                        </div>
+                        ` : `
+                        <!-- Category Badge -->
+                        <div class="absolute top-4 right-4">
+                            <span class="px-4 py-2 rounded-full text-sm font-medium bg-${categoryColor}/20 text-${categoryColor} border border-${categoryColor}/30 backdrop-blur-sm">
+                                <i class="${categoryIcon} mr-1"></i>${business.category.charAt(0).toUpperCase() + business.category.slice(1)}
+                            </span>
+                        </div>
+                        `}
+                        
+                        <!-- Price Badge -->
+                        <div class="absolute bottom-4 right-4">
+                            <span class="px-4 py-2 rounded-full text-sm font-bold bg-black/80 text-gold border border-gold/50 backdrop-blur-sm">
+                                ${priceSymbol}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Business Info -->
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-gold transition-colors duration-300">
+                            <a href="${profileUrl}" class="hover:text-gold transition-colors duration-300">${business.name}</a>
+                        </h3>
+                        
+                        <!-- Rating -->
+                        <div class="flex items-center mb-3">
+                            <div class="flex text-gold mr-3">
+                                ${Array(5).fill(0).map((_, i) => 
+                                    `<i class="fas fa-star ${i < Math.floor(business.rating) ? '' : 'text-white/30'}"></i>`
+                                ).join('')}
+                            </div>
+                            <span class="text-white/70 text-sm">${business.rating} (${business.reviews} reviews)</span>
+                        </div>
+                        
+                        <!-- Location -->
+                        <p class="text-white/70 text-sm mb-4 flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2 text-${categoryColor}"></i>
+                            ${business.location}
+                        </p>
+                        
+                        <!-- Description -->
+                        <p class="text-white/80 text-sm mb-4 line-clamp-2">
+                            ${business.description}
+                        </p>
+                        
+                        <!-- Services -->
+                        <div class="mb-4">
+                            <p class="text-white text-sm font-medium mb-2">Services:</p>
+                            <div class="flex flex-wrap gap-2">
+                                ${business.services.slice(0, 3).map(service => 
+                                    `<span class="px-3 py-1 rounded-full text-xs bg-white/10 text-white/80 border border-white/20">${service}</span>`
+                                ).join('')}
+                                ${business.services.length > 3 ? `<span class="px-3 py-1 rounded-full text-xs bg-white/10 text-white/80 border border-white/20">+${business.services.length - 3} more</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-3">
+                        <button onclick="goToBusinessProfile('${businessSlug}')" 
+                                class="flex-1 py-3 px-6 rounded-3xl gold-gradient text-black font-bold hover:shadow-lg hover:shadow-gold/30 transition-all duration-300 transform hover:scale-105">
+                            <i class="fas fa-calendar-plus mr-2"></i>Book Now
+                        </button>
+                        <button onclick="callBusiness('${business.phone}')" 
+                                class="px-4 py-3 rounded-3xl border border-white/20 text-white hover:bg-white/10 hover:border-gold/50 hover:scale-105 transition-all duration-300">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                        <button onclick="emailBusiness('${business.email}')" 
+                                class="px-4 py-3 rounded-3xl border border-white/20 text-white hover:bg-white/10 hover:border-gold/50 hover:scale-105 transition-all duration-300">
+                            <i class="fas fa-envelope"></i>
+                        </button>
+                    </div>
+                </div>
+                `;
+            }
+        }
+
+        // Update pagination
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredBusinesses.length / businessesPerPage);
+            const paginationContainer = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '<div class="flex items-center space-x-3">';
+            
+            // Previous button
+            paginationHTML += `
+                <button onclick="goToPage(${currentPage - 1})" 
+                        ${currentPage === 1 ? 'disabled' : ''}
+                        class="px-4 py-3 rounded-xl border border-white/20 text-white hover:bg-white/10 hover:border-gold/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <button onclick="goToPage(${i})" 
+                            class="px-4 py-3 rounded-xl border transition-all duration-300 ${
+                                i === currentPage 
+                                    ? 'gold-gradient text-black border-gold' 
+                                    : 'border-white/20 text-white hover:bg-white/10 hover:border-gold/50'
+                            }">
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            // Next button
+            paginationHTML += `
+                <button onclick="goToPage(${currentPage + 1})" 
+                        ${currentPage === totalPages ? 'disabled' : ''}
+                        class="px-4 py-3 rounded-xl border border-white/20 text-white hover:bg-white/10 hover:border-gold/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            paginationHTML += '</div>';
+            paginationContainer.innerHTML = paginationHTML;
+        }
+
+        // Go to page
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredBusinesses.length / businessesPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                displayResults();
+                
+                // Scroll to top of results
+                document.getElementById('businessResults').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        }
+
+        // Toggle filters panel
+        function toggleFilters() {
+            const filtersPanel = document.getElementById('filtersPanel');
+            filtersPanel.classList.toggle('hidden');
+        }
+
+        // Clear all filters
+        function clearFilters() {
+            // Reset form inputs (both mobile and desktop)
+            const businessSearch = document.getElementById('businessSearch');
+            const businessSearchMobile = document.getElementById('businessSearchMobile');
+            const locationSearch = document.getElementById('locationSearch');
+            const locationSearchMobile = document.getElementById('locationSearchMobile');
+            
+            if (businessSearch) businessSearch.value = '';
+            if (businessSearchMobile) businessSearchMobile.value = '';
+            if (locationSearch) locationSearch.value = '';
+            if (locationSearchMobile) locationSearchMobile.value = '';
+            
+            document.getElementById('ratingFilter').value = '';
+            document.getElementById('distanceFilter').value = '5';
+            document.getElementById('priceFilter').value = '';
+            
+            // Reset dropdown filters if they exist (both mobile and desktop)
+            const sortSelect = document.getElementById('sortSelect');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const categoryFilterMobile = document.getElementById('categoryFilterMobile');
+            const locationFilter = document.getElementById('locationFilter');
+            const locationFilterMobile = document.getElementById('locationFilterMobile');
+            const sortByFilter = document.getElementById('sortByFilter');
+            const sortByFilterMobile = document.getElementById('sortByFilterMobile');
+            
+            if (sortSelect) sortSelect.value = 'relevance';
+            if (categoryFilter) categoryFilter.value = '';
+            if (categoryFilterMobile) categoryFilterMobile.value = '';
+            if (locationFilter) locationFilter.value = '';
+            if (locationFilterMobile) locationFilterMobile.value = '';
+            if (sortByFilter) sortByFilter.value = 'relevance';
+            if (sortByFilterMobile) sortByFilterMobile.value = 'relevance';
+            
+            // Reset filters
+            currentFilters = {
+                search: '',
+                location: '',
+                category: '',
+                rating: '',
+                distance: '5',
+                price: '',
+                sortBy: 'relevance'
+            };
+            
+            // Reset results
+            filteredBusinesses = [...allBusinesses];
+            currentPage = 1;
+            displayResults();
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            document.getElementById('loadingState').classList.add('hidden');
+        }
+
+        // View business details
+        function viewBusiness(businessId) {
+            const business = allBusinesses.find(b => b.id === businessId);
+            if (business) {
+                // Redirect to business profile page
+                window.location.href = `business-profile.html?business=${businessId}`;
+            }
+        }
+
+        function goToBusinessProfile(businessSlug) {
+            // Redirect to business profile page where customers can add services
+            window.location.href = `/business/${businessSlug}`;
+        }
+
+        // Call business
+        function callBusiness(phoneNumber) {
+            window.open(`tel:${phoneNumber}`, '_self');
+        }
+
+        // Email business
+        function emailBusiness(emailAddress) {
+            window.open(`mailto:${emailAddress}`, '_self');
+        }
+
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Toggle mobile filters
+        function toggleMobileFilters() {
+            const mobileFilters = document.getElementById('mobileFilters');
+            mobileFilters.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>

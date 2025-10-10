@@ -3,527 +3,508 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Confirmation - BlkPages</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Booking Confirmed - BlkPages</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Persistent Basket System -->
-    <script src="js/persistent-basket-system.js"></script>
-    <script src="backend/basket-merge-api.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'poppins': ['Poppins', 'sans-serif']
+                    },
+                    colors: {
+                        'charcoal': '#121212',
+                        'dark-grey': '#1A1A1A',
+                        'light-grey': '#CCCCCC',
+                        'gold': '#D4AF37',
+                        'gold-dark': '#B8860B',
+                        'neon-pink': '#FF3CAC',
+                        'neon-blue': '#2B86C5',
+                        'neon-green': '#4ADE80',
+                        'neon-purple': '#784BA0'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 20px rgba(212, 175, 55, 0.2)' },
+                            '100%': { boxShadow: '0 0 30px rgba(212, 175, 55, 0.4)' }
+                        },
+                        pulseSubtle: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.8' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* Custom gradient backgrounds */
+        .gradient-bg {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%, #000000 100%);
         }
         
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            color: #ffffff;
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
+        .card-gradient {
+            background: linear-gradient(145deg, 
+                rgba(26,26,26,0.95) 0%, 
+                rgba(42,42,42,0.9) 50%, 
+                rgba(26,26,26,0.95) 100%);
         }
         
-        .confirmation-container {
-            max-width: 800px;
+        .gold-gradient {
+            background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+        }
+        
+        .border-glow {
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        .hover-glow:hover {
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+        }
+        
+        /* Success animation */
+        .success-checkmark {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 3;
+            stroke: #D4AF37;
+            stroke-miterlimit: 10;
             margin: 0 auto;
-            background: #1A1A1A;
-            border-radius: 12px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0px 0px 0px #D4AF37;
+            animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
         }
         
-        .confirmation-header {
-            text-align: center;
-            margin-bottom: 2rem;
+        .success-checkmark circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 3;
+            stroke-miterlimit: 10;
+            stroke: #D4AF37;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
         }
         
-        .confirmation-header h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .success-checkmark path {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
         }
         
-        .confirmation-header .success-icon {
-            font-size: 4rem;
-            color: #10b981;
-            margin-bottom: 1rem;
-        }
-        
-        .confirmation-section {
-            background: #2A2A2A;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .confirmation-section h2 {
-            color: #3b82f6;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-        }
-        
-        .customer-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-        
-        .info-item {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .info-label {
-            color: #999;
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-        }
-        
-        .info-value {
-            color: #ffffff;
-            font-weight: 600;
-        }
-        
-        .masked-email {
-            color: #3b82f6;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .services-list {
-            list-style: none;
-        }
-        
-        .service-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .service-item:last-child {
-            border-bottom: none;
-        }
-        
-        .service-name {
-            color: #ffffff;
-            font-weight: 600;
-        }
-        
-        .service-duration {
-            color: #999;
-            font-size: 0.9rem;
-        }
-        
-        .service-price {
-            color: #10b981;
-            font-weight: 600;
-        }
-        
-        .total-section {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .total-line {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-        
-        .total-line.final {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #10b981;
-            border-top: 2px solid #10b981;
-            padding-top: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .payment-info {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 8px;
-            padding: 1rem;
-        }
-        
-        .payment-method {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .payment-icon {
-            font-size: 1.2rem;
-        }
-        
-        .booking-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-        
-        .booking-reference {
-            background: #2A2A2A;
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .reference-number {
-            font-family: 'Courier New', monospace;
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #3b82f6;
-            margin-bottom: 0.5rem;
-        }
-        
-        .reference-label {
-            color: #999;
-            font-size: 0.9rem;
-        }
-        
-        .security-notice {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            color: #fca5a5;
-        }
-        
-        .security-notice i {
-            margin-right: 0.5rem;
-            color: #ef4444;
-        }
-        
-        @media (max-width: 768px) {
-            .confirmation-container {
-                padding: 1.5rem;
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
             }
-            
-            .confirmation-header h1 {
-                font-size: 2rem;
+        }
+        
+        @keyframes scale {
+            0%, 100% {
+                transform: none;
             }
-            
-            .booking-actions {
-                flex-direction: column;
+            50% {
+                transform: scale3d(1.1, 1.1, 1);
             }
-            
-            .btn {
-                width: 100%;
-                justify-content: center;
+        }
+        
+        @keyframes fill {
+            100% {
+                box-shadow: inset 0px 0px 0px 30px #D4AF37;
             }
         }
     </style>
 </head>
-<body>
-    <div class="confirmation-container">
-        <div class="confirmation-header">
-            <div class="success-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <h1>Booking Confirmed!</h1>
-            <p>Your appointment has been successfully booked</p>
+<body class="gradient-bg min-h-screen text-white font-inter">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-charcoal/95 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-white hover:text-gold transition-colors duration-300">BlkPages</a>
         </div>
         
-        <!-- Booking Reference -->
-        <div class="booking-reference">
-            <div class="reference-number" id="bookingReference">BP-2024-001234</div>
-            <div class="reference-label">Booking Reference</div>
-        </div>
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-light-grey hover:text-gold transition-colors duration-300 font-medium">Home</a>
+                    <a href="search-results-new.html" class="text-light-grey hover:text-gold transition-colors duration-300 font-medium">Browse</a>
+                    <a href="business-router.html" class="text-gold font-medium" style="background: linear-gradient(135deg, #D4AF37, #B8860B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                        <i class="fas fa-building mr-1"></i>Business Profile 2
+                    </a>
+                </div>
         
-        <!-- Customer Information -->
-        <div class="confirmation-section">
-            <h2><i class="fas fa-user"></i> Customer Information</h2>
-            <div class="customer-info" id="customerInfo">
-                <!-- Will be populated by JavaScript -->
-            </div>
-        </div>
-        
-        <!-- Services Booked -->
-        <div class="confirmation-section">
-            <h2><i class="fas fa-list"></i> Services Booked</h2>
-            <ul class="services-list" id="servicesList">
-                <!-- Will be populated by JavaScript -->
-            </ul>
-            <div class="total-section" id="totalSection">
-                <!-- Will be populated by JavaScript -->
-            </div>
-        </div>
-        
-        <!-- Payment Information -->
-        <div class="confirmation-section">
-            <h2><i class="fas fa-credit-card"></i> Payment Information</h2>
-            <div class="payment-info">
-                <div class="payment-method" id="paymentMethod">
-                    <!-- Will be populated by JavaScript -->
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-white hover:text-gold transition-colors duration-300">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
                 </div>
             </div>
         </div>
         
-        <!-- Booking Actions -->
-        <div class="booking-actions">
-            <a href="customer-dashboard.html" class="btn btn-primary">
-                <i class="fas fa-tachometer-alt"></i> Manage My Booking
-            </a>
-            <a href="business-profile.html" class="btn btn-secondary">
-                <i class="fas fa-plus"></i> Book Another Service
-            </a>
-            <button class="btn btn-success" onclick="sendConfirmationEmail()">
-                <i class="fas fa-envelope"></i> Send Confirmation Email
-            </button>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden hidden bg-charcoal/95 backdrop-blur-md border-t border-white/10">
+            <div class="px-4 py-4 space-y-4">
+                <a href="index.html" class="block text-light-grey hover:text-gold transition-colors duration-300 font-medium">Home</a>
+                <a href="search-results-new.html" class="block text-light-grey hover:text-gold transition-colors duration-300 font-medium">Browse</a>
+                <a href="business-router.html" class="block text-gold font-medium" style="background: linear-gradient(135deg, #D4AF37, #B8860B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-building mr-2"></i>Business Profile 2
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-16 pb-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Success Header -->
+            <div class="text-center mb-12">
+                <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="success-checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="success-checkmark-check" fill="none" d="m14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+                <h1 class="text-4xl md:text-5xl font-bold text-white mt-8 mb-4">Booking Confirmed!</h1>
+                <p class="text-xl text-light-grey">Your appointment has been successfully booked</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Booking Details -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Confirmation Details -->
+                    <div class="card-gradient rounded-3xl p-8 border-glow">
+                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-calendar-check mr-3 text-gold"></i>
+                            Booking Details
+                        </h2>
+                        
+                        <div id="bookingDetails" class="space-y-6">
+                            <!-- Booking details will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Business Information -->
+                    <div class="card-gradient rounded-3xl p-8 border-glow">
+                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-building mr-3 text-gold"></i>
+                            Business Information
+                        </h2>
+                        
+                        <div id="businessInfo" class="space-y-4">
+                            <!-- Business info will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- What's Next -->
+                    <div class="card-gradient rounded-3xl p-8 border-glow">
+                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-info-circle mr-3 text-gold"></i>
+                            What's Next?
+                        </h2>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gold text-black flex items-center justify-center font-bold">1</div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white mb-2">Confirmation Email</h3>
+                                    <p class="text-light-grey">You'll receive a confirmation email with all the details within the next few minutes.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gold text-black flex items-center justify-center font-bold">2</div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white mb-2">Reminder Notifications</h3>
+                                    <p class="text-light-grey">We'll send you a reminder 24 hours before your appointment.</p>
+            </div>
         </div>
         
-        <!-- Security Notice -->
-        <div class="security-notice">
-            <i class="fas fa-shield-alt"></i>
-            <strong>Security Notice:</strong> Your personal details are protected and only shared with the business for appointment management. Payment details are processed securely and never stored.
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gold text-black flex items-center justify-center font-bold">3</div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white mb-2">Arrive on Time</h3>
+                                    <p class="text-light-grey">Please arrive 5-10 minutes before your scheduled appointment time.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <!-- Confirmation Number -->
+                    <div class="card-gradient rounded-3xl p-6 border-glow">
+                        <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                            <i class="fas fa-receipt mr-3 text-gold"></i>
+                            Confirmation
+                        </h3>
+                        <div class="text-center">
+                            <p class="text-light-grey text-sm mb-2">Confirmation Number</p>
+                            <p class="text-2xl font-bold text-gold" id="confirmationNumber">BK123456</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card-gradient rounded-3xl p-6 border-glow">
+                        <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                            <i class="fas fa-tools mr-3 text-gold"></i>
+                            Quick Actions
+                        </h3>
+                        <div class="space-y-3">
+                            <button onclick="addToCalendar()" 
+                                    class="w-full py-3 rounded-xl border border-white/20 text-white hover:bg-white/10 hover:border-gold/50 transition-all duration-300">
+                                <i class="fas fa-calendar-plus mr-2"></i>Add to Calendar
+                            </button>
+                            <button onclick="shareBooking()" 
+                                    class="w-full py-3 rounded-xl border border-white/20 text-white hover:bg-white/10 hover:border-gold/50 transition-all duration-300">
+                                <i class="fas fa-share mr-2"></i>Share Booking
+                            </button>
+                            <button onclick="contactBusiness()" 
+                                    class="w-full py-3 rounded-xl border border-white/20 text-white hover:bg-white/10 hover:border-gold/50 transition-all duration-300">
+                                <i class="fas fa-phone mr-2"></i>Contact Business
+                            </button>
+            </div>
         </div>
-    </div>
+        
+                    <!-- Need Help -->
+                    <div class="card-gradient rounded-3xl p-6 border-glow">
+                        <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                            <i class="fas fa-question-circle mr-3 text-gold"></i>
+                            Need Help?
+                        </h3>
+                        <p class="text-light-grey text-sm mb-4">
+                            If you have any questions about your booking, we're here to help.
+                        </p>
+                        <button onclick="contactSupport()" 
+                                class="w-full py-3 rounded-xl gold-gradient text-black font-bold hover:shadow-lg hover:shadow-gold/30 transition-all duration-300">
+                            <i class="fas fa-headset mr-2"></i>Contact Support
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mt-12 space-y-4">
+                <button onclick="bookAnother()" 
+                        class="px-8 py-4 rounded-2xl gold-gradient text-black font-bold hover:shadow-lg hover:shadow-gold/30 transition-all duration-300 transform hover:scale-105 mr-4">
+                    <i class="fas fa-plus mr-2"></i>Book Another Service
+                </button>
+                <button onclick="goHome()" 
+                        class="px-8 py-4 rounded-2xl border border-white/20 text-white hover:bg-white/10 hover:border-gold/50 transition-all duration-300">
+                    <i class="fas fa-home mr-2"></i>Back to Home
+            </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal border-t border-white/10 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-light-grey">
+                <p>&copy; 2024 BlkPages. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // Load booking confirmation data
+        let bookingData = null;
+
+        // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            loadBookingConfirmation();
+            loadBookingData();
         });
-        
-        function loadBookingConfirmation() {
-            // Get booking data from URL parameters or localStorage
-            const urlParams = new URLSearchParams(window.location.search);
-            const bookingId = urlParams.get('booking_id') || 'BP-2024-001234';
-            
-            // Load customer information
-            loadCustomerInfo();
-            
-            // Load services from basket
-            loadServicesFromBasket();
-            
-            // Load payment information
-            loadPaymentInfo();
-            
-            // Set booking reference
-            document.getElementById('bookingReference').textContent = bookingId;
-        }
-        
-        function loadCustomerInfo() {
-            const customerInfo = document.getElementById('customerInfo');
-            
-            // Get customer data (masked for security)
-            const customerData = {
-                name: 'John Smith',
-                email: 'joh***@example.com', // Masked email
-                phone: '07123****89', // Masked phone
-                postcode: 'SW1A 1AA'
-            };
-            
-            customerInfo.innerHTML = `
-                <div class="info-item">
-                    <div class="info-label">Full Name</div>
-                    <div class="info-value">${customerData.name}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Email Address</div>
-                    <div class="info-value masked-email">${customerData.email}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Phone Number</div>
-                    <div class="info-value">${customerData.phone}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Postcode</div>
-                    <div class="info-value">${customerData.postcode}</div>
-                </div>
-            `;
-        }
-        
-        function loadServicesFromBasket() {
-            const servicesList = document.getElementById('servicesList');
-            const totalSection = document.getElementById('totalSection');
-            
-            // Get services from persistent basket system
-            let services = [];
-            if (typeof persistentBasketSystem !== 'undefined') {
-                services = persistentBasketSystem.getCurrentBasket();
-            }
-            
-            // Fallback demo data
-            if (services.length === 0) {
-                services = [
-                    {
-                        service_name: 'Hair Cut & Style',
-                        duration: '30 minutes',
-                        price: 45.00,
-                        quantity: 1
+
+        // Load booking data from localStorage
+        function loadBookingData() {
+            const stored = localStorage.getItem('bookingConfirmation');
+            if (stored) {
+                bookingData = JSON.parse(stored);
+                displayBookingDetails();
+            } else {
+                // Fallback data
+                bookingData = {
+                    business: {
+                        name: 'Royal Hair Studio',
+                        location: '123 Hair Street, London, SW1A 1AA',
+                        phone: '+44 20 7123 4567',
+                        email: 'info@royalhairstudio.com'
                     },
-                    {
-                        service_name: 'Deep Conditioning',
-                        duration: '45 minutes',
-                        price: 35.00,
-                        quantity: 1
-                    }
-                ];
+                    service: {
+                        name: 'Hair Cut & Style',
+                        price: 35,
+                        duration: 60
+                    },
+                    date: '2024-01-15',
+                    time: '14:00',
+                    customer: {
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        email: 'john.doe@example.com',
+                        phone: '+44 7123 456789'
+                    },
+                    confirmationNumber: 'BK' + Date.now(),
+                    total: 28
+                };
+                displayBookingDetails();
             }
+        }
+
+        // Display booking details
+        function displayBookingDetails() {
+            if (!bookingData) return;
             
-            // Display services
-            servicesList.innerHTML = services.map(service => `
-                <li class="service-item">
+            // Booking details
+            const bookingContainer = document.getElementById('bookingDetails');
+            const date = new Date(bookingData.date);
+            const formattedDate = date.toLocaleDateString('en-GB', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            bookingContainer.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <div class="service-name">${service.service_name}</div>
-                        <div class="service-duration">${service.duration}</div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Service</h3>
+                        <p class="text-light-grey">${bookingData.service.name}</p>
+                        <p class="text-light-grey text-sm">${bookingData.service.duration} minutes</p>
                     </div>
-                    <div class="service-price">£${(service.price * service.quantity).toFixed(2)}</div>
-                </li>
-            `).join('');
-            
-            // Calculate totals
-            const subtotal = services.reduce((sum, service) => sum + (service.price * service.quantity), 0);
-            const tax = subtotal * 0.2; // 20% VAT
-            const total = subtotal + tax;
-            
-            totalSection.innerHTML = `
-                <div class="total-line">
-                    <span>Subtotal:</span>
-                    <span>£${subtotal.toFixed(2)}</span>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Date & Time</h3>
+                        <p class="text-light-grey">${formattedDate}</p>
+                        <p class="text-light-grey">${bookingData.time}</p>
                 </div>
-                <div class="total-line">
-                    <span>VAT (20%):</span>
-                    <span>£${tax.toFixed(2)}</span>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Customer</h3>
+                        <p class="text-light-grey">${bookingData.customer.firstName} ${bookingData.customer.lastName}</p>
+                        <p class="text-light-grey text-sm">${bookingData.customer.email}</p>
                 </div>
-                <div class="total-line final">
-                    <span>Total:</span>
-                    <span>£${total.toFixed(2)}</span>
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-2">Total Paid</h3>
+                        <p class="text-gold font-bold text-xl">£${bookingData.total}</p>
+                </div>
                 </div>
             `;
-        }
-        
-        function loadPaymentInfo() {
-            const paymentMethod = document.getElementById('paymentMethod');
             
-            // Get payment method from booking data
-            const paymentData = {
-                method: 'Pay Now',
-                status: 'Paid',
-                amount: '£96.00'
-            };
-            
-            paymentMethod.innerHTML = `
-                <i class="fas fa-credit-card payment-icon"></i>
-                <div>
-                    <div style="font-weight: 600; color: #ffffff;">${paymentData.method}</div>
-                    <div style="color: #10b981; font-size: 0.9rem;">${paymentData.status} - ${paymentData.amount}</div>
+            // Business info
+            const businessContainer = document.getElementById('businessInfo');
+            businessContainer.innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-2">${bookingData.business.name}</h3>
+                        <p class="text-light-grey">${bookingData.business.location}</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="tel:${bookingData.business.phone}" class="flex items-center text-light-grey hover:text-gold transition-colors duration-300">
+                            <i class="fas fa-phone mr-2"></i>
+                            ${bookingData.business.phone}
+                        </a>
+                        <a href="mailto:${bookingData.business.email}" class="flex items-center text-light-grey hover:text-gold transition-colors duration-300">
+                            <i class="fas fa-envelope mr-2"></i>
+                            ${bookingData.business.email}
+                        </a>
+                </div>
                 </div>
             `;
+            
+            // Confirmation number
+            document.getElementById('confirmationNumber').textContent = bookingData.confirmationNumber;
         }
-        
-        function sendConfirmationEmail() {
-            // Simulate sending confirmation email
-            const button = event.target;
-            const originalText = button.innerHTML;
+
+        // Add to calendar
+        function addToCalendar() {
+            const startDate = new Date(`${bookingData.date}T${bookingData.time}`);
+            const endDate = new Date(startDate.getTime() + (bookingData.service.duration * 60000));
             
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            button.disabled = true;
+            const startStr = startDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            const endStr = endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
             
-            setTimeout(() => {
-                button.innerHTML = '<i class="fas fa-check"></i> Email Sent!';
-                button.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                
-                setTimeout(() => {
-                    button.innerHTML = originalText;
-                    button.disabled = false;
-                    button.style.background = '';
-                }, 2000);
-            }, 1500);
+            const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(bookingData.service.name)}&dates=${startStr}/${endStr}&details=${encodeURIComponent(`Appointment at ${bookingData.business.name}`)}&location=${encodeURIComponent(bookingData.business.location)}`;
             
-            console.log('Confirmation email sent');
+            window.open(calendarUrl, '_blank');
         }
-        
-        // Analytics tracking
-        function trackBookingConfirmation() {
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'booking_confirmed', {
-                    'event_category': 'booking',
-                    'event_label': 'confirmation_page',
-                    'value': 1
+
+        // Share booking
+        function shareBooking() {
+            const shareText = `I've booked ${bookingData.service.name} at ${bookingData.business.name} on ${new Date(bookingData.date).toLocaleDateString()} at ${bookingData.time}. Confirmation: ${bookingData.confirmationNumber}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Booking Confirmation',
+                    text: shareText
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Booking details copied to clipboard!');
                 });
             }
-            
-            // Send basket_recovered event for conversion tracking
-            if (typeof persistentBasketSystem !== 'undefined') {
-                const basketItems = persistentBasketSystem.getCurrentBasket();
-                if (basketItems.length > 0) {
-                    console.log('Basket recovered event:', {
-                        event: 'basket_recovered',
-                        items: basketItems.length,
-                        total_value: basketItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-                    });
-                }
-            }
         }
-        
-        // Track on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            trackBookingConfirmation();
-        });
+
+        // Contact business
+        function contactBusiness() {
+            window.location.href = `tel:${bookingData.business.phone}`;
+        }
+
+        // Contact support
+        function contactSupport() {
+            window.location.href = 'mailto:support@blkpages.com?subject=Booking Support - ' + bookingData.confirmationNumber;
+        }
+
+        // Book another service
+        function bookAnother() {
+            window.location.href = 'search-results-new.html';
+        }
+
+        // Go home
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
     </script>
 </body>
 </html>
