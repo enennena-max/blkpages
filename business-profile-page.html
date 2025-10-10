@@ -365,6 +365,17 @@
                             </div>
                         </div>
 
+                        <!-- Payment Methods -->
+                        <div class="card-gradient rounded-3xl p-6 border-glow">
+                            <h3 class="text-xl font-bold text-white mb-4 flex items-center">
+                                <i class="fas fa-credit-card mr-3 text-gold"></i>
+                                Payment Options
+                            </h3>
+                            <div class="space-y-4" id="paymentOptions">
+                                <!-- Payment options will be populated by JavaScript based on business settings -->
+                            </div>
+                        </div>
+
                         <!-- Opening Hours -->
                         <div class="card-gradient rounded-3xl p-6 border-glow">
                             <h3 class="text-xl font-bold text-white mb-4 flex items-center">
@@ -540,6 +551,7 @@
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             setupConditionalCTAs();
+            setupPaymentOptions();
             setupModalEventListeners();
             updateBasketCount();
         });
@@ -630,6 +642,172 @@
             
             // Insert the conditional contact info
             contactInfoContainer.insertAdjacentHTML('beforeend', contactInfo);
+        }
+
+        // Setup payment options based on business settings
+        function setupPaymentOptions() {
+            const paymentOptionsContainer = document.getElementById('paymentOptions');
+            let paymentOptionsHTML = '';
+
+            // Get payment settings from business data (linked to dashboard)
+            // This would normally come from the business dashboard/API
+            const paymentSettings = getBusinessPaymentSettings();
+
+            // Business must have at least one payment option
+            // Deposit and Full cannot be enabled simultaneously
+            // Pay at Venue can be toggled alongside either
+
+            // Pay in Full at Checkout (mutually exclusive with deposit)
+            if (paymentSettings.allowFull && !paymentSettings.allowDeposit) {
+                paymentOptionsHTML += `
+                    <div class="bg-dark-grey/30 rounded-xl p-4 border border-white/10">
+                        <div class="flex items-start space-x-3">
+                            <span class="text-2xl">💳</span>
+                            <div class="flex-1">
+                                <h4 class="text-white font-semibold mb-1">Pay in Full at Checkout</h4>
+                                <p class="text-light-grey text-sm">Secure your appointment instantly by paying the full amount online. You'll receive an immediate confirmation and receipt.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Pay Deposit (mutually exclusive with full payment)
+            if (paymentSettings.allowDeposit && !paymentSettings.allowFull) {
+                paymentOptionsHTML += `
+                    <div class="bg-dark-grey/30 rounded-xl p-4 border border-white/10">
+                        <div class="flex items-start space-x-3">
+                            <span class="text-2xl">🪙</span>
+                            <div class="flex-1">
+                                <h4 class="text-white font-semibold mb-1">Pay a ${paymentSettings.depositPercent}% Deposit</h4>
+                                <p class="text-light-grey text-sm">Reserve your slot with a ${paymentSettings.depositPercent}% deposit. The remaining balance is payable at the venue.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Pay at Venue (can be toggled alongside either option)
+            if (paymentSettings.allowPayAtVenue) {
+                paymentOptionsHTML += `
+                    <div class="bg-dark-grey/30 rounded-xl p-4 border border-white/10">
+                        <div class="flex items-start space-x-3">
+                            <span class="text-2xl">🏠</span>
+                            <div class="flex-1">
+                                <h4 class="text-white font-semibold mb-1">Pay at the Venue</h4>
+                                <p class="text-light-grey text-sm">Book now and pay in person when you arrive. Please note that availability is confirmed upon attendance.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Fallback: If no payment options are configured, show error
+            if (!paymentOptionsHTML) {
+                paymentOptionsHTML = `
+                    <div class="bg-red-500/10 rounded-xl p-4 border border-red-500/20">
+                        <div class="flex items-start space-x-3">
+                            <span class="text-2xl">⚠️</span>
+                            <div class="flex-1">
+                                <h4 class="text-red-400 font-semibold mb-1">Payment Options Not Configured</h4>
+                                <p class="text-red-300 text-sm">Please configure payment options in your business dashboard.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            paymentOptionsContainer.innerHTML = paymentOptionsHTML;
+        }
+
+        // Get business payment settings (linked to dashboard)
+        function getBusinessPaymentSettings() {
+            // This would normally fetch from business dashboard/API
+            // For demo purposes, using localStorage to simulate dashboard settings
+            
+            // Check if business has custom payment settings
+            const businessId = businessData.id || 'royal-hair-studio';
+            const storedSettings = localStorage.getItem(`business_${businessId}_payment_settings`);
+            
+            if (storedSettings) {
+                return JSON.parse(storedSettings);
+            }
+            
+            // Default settings for Royal Hair Studio (can be changed in dashboard)
+            return {
+                allowFull: true,        // Pay in full enabled
+                allowDeposit: false,    // Deposit disabled (mutually exclusive)
+                depositPercent: 25,     // 25% deposit (if enabled)
+                allowPayAtVenue: true   // Pay at venue enabled alongside full payment
+            };
+        }
+
+        // Update business payment settings (called from dashboard)
+        function updateBusinessPaymentSettings(settings) {
+            const businessId = businessData.id || 'royal-hair-studio';
+            localStorage.setItem(`business_${businessId}_payment_settings`, JSON.stringify(settings));
+            
+            // Refresh payment options display
+            setupPaymentOptions();
+            
+            console.log('✅ Business payment settings updated:', settings);
+        }
+
+        // Demo functions to test different payment configurations
+        function setPaymentFullOnly() {
+            updateBusinessPaymentSettings({
+                allowFull: true,
+                allowDeposit: false,
+                depositPercent: 25,
+                allowPayAtVenue: false
+            });
+        }
+
+        function setPaymentDepositOnly() {
+            updateBusinessPaymentSettings({
+                allowFull: false,
+                allowDeposit: true,
+                depositPercent: 30,
+                allowPayAtVenue: false
+            });
+        }
+
+        function setPaymentFullWithVenue() {
+            updateBusinessPaymentSettings({
+                allowFull: true,
+                allowDeposit: false,
+                depositPercent: 25,
+                allowPayAtVenue: true
+            });
+        }
+
+        function setPaymentDepositWithVenue() {
+            updateBusinessPaymentSettings({
+                allowFull: false,
+                allowDeposit: true,
+                depositPercent: 20,
+                allowPayAtVenue: true
+            });
+        }
+
+        function setPaymentVenueOnly() {
+            updateBusinessPaymentSettings({
+                allowFull: false,
+                allowDeposit: false,
+                depositPercent: 25,
+                allowPayAtVenue: true
+            });
+        }
+
+        // Test function to demonstrate payment configurations
+        function testPaymentConfigurations() {
+            console.log('🧪 Testing Payment Configurations:');
+            console.log('1. setPaymentFullOnly() - Only "Pay in Full" option');
+            console.log('2. setPaymentDepositOnly() - Only "Pay Deposit" option');
+            console.log('3. setPaymentFullWithVenue() - "Pay in Full" + "Pay at Venue"');
+            console.log('4. setPaymentDepositWithVenue() - "Pay Deposit" + "Pay at Venue"');
+            console.log('5. setPaymentVenueOnly() - Only "Pay at Venue" option');
+            console.log('\nTry calling these functions to see different configurations!');
         }
 
         // Open booking modal

@@ -403,6 +403,7 @@
                                 <input type="email" id="email" 
                                        class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
                                        placeholder="Enter your email" required>
+                                <p class="text-light-grey text-xs mt-1">Use a correct email to receive booking confirmations</p>
                             </div>
                             <div>
                                 <label class="block text-white font-medium mb-2">Phone</label>
@@ -410,13 +411,86 @@
                                        class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
                                        placeholder="Enter your phone number" required>
                             </div>
+                            <div>
+                                <label class="block text-white font-medium mb-2">Address Line 1</label>
+                                <input type="text" id="addressLine1" 
+                                       class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
+                                       placeholder="Enter your address" required>
+                            </div>
+                            <div>
+                                <label class="block text-white font-medium mb-2">City</label>
+                                <input type="text" id="city" 
+                                       class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
+                                       placeholder="Enter your city" required>
+                            </div>
+                            <div>
+                                <label class="block text-white font-medium mb-2">Postcode</label>
+                                <input type="text" id="postcode" 
+                                       class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
+                                       placeholder="Enter your postcode" required>
+                            </div>
                         </div>
                         
                         <div class="mt-4">
-                            <label class="block text-white font-medium mb-2">Special Requests (Optional)</label>
+                            <label class="block text-white font-medium mb-2">Optional Note to Business</label>
                             <textarea id="specialRequests" rows="3"
                                       class="w-full px-4 py-3 rounded-xl bg-dark-grey/50 border border-white/20 text-white focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300"
-                                      placeholder="Any special requests or notes..."></textarea>
+                                      placeholder="Any special requests or notes for the business..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="card-gradient rounded-3xl p-6 border-glow">
+                        <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-file-contract mr-3 text-gold"></i>
+                            Terms & Conditions
+                        </h2>
+                        
+                        <div class="space-y-4">
+                            <!-- BlkPages Terms -->
+                            <div class="flex items-start space-x-3">
+                                <input type="checkbox" id="blkpagesTerms" required
+                                       class="mt-1 w-4 h-4 text-gold bg-dark-grey/50 border-white/20 rounded focus:ring-gold focus:ring-2">
+                                <label for="blkpagesTerms" class="text-light-grey text-sm">
+                                    I agree to BlkPages 
+                                    <a href="/legal/blkpages-terms" target="_blank" class="text-gold hover:text-gold/80 underline">Terms & Conditions</a>
+                                    <span class="text-red-400">*</span>
+                                </label>
+                            </div>
+
+                            <!-- Business Terms -->
+                            <div class="flex items-start space-x-3" id="businessTermsContainer">
+                                <!-- Business terms will be populated by JavaScript if business.termsUrl is provided -->
+                            </div>
+
+                            <!-- Marketing Opt-in -->
+                            <div class="flex items-start space-x-3">
+                                <input type="checkbox" id="marketingOptIn"
+                                       class="mt-1 w-4 h-4 text-gold bg-dark-grey/50 border-white/20 rounded focus:ring-gold focus:ring-2">
+                                <label for="marketingOptIn" class="text-light-grey text-sm">
+                                    I would like to receive marketing communications and special offers
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cancellation Policy -->
+                    <div id="cancellationPolicySection" class="card-gradient rounded-3xl p-6 border-glow">
+                        <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+                            <i class="fas fa-calendar-times mr-3 text-gold"></i>
+                            Cancellation Policy
+                        </h2>
+                        
+                        <div class="bg-gold/10 rounded-xl p-4 border border-gold/20">
+                            <p class="text-light-grey text-sm mb-3">
+                                This policy is set by <span class="text-gold font-semibold" id="businessNameForPolicy">Royal Hair Studio</span>. 
+                                BlkPages processes payments via Stripe on behalf of the venue but is not responsible for enforcing refunds.
+                            </p>
+                            
+                            <button onclick="openCancellationPolicyModal()" 
+                                    class="text-gold hover:text-gold/80 underline text-sm font-medium">
+                                View cancellation policy
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -459,6 +533,15 @@
                                 id="continueBtn" disabled>
                             <i class="fas fa-credit-card mr-2"></i>Continue to Payment
                         </button>
+                        
+                        <!-- Guest User Sign In Prompt -->
+                        <div id="guestSignInPrompt" class="mt-3 text-center">
+                            <p class="text-xs text-gray-400">
+                                <a href="#" onclick="handleGuestSignIn()" class="text-gold hover:text-gold/80 transition-colors duration-300 underline">
+                                    Click to sign in/sign up
+                                </a> for faster checkout and booking management
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -489,6 +572,15 @@
                             class="w-full py-3 px-6 rounded-xl gold-gradient text-black font-semibold hover:shadow-lg hover:shadow-gold/30 transition-all duration-300 transform hover:scale-105">
                         <i class="fas fa-user-plus mr-2"></i>Sign In/Sign Up to Join Waiting List
                     </button>
+                </div>
+                
+                <!-- Guest User Sign In Prompt -->
+                <div id="waitingListGuestPrompt" class="text-center">
+                    <p class="text-xs text-gray-500">
+                        <a href="#" onclick="handleGuestSignIn()" class="text-gold hover:text-gold/80 transition-colors duration-300 underline">
+                            Click to sign in/sign up
+                        </a> to manage your waiting list bookings
+                    </p>
                 </div>
                 
                 <!-- Close Button -->
@@ -535,15 +627,55 @@
         </div>
     </div>
 
+    <!-- Cancellation Policy Modal -->
+    <div id="cancellationPolicyModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl p-8 max-w-2xl w-full border-2 border-gold shadow-[0_0_20px_rgba(212,175,55,0.25)] modal-content relative">
+                <!-- Modal Header -->
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gold/10 flex items-center justify-center">
+                        <i class="fas fa-calendar-times text-gold text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2" id="cancellationPolicyTitle">Cancellation Policy</h2>
+                    <p class="text-gray-600">Please review the cancellation policy for your booking</p>
+                </div>
+                
+                <!-- Modal Content -->
+                <div class="mb-6">
+                    <div id="cancellationPolicyContent" class="text-gray-700 leading-relaxed">
+                        <!-- Cancellation policy content will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Modal Buttons -->
+                <div class="flex justify-center">
+                    <button onclick="closeCancellationPolicyModal()" 
+                            class="px-8 py-3 rounded-xl gold-gradient text-black font-semibold hover:shadow-lg hover:shadow-gold/30 transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-check mr-2"></i>I Understand
+                    </button>
+                </div>
+                
+                <!-- Close Button -->
+                <button onclick="closeCancellationPolicyModal()" 
+                        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let selectedService = null;
         let selectedDate = null;
         let selectedTime = null;
         let businessInfo = null;
         let basketItems = JSON.parse(localStorage.getItem('basketItems') || '[]');
+        let isUserSignedIn = false; // Will be determined by checking localStorage or session
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
+            checkUserAuthentication();
+            handleAuthReturn();
             loadBusinessInfo();
             setupServiceSelection();
             setupDateSelection();
@@ -551,6 +683,8 @@
             setupModalEventListeners();
             updateBasketCount();
             fillTestCustomerDetails();
+            setupGuestPrompts();
+            setupBusinessTermsAndPolicy();
         });
 
         // Setup modal event listeners
@@ -656,6 +790,9 @@
                         duration: parseInt(this.dataset.duration)
                     };
                     
+                    // Regenerate time slots now that service is selected
+                    generateTimeSlots();
+                    
                     updateBookingSummary();
                     checkFormCompletion();
                 });
@@ -689,13 +826,47 @@
             if (!selectedDate) return;
             
             const timeSlotsContainer = document.getElementById('timeSlots');
+            
+            // Don't show availability until a service is selected
+            if (!selectedService) {
+                timeSlotsContainer.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <i class="fas fa-cut text-4xl text-gray-500 mb-4"></i>
+                        <p class="text-gray-500 text-lg font-medium">Select a service first</p>
+                        <p class="text-gray-400 text-sm">Choose a service above to see available time slots</p>
+                    </div>
+                `;
+                return;
+            }
+            
             const businessId = businessInfo ? businessInfo.slug : 'royal-hair-studio';
-            const serviceId = selectedService ? selectedService.id : 'hair-cut';
+            const serviceId = selectedService.id;
             
             // Get availability data for this business, service, and date
             const businessData = mockAvailabilityData[businessId];
             const serviceData = businessData ? businessData[serviceId] : null;
-            const dayData = serviceData ? serviceData[selectedDate] : null;
+            let dayData = serviceData ? serviceData[selectedDate] : null;
+            
+            // Add randomization for dynamic availability
+            if (!dayData) {
+                const random = Math.random();
+                let waitlist = false;
+                let closed = false;
+                
+                if (random < 0.2) waitlist = true;
+                else if (random < 0.3) closed = true;
+                
+                if (closed) {
+                    dayData = { status: 'closed' };
+                } else if (waitlist) {
+                    dayData = { status: 'fully-booked', waitingList: true };
+                } else {
+                    // Generate random available slots
+                    const allSlots = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'];
+                    const availableSlots = allSlots.filter(() => Math.random() > 0.3); // 70% chance each slot is available
+                    dayData = { status: 'available', slots: availableSlots };
+                }
+            }
             
             let slotsHTML = '';
             
@@ -742,7 +913,7 @@
                     return `
                         <div class="${slotClass}" data-time="${time}" data-available="${isAvailable}">
                             <span class="text-white font-medium">${time}</span>
-                            ${!isAvailable ? '<span class="block text-xs text-gray-500 mt-1">Unavailable</span>' : ''}
+                            ${!isAvailable ? '<span class="block text-xs text-gold mt-1">Click to join waiting list</span>' : ''}
                         </div>
                     `;
                 }).join('');
@@ -787,12 +958,18 @@
             
             if (selectedService) {
                 summaryHTML += `
-                    <div class="flex items-center justify-between">
-                        <div>
+                    <div class="flex items-center justify-between group">
+                        <div class="flex-1">
                             <p class="text-white font-medium">${selectedService.name}</p>
                             <p class="text-light-grey text-sm">${selectedService.duration} minutes</p>
                         </div>
-                        <span class="text-gold font-bold">£${selectedService.price}</span>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-gold font-bold">£${selectedService.price}</span>
+                            <button onclick="removeSelectedService()" 
+                                    class="text-red-400 hover:text-red-300 p-1 rounded-full hover:bg-red-500/10 transition-all duration-200">
+                                <i class="fas fa-times text-sm"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
                 total = selectedService.price;
@@ -835,11 +1012,24 @@
 
         // Setup form validation
         function setupFormValidation() {
-            const inputs = ['firstName', 'lastName', 'email', 'phone'];
+            const inputs = ['firstName', 'lastName', 'email', 'phone', 'addressLine1', 'city', 'postcode'];
             inputs.forEach(inputId => {
                 const input = document.getElementById(inputId);
-                input.addEventListener('input', checkFormCompletion);
+                if (input) {
+                    input.addEventListener('input', checkFormCompletion);
+                }
             });
+            
+            // Add validation for checkboxes
+            const blkpagesTerms = document.getElementById('blkpagesTerms');
+            if (blkpagesTerms) {
+                blkpagesTerms.addEventListener('change', checkFormCompletion);
+            }
+            
+            const businessTerms = document.getElementById('businessTerms');
+            if (businessTerms) {
+                businessTerms.addEventListener('change', checkFormCompletion);
+            }
         }
 
         // Check if form is complete
@@ -848,9 +1038,19 @@
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
+            const addressLine1 = document.getElementById('addressLine1').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const postcode = document.getElementById('postcode').value.trim();
+            
+            // Check required checkboxes
+            const blkpagesTerms = document.getElementById('blkpagesTerms').checked;
+            const businessTerms = document.getElementById('businessTerms');
+            const businessTermsChecked = businessTerms ? businessTerms.checked : true; // If no business terms, consider it checked
             
             const isComplete = selectedService && selectedDate && selectedTime && 
-                              firstName && lastName && email && phone;
+                              firstName && lastName && email && phone && 
+                              addressLine1 && city && postcode &&
+                              blkpagesTerms && businessTermsChecked;
             
             const continueBtn = document.getElementById('continueBtn');
             continueBtn.disabled = !isComplete;
@@ -893,32 +1093,31 @@
 
         // Proceed to payment
         function proceedToPayment() {
+            // Collect and validate booking details
+            const bookingDetails = collectBookingDetails();
+            if (!bookingDetails) {
+                return; // Validation failed, error already shown
+            }
+
+            // Create basket item
             const basketItem = createBasketItem();
             if (!basketItem) {
-                alert('Please complete all required fields');
+                alert('Error creating booking item. Please try again.');
                 return;
             }
 
             // Add to basket
             addToBasket(basketItem);
 
+            // Store complete booking data
             const bookingData = {
-                business: businessInfo,
-                service: selectedService,
-                date: selectedDate,
-                time: selectedTime,
-                customer: {
-                    firstName: document.getElementById('firstName').value.trim(),
-                    lastName: document.getElementById('lastName').value.trim(),
-                    email: document.getElementById('email').value.trim(),
-                    phone: document.getElementById('phone').value.trim(),
-                    specialRequests: document.getElementById('specialRequests').value.trim()
-                },
+                ...bookingDetails,
                 total: calculateTotal(),
                 basketItem: basketItem
             };
             
             localStorage.setItem('bookingData', JSON.stringify(bookingData));
+            console.log('✅ Booking data stored, proceeding to payment...');
             window.location.href = 'payment-page.html';
         }
 
@@ -1027,7 +1226,12 @@
         // Join waiting list (redirect to auth)
         function joinWaitingList() {
             const serviceId = businessInfo ? businessInfo.slug : 'royal-hair-studio';
-            window.location.href = `/auth/signin?redirect=/waiting-list/${serviceId}`;
+            // Preserve current page and basket data
+            const currentUrl = window.location.href;
+            const basketData = JSON.stringify(basketItems);
+            localStorage.setItem('pendingAuthRedirect', currentUrl);
+            localStorage.setItem('pendingAuthBasket', basketData);
+            window.location.href = `/auth/signin?redirect=${encodeURIComponent(currentUrl)}`;
         }
 
         // View waiting list status
@@ -1292,6 +1496,9 @@
                 lastName: 'Smith',
                 email: 'john.smith@example.com',
                 phone: '+44 7123 456789',
+                addressLine1: '123 Test Street',
+                city: 'London',
+                postcode: 'SW1A 1AA',
                 specialRequests: 'Please use organic products if possible. I have sensitive skin.'
             };
             
@@ -1300,6 +1507,9 @@
             document.getElementById('lastName').value = testCustomer.lastName;
             document.getElementById('email').value = testCustomer.email;
             document.getElementById('phone').value = testCustomer.phone;
+            document.getElementById('addressLine1').value = testCustomer.addressLine1;
+            document.getElementById('city').value = testCustomer.city;
+            document.getElementById('postcode').value = testCustomer.postcode;
             document.getElementById('specialRequests').value = testCustomer.specialRequests;
             
             // Trigger form validation to enable continue button when service/time are selected
@@ -1309,7 +1519,504 @@
             console.log(`Name: ${testCustomer.firstName} ${testCustomer.lastName}`);
             console.log(`Email: ${testCustomer.email}`);
             console.log(`Phone: ${testCustomer.phone}`);
+            console.log(`Address: ${testCustomer.addressLine1}, ${testCustomer.city} ${testCustomer.postcode}`);
             console.log('📝 Now select a service and time slot to test the booking flow!');
+        }
+
+        // Setup business terms and cancellation policy
+        function setupBusinessTermsAndPolicy() {
+            // Setup business terms if business has termsUrl
+            const businessTermsContainer = document.getElementById('businessTermsContainer');
+            if (businessInfo && businessInfo.termsUrl) {
+                businessTermsContainer.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <input type="checkbox" id="businessTerms" required
+                               class="mt-1 w-4 h-4 text-gold bg-dark-grey/50 border-white/20 rounded focus:ring-gold focus:ring-2">
+                        <label for="businessTerms" class="text-light-grey text-sm">
+                            I agree to this business's 
+                            <a href="${businessInfo.termsUrl}" target="_blank" class="text-gold hover:text-gold/80 underline">Terms & Conditions</a>
+                            <span class="text-red-400">*</span>
+                        </label>
+                    </div>
+                `;
+            }
+
+            // Setup cancellation policy
+            const businessNameElement = document.getElementById('businessNameForPolicy');
+            if (businessNameElement && businessInfo) {
+                businessNameElement.textContent = businessInfo.name || 'Royal Hair Studio';
+            }
+
+            // Show/hide cancellation policy section based on payment settings
+            const cancellationSection = document.getElementById('cancellationPolicySection');
+            const paymentSettings = getBusinessPaymentSettings();
+            
+            // Only show cancellation policy if payment is being taken
+            if (paymentSettings.allowFull || paymentSettings.allowDeposit) {
+                cancellationSection.style.display = 'block';
+            } else {
+                cancellationSection.style.display = 'none';
+            }
+        }
+
+        // Get business cancellation policy (linked to dashboard)
+        function getBusinessCancellationPolicy() {
+            // This would normally fetch from business dashboard/API
+            const businessId = businessInfo ? businessInfo.id : 'royal-hair-studio';
+            const storedPolicy = localStorage.getItem(`business_${businessId}_cancellation_policy`);
+            
+            if (storedPolicy) {
+                return JSON.parse(storedPolicy);
+            }
+            
+            // Default cancellation policy for Royal Hair Studio
+            return {
+                type: '24hour', // '24hour', '48hour', or 'non-refundable'
+                businessName: businessInfo ? businessInfo.name : 'Royal Hair Studio'
+            };
+        }
+
+        // Open cancellation policy modal
+        function openCancellationPolicyModal() {
+            const modal = document.getElementById('cancellationPolicyModal');
+            const policy = getBusinessCancellationPolicy();
+            
+            // Set modal title
+            document.getElementById('cancellationPolicyTitle').textContent = 
+                `${policy.businessName} - Cancellation Policy`;
+            
+            // Set policy content based on type
+            let policyContent = '';
+            switch (policy.type) {
+                case '24hour':
+                    policyContent = `
+                        <p class="mb-4"><strong>You may cancel your booking up to 24 hours before your appointment for a full refund.</strong></p>
+                        <p class="mb-4">Cancellations made within 24 hours and no-shows will be charged 100% of the service price.</p>
+                        <p>Refunds are returned to your original payment method within 5–10 business days.</p>
+                    `;
+                    break;
+                case '48hour':
+                    policyContent = `
+                        <p class="mb-4"><strong>You may cancel your booking up to 48 hours before your appointment for a full refund.</strong></p>
+                        <p class="mb-4">Cancellations made within 48 hours will be charged 50% of the service price.</p>
+                        <p class="mb-4">No-shows will be charged 100% of the service price.</p>
+                        <p>Refunds are returned to your original payment method within 5–10 business days.</p>
+                    `;
+                    break;
+                case 'non-refundable':
+                    policyContent = `
+                        <p class="mb-4"><strong>This booking is non-refundable once confirmed.</strong></p>
+                        <p class="mb-4">No-shows will be charged 100% of the service price.</p>
+                        <p>Refunds are returned to your original payment method within 5–10 business days.</p>
+                    `;
+                    break;
+                default:
+                    policyContent = `
+                        <p class="mb-4"><strong>You may cancel your booking up to 24 hours before your appointment for a full refund.</strong></p>
+                        <p class="mb-4">Cancellations made within 24 hours and no-shows will be charged 100% of the service price.</p>
+                        <p>Refunds are returned to your original payment method within 5–10 business days.</p>
+                    `;
+            }
+            
+            document.getElementById('cancellationPolicyContent').innerHTML = policyContent;
+            
+            modal.classList.remove('hidden');
+            
+            // Add show classes for animation
+            setTimeout(() => {
+                modal.classList.add('show');
+                const modalContent = modal.querySelector('.modal-content');
+                modalContent.classList.add('show');
+            }, 10);
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close cancellation policy modal
+        function closeCancellationPolicyModal() {
+            const modal = document.getElementById('cancellationPolicyModal');
+            const modalContent = modal.querySelector('.modal-content');
+            
+            // Remove show classes for animation
+            modal.classList.remove('show');
+            modalContent.classList.remove('show');
+            
+            // Hide modal after animation
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+            
+            // Restore body scroll
+            document.body.style.overflow = '';
+        }
+
+        // Refresh time slots with new randomization
+        function refreshTimeSlots() {
+            console.log('🔄 Refreshing time slots with new randomization...');
+            generateTimeSlots();
+        }
+
+        // Test randomization function
+        function testRandomization() {
+            console.log('🎲 Testing randomization logic:');
+            for (let i = 0; i < 10; i++) {
+                const random = Math.random();
+                let status = 'available';
+                if (random < 0.2) status = 'waitlist';
+                else if (random < 0.3) status = 'closed';
+                console.log(`Test ${i + 1}: ${random.toFixed(3)} → ${status}`);
+            }
+        }
+
+        // Check if user is signed in
+        function checkUserAuthentication() {
+            // Check localStorage for user session
+            const userSession = localStorage.getItem('userSession');
+            const userToken = localStorage.getItem('userToken');
+            
+            if (userSession || userToken) {
+                isUserSignedIn = true;
+                console.log('✅ User is signed in');
+            } else {
+                isUserSignedIn = false;
+                console.log('👤 User is not signed in (guest mode)');
+            }
+        }
+
+        // Handle return from authentication
+        function handleAuthReturn() {
+            // Check if we have pending auth data to restore
+            const pendingAuthRedirect = localStorage.getItem('pendingAuthRedirect');
+            const pendingAuthBasket = localStorage.getItem('pendingAuthBasket');
+            const pendingAuthBooking = localStorage.getItem('pendingAuthBooking');
+            
+            if (pendingAuthRedirect && pendingAuthBasket && isUserSignedIn) {
+                console.log('🔄 Restoring basket and booking state after successful authentication...');
+                
+                try {
+                    // Restore basket data
+                    const restoredBasket = JSON.parse(pendingAuthBasket);
+                    basketItems = restoredBasket;
+                    localStorage.setItem('basketItems', JSON.stringify(basketItems));
+                    
+                    // Restore booking state if available
+                    if (pendingAuthBooking) {
+                        const bookingData = JSON.parse(pendingAuthBooking);
+                        selectedService = bookingData.selectedService;
+                        selectedDate = bookingData.selectedDate;
+                        selectedTime = bookingData.selectedTime;
+                        businessInfo = bookingData.businessInfo;
+                        
+                        // Restore UI state
+                        if (selectedService) {
+                            // Restore service selection
+                            document.querySelectorAll('.service-option').forEach(option => {
+                                if (option.dataset.service === selectedService.id) {
+                                    option.classList.add('selected');
+                                    const clickText = option.querySelector('.text-gold.text-xs');
+                                    if (clickText) {
+                                        clickText.textContent = 'Selected ✓';
+                                    }
+                                }
+                            });
+                            
+                            // Restore time selection
+                            if (selectedTime) {
+                                document.querySelectorAll('.time-slot').forEach(slot => {
+                                    if (slot.dataset.time === selectedTime) {
+                                        slot.classList.add('selected');
+                                    }
+                                });
+                            }
+                            
+                            // Update summary
+                            updateBookingSummary();
+                        }
+                    }
+                    
+                    // Clear pending auth data
+                    localStorage.removeItem('pendingAuthRedirect');
+                    localStorage.removeItem('pendingAuthBasket');
+                    localStorage.removeItem('pendingAuthBooking');
+                    
+                    // Update basket count
+                    updateBasketCount();
+                    
+                    // Show success message
+                    showAuthSuccessMessage();
+                    
+                    console.log('✅ Basket and booking state restored successfully:', basketItems);
+                } catch (error) {
+                    console.error('❌ Error restoring basket and booking state:', error);
+                }
+            }
+        }
+
+        // Show authentication success message
+        function showAuthSuccessMessage() {
+            // Create a temporary success message
+            const successMessage = document.createElement('div');
+            successMessage.className = 'fixed top-20 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
+            successMessage.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Welcome back! Your basket has been restored.</span>
+                </div>
+            `;
+            
+            document.body.appendChild(successMessage);
+            
+            // Remove message after 3 seconds
+            setTimeout(() => {
+                successMessage.style.opacity = '0';
+                successMessage.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (successMessage.parentNode) {
+                        successMessage.parentNode.removeChild(successMessage);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Handle guest sign-in with basket preservation
+        function handleGuestSignIn() {
+            // Preserve current page and basket data
+            const currentUrl = window.location.href;
+            const basketData = JSON.stringify(basketItems);
+            const bookingData = {
+                selectedService: selectedService,
+                selectedDate: selectedDate,
+                selectedTime: selectedTime,
+                businessInfo: businessInfo
+            };
+            
+            // Store data for restoration after auth
+            localStorage.setItem('pendingAuthRedirect', currentUrl);
+            localStorage.setItem('pendingAuthBasket', basketData);
+            localStorage.setItem('pendingAuthBooking', JSON.stringify(bookingData));
+            
+            console.log('🔄 Preserving basket and booking data before auth...');
+            
+            // Redirect to sign-in page
+            window.location.href = `customer-login.html?redirect=${encodeURIComponent(currentUrl)}`;
+        }
+
+        // Setup guest prompts visibility
+        function setupGuestPrompts() {
+            const guestPrompt = document.getElementById('guestSignInPrompt');
+            const waitingListPrompt = document.getElementById('waitingListGuestPrompt');
+            
+            if (isUserSignedIn) {
+                // Hide prompts for signed-in users
+                if (guestPrompt) guestPrompt.style.display = 'none';
+                if (waitingListPrompt) waitingListPrompt.style.display = 'none';
+            } else {
+                // Show prompts for guest users
+                if (guestPrompt) guestPrompt.style.display = 'block';
+                if (waitingListPrompt) waitingListPrompt.style.display = 'block';
+            }
+        }
+
+        // Validate booking details with legal compliance
+        function validateBookingDetails() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const addressLine1 = document.getElementById('addressLine1').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const postcode = document.getElementById('postcode').value.trim();
+            
+            const errors = [];
+            
+            // Required field validation
+            if (!firstName) errors.push('First name is required');
+            if (!lastName) errors.push('Last name is required');
+            if (!email) errors.push('Email is required');
+            if (!phone) errors.push('Phone number is required');
+            if (!addressLine1) errors.push('Address is required');
+            if (!city) errors.push('City is required');
+            if (!postcode) errors.push('Postcode is required');
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                errors.push('Please enter a valid email address');
+            }
+            
+            // Phone validation (UK format)
+            const phoneRegex = /^(\+44|0)[0-9]{10,11}$/;
+            if (phone && !phoneRegex.test(phone.replace(/\s/g, ''))) {
+                errors.push('Please enter a valid UK phone number');
+            }
+            
+            // Name validation (no numbers or special characters)
+            const nameRegex = /^[a-zA-Z\s'-]+$/;
+            if (firstName && !nameRegex.test(firstName)) {
+                errors.push('First name can only contain letters, spaces, hyphens, and apostrophes');
+            }
+            if (lastName && !nameRegex.test(lastName)) {
+                errors.push('Last name can only contain letters, spaces, hyphens, and apostrophes');
+            }
+            
+            // Postcode validation (UK format)
+            const postcodeRegex = /^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][A-Z]{2}$/i;
+            if (postcode && !postcodeRegex.test(postcode)) {
+                errors.push('Please enter a valid UK postcode');
+            }
+            
+            // Terms and conditions validation
+            const blkpagesTerms = document.getElementById('blkpagesTerms').checked;
+            if (!blkpagesTerms) {
+                errors.push('You must agree to BlkPages Terms & Conditions');
+            }
+            
+            const businessTerms = document.getElementById('businessTerms');
+            if (businessTerms && !businessTerms.checked) {
+                errors.push('You must agree to the business Terms & Conditions');
+            }
+            
+            // Service and time validation
+            if (!selectedService) errors.push('Please select a service');
+            if (!selectedDate) errors.push('Please select a date');
+            if (!selectedTime) errors.push('Please select a time slot');
+            
+            return {
+                isValid: errors.length === 0,
+                errors: errors
+            };
+        }
+
+        // Remove selected service
+        function removeSelectedService() {
+            if (!selectedService) return;
+            
+            // Remove from basket if it exists
+            if (basketItems.length > 0) {
+                basketItems = basketItems.filter(item => 
+                    !(item.serviceId === selectedService.id && 
+                      item.date === selectedDate && 
+                      item.time === selectedTime)
+                );
+                localStorage.setItem('basketItems', JSON.stringify(basketItems));
+                updateBasketCount();
+            }
+            
+            // Clear selected service
+            selectedService = null;
+            selectedTime = null; // Also clear time since it's service-specific
+            
+            // Reset service selection UI
+            document.querySelectorAll('.service-option').forEach(option => {
+                option.classList.remove('selected');
+                const clickText = option.querySelector('.text-gold.text-xs');
+                if (clickText) {
+                    clickText.textContent = 'Click to add';
+                }
+            });
+            
+            // Reset time selection UI
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+            
+            // Update summary and regenerate time slots
+            updateBookingSummary();
+            generateTimeSlots();
+            checkFormCompletion();
+            
+            console.log('🗑️ Service removed from booking');
+        }
+
+        // Collect booking details with validation
+        function collectBookingDetails() {
+            const validation = validateBookingDetails();
+            
+            if (!validation.isValid) {
+                alert('Please fix the following errors:\n• ' + validation.errors.join('\n• '));
+                return null;
+            }
+            
+            const bookingDetails = {
+                // Customer details
+                customer: {
+                    firstName: document.getElementById('firstName').value.trim(),
+                    lastName: document.getElementById('lastName').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    specialRequests: document.getElementById('specialRequests').value.trim()
+                },
+                
+                // Booking details
+                booking: {
+                    service: selectedService,
+                    date: selectedDate,
+                    time: selectedTime,
+                    business: businessInfo
+                },
+                
+                // Legal compliance
+                legal: {
+                    termsAccepted: true, // Would be a checkbox in real implementation
+                    privacyPolicyAccepted: true, // Would be a checkbox in real implementation
+                    dataProcessingConsent: true, // GDPR compliance
+                    marketingConsent: false, // Opt-in for marketing
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent,
+                    ipAddress: 'N/A' // Would be collected server-side
+                },
+                
+                // Authentication
+                auth: {
+                    isSignedIn: isUserSignedIn,
+                    userId: isUserSignedIn ? localStorage.getItem('userId') : null,
+                    sessionId: isUserSignedIn ? localStorage.getItem('sessionId') : null
+                }
+            };
+            
+            console.log('✅ Booking details collected and validated:', bookingDetails);
+            return bookingDetails;
+        }
+
+        // Demo functions to test different cancellation policies
+        function setCancellationPolicy24Hour() {
+            const businessId = businessInfo ? businessInfo.id : 'royal-hair-studio';
+            const policy = {
+                type: '24hour',
+                businessName: businessInfo ? businessInfo.name : 'Royal Hair Studio'
+            };
+            localStorage.setItem(`business_${businessId}_cancellation_policy`, JSON.stringify(policy));
+            console.log('✅ Cancellation policy set to 24-hour');
+        }
+
+        function setCancellationPolicy48Hour() {
+            const businessId = businessInfo ? businessInfo.id : 'royal-hair-studio';
+            const policy = {
+                type: '48hour',
+                businessName: businessInfo ? businessInfo.name : 'Royal Hair Studio'
+            };
+            localStorage.setItem(`business_${businessId}_cancellation_policy`, JSON.stringify(policy));
+            console.log('✅ Cancellation policy set to 48-hour');
+        }
+
+        function setCancellationPolicyNonRefundable() {
+            const businessId = businessInfo ? businessInfo.id : 'royal-hair-studio';
+            const policy = {
+                type: 'non-refundable',
+                businessName: businessInfo ? businessInfo.name : 'Royal Hair Studio'
+            };
+            localStorage.setItem(`business_${businessId}_cancellation_policy`, JSON.stringify(policy));
+            console.log('✅ Cancellation policy set to non-refundable');
+        }
+
+        // Test function to demonstrate cancellation policies
+        function testCancellationPolicies() {
+            console.log('🧪 Testing Cancellation Policies:');
+            console.log('1. setCancellationPolicy24Hour() - 24-hour cancellation policy');
+            console.log('2. setCancellationPolicy48Hour() - 48-hour cancellation policy');
+            console.log('3. setCancellationPolicyNonRefundable() - Non-refundable policy');
+            console.log('\nTry calling these functions and then click "View cancellation policy"!');
         }
     </script>
 </body>
