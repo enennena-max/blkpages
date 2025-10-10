@@ -14,6 +14,9 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
+    <!-- Booking Encryption Utility -->
+    <script src="js/booking-encryption.js"></script>
+    
     <script>
         tailwind.config = {
             theme: {
@@ -171,7 +174,7 @@
                     <a href="business-router.html" class="text-gold font-medium" style="background: linear-gradient(135deg, #D4AF37, #B8860B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
                         <i class="fas fa-building mr-1"></i>Business Profile 2
                     </a>
-                </div>
+        </div>
         
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden">
@@ -267,6 +270,19 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Privacy Notice -->
+                    <div class="card-gradient rounded-3xl p-6 border-glow bg-gold/5">
+                        <h2 class="text-xl font-bold text-white mb-4 flex items-center">
+                            <i class="fas fa-lock mr-3 text-gold"></i>
+                            Privacy Protection
+                        </h2>
+                        <p class="text-light-grey text-xs italic leading-relaxed">
+                            For your privacy, BlkPages does not share your personal details directly with businesses.  
+                            All bookings are securely managed through the business's BlkPages dashboard.  
+                            Sensitive data such as your name, phone number, and address are encrypted before being sent.
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Sidebar -->
@@ -351,6 +367,11 @@
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
             loadBookingData();
+            
+            // Create business notification for new booking
+            if (bookingData) {
+                createBusinessNotification();
+            }
         });
 
         // Load booking data from localStorage
@@ -504,6 +525,46 @@
         function toggleMobileMenu() {
             const menu = document.getElementById('mobileMenu');
             menu.classList.toggle('hidden');
+        }
+
+        // Create business notification for new booking
+        function createBusinessNotification() {
+            if (!bookingData) return;
+            
+            // Encrypt customer PII before sending to business dashboard
+            const encryptedCustomerData = window.BookingEncryption.encryptCustomerPII(bookingData.customer);
+            
+            // Create secure booking summary for business dashboard
+            const secureBookingSummary = window.BookingEncryption.createSecureBookingSummary({
+                ...bookingData,
+                customer: encryptedCustomerData
+            });
+            
+            // Create notification object with encrypted data
+            const notification = {
+                id: 'notif_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                type: "New Booking Request",
+                customerName: window.BookingEncryption.getCustomerInitials(bookingData.customer), // Only show initials
+                bookingDetails: {
+                    service: bookingData.service.name,
+                    date: bookingData.date,
+                    time: bookingData.time,
+                    price: `£${bookingData.total}`
+                },
+                encryptedBookingData: window.BookingEncryption.encryptBookingData(secureBookingSummary),
+                createdAt: new Date().toISOString(),
+                viewed: false,
+                businessId: 'royal-hair-studio'
+            };
+            
+            // Get existing notifications
+            const existingLogs = JSON.parse(localStorage.getItem('notification_logs') || '[]');
+            existingLogs.push(notification);
+            
+            // Save to localStorage
+            localStorage.setItem('notification_logs', JSON.stringify(existingLogs));
+            
+            console.log('🔒 Encrypted business notification created for new booking:', notification);
         }
     </script>
 </body>

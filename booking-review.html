@@ -11,6 +11,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Booking Encryption Utility -->
+    <script src="js/booking-encryption.js"></script>
+    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
@@ -518,6 +521,15 @@
                                       placeholder="Any special requests or notes for the business..."></textarea>
                             <p class="text-light-grey text-xs mt-4 italic">
                                 BlkPages does not monitor or read customer messages. Your information is securely passed to the business handling your booking.
+                            </p>
+                        </div>
+                        
+                        <!-- Privacy Notice -->
+                        <div class="mt-6 p-4 bg-gold/5 rounded-xl border border-gold/20">
+                            <p class="text-light-grey text-xs italic leading-relaxed">
+                                For your privacy, BlkPages does not share your personal details directly with businesses.  
+                                All bookings are securely managed through the business's BlkPages dashboard.  
+                                Sensitive data such as your name, phone number, and address are encrypted before being sent.
                             </p>
                         </div>
                     </div>
@@ -1328,8 +1340,14 @@
                 basketItem: basketItem
             };
             
-            localStorage.setItem('bookingData', JSON.stringify(bookingData));
-            console.log('✅ Booking data stored, proceeding to payment...');
+            // Encrypt sensitive customer data before storing
+            const encryptedBookingData = {
+                ...bookingData,
+                customer: window.BookingEncryption.encryptCustomerPII(bookingData.customer)
+            };
+            
+            localStorage.setItem('bookingData', JSON.stringify(encryptedBookingData));
+            console.log('🔒 Encrypted booking data stored, proceeding to payment...');
             window.location.href = 'payment-page.html';
         }
 

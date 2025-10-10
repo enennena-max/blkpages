@@ -17,6 +17,7 @@
     <script src="backend/verified-customer-numbers.js"></script>
     <script src="backend/sms-messaging-system.js"></script>
     <script src="backend/notification-automation-system.js"></script>
+    <script src="js/booking-encryption.js"></script>
     
     <!-- Waiting List Offer System -->
     <script src="backend/waiting-list-offer-system.js"></script>
@@ -4494,6 +4495,20 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
         <div id="bookings" class="content-section">
             <h2>Bookings Management</h2>
             <p>Manage your appointments and availability here.</p>
+            
+            <!-- Demo New Booking Notification -->
+            <div class="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <h4 class="font-medium text-purple-800 mb-3">Test New Booking Notification:</h4>
+                <button 
+                    onclick="simulateNewBooking()"
+                    class="px-4 py-2 bg-purple-100 hover:bg-purple-200 rounded text-sm text-purple-800 transition-colors font-medium"
+                >
+                    📅 Simulate New Booking
+                </button>
+                <p class="text-xs text-purple-600 mt-2">
+                    Click to create a test notification for a new booking request.
+                </p>
+            </div>
         </div>
         
         <div id="services" class="content-section">
@@ -6492,10 +6507,140 @@ Refunds are returned to your original payment method within 5–10 business days
                 notification.remove();
             }, 5000);
         }
+
+        // Automatic Business Prompts System
+        function checkForNewBookings() {
+            const notifications = getNotificationLogs();
+            const newBookingNotifications = notifications.filter(n => 
+                n.type === "New Booking Request" && !n.viewed
+            );
+            
+            if (newBookingNotifications.length > 0) {
+                showNewBookingPrompt(newBookingNotifications);
+            }
+        }
+
+        // Show new booking prompt
+        function showNewBookingPrompt(notifications) {
+            const customerNames = notifications.map(n => n.customerName || 'a customer').join(', ');
+            const message = `📅 You have ${notifications.length} new booking${notifications.length > 1 ? 's' : ''} from ${customerNames}. Please review the details.`;
+            
+            // Show toast notification
+            showBusinessNotification(message, 'info');
+            
+            // Mark notifications as viewed
+            notifications.forEach(notification => {
+                markNotificationAsViewed(notification.id);
+            });
+        }
+
+        // Decrypt and display booking data for business dashboard
+        function decryptBookingForDashboard(encryptedBookingData) {
+            try {
+                const decryptedData = window.BookingEncryption.decryptBookingData(encryptedBookingData);
+                console.log('🔓 Booking data decrypted for dashboard:', decryptedData);
+                return decryptedData;
+            } catch (error) {
+                console.error('❌ Failed to decrypt booking data:', error);
+                return {
+                    error: 'Unable to decrypt booking data',
+                    service: 'Unknown Service',
+                    date: 'Unknown Date',
+                    time: 'Unknown Time',
+                    total: '£0'
+                };
+            }
+        }
+
+        // Display secure booking information in dashboard
+        function displaySecureBookingInfo(notification) {
+            if (notification.encryptedBookingData) {
+                const decryptedBooking = decryptBookingForDashboard(notification.encryptedBookingData);
+                
+                // Show decrypted booking details in a secure modal or section
+                const bookingInfo = `
+                    <div class="secure-booking-info">
+                        <h4>Booking Details (Decrypted)</h4>
+                        <p><strong>Service:</strong> ${decryptedBooking.service?.name || 'N/A'}</p>
+                        <p><strong>Date:</strong> ${decryptedBooking.date || 'N/A'}</p>
+                        <p><strong>Time:</strong> ${decryptedBooking.time || 'N/A'}</p>
+                        <p><strong>Total:</strong> £${decryptedBooking.total || '0'}</p>
+                        <p><strong>Customer:</strong> ${decryptedBooking.customerInitials || 'N/A'}</p>
+                        <p class="text-xs text-gray-500 italic mt-2">
+                            Customer contact information is encrypted and only accessible through secure dashboard interface.
+                        </p>
+                    </div>
+                `;
+                
+                return bookingInfo;
+            }
+            
+            return '<p>No encrypted booking data available</p>';
+        }
+
+        // Get notification logs from localStorage
+        function getNotificationLogs() {
+            const logs = localStorage.getItem('notification_logs');
+            return logs ? JSON.parse(logs) : [];
+        }
+
+        // Mark notification as viewed
+        function markNotificationAsViewed(notificationId) {
+            const logs = getNotificationLogs();
+            const updatedLogs = logs.map(log => {
+                if (log.id === notificationId) {
+                    return { ...log, viewed: true, viewedAt: new Date().toISOString() };
+                }
+                return log;
+            });
+            localStorage.setItem('notification_logs', JSON.stringify(updatedLogs));
+        }
+
+        // Create new booking notification (called when booking is created)
+        function createNewBookingNotification(customerName, bookingDetails) {
+            const notification = {
+                id: 'notif_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                type: "New Booking Request",
+                customerName: customerName,
+                bookingDetails: bookingDetails,
+                createdAt: new Date().toISOString(),
+                viewed: false,
+                businessId: 'royal-hair-studio'
+            };
+            
+            const logs = getNotificationLogs();
+            logs.push(notification);
+            localStorage.setItem('notification_logs', JSON.stringify(logs));
+            
+            console.log('New booking notification created:', notification);
+        }
+
+        // Simulate new booking for demo purposes
+        function simulateNewBooking() {
+            const customerNames = ['Sarah Johnson', 'Michael Brown', 'Emma Wilson', 'David Smith'];
+            const randomName = customerNames[Math.floor(Math.random() * customerNames.length)];
+            
+            createNewBookingNotification(randomName, {
+                service: 'Hair Cut & Style',
+                date: new Date().toLocaleDateString(),
+                time: '2:00 PM',
+                price: '£35'
+            });
+            
+            // Check for new bookings after a short delay
+            setTimeout(() => {
+                checkForNewBookings();
+            }, 1000);
+        }
         
         // Initialize bookings on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadBusinessBookings();
+            
+            // Check for new bookings when dashboard loads
+            setTimeout(() => {
+                checkForNewBookings();
+            }, 2000); // Wait 2 seconds after page load
         });
         // ========================================
         // WAITING LIST FUNCTIONS
