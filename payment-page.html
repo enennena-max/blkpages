@@ -562,16 +562,56 @@
             
             summaryContainer.innerHTML = summaryHTML;
             
+            // Handle payment mode and special offer
+            let total = bookingData.service.price;
+            let depositInfo = '';
+            
+            // Check if this is a deposit payment
+            if (bookingData.service.payMode === 'deposit') {
+                const depositPercent = bookingData.service.depositPercent || 20;
+                const depositAmount = bookingData.service.depositAmount || (total * depositPercent / 100);
+                const remaining = total - depositAmount;
+                
+                total = depositAmount;
+                depositInfo = `
+                    <div class="mt-2 text-center">
+                        <p class="text-gray-400 text-sm">Deposit: ${depositPercent}% due now (£${depositAmount.toFixed(2)}). 
+                        Balance £${remaining.toFixed(2)} payable at venue.</p>
+                    </div>
+                `;
+            } else if (bookingData.service.payMode === 'venue') {
+                total = 0;
+                depositInfo = `
+                    <div class="mt-2 text-center">
+                        <p class="text-gray-400 text-sm">Total Due Now: £0</p>
+                        <p class="text-gray-500 text-xs">Balance £${bookingData.service.price} payable at venue</p>
+                    </div>
+                `;
+            }
+            
             // Handle special offer
-            if (bookingData.business.hasOffer) {
+            if (bookingData.business.hasOffer && bookingData.service.payMode !== 'deposit' && bookingData.service.payMode !== 'venue') {
                 const discount = Math.round(bookingData.service.price * (bookingData.business.offerDiscount / 100));
-                const total = bookingData.service.price - discount;
+                total = bookingData.service.price - discount;
                 
                 discountElement.textContent = `-£${discount}`;
                 offerSection.classList.remove('hidden');
-                totalElement.textContent = `£${total}`;
-            } else {
-                totalElement.textContent = `£${bookingData.service.price}`;
+            }
+            
+            totalElement.textContent = `£${total.toFixed(2)}`;
+            
+            // Add deposit info if applicable
+            if (depositInfo) {
+                // Remove existing deposit info if present
+                const existingDepositInfo = document.querySelector('.deposit-info');
+                if (existingDepositInfo) {
+                    existingDepositInfo.remove();
+                }
+                
+                const depositDiv = document.createElement('div');
+                depositDiv.className = 'deposit-info';
+                depositDiv.innerHTML = depositInfo;
+                totalElement.parentElement.appendChild(depositDiv);
             }
         }
 

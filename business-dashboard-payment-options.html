@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Dashboard - Payment Options</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'gold': '#D4AF37',
+                        'dark-grey': '#1a1a1a',
+                        'light-grey': '#6b7280'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-black">Business Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">Royal Hair Studio</span>
+                    <button class="bg-gold text-black px-4 py-2 rounded-md hover:bg-black hover:text-gold transition-colors">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <!-- Navigation -->
+        <nav class="mb-8">
+            <div class="flex space-x-8">
+                <a href="#" class="text-gray-600 hover:text-black transition-colors">Overview</a>
+                <a href="#" class="text-gray-600 hover:text-black transition-colors">Services</a>
+                <a href="#" class="text-gold font-semibold border-b-2 border-gold">Payment Options</a>
+                <a href="#" class="text-gray-600 hover:text-black transition-colors">Bookings</a>
+                <a href="#" class="text-gray-600 hover:text-black transition-colors">Settings</a>
+            </div>
+        </nav>
+
+        <!-- Payment Options Section -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="font-semibold text-lg text-black mb-4">Payment Settings</h3>
+            
+            <!-- Validation Error Message -->
+            <div id="validationError" class="hidden bg-red-50 border border-red-200 rounded-md p-3 mb-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-red-800">
+                            You can only enable one online payment option — Full Payment or Deposit.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Options -->
+            <div class="space-y-4">
+                <!-- Allow Full Payment -->
+                <label class="flex items-center mb-2">
+                    <input 
+                        type="checkbox" 
+                        id="allowFull" 
+                        class="mr-2 w-4 h-4 text-gold bg-gray-100 border-gray-300 rounded focus:ring-gold focus:ring-2 accent-gold"
+                        onchange="toggleFull()"
+                    />
+                    <span class="text-gray-700 font-medium">Allow Full Payment at Checkout</span>
+                </label>
+
+                <!-- Allow Deposit Payment -->
+                <label class="flex items-center mb-2">
+                    <input 
+                        type="checkbox" 
+                        id="allowDeposit" 
+                        class="mr-2 w-4 h-4 text-gold bg-gray-100 border-gray-300 rounded focus:ring-gold focus:ring-2 accent-gold"
+                        onchange="toggleDeposit()"
+                    />
+                    <span class="text-gray-700 font-medium">Allow Deposit Payment (10–50%)</span>
+                </label>
+
+                <!-- Deposit Percentage Slider -->
+                <div id="depositSlider" class="mt-2 ml-6 hidden">
+                    <label class="block text-gray-600 text-sm mb-1">
+                        Deposit Percentage: <span id="depositPercentDisplay">20</span>%
+                    </label>
+                    <input
+                        type="range"
+                        id="depositPercent"
+                        min="10"
+                        max="50"
+                        step="5"
+                        value="20"
+                        onchange="handleDepositChange()"
+                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gold"
+                    />
+                    <p class="text-gray-500 text-xs mt-1">
+                        Customers will pay <span id="depositPercentPreview">20</span>% upfront, balance at venue.
+                    </p>
+                    
+                    <!-- Live Calculation Preview -->
+                    <div class="mt-3 p-3 bg-gray-50 rounded-lg border">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Live Preview:</h4>
+                        <div class="space-y-1 text-xs text-gray-600">
+                            <div class="flex justify-between">
+                                <span>£35 service:</span>
+                                <span>£<span id="preview35">7</span> deposit, £<span id="remaining35">28</span> at venue</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>£80 service:</span>
+                                <span>£<span id="preview80">16</span> deposit, £<span id="remaining80">64</span> at venue</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>£120 service:</span>
+                                <span>£<span id="preview120">24</span> deposit, £<span id="remaining120">96</span> at venue</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Preview -->
+                    <div class="mt-3 bg-black text-white p-4 rounded-md">
+                        <h4 class="text-gold font-semibold mb-2">Customer Preview</h4>
+                        <p class="text-sm text-gray-300">
+                            Example Service: £100
+                        </p>
+                        <p class="text-sm mt-1 text-gray-300">
+                            Deposit (<span id="customerPreviewPercent">20</span>%): 
+                            <span class="text-gold font-semibold">£<span id="customerPreviewDeposit">20.00</span></span> 
+                            now, 
+                            <span class="text-gray-400">£<span id="customerPreviewRemaining">80.00</span></span> 
+                            payable at venue.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Allow Pay at Venue -->
+                <label class="flex items-center mt-3">
+                    <input 
+                        type="checkbox" 
+                        id="allowPayAtVenue" 
+                        class="mr-2 w-4 h-4 text-gold bg-gray-100 border-gray-300 rounded focus:ring-gold focus:ring-2 accent-gold"
+                        onchange="toggleVenue()"
+                    />
+                    <span class="text-gray-700 font-medium">Allow Pay at Venue</span>
+                </label>
+            </div>
+
+            <!-- Save Button -->
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <button 
+                    onclick="savePaymentSettings()"
+                    class="bg-gold text-black px-6 py-2 rounded-md hover:bg-black hover:text-gold transition-colors font-semibold"
+                >
+                    Save Payment Settings
+                </button>
+                <button 
+                    onclick="resetToDefaults()"
+                    class="ml-3 bg-gray-200 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-300 transition-colors"
+                >
+                    Reset to Defaults
+                </button>
+            </div>
+
+            <!-- Current Settings Display -->
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="font-medium text-gray-800 mb-2">Current Settings:</h4>
+                <div id="currentSettings" class="text-sm text-gray-600">
+                    <!-- Settings will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Demo Configurations -->
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h4 class="font-medium text-blue-800 mb-3">Demo Configurations:</h4>
+                <div class="space-y-2">
+                    <button 
+                        onclick="setUrbanRootsSalon()"
+                        class="w-full text-left px-3 py-2 bg-blue-100 hover:bg-blue-200 rounded text-sm text-blue-800 transition-colors"
+                    >
+                        🏢 Urban Roots Salon: 30% Deposit Only
+                    </button>
+                    <button 
+                        onclick="setPaymentFullOnly()"
+                        class="w-full text-left px-3 py-2 bg-green-100 hover:bg-green-200 rounded text-sm text-green-800 transition-colors"
+                    >
+                        💳 Full Payment Only
+                    </button>
+                    <button 
+                        onclick="setPaymentDepositOnly()"
+                        class="w-full text-left px-3 py-2 bg-yellow-100 hover:bg-yellow-200 rounded text-sm text-yellow-800 transition-colors"
+                    >
+                        🪙 25% Deposit + Pay at Venue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Payment settings state
+        let paymentSettings = {
+            allowFull: false,
+            allowDeposit: false,
+            depositPercent: 20,
+            allowPayAtVenue: true
+        };
+
+        // Load settings from localStorage on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPaymentSettings();
+            updateUI();
+            displayCurrentSettings();
+        });
+
+        function loadPaymentSettings() {
+            const saved = localStorage.getItem('business_royal-hair-studio_payment_settings');
+            if (saved) {
+                paymentSettings = JSON.parse(saved);
+            }
+        }
+
+        function savePaymentSettings() {
+            // Validate settings
+            if (paymentSettings.allowFull && paymentSettings.allowDeposit) {
+                showValidationError();
+                return;
+            }
+
+            // Save to localStorage
+            localStorage.setItem('business_royal-hair-studio_payment_settings', JSON.stringify(paymentSettings));
+            
+            // Show success message
+            showSuccessMessage();
+            hideValidationError();
+            displayCurrentSettings();
+        }
+
+        function toggleFull() {
+            const checkbox = document.getElementById('allowFull');
+            paymentSettings.allowFull = checkbox.checked;
+            
+            if (checkbox.checked && paymentSettings.allowDeposit) {
+                paymentSettings.allowDeposit = false;
+                document.getElementById('allowDeposit').checked = false;
+                document.getElementById('depositSlider').classList.add('hidden');
+            }
+            
+            updateUI();
+            hideValidationError();
+        }
+
+        function toggleDeposit() {
+            const checkbox = document.getElementById('allowDeposit');
+            paymentSettings.allowDeposit = checkbox.checked;
+            
+            if (checkbox.checked && paymentSettings.allowFull) {
+                paymentSettings.allowFull = false;
+                document.getElementById('allowFull').checked = false;
+            }
+            
+            updateUI();
+            hideValidationError();
+        }
+
+        function toggleVenue() {
+            const checkbox = document.getElementById('allowPayAtVenue');
+            paymentSettings.allowPayAtVenue = checkbox.checked;
+        }
+
+        function handleDepositChange() {
+            const slider = document.getElementById('depositPercent');
+            paymentSettings.depositPercent = parseInt(slider.value);
+            document.getElementById('depositPercentDisplay').textContent = slider.value;
+            document.getElementById('depositPercentPreview').textContent = slider.value;
+            
+            // Update live preview calculations
+            updateLivePreview();
+        }
+
+        function updateLivePreview() {
+            const percent = paymentSettings.depositPercent;
+            
+            // £35 service
+            const deposit35 = Math.round(35 * percent / 100);
+            const remaining35 = 35 - deposit35;
+            document.getElementById('preview35').textContent = deposit35;
+            document.getElementById('remaining35').textContent = remaining35;
+            
+            // £80 service
+            const deposit80 = Math.round(80 * percent / 100);
+            const remaining80 = 80 - deposit80;
+            document.getElementById('preview80').textContent = deposit80;
+            document.getElementById('remaining80').textContent = remaining80;
+            
+            // £120 service
+            const deposit120 = Math.round(120 * percent / 100);
+            const remaining120 = 120 - deposit120;
+            document.getElementById('preview120').textContent = deposit120;
+            document.getElementById('remaining120').textContent = remaining120;
+            
+            // Customer Preview (£100 example)
+            const deposit100 = (100 * percent / 100);
+            const remaining100 = 100 - deposit100;
+            document.getElementById('customerPreviewPercent').textContent = percent;
+            document.getElementById('customerPreviewDeposit').textContent = deposit100.toFixed(2);
+            document.getElementById('customerPreviewRemaining').textContent = remaining100.toFixed(2);
+        }
+
+        function updateUI() {
+            // Update checkboxes
+            document.getElementById('allowFull').checked = paymentSettings.allowFull;
+            document.getElementById('allowDeposit').checked = paymentSettings.allowDeposit;
+            document.getElementById('allowPayAtVenue').checked = paymentSettings.allowPayAtVenue;
+            
+            // Show/hide deposit slider
+            const depositSlider = document.getElementById('depositSlider');
+            if (paymentSettings.allowDeposit) {
+                depositSlider.classList.remove('hidden');
+            } else {
+                depositSlider.classList.add('hidden');
+            }
+            
+            // Update deposit percentage
+            document.getElementById('depositPercent').value = paymentSettings.depositPercent;
+            document.getElementById('depositPercentDisplay').textContent = paymentSettings.depositPercent;
+            document.getElementById('depositPercentPreview').textContent = paymentSettings.depositPercent;
+            
+            // Update live preview
+            updateLivePreview();
+        }
+
+        function showValidationError() {
+            document.getElementById('validationError').classList.remove('hidden');
+        }
+
+        function hideValidationError() {
+            document.getElementById('validationError').classList.add('hidden');
+        }
+
+        function showSuccessMessage() {
+            // Create temporary success message
+            const successDiv = document.createElement('div');
+            successDiv.className = 'fixed top-4 right-4 bg-green-50 border border-green-200 rounded-md p-3 z-50';
+            successDiv.innerHTML = `
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-green-800">Payment settings saved successfully!</p>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                document.body.removeChild(successDiv);
+            }, 3000);
+        }
+
+        function resetToDefaults() {
+            paymentSettings = {
+                allowFull: false,
+                allowDeposit: false,
+                depositPercent: 20,
+                allowPayAtVenue: true
+            };
+            
+            updateUI();
+            hideValidationError();
+            displayCurrentSettings();
+        }
+
+        // Demo function for Urban Roots Salon (30% deposit only)
+        function setUrbanRootsSalon() {
+            paymentSettings = {
+                allowFull: false,
+                allowDeposit: true,
+                depositPercent: 30,
+                allowPayAtVenue: false
+            };
+            
+            updateUI();
+            hideValidationError();
+            displayCurrentSettings();
+            showSuccessMessage('Urban Roots Salon configuration applied!');
+        }
+
+        function setPaymentFullOnly() {
+            paymentSettings = {
+                allowFull: true,
+                allowDeposit: false,
+                depositPercent: 25,
+                allowPayAtVenue: false
+            };
+            
+            updateUI();
+            hideValidationError();
+            displayCurrentSettings();
+            showSuccessMessage('Full payment only configuration applied!');
+        }
+
+        function setPaymentDepositOnly() {
+            paymentSettings = {
+                allowFull: false,
+                allowDeposit: true,
+                depositPercent: 25,
+                allowPayAtVenue: true
+            };
+            
+            updateUI();
+            hideValidationError();
+            displayCurrentSettings();
+            showSuccessMessage('Deposit + venue payment configuration applied!');
+        }
+
+        function displayCurrentSettings() {
+            const settingsDiv = document.getElementById('currentSettings');
+            let settingsText = '';
+            
+            if (paymentSettings.allowFull) {
+                settingsText += '• Full Payment: Enabled<br>';
+            }
+            if (paymentSettings.allowDeposit) {
+                settingsText += `• Deposit Payment: Enabled (${paymentSettings.depositPercent}%)<br>`;
+            }
+            if (paymentSettings.allowPayAtVenue) {
+                settingsText += '• Pay at Venue: Enabled<br>';
+            }
+            
+            if (!settingsText) {
+                settingsText = 'No payment options enabled';
+            }
+            
+            settingsDiv.innerHTML = settingsText;
+        }
+    </script>
+</body>
+</html>

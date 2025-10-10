@@ -287,42 +287,8 @@
                                 <i class="fas fa-cut mr-3 text-gold"></i>
                                 Our Services
                             </h2>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="bg-dark-grey/50 rounded-2xl p-6 border border-white/10 hover:border-gold/30 transition-all duration-300">
-                                    <h3 class="text-lg font-semibold text-white mb-3">Hair Cut & Style</h3>
-                                    <p class="text-light-grey text-sm mb-4">Professional cuts and styling for all hair types</p>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gold font-bold">From £35</span>
-                                        <span class="text-light-grey text-sm">60 mins</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="bg-dark-grey/50 rounded-2xl p-6 border border-white/10 hover:border-gold/30 transition-all duration-300">
-                                    <h3 class="text-lg font-semibold text-white mb-3">Hair Coloring</h3>
-                                    <p class="text-light-grey text-sm mb-4">Full color, highlights, and color correction</p>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gold font-bold">From £80</span>
-                                        <span class="text-light-grey text-sm">120 mins</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="bg-dark-grey/50 rounded-2xl p-6 border border-white/10 hover:border-gold/30 transition-all duration-300">
-                                    <h3 class="text-lg font-semibold text-white mb-3">Hair Treatment</h3>
-                                    <p class="text-light-grey text-sm mb-4">Deep conditioning and repair treatments</p>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gold font-bold">From £45</span>
-                                        <span class="text-light-grey text-sm">90 mins</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="bg-dark-grey/50 rounded-2xl p-6 border border-white/10 hover:border-gold/30 transition-all duration-300">
-                                    <h3 class="text-lg font-semibold text-white mb-3">Special Occasion</h3>
-                                    <p class="text-light-grey text-sm mb-4">Wedding and event styling</p>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gold font-bold">From £120</span>
-                                        <span class="text-light-grey text-sm">180 mins</span>
-                                    </div>
-                                </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="servicesGrid">
+                                <!-- Services will be populated by JavaScript based on payment settings -->
                             </div>
                         </div>
 
@@ -367,10 +333,18 @@
 
                         <!-- Payment Methods -->
                         <div class="card-gradient rounded-3xl p-6 border-glow">
-                            <h3 class="text-xl font-bold text-white mb-4 flex items-center">
-                                <i class="fas fa-credit-card mr-3 text-gold"></i>
-                                Payment Options
-                            </h3>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-bold text-white flex items-center">
+                                    <i class="fas fa-credit-card mr-3 text-gold"></i>
+                                    Payment Options
+                                </h3>
+                                <a href="business-dashboard-payment-options.html" 
+                                   class="text-gold hover:text-gold/80 text-sm underline transition-colors duration-300"
+                                   target="_blank">
+                                    <i class="fas fa-cog mr-1"></i>
+                                    Manage in Dashboard
+                                </a>
+                            </div>
                             <div class="space-y-4" id="paymentOptions">
                                 <!-- Payment options will be populated by JavaScript based on business settings -->
                             </div>
@@ -554,6 +528,7 @@
             setupPaymentOptions();
             setupModalEventListeners();
             updateBasketCount();
+            setupServicesGrid();
         });
 
         // Update basket count in header
@@ -735,11 +710,39 @@
             
             // Default settings for Royal Hair Studio (can be changed in dashboard)
             return {
-                allowFull: true,        // Pay in full enabled
-                allowDeposit: false,    // Deposit disabled (mutually exclusive)
-                depositPercent: 25,     // 25% deposit (if enabled)
-                allowPayAtVenue: true   // Pay at venue enabled alongside full payment
+                allowFull: false,       // Pay in full disabled by default
+                allowDeposit: false,    // Deposit disabled by default
+                depositPercent: 20,     // 20% deposit (if enabled) - matches dashboard default
+                allowPayAtVenue: true   // Pay at venue enabled by default
             };
+        }
+
+        // Create basket item with payment mode logic
+        function createBasketItem(service) {
+            const business = {
+                payments: getBusinessPaymentSettings()
+            };
+
+            let basketItem;
+
+            if (business.payments.allowDeposit) {
+                const depositPercent = business.payments.depositPercent || 20;
+                const depositAmount = service.price * (depositPercent / 100);
+                const remaining = service.price - depositAmount;
+                basketItem = {
+                    ...service,
+                    payMode: "deposit",
+                    depositPercent,
+                    depositAmount,
+                    remainingAmount: remaining,
+                };
+            } else if (business.payments.allowFull) {
+                basketItem = { ...service, payMode: "full" };
+            } else if (business.payments.allowPayAtVenue) {
+                basketItem = { ...service, payMode: "venue" };
+            }
+
+            return basketItem;
         }
 
         // Update business payment settings (called from dashboard)
@@ -749,8 +752,67 @@
             
             // Refresh payment options display
             setupPaymentOptions();
+            setupServicesGrid();
             
             console.log('✅ Business payment settings updated:', settings);
+        }
+
+        // Setup services grid with payment information
+        function setupServicesGrid() {
+            const servicesGrid = document.getElementById('servicesGrid');
+            const paymentSettings = getBusinessPaymentSettings();
+            
+            const services = [
+                { name: "Hair Cut & Style", price: 35, duration: "60 mins", description: "Professional cuts and styling for all hair types" },
+                { name: "Hair Coloring", price: 80, duration: "120 mins", description: "Full color, highlights, and color correction" },
+                { name: "Hair Treatment", price: 45, duration: "90 mins", description: "Deep conditioning and repair treatments" },
+                { name: "Special Occasion", price: 120, duration: "180 mins", description: "Wedding and event styling" }
+            ];
+            
+            let servicesHTML = '';
+            
+            services.forEach(service => {
+                let priceDisplay = `From £${service.price}`;
+                let paymentInfo = '';
+                
+                if (paymentSettings.allowDeposit && !paymentSettings.allowFull) {
+                    const depositPercent = paymentSettings.depositPercent || 20;
+                    const depositAmount = service.price * (depositPercent / 100);
+                    const remaining = service.price - depositAmount;
+                    paymentInfo = `
+                        <div class="mt-2 text-xs text-light-grey">
+                            Deposit: ${depositPercent}% due now (£${depositAmount.toFixed(2)}). 
+                            Balance £${remaining.toFixed(2)} payable at venue.
+                        </div>
+                    `;
+                } else if (paymentSettings.allowFull && !paymentSettings.allowDeposit) {
+                    paymentInfo = `
+                        <div class="mt-2 text-xs text-light-grey">
+                            Full payment due at checkout.
+                        </div>
+                    `;
+                } else if (paymentSettings.allowPayAtVenue && !paymentSettings.allowFull && !paymentSettings.allowDeposit) {
+                    paymentInfo = `
+                        <div class="mt-2 text-xs text-light-grey">
+                            Payment due at venue.
+                        </div>
+                    `;
+                }
+                
+                servicesHTML += `
+                    <div class="bg-dark-grey/50 rounded-2xl p-6 border border-white/10 hover:border-gold/30 transition-all duration-300">
+                        <h3 class="text-lg font-semibold text-white mb-3">${service.name}</h3>
+                        <p class="text-light-grey text-sm mb-4">${service.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gold font-bold">${priceDisplay}</span>
+                            <span class="text-light-grey text-sm">${service.duration}</span>
+                        </div>
+                        ${paymentInfo}
+                    </div>
+                `;
+            });
+            
+            servicesGrid.innerHTML = servicesHTML;
         }
 
         // Demo functions to test different payment configurations
@@ -761,6 +823,32 @@
                 depositPercent: 25,
                 allowPayAtVenue: false
             });
+        }
+
+        // Demo function for Urban Roots Salon (30% deposit only)
+        function setUrbanRootsSalon() {
+            updateBusinessPaymentSettings({
+                allowFull: false,
+                allowDeposit: true,
+                depositPercent: 30,
+                allowPayAtVenue: false
+            });
+        }
+
+        // Demo function to show dashboard integration
+        function demoDashboardIntegration() {
+            console.log('=== Dashboard Integration Demo ===');
+            console.log('1. Open business-dashboard-payment-options.html');
+            console.log('2. Change payment settings in the dashboard');
+            console.log('3. Return to this page and refresh to see changes');
+            console.log('4. Settings are synced via localStorage key: business_royal-hair-studio_payment_settings');
+            
+            // Show current settings
+            const currentSettings = getBusinessPaymentSettings();
+            console.log('Current payment settings:', currentSettings);
+            
+            // Show how to access dashboard
+            console.log('Dashboard URL: business-dashboard-payment-options.html');
         }
 
         function setPaymentDepositOnly() {
@@ -858,7 +946,12 @@
 
         // Handle Continue as Guest
         function handleContinueAsGuest() {
-            localStorage.setItem('selectedBusiness', JSON.stringify(businessData));
+            // Store business data with payment settings
+            const businessWithPayments = {
+                ...businessData,
+                payments: getBusinessPaymentSettings()
+            };
+            localStorage.setItem('selectedBusiness', JSON.stringify(businessWithPayments));
             window.location.href = 'booking-review.html';
         }
 
