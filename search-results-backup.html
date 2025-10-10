@@ -1,0 +1,2610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Businesses - BlkPages</title>
+    <script src="https://cdn.tailwindcss.com?v=2"></script>
+    <script src="js/suppress-tailwind-warning.js"></script>
+    
+    <!-- Basket Count Sync Fix -->
+    <script src="assets/js/basket.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=2">
+    
+    <!-- Business Management System -->
+    <script src="business-manager.js"></script>
+    
+    <!-- Analytics Tracking System -->
+    <script src="analytics-tracker.js"></script>
+    
+    <!-- Google Maps API -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvOkBw3cLxE2D2Q2R2S2T2U2V2W2X2Y2Z2&callback=initMap"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        'neon-pink': '#FF3CAC',
+                        'neon-purple': '#784BA0',
+                        'neon-blue': '#2B86C5',
+                        'neon-green': '#4ADE80',
+                        'charcoal': '#121212',
+                        'dark-grey': '#1A1A1A',
+                        'light-grey': '#E5E5E5',
+                        'gold': '#D4AF37',
+                        'gold-dark': '#B8941F',
+                        'black': '#000000',
+                        'white': '#FFFFFF',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 20px rgba(255, 60, 172, 0.3)' },
+                            '100%': { boxShadow: '0 0 30px rgba(255, 60, 172, 0.6)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .list-business-btn:hover{box-shadow:0 0 16px rgba(16,185,129,0.6);}/* green glow */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            color: #FFFFFF;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #2B86C5, #4ADE80);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .neon-glow:hover {
+            box-shadow: 0 0 20px rgba(255, 60, 172, 0.5);
+        }
+        
+        .hero-bg {
+            background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=600&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Back Button Styling */
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(33, 150, 243, 0.2);
+            border-color: rgba(33, 150, 243, 0.4);
+            transform: translateX(-2px);
+        }
+
+        .back-btn i {
+            font-size: 0.8rem;
+        }
+
+        /* Gold theme enhancements */
+        .gold-gradient {
+            background: linear-gradient(135deg, #D4AF37, #B8941F);
+        }
+
+        .gold-text {
+            color: #D4AF37;
+        }
+
+        .gold-border {
+            border-color: #D4AF37;
+        }
+
+        .gold-shadow {
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .business-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Map container styling */
+        #map, #mobileMap {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* Mobile toggle button styling */
+        .view-toggle-btn {
+            transition: all 0.3s ease;
+        }
+
+        .view-toggle-btn.active {
+            background: linear-gradient(135deg, #D4AF37, #B8941F);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .desktop-layout {
+                display: none;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .mobile-layout {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-charcoal text-white font-inter">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-charcoal/95 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Desktop Navigation -->
+            <div class="hidden lg:flex items-center justify-between h-16">
+                <!-- Left: Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
+                </div>
+                
+                <!-- Center: Main Navigation -->
+                <div class="flex items-center space-x-8">
+                    <a href="index.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Home</a>
+                    <a href="search-results.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Browse</a>
+                    <a href="offers.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Offers</a>
+                    <a href="why-list-with-us.html#pricing" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Plans</a>
+                </div>
+                
+                <!-- Right: Actions -->
+                <div class="flex items-center space-x-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Customer Menu -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
+                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <i class="fas fa-user"></i>
+                                Account
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button (smaller and less overpowering) -->
+                    <a href="business-register.html" class="text-text-secondary hover:text-green-400 transition-colors duration-300 font-medium text-sm list-business-btn">+ List Business</a>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div class="lg:hidden flex items-center justify-between h-16">
+                <!-- Left: Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
+                </div>
+                
+                <!-- Right: Actions -->
+                <div class="flex items-center space-x-3">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="mobileBasketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="mobileBasketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Account Icon -->
+                    <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Customer Menu (Mobile) -->
+                    <div class="customer-menu" id="mobileCustomerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="mobileCustomerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="mobileCustomerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="mobileCustomerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
+                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <i class="fas fa-user"></i>
+                                Account
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Hamburger Menu -->
+                    <button onclick="toggleMobileMenu()" class="text-white hover:text-neon-pink transition-colors duration-300">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu Dropdown -->
+            <div id="mobileMenu" class="lg:hidden hidden bg-charcoal/95 backdrop-blur-md border-t border-white/10">
+                <div class="px-4 py-3 space-y-3">
+                    <a href="index.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium py-2">Home</a>
+                    <a href="search-results.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium py-2">Browse</a>
+                    <a href="offers.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium py-2">Offers</a>
+                    <a href="why-list-with-us.html#pricing" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium py-2">Plans</a>
+                    <a href="business-register.html" class="block text-text-secondary hover:text-green-400 transition-colors duration-300 font-medium py-2 text-center list-business-btn">+ List Business</a>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div class="lg:hidden flex items-center justify-between h-16">
+                <!-- Left: Logo -->
+                <div class="flex items-center">
+                    <a href="index.html" class="text-xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
+                </div>
+                
+                <!-- Right: Actions -->
+                <div class="flex items-center space-x-3">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="mobileBasketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="mobileBasketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Account Icon -->
+                    <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Customer Menu (Mobile) -->
+                    <div class="customer-menu" id="mobileCustomerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="mobileCustomerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="mobileCustomerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="mobileCustomerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
+                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <i class="fas fa-user"></i>
+                                Account
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Hamburger Menu -->
+                    <button onclick="toggleMobileMenu()" class="text-white hover:text-neon-pink transition-colors duration-300">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg relative pt-20 pb-16">
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold font-poppins gradient-text mb-4">
+                Browse Businesses
+            </h1>
+            <p class="text-xl text-light-grey" id="dynamicSubheading">
+                Discover amazing businesses near you
+            </p>
+        </div>
+    </section>
+
+    <!-- Search Panel -->
+    <section class="py-8 bg-charcoal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-dark-grey rounded-2xl p-6 border border-white/10">
+                <!-- Initial Search Interface -->
+                <div id="initialSearch" class="text-center">
+                    <h2 class="text-2xl font-bold text-white mb-4 font-poppins">Find Your Perfect Business</h2>
+                    <p class="text-light-grey mb-8">Search for businesses near you</p>
+                    
+                    <div class="max-w-4xl mx-auto">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <!-- Business Name Search -->
+                            <div class="lg:col-span-2">
+                                <label class="block text-sm font-medium text-light-grey mb-2 text-left">Business Name</label>
+                                <input type="text" id="businessNameSearch" placeholder="Search by business name..." class="w-full px-4 py-3 bg-charcoal border border-white/20 rounded-lg text-white placeholder-light-grey focus:border-neon-pink focus:ring-2 focus:ring-neon-pink/20 transition-all duration-300">
+                            </div>
+                            
+                            <!-- Location/Postcode -->
+                            <div>
+                                <label class="block text-sm font-medium text-light-grey mb-2 text-left">Location</label>
+                                <input type="text" id="locationSearch" placeholder="Enter postcode or city" class="w-full px-4 py-3 bg-charcoal border border-white/20 rounded-lg text-white placeholder-light-grey focus:border-neon-pink focus:ring-2 focus:ring-neon-pink/20 transition-all duration-300">
+                            </div>
+                            
+                            <!-- Category -->
+                            <div>
+                                <label class="block text-sm font-medium text-light-grey mb-2 text-left">Category</label>
+                                <select id="categorySearch" class="w-full px-4 py-3 bg-charcoal border border-white/20 rounded-lg text-white focus:border-neon-pink focus:ring-2 focus:ring-neon-pink/20 transition-all duration-300">
+                                    <option value="">All Categories</option>
+                                    <option value="hair">Hair Salons</option>
+                                    <option value="barber">Barbers</option>
+                                    <option value="beauty">Beauty</option>
+                                    <option value="nail">Nail Salons</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <button id="searchBtn" class="px-8 py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow">
+                                <i class="fas fa-search mr-2"></i>Search
+                            </button>
+                            <button id="nearMeBtn" class="px-8 py-3 rounded-lg border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-white transition-all duration-300">
+                                <i class="fas fa-map-marker-alt mr-2"></i>Near Me
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Advanced Filters & Sort (Hidden Initially) -->
+                <div id="advancedControls" class="hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-white font-poppins">Refine Your Search</h3>
+                        <div class="flex gap-3">
+                            <!-- Filter Hamburger Menu -->
+                            <div class="relative">
+                                <button id="filterMenuBtn" class="px-4 py-2 rounded-lg bg-charcoal border border-white/20 text-white hover:border-neon-pink focus:border-neon-pink transition-all duration-300 flex items-center gap-2">
+                                    <i class="fas fa-filter"></i>
+                                    <span>Filters</span>
+                                    <i class="fas fa-chevron-down text-sm"></i>
+                                </button>
+                                <div id="filterMenu" class="absolute top-full right-0 mt-2 w-64 bg-charcoal border border-white/20 rounded-lg shadow-lg z-10 hidden">
+                                    <div class="p-4 space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-light-grey mb-2">Min Rating</label>
+                                            <select id="ratingFilter" class="w-full px-3 py-2 bg-dark-grey border border-white/20 rounded text-white focus:border-neon-pink transition-all duration-300">
+                                                <option value="">Any Rating</option>
+                                                <option value="4">4+ Stars</option>
+                                                <option value="4.5">4.5+ Stars</option>
+                                                <option value="5">5 Stars</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-light-grey mb-2">Distance</label>
+                                            <select id="distanceFilter" class="w-full px-3 py-2 bg-dark-grey border border-white/20 rounded text-white focus:border-neon-pink transition-all duration-300">
+                                                <option value="5">5 miles</option>
+                                                <option value="10">10 miles</option>
+                                                <option value="25">25 miles</option>
+                                                <option value="50">50 miles</option>
+                                            </select>
+                                        </div>
+                                        <div class="flex gap-2 pt-2">
+                                            <button id="applyFiltersBtn" class="flex-1 px-4 py-2 rounded bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
+                                                Apply
+                                            </button>
+                                            <button id="clearFiltersBtn" class="flex-1 px-4 py-2 rounded border border-white/20 text-light-grey hover:text-white hover:bg-white/10 transition-all duration-300">
+                                                Clear
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sort Hamburger Menu -->
+                            <div class="relative">
+                                <button id="sortMenuBtn" class="px-4 py-2 rounded-lg bg-charcoal border border-white/20 text-white hover:border-neon-pink focus:border-neon-pink transition-all duration-300 flex items-center gap-2">
+                                    <i class="fas fa-sort"></i>
+                                    <span id="sortMenuText">Sort</span>
+                                    <i class="fas fa-chevron-down text-sm"></i>
+                                </button>
+                                <div id="sortMenu" class="absolute top-full right-0 mt-2 w-48 bg-charcoal border border-white/20 rounded-lg shadow-lg z-10 hidden">
+                                    <div class="py-2">
+                                        <button class="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors duration-300" data-sort="relevance">Relevance</button>
+                                        <button class="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors duration-300" data-sort="price">Price</button>
+                                        <button class="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors duration-300" data-sort="distance">Distance</button>
+                                        <button class="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors duration-300" data-sort="reviews">Reviews</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content - List and Map Layout -->
+    <section class="py-12 bg-black">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Mobile View Toggle -->
+            <div class="lg:hidden mb-6">
+                <div class="flex bg-dark-grey rounded-xl p-1 border border-white/10">
+                    <button id="listViewBtn" class="flex-1 py-3 px-4 rounded-lg bg-gold text-black font-semibold transition-all duration-300">
+                        <i class="fas fa-list mr-2"></i>List View
+                    </button>
+                    <button id="mapViewBtn" class="flex-1 py-3 px-4 rounded-lg text-white hover:bg-gold hover:text-black transition-all duration-300">
+                        <i class="fas fa-map mr-2"></i>Map View
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Desktop Layout: 50% List + 50% Map -->
+            <div class="hidden lg:flex h-screen">
+                <!-- Left 50%: Business List -->
+                <div class="w-1/2 bg-black border-r border-white/10">
+                    <div class="p-6 border-b border-white/10">
+                        <h2 class="text-2xl font-bold text-white mb-2" id="resultsHeading">All Businesses</h2>
+                        <p class="text-light-grey" id="resultsCount">12 businesses found</p>
+                    </div>
+                    <div class="h-full overflow-y-auto p-6">
+                        <div class="space-y-4" id="businessResults">
+                            <!-- Business cards will be populated here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right 50%: Google Map -->
+                <div class="w-1/2">
+                    <div id="map" class="h-full w-full"></div>
+                </div>
+            </div>
+            
+            <!-- Mobile Layout: Toggle between List and Map -->
+            <div class="lg:hidden">
+                <!-- List View (Mobile) -->
+                <div id="mobileListView" class="space-y-4">
+                    <div class="bg-dark-grey rounded-2xl p-6 border border-white/10">
+                        <h2 class="text-2xl font-bold text-white mb-2" id="mobileResultsHeading">All Businesses</h2>
+                        <p class="text-light-grey" id="mobileResultsCount">12 businesses found</p>
+                    </div>
+                    <div class="space-y-4" id="mobileBusinessResults">
+                        <!-- Mobile business cards will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Map View (Mobile) -->
+                <div id="mobileMapView" class="hidden">
+                    <div id="mobileMap" class="h-screen w-full"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark-grey py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold font-poppins gradient-text mb-4">BlkPages</h3>
+                    <p class="text-light-grey mb-8">© 2025 BlkPages – Supporting Black-owned Businesses</p>
+                    <div class="flex justify-center space-x-8 text-light-grey mb-6">
+                        <a href="about.html" class="hover:text-neon-blue transition-colors font-medium">About</a>
+                        <a href="contact.html" class="hover:text-neon-blue transition-colors font-medium">Contact</a>
+                        <a href="privacy.html" class="hover:text-neon-blue transition-colors font-medium">Privacy</a>
+                        <a href="terms.html" class="hover:text-neon-blue transition-colors font-medium">Terms</a>
+                        <a href="blog.html" class="hover:text-neon-blue transition-colors font-medium">Blog</a>
+                    </div>
+                    <div class="max-w-4xl mx-auto mb-6">
+                        <p class="text-xs text-light-grey leading-relaxed">
+                            <strong>Disclaimer:</strong> BlkPages is a third-party directory and booking facilitator. Each business listed on our platform is an independent provider and is solely responsible for its own services, pricing, availability, and cancellation or refund policies. By booking through BlkPages, you agree that any cancellations, changes, or disputes must be resolved directly with the business.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex justify-center space-x-6">
+                    <a href="#" class="text-light-grey hover:text-neon-pink transition-colors duration-300 text-2xl">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-light-grey hover:text-neon-pink transition-colors duration-300 text-2xl">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="#" class="text-light-grey hover:text-neon-pink transition-colors duration-300 text-2xl">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+        
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.add('hidden');
+        }
+                                    321 Baker Street, London NW1 6XE
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-phone mr-2 w-4"></i>
+                                    020 7123 4567
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-envelope mr-2 w-4"></i>
+                                    info@classiccuts.co.uk
+                                </p>
+                                <p class="text-light-grey text-sm flex items-center">
+                                    <i class="fas fa-clock mr-2 w-4"></i>
+                                    Mon-Fri: 9am-6pm, Sat: 9am-4pm
+                                </p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-light-grey text-sm mb-3">Contact the business directly for enquiries</p>
+                            </div>
+                        </div>
+
+                        <!-- Basic Business Card 2 -->
+                        <div class="bg-dark-grey rounded-2xl p-4 border border-white/10">
+                            <div class="mb-3">
+                                <h3 class="text-lg font-bold text-white mb-2">Natural Hair Care</h3>
+                                <p class="text-light-grey text-xs mb-2">Specializing in natural hair treatments and styling</p>
+                            </div>
+                            <div class="space-y-2 mb-3">
+                                <p class="text-light-grey text-xs flex items-center">
+                                    <i class="fas fa-map-marker-alt mr-2 w-3"></i>
+                                    654 Brixton Road, London SW9 8AD
+                                </p>
+                                <p class="text-light-grey text-xs flex items-center">
+                                    <i class="fas fa-phone mr-2 w-3"></i>
+                                    020 8765 4321
+                                </p>
+                                <p class="text-light-grey text-xs flex items-center">
+                                    <i class="fas fa-envelope mr-2 w-3"></i>
+                                    hello@naturalhaircare.com
+                                </p>
+                                <p class="text-light-grey text-xs flex items-center">
+                                    <i class="fas fa-clock mr-2 w-3"></i>
+                                    Tue-Sat: 10am-7pm
+                                </p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-light-grey text-xs mb-2">Contact the business directly for enquiries</p>
+                            </div>
+                        </div>
+
+                        <!-- Basic Business Card 3 -->
+                        <div class="bg-dark-grey rounded-2xl p-4 border border-white/10">
+                            <div class="mb-3">
+                                <h3 class="text-lg font-bold text-white mb-2">Style Studio</h3>
+                                <p class="text-light-grey text-xs mb-2">Full-service hair and beauty salon</p>
+                            </div>
+                            <div class="space-y-2 mb-3">
+                                <p class="text-light-grey text-xs flex items-center">
+                                    <i class="fas fa-map-marker-alt mr-2 w-3"></i>
+                                    987 Camden High Street, London NW1 7JE
+                                </p>
+                                <p class="text-light-grey text-xs flex items-center">
+                                    <i class="fas fa-phone mr-2 w-3"></i>
+                                    020 9876 5432
+                                </p>
+                                <p class="text-light-grey text-xs flex items-center">
+                                    <i class="fas fa-envelope mr-2 w-3"></i>
+                                    bookings@stylestudio.co.uk
+                                </p>
+                                <p class="text-light-grey text-xs flex items-center">
+                                    <i class="fas fa-clock mr-2 w-3"></i>
+                                    Mon-Sat: 9am-8pm, Sun: 10am-5pm
+                                </p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-light-grey text-xs mb-2">Contact the business directly for enquiries</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="flex justify-center items-center mt-12 space-x-2">
+                        <button class="px-4 py-2 rounded-lg border border-white/20 text-light-grey hover:text-white hover:bg-white/10 transition-all duration-300">
+                            ← Previous
+                        </button>
+                        <button class="px-4 py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold neon-glow">
+                            1
+                        </button>
+                        <button class="px-4 py-2 rounded-lg border border-white/20 text-light-grey hover:text-white hover:bg-white/10 transition-all duration-300">
+                            2
+                        </button>
+                        <button class="px-4 py-2 rounded-lg border border-white/20 text-light-grey hover:text-white hover:bg-white/10 transition-all duration-300">
+                            3
+                        </button>
+                        <button class="px-4 py-2 rounded-lg border border-white/20 text-light-grey hover:text-white hover:bg-white/10 transition-all duration-300">
+                            Next →
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Sidebar - Featured Businesses -->
+                <div class="lg:col-span-1">
+                    <!-- Desktop Featured Section -->
+                    <div class="hidden lg:block bg-dark-grey rounded-2xl p-6 border border-white/10">
+                        <h3 class="text-xl font-bold text-white mb-6 font-poppins">Featured Businesses</h3>
+                        <div class="space-y-4" id="featuredBusinesses">
+                            <!-- Featured Business 1 -->
+                            <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover">
+                                <div class="mb-3">
+                                    <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=150&fit=crop&crop=center" alt="Royal Hair Studio" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-lg font-bold text-white">Royal Hair Studio</h4>
+                                    <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <div class="flex text-yellow-400 mr-2">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-light-grey text-xs">4.8 (127)</span>
+                                </div>
+                                <p class="text-neon-pink text-xs font-medium mb-2">Hair Salon</p>
+                                <p class="text-light-grey text-xs mb-3">123 High Street, London</p>
+                                <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('classic-cuts')">
+                                    Book Now
+                                </button>
+                            </div>
+
+                            <!-- Featured Business 2 -->
+                            <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover">
+                                <div class="mb-3">
+                                    <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=150&fit=crop&crop=center" alt="Elite Barber Shop" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-lg font-bold text-white">Elite Barber Shop</h4>
+                                    <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <div class="flex text-yellow-400 mr-2">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-light-grey text-xs">4.9 (89)</span>
+                                </div>
+                                <p class="text-neon-pink text-xs font-medium mb-2">Barber Shop</p>
+                                <p class="text-light-grey text-xs mb-3">456 King's Road, London</p>
+                                <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('elite-barber-shop')">
+                                    Book Now
+                                </button>
+                            </div>
+
+                            <!-- Featured Business 3 -->
+                            <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover">
+                                <div class="mb-3">
+                                    <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=300&h=150&fit=crop&crop=center" alt="Glamour Beauty Lounge" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-lg font-bold text-white">Glamour Beauty Lounge</h4>
+                                    <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <div class="flex text-yellow-400 mr-2">
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                        <i class="fas fa-star text-xs"></i>
+                                    </div>
+                                    <span class="text-light-grey text-xs">4.7 (156)</span>
+                                </div>
+                                <p class="text-neon-pink text-xs font-medium mb-2">Beauty Salon</p>
+                                <p class="text-light-grey text-xs mb-3">789 Oxford Street, London</p>
+                                <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('glamour-beauty-lounge')">
+                                    Book Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Featured Section -->
+                    <div class="lg:hidden bg-dark-grey rounded-2xl p-6 border border-white/10 mb-8">
+                        <h3 class="text-xl font-bold text-white mb-6 font-poppins">Featured Businesses</h3>
+                        <div class="overflow-x-auto">
+                            <div class="flex space-x-4 pb-4" id="mobileFeaturedBusinesses" style="min-width: max-content;">
+                                <!-- Mobile Featured Business 1 -->
+                                <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover flex-shrink-0" style="width: 280px;">
+                                    <div class="mb-3">
+                                        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=150&fit=crop&crop=center" alt="Royal Hair Studio" class="w-full h-32 object-cover rounded-lg">
+                                    </div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="text-lg font-bold text-white">Royal Hair Studio</h4>
+                                        <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                    </div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                        </div>
+                                        <span class="text-light-grey text-xs">4.8 (127)</span>
+                                    </div>
+                                    <p class="text-neon-pink text-xs font-medium mb-2">Hair Salon</p>
+                                    <p class="text-light-grey text-xs mb-3">123 High Street, London</p>
+                                    <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('classic-cuts')">
+                                        Book Now
+                                    </button>
+                                </div>
+
+                                <!-- Mobile Featured Business 2 -->
+                                <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover flex-shrink-0" style="width: 280px;">
+                                    <div class="mb-3">
+                                        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=150&fit=crop&crop=center" alt="Elite Barber Shop" class="w-full h-32 object-cover rounded-lg">
+                                    </div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="text-lg font-bold text-white">Elite Barber Shop</h4>
+                                        <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                    </div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                        </div>
+                                        <span class="text-light-grey text-xs">4.9 (89)</span>
+                                    </div>
+                                    <p class="text-neon-pink text-xs font-medium mb-2">Barber Shop</p>
+                                    <p class="text-light-grey text-xs mb-3">456 King's Road, London</p>
+                                    <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('elite-barber-shop')">
+                                        Book Now
+                                    </button>
+                                </div>
+
+                                <!-- Mobile Featured Business 3 -->
+                                <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover flex-shrink-0" style="width: 280px;">
+                                    <div class="mb-3">
+                                        <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=300&h=150&fit=crop&crop=center" alt="Glamour Beauty Lounge" class="w-full h-32 object-cover rounded-lg">
+                                    </div>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h4 class="text-lg font-bold text-white">Glamour Beauty Lounge</h4>
+                                        <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
+                                    </div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="flex text-yellow-400 mr-2">
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                            <i class="fas fa-star text-xs"></i>
+                                        </div>
+                                        <span class="text-light-grey text-xs">4.7 (156)</span>
+                                    </div>
+                                    <p class="text-neon-pink text-xs font-medium mb-2">Beauty Salon</p>
+                                    <p class="text-light-grey text-xs mb-3">789 Oxford Street, London</p>
+                                    <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('glamour-beauty-lounge')">
+                                        Book Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark-grey py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold font-poppins gradient-text mb-4">BlkPages</h3>
+                    <p class="text-light-grey mb-8">© 2025 BlkPages – Supporting Black-owned Businesses</p>
+                    <div class="flex justify-center space-x-8 text-light-grey mb-6">
+                        <a href="about.html" class="hover:text-neon-blue transition-colors font-medium">About</a>
+                        <a href="contact.html" class="hover:text-neon-blue transition-colors font-medium">Contact</a>
+                        <a href="privacy.html" class="hover:text-neon-blue transition-colors font-medium">Privacy</a>
+                        <a href="terms.html" class="hover:text-neon-blue transition-colors font-medium">Terms</a>
+                        <a href="blog.html" class="hover:text-neon-blue transition-colors font-medium">Blog</a>
+                    </div>
+                    <div class="max-w-4xl mx-auto mb-6">
+                        <p class="text-xs text-light-grey leading-relaxed">
+                            <strong>Disclaimer:</strong> BlkPages is a third-party directory and booking facilitator. Each business listed on our platform is an independent provider and is solely responsible for its own services, pricing, availability, and cancellation or refund policies. By booking through BlkPages, you agree that any cancellations, changes, or disputes must be resolved directly with the business.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex justify-center space-x-6">
+                    <a href="#" class="text-light-grey hover:text-neon-pink transition-colors duration-300 text-2xl">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-light-grey hover:text-neon-pink transition-colors duration-300 text-2xl">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="#" class="text-light-grey hover:text-neon-pink transition-colors duration-300 text-2xl">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+        
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.add('hidden');
+        }
+        
+        // Modal functions (placeholder - these would need to be implemented)
+        function toggleLoginModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            alert('Login modal would open here');
+        }
+        
+        function toggleSignupModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            alert('Signup modal would open here');
+        }
+        
+        // Basket management
+        const BASKET_KEY = 'blkpages_basket';
+        const GUEST_BASKET_KEY = 'blkpages_guest_basket';
+        let selectedServices = [];
+        
+        function saveBasket() {
+            const basketData = {
+                selectedServices: selectedServices,
+                timestamp: Date.now()
+            };
+            
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            if (isLoggedIn) {
+                localStorage.setItem(BASKET_KEY, JSON.stringify(basketData));
+            } else {
+                sessionStorage.setItem(GUEST_BASKET_KEY, JSON.stringify(basketData));
+            }
+            
+            // Store current page as referrer for login redirect
+            // // localStorage.setItem('loginReferrer', window.location.pathname); // Removed - using returnUrl instead // Removed - using returnUrl instead
+        }
+        
+        function loadBasket() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            let basketData = null;
+            
+            if (isLoggedIn) {
+                const savedBasket = localStorage.getItem(BASKET_KEY);
+                if (savedBasket) basketData = JSON.parse(savedBasket);
+            } else {
+                const guestBasket = sessionStorage.getItem(GUEST_BASKET_KEY);
+                if (guestBasket) basketData = JSON.parse(guestBasket);
+            }
+            
+            if (basketData) {
+                selectedServices = basketData.selectedServices || [];
+                updateBasketCount();
+            }
+        }
+        
+        function updateBasketCount() {
+            const basketCount = document.getElementById('basketCount');
+            if (basketCount) {
+                basketCount.textContent = selectedServices.length;
+            }
+        }
+        
+        function scrollToBooking() {
+            if (selectedServices.length > 0) {
+                alert('You have ' + selectedServices.length + ' service(s) in your basket. Visit a business profile to complete your booking.');
+            } else {
+                alert('Your basket is empty. Browse businesses to add services.');
+            }
+        }
+        
+        // Customer menu functions
+        function toggleCustomerMenu() {
+            const dropdown = document.getElementById('customerDropdown');
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.style.display = 'none';
+            }
+        }
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const customerMenu = document.getElementById('customerMenu');
+            const dropdown = document.getElementById('customerDropdown');
+            
+            if (customerMenu && dropdown && !customerMenu.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+        
+        // Check login status and show/hide customer menu
+        function updateNavVisibility() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const authLinks = document.getElementById('authLinks');
+            const customerMenu = document.getElementById('customerMenu');
+            const basketIcon = document.getElementById('basketIcon');
+            
+            if (isLoggedIn) {
+                if (authLinks) authLinks.style.display = 'none';
+                if (customerMenu) customerMenu.style.display = 'block';
+                if (basketIcon) basketIcon.style.display = 'flex';
+            } else {
+                if (authLinks) authLinks.style.display = 'flex';
+                if (customerMenu) customerMenu.style.display = 'none';
+                if (basketIcon) basketIcon.style.display = 'flex';
+            }
+        }
+        
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const customerMenu = document.getElementById('customerMenu');
+            
+            if (customerMenu) {
+                if (isLoggedIn) {
+                    customerMenu.style.display = 'block';
+                    
+                    // Set customer initial
+                    const userName = localStorage.getItem('userName') || 'Demo User';
+                    const initial = userName.charAt(0).toUpperCase();
+                    document.getElementById('customerInitialText').textContent = initial;
+                } else {
+                    customerMenu.style.display = 'none';
+                }
+            }
+            
+            // Update navigation visibility
+            updateNavVisibility();
+        }
+        
+        function signOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                // Clear all user data from localStorage
+                localStorage.removeItem('userLoggedIn');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userPhone');
+                localStorage.removeItem('basketContents');
+                
+                // Show success message
+                alert('You have been signed out successfully.');
+                
+                // Reload the page
+                location.reload();
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            loadBasket();
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Load business manager
+        if (typeof window.businessManager === 'undefined') {
+            // Load business manager script if not already loaded
+            const script = document.createElement('script');
+            script.src = 'business-manager.js';
+            script.onload = function() {
+                initializeSearch();
+            };
+            document.head.appendChild(script);
+        } else {
+            initializeSearch();
+        }
+        
+        // Helper function to determine business tier
+        function getBusinessTier(business) {
+            if (business.subscription === 'free' || !business.subscription) {
+                return 'basic';
+            } else if (business.subscription === 'starter') {
+                return 'starter';
+            } else if (business.subscription === 'professional' || business.subscription === 'premium') {
+                return 'professional';
+            }
+            return 'basic'; // Default fallback
+        }
+        
+        function initializeSearch() {
+            // Get business data from business manager
+            const businessData = window.businessManager.getBusinesses();
+            
+            // Display all businesses initially
+            displaySearchResults(businessData);
+            
+            // Track search impressions for initial load
+            trackSearchImpressions(businessData);
+            
+            // Set up dashboard sync - listen for business updates
+            setupDashboardSync();
+            
+            // Initialize map if Google Maps is loaded
+            if (typeof google !== 'undefined') {
+                initializeMap(businessData);
+            }
+        }
+
+        // Google Maps integration
+        let map, mobileMap;
+        let businessMarkers = [];
+        let selectedBusiness = null;
+
+        function initMap() {
+            // This function is called by Google Maps API
+            console.log('Google Maps API loaded');
+        }
+
+        function initializeMap(businesses) {
+            // Initialize desktop map
+            const mapElement = document.getElementById('map');
+            if (mapElement) {
+                map = new google.maps.Map(mapElement, {
+                    center: { lat: 51.5074, lng: -0.1278 }, // London coordinates
+                    zoom: 12,
+                    styles: [
+                        {
+                            featureType: "all",
+                            elementType: "geometry",
+                            stylers: [{ color: "#242f3e" }]
+                        },
+                        {
+                            featureType: "all",
+                            elementType: "labels.text.stroke",
+                            stylers: [{ color: "#242f3e" }]
+                        },
+                        {
+                            featureType: "all",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#746855" }]
+                        },
+                        {
+                            featureType: "poi",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#d59563" }]
+                        },
+                        {
+                            featureType: "poi.park",
+                            elementType: "geometry",
+                            stylers: [{ color: "#263c3f" }]
+                        },
+                        {
+                            featureType: "poi.park",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#6b9a76" }]
+                        },
+                        {
+                            featureType: "road",
+                            elementType: "geometry",
+                            stylers: [{ color: "#38414e" }]
+                        },
+                        {
+                            featureType: "road",
+                            elementType: "geometry.stroke",
+                            stylers: [{ color: "#212a37" }]
+                        },
+                        {
+                            featureType: "road",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#9ca5b3" }]
+                        },
+                        {
+                            featureType: "road.highway",
+                            elementType: "geometry",
+                            stylers: [{ color: "#746855" }]
+                        },
+                        {
+                            featureType: "road.highway",
+                            elementType: "geometry.stroke",
+                            stylers: [{ color: "#1f2835" }]
+                        },
+                        {
+                            featureType: "road.highway",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#f3d19c" }]
+                        },
+                        {
+                            featureType: "transit",
+                            elementType: "geometry",
+                            stylers: [{ color: "#2f3948" }]
+                        },
+                        {
+                            featureType: "transit.station",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#d59563" }]
+                        },
+                        {
+                            featureType: "water",
+                            elementType: "geometry",
+                            stylers: [{ color: "#17263c" }]
+                        },
+                        {
+                            featureType: "water",
+                            elementType: "labels.text.fill",
+                            stylers: [{ color: "#515c6d" }]
+                        },
+                        {
+                            featureType: "water",
+                            elementType: "labels.text.stroke",
+                            stylers: [{ color: "#17263c" }]
+                        }
+                    ]
+                });
+            }
+
+            // Initialize mobile map
+            const mobileMapElement = document.getElementById('mobileMap');
+            if (mobileMapElement) {
+                mobileMap = new google.maps.Map(mobileMapElement, {
+                    center: { lat: 51.5074, lng: -0.1278 },
+                    zoom: 12,
+                    styles: map.styles // Use same dark theme
+                });
+            }
+
+            // Add markers for Starter and Professional businesses
+            addBusinessMarkers(businesses);
+        }
+
+        function addBusinessMarkers(businesses) {
+            // Clear existing markers
+            businessMarkers.forEach(marker => marker.setMap(null));
+            businessMarkers = [];
+
+            businesses.forEach((business, index) => {
+                const tier = getBusinessTier(business);
+                
+                // Only add markers for Starter and Professional businesses
+                if (tier === 'starter' || tier === 'professional') {
+                    // Generate coordinates (in real app, these would come from business data)
+                    const lat = 51.5074 + (Math.random() - 0.5) * 0.1;
+                    const lng = -0.1278 + (Math.random() - 0.5) * 0.1;
+                    
+                    const marker = new google.maps.Marker({
+                        position: { lat, lng },
+                        map: map,
+                        title: business.name,
+                        icon: {
+                            url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+                                <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="20" cy="20" r="18" fill="#D4AF37" stroke="#000" stroke-width="2"/>
+                                    <text x="20" y="26" text-anchor="middle" fill="#000" font-family="Arial" font-size="12" font-weight="bold">${tier === 'professional' ? 'P' : 'S'}</text>
+                                </svg>
+                            `)}`,
+                            scaledSize: new google.maps.Size(40, 40)
+                        }
+                    });
+
+                    // Add click listener
+                    marker.addListener('click', () => {
+                        selectBusinessOnMap(business, index);
+                    });
+
+                    // Add hover info
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `
+                            <div style="color: #000; font-family: Arial;">
+                                <h3 style="margin: 0 0 8px 0; color: #D4AF37; font-weight: bold;">${business.name}</h3>
+                                <p style="margin: 0 0 4px 0; color: #666;">${business.category}</p>
+                                <p style="margin: 0; color: #666; font-size: 12px;">${business.location}</p>
+                            </div>
+                        `
+                    });
+
+                    marker.addListener('mouseover', () => {
+                        infoWindow.open(map, marker);
+                    });
+
+                    marker.addListener('mouseout', () => {
+                        infoWindow.close();
+                    });
+
+                    businessMarkers.push(marker);
+                }
+            });
+        }
+
+        function selectBusinessOnMap(business, index) {
+            // Center map on selected business
+            if (map && businessMarkers[index]) {
+                map.setCenter(businessMarkers[index].getPosition());
+                map.setZoom(16);
+            }
+
+            // Highlight corresponding card in list
+            highlightBusinessCard(business.id || business.name);
+        }
+
+        function highlightBusinessCard(businessId) {
+            // Remove previous highlights
+            document.querySelectorAll('.business-card').forEach(card => {
+                card.classList.remove('ring-2', 'ring-gold', 'bg-gold/10');
+            });
+
+            // Highlight the selected card
+            const card = document.querySelector(`[data-business-id="${businessId}"]`);
+            if (card) {
+                card.classList.add('ring-2', 'ring-gold', 'bg-gold/10');
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Dashboard sync functionality
+        function setupDashboardSync() {
+            // Listen for business updates from dashboard
+            window.addEventListener('businessUpdated', function(event) {
+                console.log('Business updated, refreshing browse page:', event.detail);
+                refreshBusinessData();
+            });
+
+            // Listen for localStorage changes (cross-tab sync)
+            window.addEventListener('storage', function(event) {
+                if (event.key === 'blkpages_businesses' && event.newValue) {
+                    console.log('Business data updated in another tab, refreshing...');
+                    refreshBusinessData();
+                }
+            });
+
+            // Poll for changes every 30 seconds (fallback)
+            setInterval(function() {
+                const currentData = window.businessManager.getBusinesses();
+                if (window.lastBusinessData && JSON.stringify(currentData) !== JSON.stringify(window.lastBusinessData)) {
+                    console.log('Business data changed, refreshing...');
+                    refreshBusinessData();
+                }
+                window.lastBusinessData = currentData;
+            }, 30000);
+        }
+
+        function refreshBusinessData() {
+            const businessData = window.businessManager.getBusinesses();
+            displaySearchResults(businessData);
+            console.log('Browse page refreshed with updated business data');
+        }
+            
+            // Track if search has been performed
+            let hasSearched = false;
+
+        // Show advanced controls after search
+        function showAdvancedControls() {
+            document.getElementById('advancedControls').classList.remove('hidden');
+        }
+
+        // Hide advanced controls (reset to initial state)
+        function hideAdvancedControls() {
+            document.getElementById('advancedControls').classList.add('hidden');
+        }
+
+        // Enhanced filtering and sorting functionality
+        let currentFilters = {
+            category: '',
+            rating: '',
+            distance: '25',
+            sortBy: 'relevance'
+        };
+
+        function applyFilters() {
+            const businessData = window.businessManager.getBusinesses();
+            let filteredBusinesses = [...businessData];
+
+            // Apply category filter
+            if (currentFilters.category) {
+                filteredBusinesses = filteredBusinesses.filter(business => 
+                    business.category === currentFilters.category
+                );
+            }
+
+            // Apply rating filter
+            if (currentFilters.rating) {
+                const minRating = parseFloat(currentFilters.rating);
+                filteredBusinesses = filteredBusinesses.filter(business => 
+                    (business.rating || 0) >= minRating
+                );
+            }
+
+            // Apply distance filter (simplified - would need geolocation for real implementation)
+            if (currentFilters.distance) {
+                // For now, just filter by location if provided
+                const locationSearch = document.getElementById('locationSearch').value;
+                if (locationSearch) {
+                    filteredBusinesses = filteredBusinesses.filter(business => 
+                        business.location.toLowerCase().includes(locationSearch.toLowerCase())
+                    );
+                }
+            }
+
+            // Apply sorting
+            switch (currentFilters.sortBy) {
+                case 'rating':
+                    filteredBusinesses.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                    break;
+                case 'reviews':
+                    filteredBusinesses.sort((a, b) => (b.reviews || 0) - (a.reviews || 0));
+                    break;
+                case 'name':
+                    filteredBusinesses.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'relevance':
+                default:
+                    // Keep original order for relevance
+                    break;
+            }
+
+            displaySearchResults(filteredBusinesses);
+            hideFilterMenu();
+        }
+
+        function clearFilters() {
+            currentFilters = {
+                category: '',
+                rating: '',
+                distance: '25',
+                sortBy: 'relevance'
+            };
+            
+            // Reset filter UI
+            document.getElementById('categorySearch').value = '';
+            document.getElementById('ratingFilter').value = '';
+            document.getElementById('distanceFilter').value = '25';
+            document.getElementById('sortBySelect').value = 'relevance';
+            
+            // Reapply search with cleared filters
+            performSearch();
+        }
+
+        function selectSortOption(sortType) {
+            currentFilters.sortBy = sortType;
+            document.getElementById('sortBySelect').value = sortType;
+            applyFilters();
+        }
+
+        // Filter menu functionality
+        function toggleFilterMenu() {
+            const filterMenu = document.getElementById('filterMenu');
+            filterMenu.classList.toggle('hidden');
+        }
+
+        function applyFilters() {
+            const filterMenu = document.getElementById('filterMenu');
+            filterMenu.classList.add('hidden');
+            performSearch();
+        }
+
+        function clearFilters() {
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('locationFilter').value = '';
+            document.getElementById('ratingFilter').value = '';
+            document.getElementById('distanceFilter').value = '5';
+            const filterMenu = document.getElementById('filterMenu');
+            filterMenu.classList.add('hidden');
+            performSearch();
+        }
+
+        // Sort menu functionality
+        function toggleSortMenu() {
+            const sortMenu = document.getElementById('sortMenu');
+            sortMenu.classList.toggle('hidden');
+        }
+
+        function selectSortOption(sortType) {
+            const sortMenuText = document.getElementById('sortMenuText');
+            const sortMenu = document.getElementById('sortMenu');
+            
+            sortMenuText.textContent = sortType.charAt(0).toUpperCase() + sortType.slice(1);
+            sortMenu.classList.add('hidden');
+            
+            // Trigger search with new sort
+            performSearch();
+        }
+
+        // Business name search with partial matching
+        function searchBusinesses() {
+            const businessName = document.getElementById('businessNameSearch').value.toLowerCase().trim();
+            const location = document.getElementById('locationSearch').value.toLowerCase().trim();
+            const category = document.getElementById('categorySearch').value;
+            
+            // Get advanced filter values (if available)
+            const advancedCategory = document.getElementById('categoryFilter')?.value || '';
+            const advancedLocation = document.getElementById('locationFilter')?.value.toLowerCase().trim() || '';
+            const minRating = document.getElementById('ratingFilter')?.value || '';
+            const distance = document.getElementById('distanceFilter')?.value || '5';
+            const sortBy = document.getElementById('sortMenuText')?.textContent.toLowerCase() || 'relevance';
+
+            // Use business manager to search
+            const searchFilters = {
+                businessName: businessName,
+                category: advancedCategory || category,
+                location: advancedLocation || location,
+                minRating: minRating ? parseFloat(minRating) : null
+            };
+            
+            let filteredBusinesses = window.businessManager.searchBusinesses(searchFilters);
+
+            // Sort results
+            if (sortBy === 'price') {
+                // Sort by price (assuming lower is better for demo)
+                filteredBusinesses.sort((a, b) => a.rating - b.rating);
+            } else if (sortBy === 'distance') {
+                // For demo purposes, randomize distance
+                filteredBusinesses.sort(() => Math.random() - 0.5);
+            } else if (sortBy === 'reviews') {
+                // Sort by number of reviews (assuming higher is better)
+                filteredBusinesses.sort((a, b) => b.rating - a.rating);
+            } else if (sortBy === 'relevance') {
+                // Keep original order for relevance
+                // No sorting needed
+            }
+
+            displaySearchResults(filteredBusinesses);
+            
+            // Track search impressions for each business that appears in results
+            trackSearchImpressions(filteredBusinesses);
+        }
+        
+        // Track search impressions
+        function trackSearchImpressions(businesses) {
+            const currentDate = new Date().toISOString().split('T')[0];
+            const currentTime = new Date().toISOString();
+            
+            console.log('Tracking search impressions for', businesses.length, 'businesses');
+            
+            businesses.forEach(business => {
+                const businessId = business.id || 'royalHairStudio'; // Use business ID or default
+                
+                // Get existing analytics data
+                let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
+                
+                // Initialize business analytics if not exists
+                if (!analyticsData[businessId]) {
+                    analyticsData[businessId] = {
+                        totalViews: 0,
+                        dailyViews: {},
+                        lastView: null,
+                        viewHistory: [],
+                        searchImpressions: 0,
+                        dailySearchImpressions: {},
+                        contactClicks: 0,
+                        dailyContactClicks: {},
+                        enquiries: 0,
+                        dailyEnquiries: {}
+                    };
+                }
+                
+                // Ensure all required objects exist
+                if (!analyticsData[businessId].dailySearchImpressions) {
+                    analyticsData[businessId].dailySearchImpressions = {};
+                }
+                
+                // Update search impressions
+                analyticsData[businessId].searchImpressions += 1;
+                
+                // Update daily search impressions
+                if (!analyticsData[businessId].dailySearchImpressions[currentDate]) {
+                    analyticsData[businessId].dailySearchImpressions[currentDate] = 0;
+                }
+                analyticsData[businessId].dailySearchImpressions[currentDate] += 1;
+                
+                // Save updated analytics
+                localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
+                
+                console.log(`Search impression tracked for ${business.name}:`, {
+                    businessId: businessId,
+                    totalImpressions: analyticsData[businessId].searchImpressions,
+                    todayImpressions: analyticsData[businessId].dailySearchImpressions[currentDate]
+                });
+            });
+            
+            // Trigger analytics update event
+            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
+                detail: { 
+                    type: 'searchImpressions',
+                    count: businesses.length
+                }
+            }));
+            
+            console.log('Search impressions tracking completed for', businesses.length, 'businesses');
+        }
+        
+        // Test function for debugging (can be called from console)
+        window.testSearchTracking = function() {
+            console.log('Testing search impressions tracking...');
+            const businessData = window.businessManager.getBusinesses();
+            trackSearchImpressions(businessData);
+            console.log('Test completed. Check analytics dashboard.');
+        };
+
+        // Near Me functionality
+        function handleNearMe() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // Store location data
+                    localStorage.setItem('userLat', position.coords.latitude);
+                    localStorage.setItem('userLng', position.coords.longitude);
+                    localStorage.setItem('userLocation', 'Current Location');
+                    
+                    // Update location field
+                    document.getElementById('locationSearch').value = 'Current Location';
+                    
+                    // Perform search with current location
+                    performSearch();
+                }, function(error) {
+                    alert('Unable to get your location. Please enter your location manually.');
+                });
+            } else {
+                alert('Geolocation is not supported by this browser. Please enter your location manually.');
+            }
+        }
+
+        function displaySearchResults(businesses) {
+            const resultsContainer = document.getElementById('businessResults');
+            const mobileResultsContainer = document.getElementById('mobileBusinessResults');
+            const resultsCount = document.getElementById('resultsCount');
+            const mobileResultsCount = document.getElementById('mobileResultsCount');
+            
+            if (businesses.length === 0) {
+                const noResultsHTML = `
+                    <div class="bg-dark-grey rounded-2xl p-8 border border-white/10 text-center">
+                        <i class="fas fa-search text-4xl text-light-grey mb-4"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">No results found</h3>
+                        <p class="text-light-grey mb-4">Try broadening your filters or search area.</p>
+                        <div class="text-sm text-light-grey mb-6">
+                            <p class="mb-2">Suggestions:</p>
+                            <ul class="text-left max-w-md mx-auto">
+                                <li>• Try different keywords or categories</li>
+                                <li>• Expand your search radius</li>
+                                <li>• Check nearby areas</li>
+                            </ul>
+                        </div>
+                        <button onclick="clearAllFilters()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-gold to-gold-dark text-black font-semibold hover:from-gold-dark hover:to-gold transition-all duration-300">
+                            Clear All Filters
+                        </button>
+                    </div>
+                `;
+                
+                if (resultsContainer) resultsContainer.innerHTML = noResultsHTML;
+                if (mobileResultsContainer) mobileResultsContainer.innerHTML = noResultsHTML;
+                if (resultsCount) resultsCount.textContent = '0 businesses found';
+                if (mobileResultsCount) mobileResultsCount.textContent = '0 businesses found';
+                return;
+            }
+
+            if (resultsCount) resultsCount.textContent = `${businesses.length} businesses found`;
+            if (mobileResultsCount) mobileResultsCount.textContent = `${businesses.length} businesses found`;
+
+            const businessCardsHTML = businesses.map(business => {
+                const tier = getBusinessTier(business);
+                const categoryColor = business.category === 'hair' ? 'neon-pink' : 
+                                     business.category === 'barber' ? 'neon-blue' : 
+                                     business.category === 'beauty' ? 'neon-green' : 'neon-purple';
+                const categoryIcon = business.category === 'hair' ? 'fas fa-cut' : 
+                                   business.category === 'barber' ? 'fas fa-cut' : 
+                                   business.category === 'beauty' ? 'fas fa-spa' : 'fas fa-star';
+                
+                if (tier === 'basic') {
+                    // Basic card - NO links, NO images, informational only
+                    return `
+                    <div class="bg-dark-grey rounded-2xl p-4 border border-white/10 transition-all duration-300" role="article" aria-label="Basic business listing for ${business.name}" style="cursor: default;">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-lg font-bold text-white">${business.name}</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-${categoryColor}/20 text-${categoryColor} border border-${categoryColor}/30">
+                                ${business.category.charAt(0).toUpperCase() + business.category.slice(1)}
+                            </span>
+                        </div>
+                        <div class="space-y-2">
+                            ${business.address ? `
+                            <p class="text-light-grey text-sm flex items-center">
+                                <i class="fas fa-map-marker-alt mr-2 w-4"></i>
+                                ${business.address}
+                            </p>` : ''}
+                            ${business.phone ? `
+                            <p class="text-light-grey text-sm flex items-center">
+                                <i class="fas fa-phone mr-2 w-4"></i>
+                                ${business.phone}
+                            </p>` : ''}
+                            ${business.email ? `
+                            <p class="text-light-grey text-sm flex items-center">
+                                <i class="fas fa-envelope mr-2 w-4"></i>
+                                ${business.email}
+                            </p>` : ''}
+                        </div>
+                        <div class="text-center mt-4">
+                            <p class="text-light-grey text-sm">Contact the business directly for enquiries</p>
+                        </div>
+                    </div>
+                `;
+                } else {
+                    // Starter/Professional card - with image, links, and Book Now button
+                    const businessSlug = business.id || business.name.toLowerCase().replace(/\s+/g, '-');
+                    const profileUrl = `business-profile.html?business=${businessSlug}`;
+                    
+                    return `
+                    <div class="business-card bg-dark-grey rounded-2xl p-6 border border-white/10 transition-all duration-300 hover:border-gold/30 hover:shadow-lg hover:shadow-gold/10" 
+                         data-business-id="${business.id || business.name}" 
+                         role="article" 
+                         aria-label="Premium business listing for ${business.name}">
+                        <div class="mb-4">
+                            <img src="${business.image || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop&crop=center'}" 
+                                 alt="${business.name}" 
+                                 class="w-full h-48 object-cover rounded-lg">
+                        </div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-bold text-white">
+                                <a href="${profileUrl}" class="hover:text-gold transition-colors duration-300">${business.name}</a>
+                            </h3>
+                            <div class="flex items-center">
+                                <span class="bg-gradient-to-r from-gold to-gold-dark text-black text-xs px-2 py-1 rounded-full font-semibold">
+                                    ${tier === 'professional' ? 'Professional' : 'Starter'}
+                            </span>
+                        </div>
+                            </div>
+                        <div class="flex items-center mb-2">
+                            <div class="flex text-gold mr-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-light-grey text-sm">${business.rating || '4.8'} (${business.reviews || '127'} reviews)</span>
+                            </div>
+                        <p class="text-${categoryColor} text-sm font-medium mb-2">
+                            <i class="${categoryIcon} mr-1"></i>
+                            ${business.category.charAt(0).toUpperCase() + business.category.slice(1)}
+                        </p>
+                        <p class="text-light-grey text-sm mb-4 flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            ${business.address || business.location}
+                        </p>
+                        <button onclick="goToBusinessProfile('${businessSlug}')" 
+                                class="w-full py-3 rounded-lg bg-gradient-to-r from-gold to-gold-dark text-black font-semibold hover:from-gold-dark hover:to-gold transition-all duration-300 shadow-lg hover:shadow-xl">
+                            Book Now
+                        </button>
+                            </div>
+                `;
+                }
+            }).join('');
+
+            // Update both desktop and mobile containers
+            if (resultsContainer) resultsContainer.innerHTML = businessCardsHTML;
+            if (mobileResultsContainer) mobileResultsContainer.innerHTML = businessCardsHTML;
+
+            // Update map markers if map is initialized
+            if (typeof google !== 'undefined' && map) {
+                addBusinessMarkers(businesses);
+            }
+        }
+
+        // Add card-to-map interaction
+        function addCardToMapInteraction() {
+            document.addEventListener('click', function(e) {
+                const businessCard = e.target.closest('.business-card');
+                if (businessCard) {
+                    const businessId = businessCard.getAttribute('data-business-id');
+                    if (businessId && map) {
+                        // Find the corresponding marker and center map on it
+                        const businessIndex = businessMarkers.findIndex(marker => 
+                            marker.getTitle() === businessId || 
+                            marker.getTitle().toLowerCase().includes(businessId.toLowerCase())
+                        );
+                        
+                        if (businessIndex !== -1 && businessMarkers[businessIndex]) {
+                            const marker = businessMarkers[businessIndex];
+                            map.setCenter(marker.getPosition());
+                            map.setZoom(16);
+                            
+                            // Open info window
+                            const infoWindow = new google.maps.InfoWindow({
+                                content: `
+                                    <div style="color: #000; font-family: Arial;">
+                                        <h3 style="margin: 0 0 8px 0; color: #D4AF37; font-weight: bold;">${marker.getTitle()}</h3>
+                                        <p style="margin: 0; color: #666; font-size: 12px;">Click to view profile</p>
+                            </div>
+                                `
+                            });
+                            infoWindow.open(map, marker);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize card-to-map interaction
+        addCardToMapInteraction();
+
+        function clearAllFilters() {
+            document.getElementById('businessNameSearch').value = '';
+            document.getElementById('locationSearch').value = '';
+            document.getElementById('categorySearch').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('locationFilter').value = '';
+            document.getElementById('ratingFilter').value = '';
+            document.getElementById('distanceFilter').value = '5';
+            
+            // Reset search state and hide advanced controls
+            hasSearched = false;
+            hideAdvancedControls();
+            
+            // Show all businesses
+            displaySearchResults(businessData);
+            
+            // Track search impressions for reset
+            trackSearchImpressions(businessData);
+        }
+
+        function performSearch() {
+            searchBusinesses();
+            // Show advanced controls after any search is performed
+            hasSearched = true;
+            showAdvancedControls();
+        }
+
+        // Populate featured businesses
+        function populateFeaturedBusinesses() {
+            const featuredBusinesses = businessData.filter(business => business.featured);
+            const desktopContainer = document.getElementById('featuredBusinesses');
+            const mobileContainer = document.getElementById('mobileFeaturedBusinesses');
+            const mobileTopContainer = document.getElementById('mobileFeaturedBusinessesTop');
+            
+            // Desktop featured businesses
+            if (desktopContainer) {
+                desktopContainer.innerHTML = featuredBusinesses.map(business => `
+                    <div class="card-hover bg-charcoal rounded-xl p-4 border border-white/10 hover:border-neon-pink/50 transition-all duration-300" role="article" aria-label="Featured business: ${business.name}">
+                        <div class="flex items-start space-x-3">
+                            <img src="${business.image}" alt="${business.name}" class="w-16 h-16 object-cover rounded-lg" loading="lazy">
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="text-sm font-bold text-white">${business.name}</h4>
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
+                                        Featured
+                                    </span>
+                                </div>
+                                <p class="text-xs text-light-grey mb-2">Premium ${business.category} services</p>
+                                <div class="flex items-center text-yellow-400 mb-3" aria-label="Rating: ${business.rating} out of 5 stars">
+                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                                    <span class="ml-1 text-xs font-semibold text-white">${business.rating}</span>
+                                    <span class="ml-1 text-xs text-light-grey">(${business.reviews})</span>
+                                </div>
+                                <a href="business-profile.html" class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-xs text-center block" aria-label="Book appointment with ${business.name}">
+                                    Book Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Mobile featured businesses (horizontal scroll) - both containers
+            const mobileFeaturedHTML = featuredBusinesses.map(business => `
+                <div class="card-hover bg-charcoal rounded-xl p-4 border border-white/10 hover:border-neon-pink/50 transition-all duration-300 flex-shrink-0" style="width: 280px;" role="article" aria-label="Featured business: ${business.name}">
+                    <div class="flex flex-col">
+                        <img src="${business.image}" alt="${business.name}" class="w-full h-32 object-cover rounded-lg mb-3" loading="lazy">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="text-sm font-bold text-white">${business.name}</h4>
+                            <span class="px-2 py-1 rounded-full text-xs font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
+                                Featured
+                            </span>
+                        </div>
+                        <p class="text-xs text-light-grey mb-2">Premium ${business.category} services</p>
+                        <div class="flex items-center text-yellow-400 mb-3" aria-label="Rating: ${business.rating} out of 5 stars">
+                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
+                            <span class="ml-1 text-xs font-semibold text-white">${business.rating}</span>
+                            <span class="ml-1 text-xs text-light-grey">(${business.reviews})</span>
+                        </div>
+                        <a href="business-profile.html" class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-xs text-center block" aria-label="Book appointment with ${business.name}">
+                            Book Now
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+            
+            if (mobileContainer) {
+                mobileContainer.innerHTML = mobileFeaturedHTML;
+            }
+            if (mobileTopContainer) {
+                mobileTopContainer.innerHTML = mobileFeaturedHTML;
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up event listeners
+            document.getElementById('searchBtn').addEventListener('click', performSearch);
+            document.getElementById('nearMeBtn').addEventListener('click', handleNearMe);
+            document.getElementById('filterMenuBtn').addEventListener('click', toggleFilterMenu);
+            document.getElementById('sortMenuBtn').addEventListener('click', toggleSortMenu);
+            document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
+            document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
+            
+            // Sort menu options
+            document.querySelectorAll('#sortMenu button').forEach(button => {
+                button.addEventListener('click', () => selectSortOption(button.dataset.sort));
+            });
+
+            // Real-time search as user types in business name or location
+            document.getElementById('businessNameSearch').addEventListener('input', performSearch);
+            document.getElementById('locationSearch').addEventListener('input', performSearch);
+            document.getElementById('categorySearch').addEventListener('change', performSearch);
+
+            // Close menus when clicking outside
+            document.addEventListener('click', (e) => {
+                const filterMenu = document.getElementById('filterMenu');
+                const filterMenuBtn = document.getElementById('filterMenuBtn');
+                const sortMenu = document.getElementById('sortMenu');
+                const sortMenuBtn = document.getElementById('sortMenuBtn');
+                
+                if (!filterMenu.contains(e.target) && !filterMenuBtn.contains(e.target)) {
+                    filterMenu.classList.add('hidden');
+                }
+                
+                if (!sortMenu.contains(e.target) && !sortMenuBtn.contains(e.target)) {
+                    sortMenu.classList.add('hidden');
+                }
+            });
+
+            // Initialize with all businesses and hidden advanced controls
+            displaySearchResults(businessData);
+            
+            // Track search impressions for initial load
+            trackSearchImpressions(businessData);
+            
+            populateFeaturedBusinesses();
+            hideAdvancedControls();
+        });
+
+        // Back button function
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // If no history, go to homepage
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Modal functions
+        function toggleLoginModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const modal = document.getElementById('loginModal');
+            modal.classList.toggle('hidden');
+            
+            // Store current page as referrer when opening login modal
+            if (!modal.classList.contains('hidden')) {
+                // localStorage.setItem('loginReferrer', window.location.pathname); // Removed - using returnUrl instead
+            }
+        }
+
+        function toggleSignupModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const modal = document.getElementById('signupModal');
+            modal.classList.toggle('hidden');
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            console.log('Login attempt:', email, password);
+            
+            // Demo credentials check
+            if (email === 'customer@example.com' && password === 'password123') {
+                console.log('Credentials valid, logging in...');
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', 'Demo Customer');
+                
+                // Close modal
+                toggleLoginModal();
+                
+                // Show success message
+                alert('Login successful! Redirecting...');
+                
+                // Redirect to referring page or dashboard
+                // setTimeout(() => {
+                //     console.log('Attempting redirect...');
+                //     const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
+                //     // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
+                //     window.location.replace(referringPage);
+                // }, 500); // Removed - using returnUrl system instead
+                
+            } else {
+                alert('Invalid credentials. Use the demo credentials: customer@example.com / password123');
+            }
+        }
+
+        // Handle signup
+        function handleSignup(event) {
+            event.preventDefault();
+            const name = event.target.querySelector('input[type="text"]').value;
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            console.log('Signup attempt:', name, email, password);
+            
+            // Demo signup - just log them in
+            localStorage.setItem('userLoggedIn', 'true');
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userName', name);
+            
+            // Close modal
+            toggleSignupModal();
+            
+            // Show success message
+            alert('Account created successfully! Redirecting...');
+            
+            // Redirect to referring page or dashboard
+            // setTimeout(() => {
+            //     console.log('Attempting redirect...');
+            //     const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
+            //     // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
+            //     window.location.replace(referringPage);
+            // }, 500); // Removed - using returnUrl system instead
+        }
+    </script>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold gradient-text">Login</h3>
+                    <button onclick="redirectToLogin()" class="text-white/70 hover:text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="mb-4">
+                        <label class="block text-white/70 mb-2">Email</label>
+                        <input type="email" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-white/70 mb-2">Password</label>
+                        <input type="password" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
+                        Login
+                    </button>
+                </form>
+                <div class="mt-4 text-center">
+                    <p class="text-white/70 text-sm">Don't have an account? <a href="#" onclick="redirectToRegister()" class="text-neon-pink hover:text-neon-purple transition-colors duration-300">Sign up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold gradient-text">Sign Up</h3>
+                    <button onclick="toggleSignupModal(event)" class="text-white/70 hover:text-white">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="signupForm" onsubmit="handleSignup(event)">
+                    <div class="mb-4">
+                        <label class="block text-white/70 mb-2">Full Name</label>
+                        <input type="text" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-white/70 mb-2">Email</label>
+                        <input type="email" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-white/70 mb-2">Password</label>
+                        <input type="password" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
+                        Sign Up
+                    </button>
+                </form>
+                <p class="text-center text-white/70 mt-4">
+                    Already have an account? 
+                    <button onclick="toggleLoginModal(event); toggleSignupModal(event);" class="text-neon-pink hover:underline">Login</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functions
+        function updateNavVisibility() {
+            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+            const userName = localStorage.getItem('userName') || 'User';
+            const userInitial = userName.charAt(0).toUpperCase();
+            
+            // Desktop elements
+            const authLinks = document.getElementById('authLinks');
+            const customerMenu = document.getElementById('customerMenu');
+            const customerInitialText = document.getElementById('customerInitialText');
+            const basketIcon = document.getElementById('basketIcon');
+            
+            // Mobile elements
+            const mobileAuthLinks = document.getElementById('mobileAuthLinks');
+            const mobileCustomerMenu = document.getElementById('mobileCustomerMenu');
+            const mobileCustomerInitialText = document.getElementById('mobileCustomerInitialText');
+            const mobileBasketIcon = document.getElementById('mobileBasketIcon');
+            
+            if (isLoggedIn) {
+                // Show customer menu, hide sign in
+                if (authLinks) authLinks.style.display = 'none';
+                if (customerMenu) customerMenu.style.display = 'block';
+                if (customerInitialText) customerInitialText.textContent = userInitial;
+                
+                // Mobile
+                if (mobileAuthLinks) mobileAuthLinks.style.display = 'none';
+                if (mobileCustomerMenu) mobileCustomerMenu.style.display = 'block';
+                if (mobileCustomerInitialText) mobileCustomerInitialText.textContent = userInitial;
+            } else {
+                // Show sign in, hide customer menu
+                if (authLinks) authLinks.style.display = 'flex';
+                if (customerMenu) customerMenu.style.display = 'none';
+                
+                // Mobile
+                if (mobileAuthLinks) mobileAuthLinks.style.display = 'flex';
+                if (mobileCustomerMenu) mobileCustomerMenu.style.display = 'none';
+            }
+            
+            // Basket is always visible
+            if (basketIcon) basketIcon.style.display = 'flex';
+            if (mobileBasketIcon) mobileBasketIcon.style.display = 'flex';
+        }
+
+        // Modal functions
+        function toggleLoginModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const modal = document.getElementById('loginModal');
+            modal.classList.toggle('hidden');
+            
+            // Store current page as referrer when opening login modal
+            if (!modal.classList.contains('hidden')) {
+                // localStorage.setItem('loginReferrer', window.location.pathname); // Removed - using returnUrl instead
+            }
+        }
+
+        function toggleSignupModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const modal = document.getElementById('signupModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.add('hidden');
+        }
+
+        function toggleCustomerMenu() {
+            const dropdown = document.getElementById('customerDropdown');
+            const mobileDropdown = document.getElementById('mobileCustomerDropdown');
+            
+            if (dropdown) dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            if (mobileDropdown) mobileDropdown.style.display = mobileDropdown.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            console.log('Login attempt:', email, password);
+            
+            // Demo credentials check
+            if (email === 'customer@example.com' && password === 'password123') {
+                console.log('Credentials valid, logging in...');
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', 'Demo Customer');
+                
+                // Close modal
+                toggleLoginModal();
+                
+                // Show success message
+                alert('Login successful! Redirecting...');
+                
+                // Redirect to referring page or dashboard
+                // setTimeout(() => {
+                //     console.log('Attempting redirect...');
+                //     const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
+                //     // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
+                //     window.location.replace(referringPage);
+                // }, 500); // Removed - using returnUrl system instead
+                
+            } else {
+                alert('Invalid credentials. Use the demo credentials: customer@example.com / password123');
+            }
+        }
+
+        // Handle signup
+        function handleSignup(event) {
+            event.preventDefault();
+            const name = event.target.querySelector('input[type="text"]').value;
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            console.log('Signup attempt:', name, email, password);
+            
+            // Demo signup - just log them in
+            localStorage.setItem('userLoggedIn', 'true');
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userName', name);
+            
+            // Close modal
+            toggleSignupModal();
+            
+            // Show success message
+            alert('Account created successfully! Redirecting...');
+            
+            // Redirect to referring page or dashboard
+            // setTimeout(() => {
+            //     console.log('Attempting redirect...');
+            //     const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
+            //     // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
+            //     window.location.replace(referringPage);
+            // }, 500); // Removed - using returnUrl system instead
+        }
+
+        // Sign out function
+        function signOut() {
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userName');
+            // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
+            
+            // Update navigation
+            updateNavVisibility();
+            
+            // Redirect to homepage
+            window.location.href = 'index.html';
+        }
+
+        // Modal functions
+        function toggleLoginModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const modal = document.getElementById('loginModal');
+            modal.classList.toggle('hidden');
+            
+            // Store current page as referrer when opening login modal
+            if (!modal.classList.contains('hidden')) {
+                // localStorage.setItem('loginReferrer', window.location.pathname); // Removed - using returnUrl instead
+            }
+        }
+        
+        function toggleSignupModal(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            const modal = document.getElementById('signupModal');
+            modal.classList.toggle('hidden');
+        }
+        
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        }
+        
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.add('hidden');
+        }
+        
+        function toggleCustomerMenu() {
+            const dropdown = document.getElementById('customerDropdown');
+            const mobileDropdown = document.getElementById('mobileCustomerDropdown');
+            
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'none' || dropdown.style.display === '' ? 'block' : 'none';
+            }
+            if (mobileDropdown) {
+                mobileDropdown.style.display = mobileDropdown.style.display === 'none' || mobileDropdown.style.display === '' ? 'block' : 'none';
+            }
+        }
+        
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            console.log('Login attempt:', email, password);
+            
+            if (email === 'customer@example.com' && password === 'password123') {
+                console.log('Credentials valid, logging in...');
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', 'Demo Customer');
+                
+                toggleLoginModal(); // Close modal
+                alert('Login successful! Redirecting...');
+                
+                setTimeout(() => {
+                    console.log('Attempting redirect...');
+                    const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
+                    // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
+                    window.location.replace(referringPage);
+                }, 500);
+                
+            } else {
+                alert('Invalid credentials. Use the demo credentials: customer@example.com / password123');
+            }
+        }
+        
+        // Handle signup
+        function handleSignup(event) {
+            event.preventDefault();
+            const name = event.target.querySelector('input[type="text"]').value;
+            const email = event.target.querySelector('input[type="email"]').value;
+            const password = event.target.querySelector('input[type="password"]').value;
+            
+            // Simple validation
+            if (name && email && password) {
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', name);
+                updateNavVisibility();
+                toggleSignupModal();
+                alert('Account created successfully! You can now save searches.');
+            }
+        }
+        
+        // Dynamic heading and search functionality
+        function updateDynamicHeadings(searchTerm, location, category) {
+            const dynamicSubheading = document.getElementById('dynamicSubheading');
+            const resultsHeading = document.getElementById('resultsHeading');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            if (searchTerm || location || category) {
+                let context = '';
+                if (category) context += category;
+                if (location) context += (context ? ' in ' : '') + location;
+                if (searchTerm) context += (context ? ' matching "' : '') + searchTerm + (searchTerm ? '"' : '');
+                
+                if (dynamicSubheading) {
+                    dynamicSubheading.textContent = `Showing results for ${context}`;
+                }
+                if (resultsHeading) {
+                    resultsHeading.textContent = `Search Results`;
+                }
+            } else {
+                if (dynamicSubheading) {
+                    dynamicSubheading.textContent = 'Discover amazing businesses near you';
+                }
+                if (resultsHeading) {
+                    resultsHeading.textContent = 'All Businesses';
+                }
+            }
+        }
+        
+        // Search functionality
+        function performSearch() {
+            const businessName = document.getElementById('businessNameSearch').value;
+            const location = document.getElementById('locationSearch').value;
+            const category = document.getElementById('categorySearch').value;
+            
+            // Update dynamic headings
+            updateDynamicHeadings(businessName, location, category);
+            
+            // Show advanced controls after search
+            const advancedControls = document.getElementById('advancedControls');
+            if (advancedControls) {
+                advancedControls.classList.remove('hidden');
+            }
+            
+            // Update results count (simulate filtering)
+            const resultsCount = document.getElementById('resultsCount');
+            if (resultsCount) {
+                const baseCount = 12;
+                let filteredCount = baseCount;
+                
+                if (businessName) filteredCount = Math.max(3, Math.floor(filteredCount * 0.6));
+                if (location) filteredCount = Math.max(2, Math.floor(filteredCount * 0.7));
+                if (category) filteredCount = Math.max(1, Math.floor(filteredCount * 0.5));
+                
+                resultsCount.textContent = `${filteredCount} businesses found`;
+            }
+        }
+        
+        // Near Me functionality
+        function findNearMe() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    // Simulate location-based results
+                    updateDynamicHeadings('', 'your area', '');
+                    const resultsCount = document.getElementById('resultsCount');
+                    if (resultsCount) {
+                        resultsCount.textContent = '8 businesses found near you';
+                    }
+                    
+                    // Show advanced controls
+                    const advancedControls = document.getElementById('advancedControls');
+                    if (advancedControls) {
+                        advancedControls.classList.remove('hidden');
+                    }
+                }, function(error) {
+                    alert('Unable to get your location. Please enter your postcode manually.');
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        }
+        
+        // Initialize search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavVisibility();
+            
+            // Add event listeners
+            const searchBtn = document.getElementById('searchBtn');
+            const nearMeBtn = document.getElementById('nearMeBtn');
+            
+            if (searchBtn) {
+                searchBtn.addEventListener('click', performSearch);
+            }
+            
+            if (nearMeBtn) {
+                nearMeBtn.addEventListener('click', findNearMe);
+            }
+            
+            // Add enter key support for search inputs
+            const searchInputs = document.querySelectorAll('#businessNameSearch, #locationSearch');
+            searchInputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+            });
+
+            // Add real-time search functionality
+            document.getElementById('businessNameSearch').addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                const businessData = window.businessManager.getBusinesses();
+                
+                if (query.length > 0) {
+                    hasSearched = true;
+                    showAdvancedControls();
+                    
+                    const filteredBusinesses = businessData.filter(business => 
+                        business.name.toLowerCase().includes(query) ||
+                        business.category.toLowerCase().includes(query) ||
+                        business.location.toLowerCase().includes(query)
+                    );
+                    
+                    displaySearchResults(filteredBusinesses);
+                } else {
+                    hideAdvancedControls();
+                    displaySearchResults(businessData);
+                }
+            });
+
+            // Mobile view toggle functionality
+            const listViewBtn = document.getElementById('listViewBtn');
+            const mapViewBtn = document.getElementById('mapViewBtn');
+            const mobileListView = document.getElementById('mobileListView');
+            const mobileMapView = document.getElementById('mobileMapView');
+
+            if (listViewBtn && mapViewBtn && mobileListView && mobileMapView) {
+                listViewBtn.addEventListener('click', function() {
+                    // Switch to list view
+                    mobileListView.classList.remove('hidden');
+                    mobileMapView.classList.add('hidden');
+                    
+                    // Update button styles
+                    listViewBtn.classList.add('bg-gold', 'text-black');
+                    listViewBtn.classList.remove('text-white', 'hover:bg-gold', 'hover:text-black');
+                    mapViewBtn.classList.remove('bg-gold', 'text-black');
+                    mapViewBtn.classList.add('text-white', 'hover:bg-gold', 'hover:text-black');
+                });
+
+                mapViewBtn.addEventListener('click', function() {
+                    // Switch to map view
+                    mobileListView.classList.add('hidden');
+                    mobileMapView.classList.remove('hidden');
+                    
+                    // Update button styles
+                    mapViewBtn.classList.add('bg-gold', 'text-black');
+                    mapViewBtn.classList.remove('text-white', 'hover:bg-gold', 'hover:text-black');
+                    listViewBtn.classList.remove('bg-gold', 'text-black');
+                    listViewBtn.classList.add('text-white', 'hover:bg-gold', 'hover:text-black');
+                });
+            }
+
+            // Show filter controls when user starts typing in location
+            document.getElementById('locationSearch').addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    showAdvancedControls();
+                }
+            });
+
+            // Update filters when user changes them
+            document.getElementById('categorySearch').addEventListener('change', function() {
+                currentFilters.category = this.value;
+                applyFilters();
+            });
+
+            document.getElementById('ratingFilter').addEventListener('change', function() {
+                currentFilters.rating = this.value;
+                applyFilters();
+            });
+
+            document.getElementById('distanceFilter').addEventListener('change', function() {
+                currentFilters.distance = this.value;
+                applyFilters();
+            });
+
+            // Add sort functionality
+            const sortBySelect = document.getElementById('sortBySelect');
+            if (sortBySelect) {
+                sortBySelect.addEventListener('change', function() {
+                    currentFilters.sortBy = this.value;
+                    applyFilters();
+                });
+            }
+        });
+
+        // Handle Book Now button clicks - redirect to business profile
+        function goToBusinessProfile(businessId) {
+            // Redirect to business profile page where customers can add services
+            window.location.href = `business-profile.html?business=${businessId}`;
+        }
+
+        // Redirect to login page with return URL
+        function redirectToLogin() {
+            console.log('redirectToLogin function called');
+            // Store current page URL for redirect after login
+            const currentUrl = window.location.href;
+            localStorage.setItem('returnUrl', currentUrl);
+            console.log('Return URL stored:', currentUrl);
+            console.log('Return URL in localStorage:', localStorage.getItem('returnUrl'));
+            // Navigate to login page
+            window.location.href = 'customer-login.html';
+        }
+
+        // Redirect to register page with return URL
+        function redirectToRegister() {
+            // Store current page URL for redirect after registration
+            localStorage.setItem('returnUrl', window.location.href);
+            // Navigate to register page
+            window.location.href = 'customer-register.html';
+        }
+    </script>
+    
+    <!-- Footer -->
+    <footer class="bg-charcoal border-t border-white/10 py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div class="flex items-center space-x-6">
+                    <a href="blog.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300">Blog</a>
+                    <a href="terms.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300">Terms & Conditions</a>
+                    <a href="privacy.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300">Privacy Policy</a>
+                </div>
+                <div class="text-text-secondary text-sm">
+                    © 2024 BlkPages. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
