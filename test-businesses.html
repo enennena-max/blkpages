@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Business Placeholders - BlkPages</title>
+    <link href="css/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=2">
+    <script src="business-manager.js"></script>
+</head>
+<body class="bg-charcoal text-white font-inter p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-white mb-8">Business Placeholders Test</h1>
+        
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold text-white mb-4">Business Statistics</h2>
+            <div id="businessStats" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <!-- Stats will be populated here -->
+            </div>
+        </div>
+        
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold text-white mb-4">All Businesses (8 total)</h2>
+            <div id="businessList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Businesses will be populated here -->
+            </div>
+        </div>
+        
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold text-white mb-4">Pagination Test (6 per page)</h2>
+            <div id="paginationTest" class="space-y-4">
+                <!-- Pagination test will be shown here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize business manager
+        const businessManager = new BusinessManager();
+        
+        // Get all businesses
+        const businesses = businessManager.getBusinesses();
+        
+        // Display statistics
+        function displayStats() {
+            const stats = {
+                total: businesses.length,
+                professional: businesses.filter(b => b.subscription === 'professional').length,
+                starter: businesses.filter(b => b.subscription === 'starter').length,
+                free: businesses.filter(b => b.subscription === 'free').length
+            };
+            
+            document.getElementById('businessStats').innerHTML = `
+                <div class="bg-dark-grey rounded-lg p-4 border border-white/10">
+                    <h3 class="text-lg font-semibold text-white mb-2">Total Businesses</h3>
+                    <p class="text-3xl font-bold text-gold">${stats.total}</p>
+                </div>
+                <div class="bg-dark-grey rounded-lg p-4 border border-white/10">
+                    <h3 class="text-lg font-semibold text-white mb-2">Professional</h3>
+                    <p class="text-3xl font-bold text-purple-400">${stats.professional}</p>
+                </div>
+                <div class="bg-dark-grey rounded-lg p-4 border border-white/10">
+                    <h3 class="text-lg font-semibold text-white mb-2">Starter</h3>
+                    <p class="text-3xl font-bold text-blue-400">${stats.starter}</p>
+                </div>
+                <div class="bg-dark-grey rounded-lg p-4 border border-white/10">
+                    <h3 class="text-lg font-semibold text-white mb-2">Free/Basic</h3>
+                    <p class="text-3xl font-bold text-gray-400">${stats.free}</p>
+                </div>
+            `;
+        }
+        
+        // Display all businesses
+        function displayBusinesses() {
+            const businessList = document.getElementById('businessList');
+            businessList.innerHTML = businesses.map(business => {
+                const tier = business.subscription === 'professional' ? 'Professional' : 
+                           business.subscription === 'starter' ? 'Starter' : 'Basic';
+                const tierColor = business.subscription === 'professional' ? 'purple' : 
+                                 business.subscription === 'starter' ? 'blue' : 'gray';
+                
+                return `
+                    <div class="bg-dark-grey rounded-lg p-4 border border-white/10">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-semibold text-white">${business.name}</h3>
+                            <span class="px-2 py-1 rounded-full text-xs font-medium bg-${tierColor}-500/20 text-${tierColor}-400 border border-${tierColor}-500/30">
+                                ${tier}
+                            </span>
+                        </div>
+                        <p class="text-light-grey text-sm mb-2">${business.category}</p>
+                        <p class="text-light-grey text-sm">${business.location}</p>
+                        <div class="mt-2 flex items-center">
+                            <span class="text-gold text-sm">${business.rating || 0} ⭐</span>
+                            <span class="text-light-grey text-sm ml-2">(${business.reviews || 0} reviews)</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Test pagination
+        function testPagination() {
+            const businessesPerPage = 6;
+            const totalPages = Math.ceil(businesses.length / businessesPerPage);
+            
+            document.getElementById('paginationTest').innerHTML = `
+                <div class="bg-dark-grey rounded-lg p-4 border border-white/10">
+                    <h3 class="text-lg font-semibold text-white mb-2">Pagination Test</h3>
+                    <p class="text-light-grey mb-2">Total businesses: ${businesses.length}</p>
+                    <p class="text-light-grey mb-2">Businesses per page: ${businessesPerPage}</p>
+                    <p class="text-light-grey mb-2">Total pages: ${totalPages}</p>
+                    <div class="mt-4">
+                        <h4 class="text-white font-semibold mb-2">Page 1 (first 6 businesses):</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            ${businesses.slice(0, 6).map(business => `
+                                <div class="bg-white/5 rounded p-2 text-sm">
+                                    <span class="text-white font-medium">${business.name}</span>
+                                    <span class="text-light-grey ml-2">(${business.subscription})</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ${totalPages > 1 ? `
+                    <div class="mt-4">
+                        <h4 class="text-white font-semibold mb-2">Page 2 (remaining businesses):</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            ${businesses.slice(6).map(business => `
+                                <div class="bg-white/5 rounded p-2 text-sm">
+                                    <span class="text-white font-medium">${business.name}</span>
+                                    <span class="text-light-grey ml-2">(${business.subscription})</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        // Initialize the test
+        displayStats();
+        displayBusinesses();
+        testPagination();
+        
+        console.log('Business data loaded:', businesses);
+        console.log('Business tiers:', businesses.map(b => ({ name: b.name, tier: b.subscription })));
+    </script>
+</body>
+</html>
+
+
+
+
+
+
