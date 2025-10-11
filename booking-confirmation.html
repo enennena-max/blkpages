@@ -531,14 +531,21 @@
         function createBusinessNotification() {
             if (!bookingData) return;
             
-            // Encrypt customer PII before sending to business dashboard
-            const encryptedCustomerData = window.BookingEncryption.encryptCustomerPII(bookingData.customer);
-            
-            // Create secure booking summary for business dashboard
-            const secureBookingSummary = window.BookingEncryption.createSecureBookingSummary({
-                ...bookingData,
-                customer: encryptedCustomerData
+            // Encrypt complete booking data before sending to dashboard
+            const encryptedBooking = window.BookingEncryption.encryptBookingData({
+                customerName: `${bookingData.customer.firstName} ${bookingData.customer.lastName}`,
+                email: bookingData.customer.email,
+                phone: bookingData.customer.phone,
+                address: `${bookingData.customer.addressLine1}, ${bookingData.customer.city}, ${bookingData.customer.postcode}`,
+                service: bookingData.service.name,
+                time: `${bookingData.date} at ${bookingData.time}`,
+                notes: bookingData.specialRequests || '',
+                total: bookingData.total,
+                confirmationNumber: bookingData.confirmationNumber
             });
+            
+            // Send encrypted booking to dashboard
+            sendToDashboard(encryptedBooking);
             
             // Create notification object with encrypted data
             const notification = {
@@ -551,7 +558,7 @@
                     time: bookingData.time,
                     price: `£${bookingData.total}`
                 },
-                encryptedBookingData: window.BookingEncryption.encryptBookingData(secureBookingSummary),
+                encryptedBookingData: encryptedBooking,
                 createdAt: new Date().toISOString(),
                 viewed: false,
                 businessId: 'royal-hair-studio'
@@ -565,6 +572,52 @@
             localStorage.setItem('notification_logs', JSON.stringify(existingLogs));
             
             console.log('🔒 Encrypted business notification created for new booking:', notification);
+        }
+
+        // Send encrypted booking data to dashboard
+        function sendToDashboard(encryptedBooking) {
+            try {
+                const bookingId = 'bk_' + Date.now().toString().padStart(5, '0');
+                
+                // Create transmission record
+                const transmission = {
+                    type: "Encrypted Booking Transmission",
+                    channel: "SYSTEM",
+                    status: "SENT",
+                    metadata: {
+                        bookingId: bookingId,
+                        encrypted: true,
+                        readableFields: ["service", "date", "time", "price"],
+                        encryptedFields: ["customerName", "email", "phone", "address", "notes"],
+                        transmissionId: 'tx_' + Date.now(),
+                        timestamp: new Date().toISOString()
+                    }
+                };
+                
+                // Store transmission log
+                const transmissionLogs = JSON.parse(localStorage.getItem('transmission_logs') || '[]');
+                transmissionLogs.push(transmission);
+                localStorage.setItem('transmission_logs', JSON.stringify(transmissionLogs));
+                
+                // Store encrypted booking data
+                const dashboardBookings = JSON.parse(localStorage.getItem('dashboard_bookings') || '[]');
+                dashboardBookings.push({
+                    id: bookingId,
+                    encryptedData: encryptedBooking,
+                    transmissionId: transmission.metadata.transmissionId,
+                    receivedAt: new Date().toISOString(),
+                    status: 'new',
+                    readableFields: transmission.metadata.readableFields,
+                    encryptedFields: transmission.metadata.encryptedFields
+                });
+                
+                localStorage.setItem('dashboard_bookings', JSON.stringify(dashboardBookings));
+                
+                console.log('📤 Encrypted booking transmission sent:', transmission);
+                console.log('🔒 Booking ID:', bookingId, '- Encrypted fields:', transmission.metadata.encryptedFields);
+            } catch (error) {
+                console.error('❌ Failed to send booking to dashboard:', error);
+            }
         }
     </script>
 </body>

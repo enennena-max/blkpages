@@ -4808,6 +4808,18 @@ Refunds: Refunds (where applicable) will be processed back to your original paym
                 </div>
             </div>
             
+            <!-- Transmission Logs -->
+            <div class="transmission-logs-section">
+                <h3>Transmission Logs</h3>
+                <p class="text-sm text-gray-600 mb-4">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    Encrypted booking transmissions and data privacy logs
+                </p>
+                <div id="transmissionLogs">
+                    <!-- Transmission logs will be loaded here -->
+                </div>
+            </div>
+            
             <!-- Booking Changes History -->
             <div class="booking-changes-history">
                 <h3>Recent Changes</h3>
@@ -6534,6 +6546,253 @@ Refunds are returned to your original payment method within 5–10 business days
             });
         }
 
+        // Display masked booking information in dashboard bookings section
+        function displayMaskedBookings() {
+            const dashboardBookings = JSON.parse(localStorage.getItem('dashboard_bookings') || '[]');
+            const bookingsContainer = document.getElementById('currentBookingsTable');
+            
+            if (!bookingsContainer) return;
+            
+            if (dashboardBookings.length === 0) {
+                bookingsContainer.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-8 text-gray-500">
+                            No bookings yet. Bookings will appear here when customers make appointments.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            let bookingsHTML = '';
+            dashboardBookings.forEach(booking => {
+                try {
+                    const decryptedData = decryptBookingForDashboard(booking.encryptedData);
+                    const maskedInfo = maskCustomerData(decryptedData);
+                    
+                    bookingsHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">${maskedInfo.name}</div>
+                                <div class="text-sm text-gray-500">${maskedInfo.email}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                ${decryptedData.service || 'N/A'}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                ${decryptedData.time || 'N/A'}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                £${decryptedData.total || '0'}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    ${booking.status || 'New'}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <button onclick="viewBookingDetails('${booking.id}')" class="text-blue-600 hover:text-blue-900">
+                                    View Details
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                } catch (error) {
+                    console.error('Error displaying booking:', error);
+                }
+            });
+            
+            bookingsContainer.innerHTML = bookingsHTML;
+        }
+
+        // View booking details with masked information
+        function viewBookingDetails(bookingId) {
+            const dashboardBookings = JSON.parse(localStorage.getItem('dashboard_bookings') || '[]');
+            const booking = dashboardBookings.find(b => b.id === bookingId);
+            
+            if (!booking) {
+                alert('Booking not found');
+                return;
+            }
+            
+            try {
+                const decryptedData = decryptBookingForDashboard(booking.encryptedData);
+                const maskedInfo = maskCustomerData(decryptedData);
+                
+                const detailsHTML = `
+                    <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" onclick="closeBookingModal()">
+                        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white" onclick="event.stopPropagation()">
+                            <div class="mt-3">
+                                <h3 class="text-lg font-medium text-gray-900 mb-4">Booking Details</h3>
+                                
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Service</label>
+                                        <p class="text-sm text-gray-900">${decryptedData.service || 'N/A'}</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Date & Time</label>
+                                        <p class="text-sm text-gray-900">${decryptedData.time || 'N/A'}</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Total</label>
+                                        <p class="text-sm text-gray-900">£${decryptedData.total || '0'}</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Customer Name</label>
+                                        <p class="text-sm text-gray-900">${maskedInfo.name}</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Email</label>
+                                        <p class="text-sm text-gray-900">${maskedInfo.email}</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Phone</label>
+                                        <p class="text-sm text-gray-900">${maskedInfo.phone}</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Address</label>
+                                        <p class="text-sm text-gray-900">${maskedInfo.address}</p>
+                                    </div>
+                                    
+                                    ${decryptedData.notes ? `
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Notes</label>
+                                        <p class="text-sm text-gray-900">${decryptedData.notes}</p>
+                                    </div>
+                                    ` : ''}
+                                </div>
+                                
+                                <div class="mt-4 p-3 bg-yellow-50 rounded-md">
+                                    <p class="text-xs text-yellow-800">
+                                        <i class="fas fa-lock mr-1"></i>
+                                        Full contact details are encrypted. Use the secure contact system to reach customers.
+                                    </p>
+                                    <p class="text-xs text-gray-500 italic mt-2">
+                                        BlkPages relays messages securely. Customer contact details remain private.
+                                    </p>
+                                </div>
+                                
+                                <div class="mt-4 flex justify-end space-x-2">
+                                    <button onclick="closeBookingModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                                        Close
+                                    </button>
+                                    <button onclick="contactCustomer('${bookingId}')" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                        Contact Customer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', detailsHTML);
+            } catch (error) {
+                console.error('Error viewing booking details:', error);
+                alert('Error loading booking details');
+            }
+        }
+
+        // Close booking modal
+        function closeBookingModal() {
+            const modal = document.querySelector('.fixed.inset-0.bg-gray-600');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Contact customer through secure system
+        function contactCustomer(bookingId) {
+            alert('Secure contact system would open here. This would allow you to contact the customer without exposing their full details.');
+            closeBookingModal();
+        }
+
+        // Display transmission logs
+        function displayTransmissionLogs() {
+            const transmissionLogs = JSON.parse(localStorage.getItem('transmission_logs') || '[]');
+            const logsContainer = document.getElementById('transmissionLogs');
+            
+            if (!logsContainer) return;
+            
+            if (transmissionLogs.length === 0) {
+                logsContainer.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        No transmission logs yet. Logs will appear here when bookings are processed.
+                    </div>
+                `;
+                return;
+            }
+            
+            let logsHTML = '';
+            transmissionLogs.forEach(log => {
+                const statusColor = log.status === 'SENT' ? 'bg-green-100 text-green-800' : 
+                                  log.status === 'RECEIVED' ? 'bg-blue-100 text-blue-800' : 
+                                  'bg-gray-100 text-gray-800';
+                
+                logsHTML += `
+                    <div class="bg-white rounded-lg border border-gray-200 p-4 mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold text-gray-900">${log.type}</h4>
+                            <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColor}">
+                                ${log.status}
+                            </span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="font-medium text-gray-700">Channel:</span>
+                                <span class="text-gray-900 ml-1">${log.channel}</span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700">Booking ID:</span>
+                                <span class="text-gray-900 ml-1">${log.metadata.bookingId}</span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700">Transmission ID:</span>
+                                <span class="text-gray-900 ml-1 font-mono text-xs">${log.metadata.transmissionId}</span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700">Encrypted:</span>
+                                <span class="text-gray-900 ml-1">${log.metadata.encrypted ? 'Yes' : 'No'}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3 grid grid-cols-2 gap-4">
+                            <div>
+                                <span class="font-medium text-gray-700 text-sm">Readable Fields:</span>
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    ${log.metadata.readableFields.map(field => 
+                                        `<span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">${field}</span>`
+                                    ).join('')}
+                                </div>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700 text-sm">Encrypted Fields:</span>
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    ${log.metadata.encryptedFields.map(field => 
+                                        `<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">${field}</span>`
+                                    ).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3 text-xs text-gray-500">
+                            <i class="fas fa-clock mr-1"></i>
+                            ${new Date(log.metadata.timestamp).toLocaleString()}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            logsContainer.innerHTML = logsHTML;
+        }
+
         // Decrypt and display booking data for business dashboard
         function decryptBookingForDashboard(encryptedBookingData) {
             try {
@@ -6557,17 +6816,32 @@ Refunds are returned to your original payment method within 5–10 business days
             if (notification.encryptedBookingData) {
                 const decryptedBooking = decryptBookingForDashboard(notification.encryptedBookingData);
                 
+                // Show masked customer information for privacy
+                const maskedCustomerInfo = maskCustomerData(decryptedBooking);
+                
                 // Show decrypted booking details in a secure modal or section
                 const bookingInfo = `
                     <div class="secure-booking-info">
-                        <h4>Booking Details (Decrypted)</h4>
-                        <p><strong>Service:</strong> ${decryptedBooking.service?.name || 'N/A'}</p>
-                        <p><strong>Date:</strong> ${decryptedBooking.date || 'N/A'}</p>
-                        <p><strong>Time:</strong> ${decryptedBooking.time || 'N/A'}</p>
+                        <h4>Booking Details</h4>
+                        <p><strong>Service:</strong> ${decryptedBooking.service || 'N/A'}</p>
+                        <p><strong>Date & Time:</strong> ${decryptedBooking.time || 'N/A'}</p>
                         <p><strong>Total:</strong> £${decryptedBooking.total || '0'}</p>
-                        <p><strong>Customer:</strong> ${decryptedBooking.customerInitials || 'N/A'}</p>
+                        <p><strong>Confirmation:</strong> ${decryptedBooking.confirmationNumber || 'N/A'}</p>
+                        
+                        <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                            <h5 class="font-semibold text-gray-800 mb-2">Customer Information (Masked)</h5>
+                            <p><strong>Name:</strong> ${maskedCustomerInfo.name}</p>
+                            <p><strong>Email:</strong> ${maskedCustomerInfo.email}</p>
+                            <p><strong>Phone:</strong> ${maskedCustomerInfo.phone}</p>
+                            <p><strong>Address:</strong> ${maskedCustomerInfo.address}</p>
+                            ${decryptedBooking.notes ? `<p><strong>Notes:</strong> ${decryptedBooking.notes}</p>` : ''}
+                        </div>
+                        
                         <p class="text-xs text-gray-500 italic mt-2">
-                            Customer contact information is encrypted and only accessible through secure dashboard interface.
+                            Full contact details are encrypted. Use the secure contact system to reach customers.
+                        </p>
+                        <p class="text-xs text-gray-500 italic">
+                            BlkPages relays messages securely. Customer contact details remain private.
                         </p>
                     </div>
                 `;
@@ -6576,6 +6850,36 @@ Refunds are returned to your original payment method within 5–10 business days
             }
             
             return '<p>No encrypted booking data available</p>';
+        }
+
+        // Mask customer data for privacy protection
+        function maskCustomerData(bookingData) {
+            const customerName = bookingData.customerName || '';
+            const email = bookingData.email || '';
+            const phone = bookingData.phone || '';
+            
+            // Mask name (show first name + last initial)
+            const nameParts = customerName.split(' ');
+            const maskedName = nameParts.length > 1 
+                ? `${nameParts[0]} ${nameParts[1].charAt(0)}.`
+                : customerName;
+            
+            // Mask email (show first 3 chars + domain)
+            const maskedEmail = email.includes('@') 
+                ? email.replace(/(.{3}).*(@.*)/, '$1***$2')
+                : email;
+            
+            // Mask phone (show country code + last 4 digits)
+            const maskedPhone = phone.length > 4 
+                ? phone.replace(/(.{3}).*(.{4})/, '$1****$2')
+                : phone;
+            
+            return {
+                name: maskedName,
+                email: maskedEmail,
+                phone: maskedPhone,
+                address: "Encrypted – visible only on contact via system"
+            };
         }
 
         // Get notification logs from localStorage
@@ -6636,6 +6940,8 @@ Refunds are returned to your original payment method within 5–10 business days
         // Initialize bookings on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadBusinessBookings();
+            displayMaskedBookings(); // Display encrypted bookings with masked data
+            displayTransmissionLogs(); // Display transmission logs
             
             // Check for new bookings when dashboard loads
             setTimeout(() => {

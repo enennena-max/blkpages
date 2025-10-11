@@ -508,6 +508,146 @@
                 padding: 1rem;
             }
         }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .modal-header h3 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .close {
+            color: #cccccc;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #1E90FF;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #1E90FF;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1E90FF;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-danger {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #1E90FF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #007bff;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -677,13 +817,14 @@
                 <h2 class="bookings-title">Recent Bookings</h2>
                 
                 <!-- Booking 1 -->
-                <div class="booking-card">
+                <div class="booking-card" data-booking-id="bk_001">
                     <div class="booking-header">
                         <div class="booking-customer">
                             <div class="customer-avatar">SJ</div>
                             <div class="customer-info">
-                                <h4>Sarah Johnson</h4>
-                                <p>sarah.johnson@email.com • 07123 456789</p>
+                                <h4>Sarah J.</h4>
+                                <p>sar***@gmail.com • +44 **** 6789</p>
+                                <small class="text-gray-400">Customer details encrypted for privacy</small>
                             </div>
                         </div>
                         <span class="booking-status status-confirmed">Confirmed</span>
@@ -709,29 +850,30 @@
                     </div>
                     
                     <div class="booking-actions">
-                        <button class="action-btn success">
+                        <button class="action-btn success" onclick="completeBooking('bk_001')">
                             <i class="fas fa-check"></i> Complete
                         </button>
-                        <button class="action-btn">
-                            <i class="fas fa-edit"></i> Edit
+                        <button class="action-btn" onclick="contactCustomer('bk_001')">
+                            <i class="fas fa-envelope"></i> Contact
                         </button>
-                        <button class="action-btn warning">
+                        <button class="action-btn warning" onclick="openRescheduleForm('bk_001')">
                             <i class="fas fa-clock"></i> Reschedule
                         </button>
-                        <button class="action-btn danger">
+                        <button class="action-btn danger" onclick="openCancelForm('bk_001')">
                             <i class="fas fa-times"></i> Cancel
                         </button>
                     </div>
                 </div>
                 
                 <!-- Booking 2 -->
-                <div class="booking-card">
+                <div class="booking-card" data-booking-id="bk_002">
                     <div class="booking-header">
                         <div class="booking-customer">
                             <div class="customer-avatar">MB</div>
                             <div class="customer-info">
-                                <h4>Michael Brown</h4>
-                                <p>michael.brown@email.com • 07123 456789</p>
+                                <h4>Michael B.</h4>
+                                <p>mic***@email.com • +44 **** 7890</p>
+                                <small class="text-gray-400">Customer details encrypted for privacy</small>
                             </div>
                         </div>
                         <span class="booking-status status-pending">Pending</span>
@@ -757,16 +899,16 @@
                     </div>
                     
                     <div class="booking-actions">
-                        <button class="action-btn success">
+                        <button class="action-btn success" onclick="confirmBooking('bk_002')">
                             <i class="fas fa-check"></i> Confirm
                         </button>
-                        <button class="action-btn">
-                            <i class="fas fa-edit"></i> Edit
+                        <button class="action-btn" onclick="contactCustomer('bk_002')">
+                            <i class="fas fa-envelope"></i> Contact
                         </button>
-                        <button class="action-btn warning">
+                        <button class="action-btn warning" onclick="openRescheduleForm('bk_002')">
                             <i class="fas fa-clock"></i> Reschedule
                         </button>
-                        <button class="action-btn danger">
+                        <button class="action-btn danger" onclick="openCancelForm('bk_002')">
                             <i class="fas fa-times"></i> Reject
                         </button>
                     </div>
@@ -869,6 +1011,9 @@
                 Messages sent through BlkPages are delivered directly to customers. 
                 BlkPages does not monitor or store conversation content.
             </p>
+            <p style="text-align: center; font-size: 0.75rem; color: #9CA3AF; font-style: italic; margin: 0.5rem 0 0 0;">
+                BlkPages relays messages securely. Customer contact details remain private.
+            </p>
         </div>
     </div>
     
@@ -878,6 +1023,125 @@
             <p>&copy; 2024 BLKPAGES. All rights reserved.</p>
         </div>
     </footer>
+    
+    <!-- Reschedule Booking Modal -->
+    <div id="rescheduleModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reschedule Booking</h3>
+                <span class="close" onclick="closeRescheduleModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="rescheduleForm">
+                    <input type="hidden" id="rescheduleBookingId">
+                    <div class="form-group">
+                        <label>New Date</label>
+                        <input type="date" id="newDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>New Time</label>
+                        <select id="newTime" required>
+                            <option value="">Select time</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                            <option value="17:00">5:00 PM</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Reason for Reschedule</label>
+                        <textarea id="rescheduleReason" placeholder="Optional reason for rescheduling..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" onclick="closeRescheduleModal()">Cancel</button>
+                        <button type="submit" class="btn-primary">Reschedule Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Booking Modal -->
+    <div id="cancelModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cancel Booking</h3>
+                <span class="close" onclick="closeCancelModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="cancelForm">
+                    <input type="hidden" id="cancelBookingId">
+                    <div class="form-group">
+                        <label>Reason for Cancellation</label>
+                        <select id="cancelReason" required>
+                            <option value="">Select reason</option>
+                            <option value="customer_request">Customer Request</option>
+                            <option value="business_unavailable">Business Unavailable</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="weather">Weather Conditions</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Notes</label>
+                        <textarea id="cancelNotes" placeholder="Additional details about the cancellation..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="notifyCustomer" checked>
+                            Notify customer via email
+                        </label>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" onclick="closeCancelModal()">Cancel</button>
+                        <button type="submit" class="btn-danger">Cancel Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Customer Modal -->
+    <div id="contactModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Contact Customer</h3>
+                <span class="close" onclick="closeContactModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="contactForm">
+                    <input type="hidden" id="contactBookingId">
+                    <div class="form-group">
+                        <label>Message Type</label>
+                        <select id="messageType" required>
+                            <option value="">Select type</option>
+                            <option value="reminder">Booking Reminder</option>
+                            <option value="confirmation">Confirmation</option>
+                            <option value="change">Schedule Change</option>
+                            <option value="general">General Message</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" id="messageSubject" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea id="messageContent" rows="4" required></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" onclick="closeContactModal()">Cancel</button>
+                        <button type="submit" class="btn-primary">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     
     <script>
         // Simple counter animation for stat numbers
@@ -931,6 +1195,119 @@
             dateFilter.addEventListener('change', applyFilters);
             serviceFilter.addEventListener('change', applyFilters);
             sortFilter.addEventListener('change', applyFilters);
+        });
+
+        // Booking Management Functions
+        function openRescheduleForm(bookingId) {
+            document.getElementById('rescheduleBookingId').value = bookingId;
+            document.getElementById('rescheduleModal').style.display = 'flex';
+        }
+
+        function closeRescheduleModal() {
+            document.getElementById('rescheduleModal').style.display = 'none';
+            document.getElementById('rescheduleForm').reset();
+        }
+
+        function openCancelForm(bookingId) {
+            document.getElementById('cancelBookingId').value = bookingId;
+            document.getElementById('cancelModal').style.display = 'flex';
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancelModal').style.display = 'none';
+            document.getElementById('cancelForm').reset();
+        }
+
+        function openContactModal(bookingId) {
+            document.getElementById('contactBookingId').value = bookingId;
+            document.getElementById('contactModal').style.display = 'flex';
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+            document.getElementById('contactForm').reset();
+        }
+
+        // Form submission handlers
+        document.getElementById('rescheduleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const bookingId = document.getElementById('rescheduleBookingId').value;
+            const newDate = document.getElementById('newDate').value;
+            const newTime = document.getElementById('newTime').value;
+            const reason = document.getElementById('rescheduleReason').value;
+
+            // Simulate API call
+            console.log('Rescheduling booking:', { bookingId, newDate, newTime, reason });
+            
+            // Show success message
+            alert('Booking rescheduled successfully! Customer will be notified.');
+            
+            // Close modal and refresh data
+            closeRescheduleModal();
+            // In a real app, you would refresh the bookings list here
+        });
+
+        document.getElementById('cancelForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const bookingId = document.getElementById('cancelBookingId').value;
+            const reason = document.getElementById('cancelReason').value;
+            const notes = document.getElementById('cancelNotes').value;
+            const notifyCustomer = document.getElementById('notifyCustomer').checked;
+
+            // Simulate API call
+            console.log('Cancelling booking:', { bookingId, reason, notes, notifyCustomer });
+            
+            // Show success message
+            alert('Booking cancelled successfully! Customer will be notified.');
+            
+            // Close modal and refresh data
+            closeCancelModal();
+            // In a real app, you would refresh the bookings list here
+        });
+
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const bookingId = document.getElementById('contactBookingId').value;
+            const messageType = document.getElementById('messageType').value;
+            const subject = document.getElementById('messageSubject').value;
+            const content = document.getElementById('messageContent').value;
+
+            // Simulate API call
+            console.log('Sending message:', { bookingId, messageType, subject, content });
+            
+            // Show success message
+            alert('Message sent successfully!');
+            
+            // Close modal
+            closeContactModal();
+        });
+
+        // Booking action functions
+        function completeBooking(bookingId) {
+            if (confirm('Mark this booking as completed?')) {
+                console.log('Completing booking:', bookingId);
+                alert('Booking marked as completed!');
+                // In a real app, you would update the booking status here
+            }
+        }
+
+        function confirmBooking(bookingId) {
+            if (confirm('Confirm this booking?')) {
+                console.log('Confirming booking:', bookingId);
+                alert('Booking confirmed! Customer will be notified.');
+                // In a real app, you would update the booking status here
+            }
+        }
+
+        function contactCustomer(bookingId) {
+            openContactModal(bookingId);
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
         });
     </script>
 </body>
