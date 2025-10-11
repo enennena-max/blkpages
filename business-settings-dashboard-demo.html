@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Settings Dashboard - BlkPages</title>
+    <link rel="stylesheet" href="frontend/src/components/BusinessSettingsDashboard.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .demo-header {
+            background: linear-gradient(135deg, #1E90FF, #9c27b0);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .demo-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .demo-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .demo-controls {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-bottom: 1px solid #444444;
+        }
+        
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .control-group {
+            background: #333333;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid #555555;
+        }
+        
+        .control-group h3 {
+            margin: 0 0 1rem 0;
+            color: #1E90FF;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #cccccc;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #444444;
+            border: 1px solid #666666;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1E90FF;
+            box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1E90FF, #0066cc);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30, 144, 255, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-connected {
+            background: #28a745;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-disconnected {
+            background: #dc3545;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .demo-stats {
+            background: #2a2a2a;
+            padding: 1rem;
+            border-bottom: 1px solid #444444;
+            text-align: center;
+        }
+        
+        .demo-stats p {
+            margin: 0;
+            color: #cccccc;
+        }
+        
+        .demo-stats strong {
+            color: #1E90FF;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>Business Settings Dashboard</h1>
+        <p>Live settings management with real-time updates and form validation</p>
+    </div>
+    
+    <div class="demo-controls">
+        <div class="controls-grid">
+            <!-- WebSocket Status -->
+            <div class="control-group">
+                <h3>🔌 WebSocket Connection</h3>
+                <p>
+                    <span id="ws-status" class="status-indicator status-disconnected"></span>
+                    <span id="ws-text">Disconnected</span>
+                </p>
+                <button id="connect-ws" class="btn btn-primary">Connect WebSocket</button>
+                <button id="disconnect-ws" class="btn btn-warning">Disconnect</button>
+            </div>
+            
+            <!-- Load Sample Data -->
+            <div class="control-group">
+                <h3>📊 Sample Data</h3>
+                <p>Load sample business settings for testing</p>
+                <button id="load-sample" class="btn btn-success">Load Sample Settings</button>
+                <button id="clear-settings" class="btn btn-warning">Clear Settings</button>
+            </div>
+            
+            <!-- Test Notifications -->
+            <div class="control-group">
+                <h3>🔔 Test Notifications</h3>
+                <p>Test the notification system</p>
+                <button id="test-success" class="btn btn-success">Success Notification</button>
+                <button id="test-error" class="btn btn-warning">Error Notification</button>
+                <button id="test-info" class="btn btn-primary">Info Notification</button>
+            </div>
+            
+            <!-- Test Validation -->
+            <div class="control-group">
+                <h3>✅ Test Validation</h3>
+                <p>Test form validation</p>
+                <button id="test-validation" class="btn btn-warning">Test Empty Fields</button>
+                <button id="test-email" class="btn btn-warning">Test Invalid Email</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="demo-stats">
+        <p>Business ID: <strong id="business-id">royal-hair-studio</strong> | 
+           Package: <strong id="package-type">Free</strong> | 
+           Last Updated: <strong id="last-updated">Never</strong></p>
+    </div>
+    
+    <!-- Settings Dashboard Component -->
+    <div id="settings-dashboard"></div>
+    
+    <!-- React and Component Scripts -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // Business Settings Dashboard Component
+        const BusinessSettingsDashboard = () => {
+            const [settings, setSettings] = useState({
+                business_name: '',
+                description: '',
+                email: '',
+                phone: '',
+                address: '',
+                opening_hours: '',
+                instagram: '',
+                facebook: '',
+                website: '',
+                package_type: 'Free'
+            });
+            const [loading, setLoading] = useState(true);
+            const [saving, setSaving] = useState(false);
+            const [errors, setErrors] = useState({});
+            const [hasChanges, setHasChanges] = useState(false);
+            const [originalSettings, setOriginalSettings] = useState({});
+            
+            const businessId = 'royal-hair-studio';
+
+            // Fetch business settings
+            const fetchSettings = async () => {
+                try {
+                    const response = await fetch(`/api/businesses/${businessId}/settings`);
+                    const data = await response.json();
+                    setSettings(data);
+                    setOriginalSettings(data);
+                    setErrors({});
+                    
+                    // Update demo stats
+                    document.getElementById('package-type').textContent = data.package_type || 'Free';
+                    document.getElementById('last-updated').textContent = data.last_updated ? 
+                        new Date(data.last_updated).toLocaleString() : 'Never';
+                } catch (error) {
+                    console.error('Error fetching settings:', error);
+                    showNotification('Error loading settings', 'error');
+                }
+            };
+
+            // Show notification
+            const showNotification = (message, type = 'success') => {
+                const notification = document.createElement('div');
+                notification.className = `settings-notification ${type}`;
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <strong>${type === 'success' ? 'Success!' : type === 'error' ? 'Error!' : 'Info!'}</strong>
+                        <p>${message}</p>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            };
+
+            // Validate form
+            const validateForm = () => {
+                const newErrors = {};
+                
+                if (!settings.business_name.trim()) {
+                    newErrors.business_name = 'Business name is required';
+                }
+                
+                if (!settings.email.trim()) {
+                    newErrors.email = 'Email is required';
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(settings.email)) {
+                    newErrors.email = 'Please enter a valid email address';
+                }
+                
+                if (!settings.phone.trim()) {
+                    newErrors.phone = 'Phone number is required';
+                }
+                
+                setErrors(newErrors);
+                return Object.keys(newErrors).length === 0;
+            };
+
+            // Handle input change
+            const handleInputChange = (field, value) => {
+                setSettings(prev => ({
+                    ...prev,
+                    [field]: value
+                }));
+                
+                // Check if there are changes
+                const newSettings = { ...settings, [field]: value };
+                const hasChanges = JSON.stringify(newSettings) !== JSON.stringify(originalSettings);
+                setHasChanges(hasChanges);
+                
+                // Clear error for this field
+                if (errors[field]) {
+                    setErrors(prev => ({
+                        ...prev,
+                        [field]: ''
+                    }));
+                }
+            };
+
+            // Save settings
+            const saveSettings = async () => {
+                if (!validateForm()) {
+                    showNotification('Please fix the errors before saving', 'error');
+                    return;
+                }
+                
+                setSaving(true);
+                
+                try {
+                    const response = await fetch(`/api/businesses/${businessId}/settings`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(settings)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        setOriginalSettings(settings);
+                        setHasChanges(false);
+                        showNotification('Settings saved successfully!', 'success');
+                        
+                        // Update demo stats
+                        document.getElementById('last-updated').textContent = new Date().toLocaleString();
+                    } else {
+                        showNotification(data.error || 'Failed to save settings', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error saving settings:', error);
+                    showNotification('Error saving settings', 'error');
+                }
+                
+                setSaving(false);
+            };
+
+            // Reset form
+            const resetForm = () => {
+                if (confirm('Are you sure you want to discard your changes?')) {
+                    setSettings(originalSettings);
+                    setHasChanges(false);
+                    setErrors({});
+                }
+            };
+
+            useEffect(() => {
+                fetchSettings();
+            }, []);
+
+            if (loading) {
+                return React.createElement('div', { className: 'settings-dashboard' },
+                    React.createElement('div', { className: 'loading' }, 'Loading settings...')
+                );
+            }
+
+            return React.createElement('div', { className: 'settings-dashboard' },
+                React.createElement('div', { className: 'dashboard-header' },
+                    React.createElement('h1', null, 'Business Settings'),
+                    React.createElement('p', null, 'Manage your business information and preferences')
+                ),
+
+                // Package Notice
+                React.createElement('div', { className: 'package-notice' },
+                    React.createElement('div', { className: 'notice-content' },
+                        React.createElement('i', { className: 'fas fa-info-circle' }),
+                        React.createElement('div', null,
+                            React.createElement('strong', null, 'You are on the Free Package'),
+                            React.createElement('p', null, 'Upgrade to unlock advanced settings like staff management, payment preferences, and custom branding.')
+                        ),
+                        React.createElement('button', { className: 'btn btn-primary' }, 'Upgrade Now')
+                    )
+                ),
+
+                // Settings Form
+                React.createElement('div', { className: 'settings-form' },
+                    React.createElement('div', { className: 'form-section' },
+                        React.createElement('h3', null, 'Basic Information'),
+                        
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { htmlFor: 'business_name' }, 'Business Name *'),
+                            React.createElement('input', {
+                                type: 'text',
+                                id: 'business_name',
+                                value: settings.business_name,
+                                onChange: (e) => handleInputChange('business_name', e.target.value),
+                                className: errors.business_name ? 'error' : '',
+                                placeholder: 'Enter your business name'
+                            }),
+                            errors.business_name && React.createElement('span', { className: 'error-message' }, errors.business_name)
+                        ),
+                        
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { htmlFor: 'description' }, 'Business Description'),
+                            React.createElement('textarea', {
+                                id: 'description',
+                                value: settings.description,
+                                onChange: (e) => handleInputChange('description', e.target.value),
+                                rows: 3,
+                                placeholder: 'Describe your business and services'
+                            })
+                        )
+                    ),
+
+                    React.createElement('div', { className: 'form-section' },
+                        React.createElement('h3', null, 'Contact Information'),
+                        
+                        React.createElement('div', { className: 'form-row' },
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { htmlFor: 'email' }, 'Email Address *'),
+                                React.createElement('input', {
+                                    type: 'email',
+                                    id: 'email',
+                                    value: settings.email,
+                                    onChange: (e) => handleInputChange('email', e.target.value),
+                                    className: errors.email ? 'error' : '',
+                                    placeholder: 'info@yourbusiness.co.uk'
+                                }),
+                                errors.email && React.createElement('span', { className: 'error-message' }, errors.email)
+                            ),
+                            
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { htmlFor: 'phone' }, 'Phone Number *'),
+                                React.createElement('input', {
+                                    type: 'tel',
+                                    id: 'phone',
+                                    value: settings.phone,
+                                    onChange: (e) => handleInputChange('phone', e.target.value),
+                                    className: errors.phone ? 'error' : '',
+                                    placeholder: '020 1234 5678'
+                                }),
+                                errors.phone && React.createElement('span', { className: 'error-message' }, errors.phone)
+                            )
+                        ),
+                        
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { htmlFor: 'address' }, 'Business Address'),
+                            React.createElement('input', {
+                                type: 'text',
+                                id: 'address',
+                                value: settings.address,
+                                onChange: (e) => handleInputChange('address', e.target.value),
+                                placeholder: '123 High Street, London SE13'
+                            })
+                        )
+                    ),
+
+                    React.createElement('div', { className: 'form-section' },
+                        React.createElement('h3', null, 'Business Hours'),
+                        
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { htmlFor: 'opening_hours' }, 'Opening Hours'),
+                            React.createElement('input', {
+                                type: 'text',
+                                id: 'opening_hours',
+                                value: settings.opening_hours,
+                                onChange: (e) => handleInputChange('opening_hours', e.target.value),
+                                placeholder: 'Mon–Sat 9:00–18:00'
+                            }),
+                            React.createElement('small', null, 'Example: Mon–Sat 9:00–18:00, Sun 10:00–16:00')
+                        )
+                    ),
+
+                    React.createElement('div', { className: 'form-section' },
+                        React.createElement('h3', null, 'Social Media & Website'),
+                        
+                        React.createElement('div', { className: 'form-row' },
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { htmlFor: 'instagram' }, 'Instagram'),
+                                React.createElement('input', {
+                                    type: 'text',
+                                    id: 'instagram',
+                                    value: settings.instagram,
+                                    onChange: (e) => handleInputChange('instagram', e.target.value),
+                                    placeholder: '@yourbusiness'
+                                })
+                            ),
+                            
+                            React.createElement('div', { className: 'form-group' },
+                                React.createElement('label', { htmlFor: 'facebook' }, 'Facebook'),
+                                React.createElement('input', {
+                                    type: 'text',
+                                    id: 'facebook',
+                                    value: settings.facebook,
+                                    onChange: (e) => handleInputChange('facebook', e.target.value),
+                                    placeholder: 'facebook.com/yourbusiness'
+                                })
+                            )
+                        ),
+                        
+                        React.createElement('div', { className: 'form-group' },
+                            React.createElement('label', { htmlFor: 'website' }, 'Website'),
+                            React.createElement('input', {
+                                type: 'url',
+                                id: 'website',
+                                value: settings.website,
+                                onChange: (e) => handleInputChange('website', e.target.value),
+                                placeholder: 'https://www.yourbusiness.co.uk'
+                            })
+                        )
+                    ),
+
+                    // Form Actions
+                    React.createElement('div', { className: 'form-actions' },
+                        React.createElement('button', {
+                            type: 'button',
+                            className: 'btn btn-secondary',
+                            onClick: resetForm,
+                            disabled: !hasChanges || saving
+                        }, 'Reset'),
+                        React.createElement('button', {
+                            type: 'button',
+                            className: 'btn btn-primary',
+                            onClick: saveSettings,
+                            disabled: !hasChanges || saving
+                        }, saving ? 'Saving...' : 'Save Changes')
+                    )
+                ),
+
+                // Advanced Settings (Disabled for Free Package)
+                React.createElement('div', { className: 'advanced-settings' },
+                    React.createElement('h3', null, 'Advanced Settings'),
+                    React.createElement('div', { className: 'disabled-notice' },
+                        React.createElement('i', { className: 'fas fa-lock' }),
+                        React.createElement('p', null, 'Advanced settings are available with Starter or Professional packages')
+                    ),
+                    
+                    React.createElement('div', { className: 'disabled-features' },
+                        React.createElement('div', { className: 'feature-item' },
+                            React.createElement('i', { className: 'fas fa-users' }),
+                            React.createElement('span', null, 'Staff Management')
+                        ),
+                        React.createElement('div', { className: 'feature-item' },
+                            React.createElement('i', { className: 'fas fa-credit-card' }),
+                            React.createElement('span', null, 'Payment Preferences')
+                        ),
+                        React.createElement('div', { className: 'feature-item' },
+                            React.createElement('i', { className: 'fas fa-palette' }),
+                            React.createElement('span', null, 'Custom Branding')
+                        ),
+                        React.createElement('div', { className: 'feature-item' },
+                            React.createElement('i', { className: 'fas fa-bell' }),
+                            React.createElement('span', null, 'Notification Settings')
+                        )
+                    )
+                )
+            );
+        };
+
+        // Demo Controls
+        let ws = null;
+        
+        // WebSocket Controls
+        document.getElementById('connect-ws').addEventListener('click', () => {
+            if (ws) ws.close();
+            ws = new WebSocket('ws://localhost:5000');
+            
+            ws.onopen = () => {
+                document.getElementById('ws-status').className = 'status-indicator status-connected';
+                document.getElementById('ws-text').textContent = 'Connected';
+                ws.send(JSON.stringify({
+                    type: 'join_business',
+                    businessId: 'royal-hair-studio'
+                }));
+            };
+            
+            ws.onclose = () => {
+                document.getElementById('ws-status').className = 'status-indicator status-disconnected';
+                document.getElementById('ws-text').textContent = 'Disconnected';
+            };
+        });
+        
+        document.getElementById('disconnect-ws').addEventListener('click', () => {
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+        });
+        
+        // Load Sample Data
+        document.getElementById('load-sample').addEventListener('click', async () => {
+            const sampleSettings = {
+                business_name: 'Royal Hair Studio',
+                description: 'Professional hairstyling and grooming services in the heart of London.',
+                email: 'info@royalhairstudio.co.uk',
+                phone: '020 1234 5678',
+                address: '123 Lewisham High Street, London SE13',
+                opening_hours: 'Mon–Sat 9:00–18:00, Sun 10:00–16:00',
+                instagram: '@royalhairstudio',
+                facebook: 'facebook.com/royalhairstudio',
+                website: 'https://www.royalhairstudio.co.uk'
+            };
+            
+            try {
+                const response = await fetch('/api/businesses/royal-hair-studio/settings', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(sampleSettings)
+                });
+                
+                if (response.ok) {
+                    // Refresh the dashboard
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error('Error loading sample settings:', error);
+            }
+        });
+        
+        // Clear Settings
+        document.getElementById('clear-settings').addEventListener('click', async () => {
+            if (confirm('Are you sure you want to clear all settings?')) {
+                const emptySettings = {
+                    business_name: '',
+                    description: '',
+                    email: '',
+                    phone: '',
+                    address: '',
+                    opening_hours: '',
+                    instagram: '',
+                    facebook: '',
+                    website: ''
+                };
+                
+                try {
+                    const response = await fetch('/api/businesses/royal-hair-studio/settings', {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(emptySettings)
+                    });
+                    
+                    if (response.ok) {
+                        // Refresh the dashboard
+                        window.location.reload();
+                    }
+                } catch (error) {
+                    console.error('Error clearing settings:', error);
+                }
+            }
+        });
+        
+        // Test Notifications
+        document.getElementById('test-success').addEventListener('click', () => {
+            const notification = document.createElement('div');
+            notification.className = 'settings-notification success';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <strong>Success!</strong>
+                    <p>This is a test success notification</p>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        });
+        
+        document.getElementById('test-error').addEventListener('click', () => {
+            const notification = document.createElement('div');
+            notification.className = 'settings-notification error';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <strong>Error!</strong>
+                    <p>This is a test error notification</p>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        });
+        
+        document.getElementById('test-info').addEventListener('click', () => {
+            const notification = document.createElement('div');
+            notification.className = 'settings-notification info';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <strong>Info!</strong>
+                    <p>This is a test info notification</p>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        });
+        
+        // Test Validation
+        document.getElementById('test-validation').addEventListener('click', () => {
+            // This would trigger validation in the real form
+            alert('Validation test: Try saving with empty required fields');
+        });
+        
+        document.getElementById('test-email').addEventListener('click', () => {
+            // This would trigger email validation in the real form
+            alert('Email validation test: Try entering an invalid email address');
+        });
+        
+        // Render the dashboard
+        ReactDOM.render(React.createElement(BusinessSettingsDashboard), document.getElementById('settings-dashboard'));
+    </script>
+</body>
+</html>

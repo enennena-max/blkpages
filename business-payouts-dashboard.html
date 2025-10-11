@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payouts Dashboard - BlkPages</title>
+    <link rel="stylesheet" href="frontend/src/components/BusinessPayoutsDashboard.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #1E90FF, #9c27b0);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 144, 255, 0.3);
+        }
+        
+        .back-button i {
+            font-size: 0.8rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <a href="business-dashboard.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Dashboard
+    </a>
+    
+    <!-- Payouts Dashboard Component -->
+    <div id="payouts-dashboard"></div>
+    
+    <!-- React and Component Scripts -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // Business Payouts Dashboard Component
+        const BusinessPayoutsDashboard = () => {
+            const [stats, setStats] = useState({
+                total_earnings: 0,
+                pending_payouts: 0,
+                completed_payouts: 0,
+                last_payout_date: null
+            });
+            const [payouts, setPayouts] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [newPayoutsCount, setNewPayoutsCount] = useState(0);
+            
+            const wsRef = useRef(null);
+            const businessId = 'royal-hair-studio'; // Replace with actual business ID logic
+
+            // Fetch payout statistics
+            const fetchStats = async () => {
+                try {
+                    const response = await fetch(`/api/businesses/${businessId}/payout-stats`);
+                    const data = await response.json();
+                    setStats(data);
+                    
+                    // Trigger highlight effect on stat cards
+                    highlightStatCards();
+                } catch (error) {
+                    console.error('Error fetching payout stats:', error);
+                }
+            };
+
+            // Add highlight effect to stat cards when updated
+            const highlightStatCards = () => {
+                const statCards = document.querySelectorAll('.stat-card');
+                statCards.forEach(card => {
+                    card.style.transition = 'all 0.3s ease';
+                    card.style.transform = 'scale(1.05)';
+                    card.style.boxShadow = '0 8px 25px rgba(30, 144, 255, 0.3)';
+                    
+                    setTimeout(() => {
+                        card.style.transform = 'scale(1)';
+                        card.style.boxShadow = '';
+                    }, 500);
+                });
+            };
+
+            // Fetch payouts list
+            const fetchPayouts = async () => {
+                try {
+                    const response = await fetch(`/api/businesses/${businessId}/payouts`);
+                    const data = await response.json();
+                    setPayouts(data);
+                } catch (error) {
+                    console.error('Error fetching payouts:', error);
+                }
+            };
+
+            // Fetch all data
+            const fetchAllData = async () => {
+                setLoading(true);
+                await Promise.all([fetchStats(), fetchPayouts()]);
+                setLoading(false);
+            };
+
+            // Initialize WebSocket connection
+            const initializeWebSocket = () => {
+                const wsUrl = `ws://localhost:5000`;
+                wsRef.current = new WebSocket(wsUrl);
+
+                wsRef.current.onopen = () => {
+                    console.log('Payouts WebSocket connected');
+                    // Join business room
+                    wsRef.current.send(JSON.stringify({
+                        type: 'join_business',
+                        businessId: businessId
+                    }));
+                };
+
+                wsRef.current.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'new_payout') {
+                        // Add new payout to the list with highlight effect
+                        const newPayout = {
+                            id: data.id,
+                            date: data.date,
+                            amount: data.amount,
+                            status: data.status,
+                            method: data.method,
+                            reference: data.reference
+                        };
+                        
+                        setPayouts(prev => [newPayout, ...prev]);
+                        setNewPayoutsCount(prev => prev + 1);
+                        
+                        // Update stats immediately
+                        fetchStats();
+                        
+                        // Show notification
+                        showNewPayoutNotification(newPayout);
+                        
+                        // Highlight the new payout row
+                        setTimeout(() => {
+                            const newPayoutRow = document.querySelector(`[data-payout-id="${newPayout.id}"]`);
+                            if (newPayoutRow) {
+                                newPayoutRow.classList.add('new-payout-highlight');
+                                setTimeout(() => {
+                                    newPayoutRow.classList.remove('new-payout-highlight');
+                                }, 3000);
+                            }
+                        }, 100);
+                    } else if (data.type === 'payout_updated') {
+                        // Update existing payout in the list
+                        setPayouts(prev => prev.map(payout => 
+                            payout.id === data.id 
+                                ? { ...payout, status: data.status }
+                                : payout
+                        ));
+                        
+                        // Update stats
+                        fetchStats();
+                        
+                        // Show update notification
+                        showPayoutUpdateNotification(data);
+                    }
+                };
+
+                wsRef.current.onclose = () => {
+                    console.log('Payouts WebSocket disconnected, reconnecting...');
+                    setTimeout(initializeWebSocket, 3000);
+                };
+
+                wsRef.current.onerror = (error) => {
+                    console.error('Payouts WebSocket error:', error);
+                };
+            };
+
+            // Show notification for new payout
+            const showNewPayoutNotification = (payout) => {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = 'new-payout-notification';
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <strong>New Payout!</strong>
+                        <p>£${payout.amount} payout via ${payout.method}</p>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remove after 5 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            };
+
+            // Show notification for payout update
+            const showPayoutUpdateNotification = (data) => {
+                const notification = document.createElement('div');
+                notification.className = 'payout-update-notification';
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <strong>Payout Updated!</strong>
+                        <p>Payout ${data.id} is now ${data.status}</p>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            };
+
+            // Clear new payouts count
+            const clearNewPayoutsCount = () => {
+                setNewPayoutsCount(0);
+            };
+
+            // Format date
+            const formatDate = (dateString) => {
+                return new Date(dateString).toLocaleDateString('en-GB', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            };
+
+            // Format currency
+            const formatCurrency = (amount) => {
+                return new Intl.NumberFormat('en-GB', {
+                    style: 'currency',
+                    currency: 'GBP'
+                }).format(amount);
+            };
+
+            // Get status badge class
+            const getStatusBadgeClass = (status) => {
+                switch (status) {
+                    case 'Completed':
+                        return 'status-badge completed';
+                    case 'Pending':
+                        return 'status-badge pending';
+                    case 'Failed':
+                        return 'status-badge failed';
+                    default:
+                        return 'status-badge';
+                }
+            };
+
+            useEffect(() => {
+                fetchAllData();
+                initializeWebSocket();
+                
+                // Polling fallback every 30 seconds
+                const pollInterval = setInterval(fetchAllData, 30000);
+                
+                return () => {
+                    clearInterval(pollInterval);
+                    if (wsRef.current) {
+                        wsRef.current.close();
+                    }
+                };
+            }, []);
+
+            if (loading) {
+                return React.createElement('div', { className: 'payouts-dashboard' },
+                    React.createElement('div', { className: 'loading' }, 'Loading payouts...')
+                );
+            }
+
+            return React.createElement('div', { className: 'payouts-dashboard' },
+                React.createElement('div', { className: 'dashboard-header' },
+                    React.createElement('h1', null, 'Payouts Dashboard'),
+                    React.createElement('p', null, 'Track your earnings and payout history')
+                ),
+
+                // Stats Cards
+                React.createElement('div', { className: 'stats-grid' },
+                    React.createElement('div', { className: 'stat-card' },
+                        React.createElement('div', { className: 'stat-icon' }, '💷'),
+                        React.createElement('div', { className: 'stat-content' },
+                            React.createElement('h3', null, formatCurrency(stats.total_earnings)),
+                            React.createElement('p', null, 'Total Earnings')
+                        )
+                    ),
+                    
+                    React.createElement('div', { className: 'stat-card' },
+                        React.createElement('div', { className: 'stat-icon' }, '⏳'),
+                        React.createElement('div', { className: 'stat-content' },
+                            React.createElement('h3', null, stats.pending_payouts),
+                            React.createElement('p', null, 'Pending Payouts')
+                        )
+                    ),
+                    
+                    React.createElement('div', { className: 'stat-card' },
+                        React.createElement('div', { className: 'stat-icon' }, '✅'),
+                        React.createElement('div', { className: 'stat-content' },
+                            React.createElement('h3', null, stats.completed_payouts),
+                            React.createElement('p', null, 'Completed Payouts')
+                        )
+                    ),
+                    
+                    React.createElement('div', { className: 'stat-card' },
+                        React.createElement('div', { className: 'stat-icon' }, '📅'),
+                        React.createElement('div', { className: 'stat-content' },
+                            React.createElement('h3', null, stats.last_payout_date ? formatDate(stats.last_payout_date) : 'N/A'),
+                            React.createElement('p', null, 'Last Payout Date')
+                        )
+                    )
+                ),
+
+                // Payouts Table
+                React.createElement('div', { className: 'payouts-section' },
+                    React.createElement('div', { className: 'section-header' },
+                        React.createElement('h2', null, 'Payout History'),
+                        newPayoutsCount > 0 && React.createElement('button', {
+                            className: 'new-payouts-badge',
+                            onClick: clearNewPayoutsCount
+                        }, `${newPayoutsCount} new`)
+                    ),
+                    
+                    React.createElement('div', { className: 'payouts-table-container' },
+                        payouts.length === 0 ? 
+                            React.createElement('div', { className: 'no-payouts' },
+                                React.createElement('p', null, 'No payouts yet. Your earnings will appear here once processed.')
+                            ) :
+                            React.createElement('table', { className: 'payouts-table' },
+                                React.createElement('thead', null,
+                                    React.createElement('tr', null,
+                                        React.createElement('th', null, 'Payout ID'),
+                                        React.createElement('th', null, 'Date'),
+                                        React.createElement('th', null, 'Amount'),
+                                        React.createElement('th', null, 'Status'),
+                                        React.createElement('th', null, 'Payment Method'),
+                                        React.createElement('th', null, 'Reference')
+                                    )
+                                ),
+                                React.createElement('tbody', null,
+                                    payouts.map((payout) => 
+                                        React.createElement('tr', { key: payout.id, 'data-payout-id': payout.id },
+                                            React.createElement('td', { className: 'payout-id' }, payout.id),
+                                            React.createElement('td', { className: 'payout-date' }, formatDate(payout.date)),
+                                            React.createElement('td', { className: 'payout-amount' }, formatCurrency(payout.amount)),
+                                            React.createElement('td', { className: 'payout-status' },
+                                                React.createElement('span', { className: getStatusBadgeClass(payout.status) }, payout.status)
+                                            ),
+                                            React.createElement('td', { className: 'payout-method' }, payout.method),
+                                            React.createElement('td', { className: 'payout-reference' }, payout.reference)
+                                        )
+                                    )
+                                )
+                            )
+                    )
+                )
+            );
+        };
+
+        // Render the dashboard
+        ReactDOM.render(React.createElement(BusinessPayoutsDashboard), document.getElementById('payouts-dashboard'));
+    </script>
+</body>
+</html>

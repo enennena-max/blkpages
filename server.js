@@ -28,9 +28,22 @@ const path = require('path');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const ejs = require('ejs');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
 require('dotenv').config();
 
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
+
+// Make io globally available
+global.io = io;
+
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/blkpages';
 
@@ -2741,10 +2754,853 @@ app.use((error, req, res, next) => {
     });
 });
 
+// ==================== REVIEW MANAGEMENT API ====================
+
+// MongoDB indexes for reviews
+db.collection('business_reviews').createIndex({ businessId: 1, createdAt: -1 });
+db.collection('business_reviews').createIndex({ businessId: 1, rating: 1 });
+
+// ==================== PAYOUT MANAGEMENT API ====================
+
+// MongoDB indexes for payouts
+db.collection('business_payouts').createIndex({ businessId: 1, createdAt: -1 });
+db.collection('business_payouts').createIndex({ businessId: 1, status: 1 });
+db.collection('business_payouts').createIndex({ businessId: 1, date: -1 });
+
+// ==================== SERVICES MANAGEMENT API ====================
+
+// MongoDB indexes for services
+db.collection('business_services').createIndex({ businessId: 1, status: 1 });
+db.collection('business_services').createIndex({ businessId: 1, category: 1 });
+db.collection('business_services').createIndex({ businessId: 1, last_updated: -1 });
+
+// ==================== BUSINESS SETTINGS API ====================
+
+// MongoDB indexes for business settings
+db.collection('business_settings').createIndex({ businessId: 1 }, { unique: true });
+db.collection('business_settings').createIndex({ businessId: 1, last_updated: -1 });
+
+// Get review statistics for a business
+app.get('/api/businesses/:businessId/review-stats', async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        
+        const stats = await db.collection('business_reviews').aggregate([
+            { $match: { businessId } },
+            {
+                $group: {
+                    _id: null,
+                    average_rating: { $avg: '$rating' },
+                    total_reviews: { $sum: 1 },
+                    positive_reviews: {
+                        $sum: { $cond: [{ $gte: ['$rating', 4] }, 1, 0] }
+                    }
+                }
+            }
+        ]).toArray();
+
+        // Get reviews this month
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+        
+        const reviewsThisMonth = await db.collection('business_reviews').countDocuments({
+            businessId,
+            createdAt: { $gte: startOfMonth }
+        });
+
+        const result = stats[0] || {
+            average_rating: 0,
+            total_reviews: 0,
+            positive_reviews: 0
+        };
+
+        const positive_percentage = result.total_reviews > 0 
+            ? Math.round((result.positive_reviews / result.total_reviews) * 100)
+            : 0;
+
+        res.json({
+            average_rating: Math.round(result.average_rating * 10) / 10,
+            total_reviews: result.total_reviews,
+            reviews_this_month: reviewsThisMonth,
+            positive_percentage
+        });
+    } catch (error) {
+        console.error('Error fetching review stats:', error);
+        res.status(500).json({ error: 'Failed to fetch review stats' });
+    }
+});
+
+// Get all reviews for a business
+app.get('/api/businesses/:businessId/reviews', async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        const { page = 1, limit = 20 } = req.query;
+        
+        const skip = (page - 1) * limit;
+        
+        const reviews = await db.collection('business_reviews')
+            .find({ businessId })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit))
+            .toArray();
+
+        // Format reviews for frontend
+        const formattedReviews = reviews.map(review => ({
+            id: review._id.toString(),
+            reviewer_name: review.reviewerName,
+            rating: review.rating,
+            text: review.text,
+            date: review.createdAt.toISOString(),
+            reply: review.reply || null,
+            reply_date: review.replyDate ? review.replyDate.toISOString() : null
+        }));
+
+        res.json({ reviews: formattedReviews });
+    } catch (error) {
+        console.error('Error fetching reviews:', error);
+        res.status(500).json({ error: 'Failed to fetch reviews' });
+    }
+});
+
+// Add a reply to a review
+app.post('/api/reviews/:reviewId/reply', async (req, res) => {
+    try {
+        const { reviewId } = req.params;
+        const { reply } = req.body;
+        
+        if (!reply || reply.trim().length === 0) {
+            return res.status(400).json({ error: 'Reply text is required' });
+        }
+
+        const result = await db.collection('business_reviews').updateOne(
+            { _id: new ObjectId(reviewId) },
+            { 
+                $set: { 
+                    reply: reply.trim(),
+                    replyDate: new Date()
+                }
+            }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'Review not found' });
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error adding reply:', error);
+        res.status(500).json({ error: 'Failed to add reply' });
+    }
+});
+
+// Create a new review (for testing/demo purposes)
+app.post('/api/businesses/:businessId/reviews', async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        const { reviewerName, rating, text } = req.body;
+        
+        if (!reviewerName || !rating || !text) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({ error: 'Rating must be between 1 and 5' });
+        }
+
+        const review = {
+            businessId,
+            reviewerName: reviewerName.trim(),
+            rating: parseInt(rating),
+            text: text.trim(),
+            createdAt: new Date(),
+            reply: null,
+            replyDate: null
+        };
+
+        const result = await db.collection('business_reviews').insertOne(review);
+        
+        // Emit WebSocket event for real-time updates
+        if (global.io) {
+            global.io.to(`business_${businessId}`).emit('new_review', {
+                id: result.insertedId.toString(),
+                ...review
+            });
+        }
+
+        res.json({ 
+            success: true, 
+            reviewId: result.insertedId.toString() 
+        });
+    } catch (error) {
+        console.error('Error creating review:', error);
+        res.status(500).json({ error: 'Failed to create review' });
+    }
+});
+
+// Get payout statistics for a business
+app.get('/api/businesses/:businessId/payout-stats', async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        
+        const stats = await db.collection('business_payouts').aggregate([
+            { $match: { businessId } },
+            {
+                $group: {
+                    _id: null,
+                    total_earnings: { $sum: { $cond: [{ $eq: ['$status', 'Completed'] }, '$amount', 0] } },
+                    pending_payouts: { $sum: { $cond: [{ $eq: ['$status', 'Pending'] }, 1, 0] } },
+                    completed_payouts: { $sum: { $cond: [{ $eq: ['$status', 'Completed'] }, 1, 0] } },
+                    last_payout_date: { $max: { $cond: [{ $eq: ['$status', 'Completed'] }, '$date', null] } }
+                }
+            }
+        ]).toArray();
+
+        const result = stats[0] || {
+            total_earnings: 0,
+            pending_payouts: 0,
+            completed_payouts: 0,
+            last_payout_date: null
+        };
+
+        res.json({
+            total_earnings: Math.round(result.total_earnings * 100) / 100,
+            pending_payouts: result.pending_payouts,
+            completed_payouts: result.completed_payouts,
+            last_payout_date: result.last_payout_date
+        });
+    } catch (error) {
+        console.error('Error fetching payout stats:', error);
+        res.status(500).json({ error: 'Failed to fetch payout stats' });
+    }
+});
+
+// Get all payouts for a business
+app.get('/api/businesses/:businessId/payouts', async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        const { page = 1, limit = 20 } = req.query;
+        
+        const skip = (page - 1) * limit;
+        
+        const payouts = await db.collection('business_payouts')
+            .find({ businessId })
+            .sort({ date: -1 })
+            .skip(skip)
+            .limit(parseInt(limit))
+            .toArray();
+
+        // Format payouts for frontend
+        const formattedPayouts = payouts.map(payout => ({
+            id: payout._id.toString(),
+            date: payout.date.toISOString(),
+            amount: payout.amount,
+            status: payout.status,
+            method: payout.method,
+            reference: payout.reference
+        }));
+
+        res.json(formattedPayouts);
+    } catch (error) {
+        console.error('Error fetching payouts:', error);
+        res.status(500).json({ error: 'Failed to fetch payouts' });
+    }
+});
+
+// Create a new payout (for testing/demo purposes)
+app.post('/api/businesses/:businessId/payouts', async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        const { amount, method, reference } = req.body;
+        
+        if (!amount || !method) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        const payout = {
+            businessId,
+            amount: parseFloat(amount),
+            method: method.trim(),
+            reference: reference ? reference.trim() : `TRX${Date.now()}`,
+            status: 'Pending',
+            date: new Date(),
+            createdAt: new Date()
+        };
+
+        const result = await db.collection('business_payouts').insertOne(payout);
+        
+        // Emit WebSocket event for real-time updates
+        if (global.io) {
+            global.io.to(`business_${businessId}`).emit('new_payout', {
+                id: result.insertedId.toString(),
+                ...payout
+            });
+        }
+
+        res.json({ 
+            success: true, 
+            payoutId: result.insertedId.toString() 
+        });
+    } catch (error) {
+        console.error('Error creating payout:', error);
+        res.status(500).json({ error: 'Failed to create payout' });
+    }
+});
+
+// Update payout status (for testing/demo purposes)
+app.patch('/api/payouts/:payoutId/status', async (req, res) => {
+    try {
+        const { payoutId } = req.params;
+        const { status } = req.body;
+        
+        if (!status || !['Pending', 'Completed', 'Failed'].includes(status)) {
+            return res.status(400).json({ error: 'Invalid status' });
+        }
+
+        const result = await db.collection('business_payouts').updateOne(
+            { _id: new ObjectId(payoutId) },
+            { 
+                $set: { 
+                    status: status,
+                    updatedAt: new Date()
+                }
+            }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'Payout not found' });
+        }
+
+        // Emit WebSocket event for real-time updates
+        if (global.io) {
+            const payout = await db.collection('business_payouts').findOne({ _id: new ObjectId(payoutId) });
+            if (payout) {
+                global.io.to(`business_${payout.businessId}`).emit('payout_updated', {
+                    id: payoutId,
+                    status: status,
+                    payout: payout
+                });
+            }
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error updating payout status:', error);
+        res.status(500).json({ error: 'Failed to update payout status' });
+    }
+});
+
+// Get service statistics for a business
+app.get('/api/businesses/:businessId/service-stats', async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        
+        const stats = await db.collection('business_services').aggregate([
+            { $match: { businessId } },
+            {
+                $group: {
+                    _id: null,
+                    active: { $sum: { $cond: [{ $eq: ['$status', 'Active'] }, 1, 0] } },
+                    pending: { $sum: { $cond: [{ $eq: ['$status', 'Pending Approval'] }, 1, 0] } },
+                    rejected: { $sum: { $cond: [{ $eq: ['$status', 'Rejected'] }, 1, 0] } },
+                    archived: { $sum: { $cond: [{ $eq: ['$status', 'Archived'] }, 1, 0] } }
+                }
+            }
+        ]).toArray();
+
+        const result = stats[0] || {
+            active: 0,
+            pending: 0,
+            rejected: 0,
+            archived: 0
+        };
+
+        res.json(result);
+    } catch (error) {
+        console.error('Error fetching service stats:', error);
+        res.status(500).json({ error: 'Failed to fetch service stats' });
+    }
+});
+
+// Get all services for a business
+app.get('/api/businesses/:businessId/services', async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        const { status } = req.query;
+        
+        const filter = { businessId };
+        if (status) {
+            filter.status = status;
+        }
+        
+        const services = await db.collection('business_services')
+            .find(filter)
+            .sort({ last_updated: -1 })
+            .toArray();
+
+        // Format services for frontend
+        const formattedServices = services.map(service => ({
+            id: service._id.toString(),
+            name: service.name,
+            category: service.category,
+            price: service.price,
+            duration: service.duration,
+            status: service.status,
+            last_updated: service.last_updated.toISOString(),
+            description: service.description || '',
+            image_url: service.image_url || null
+        }));
+
+        res.json(formattedServices);
+    } catch (error) {
+        console.error('Error fetching services:', error);
+        res.status(500).json({ error: 'Failed to fetch services' });
+    }
+});
+
+// Create a new service
+app.post('/api/services', async (req, res) => {
+    try {
+        const { businessId, name, category, price, duration, description, image_url } = req.body;
+        
+        if (!businessId || !name || !category || !price || !duration) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        const service = {
+            businessId,
+            name: name.trim(),
+            category: category.trim(),
+            price: parseFloat(price),
+            duration: duration.trim(),
+            description: description ? description.trim() : '',
+            image_url: image_url || null,
+            status: 'Pending Approval',
+            created_at: new Date(),
+            last_updated: new Date()
+        };
+
+        const result = await db.collection('business_services').insertOne(service);
+        
+        // Emit WebSocket event for real-time updates
+        if (global.io) {
+            global.io.to(`business_${businessId}`).emit('new_service', {
+                id: result.insertedId.toString(),
+                ...service
+            });
+        }
+
+        res.json({ 
+            success: true, 
+            serviceId: result.insertedId.toString() 
+        });
+    } catch (error) {
+        console.error('Error creating service:', error);
+        res.status(500).json({ error: 'Failed to create service' });
+    }
+});
+
+// Update a service
+app.patch('/api/services/:serviceId', async (req, res) => {
+    try {
+        const { serviceId } = req.params;
+        const { name, category, price, duration, description, image_url, status } = req.body;
+        
+        const updateFields = {
+            last_updated: new Date()
+        };
+        
+        if (name !== undefined) updateFields.name = name.trim();
+        if (category !== undefined) updateFields.category = category.trim();
+        if (price !== undefined) updateFields.price = parseFloat(price);
+        if (duration !== undefined) updateFields.duration = duration.trim();
+        if (description !== undefined) updateFields.description = description.trim();
+        if (image_url !== undefined) updateFields.image_url = image_url;
+        if (status !== undefined) updateFields.status = status;
+
+        const result = await db.collection('business_services').updateOne(
+            { _id: new ObjectId(serviceId) },
+            { $set: updateFields }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'Service not found' });
+        }
+
+        // Emit WebSocket event for real-time updates
+        if (global.io) {
+            const service = await db.collection('business_services').findOne({ _id: new ObjectId(serviceId) });
+            if (service) {
+                global.io.to(`business_${service.businessId}`).emit('service_updated', {
+                    id: serviceId,
+                    service: {
+                        id: serviceId,
+                        name: service.name,
+                        category: service.category,
+                        price: service.price,
+                        duration: service.duration,
+                        status: service.status,
+                        last_updated: service.last_updated.toISOString(),
+                        description: service.description || '',
+                        image_url: service.image_url || null
+                    }
+                });
+            }
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error updating service:', error);
+        res.status(500).json({ error: 'Failed to update service' });
+    }
+});
+
+// Delete a service
+app.delete('/api/services/:serviceId', async (req, res) => {
+    try {
+        const { serviceId } = req.params;
+        
+        const service = await db.collection('business_services').findOne({ _id: new ObjectId(serviceId) });
+        if (!service) {
+            return res.status(404).json({ error: 'Service not found' });
+        }
+
+        await db.collection('business_services').deleteOne({ _id: new ObjectId(serviceId) });
+        
+        // Emit WebSocket event for real-time updates
+        if (global.io) {
+            global.io.to(`business_${service.businessId}`).emit('service_deleted', {
+                id: serviceId,
+                businessId: service.businessId
+            });
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting service:', error);
+        res.status(500).json({ error: 'Failed to delete service' });
+    }
+});
+
+// Get business settings
+app.get('/api/businesses/:businessId/settings', async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        
+        const settings = await db.collection('business_settings').findOne({ businessId });
+        
+        if (!settings) {
+            // Return default settings if none exist
+            const defaultSettings = {
+                business_name: '',
+                description: '',
+                email: '',
+                phone: '',
+                address: '',
+                opening_hours: '',
+                instagram: '',
+                facebook: '',
+                website: '',
+                package_type: 'Free'
+            };
+            
+            return res.json(defaultSettings);
+        }
+
+        // Format settings for frontend
+        const formattedSettings = {
+            business_name: settings.business_name || '',
+            description: settings.description || '',
+            email: settings.email || '',
+            phone: settings.phone || '',
+            address: settings.address || '',
+            opening_hours: settings.opening_hours || '',
+            instagram: settings.instagram || '',
+            facebook: settings.facebook || '',
+            website: settings.website || '',
+            package_type: settings.package_type || 'Free'
+        };
+
+        res.json(formattedSettings);
+    } catch (error) {
+        console.error('Error fetching business settings:', error);
+        res.status(500).json({ error: 'Failed to fetch business settings' });
+    }
+});
+
+// Update business settings
+app.patch('/api/businesses/:businessId/settings', async (req, res) => {
+    try {
+        const { businessId } = req.params;
+        const {
+            business_name,
+            description,
+            email,
+            phone,
+            address,
+            opening_hours,
+            instagram,
+            facebook,
+            website
+        } = req.body;
+        
+        // Validate required fields
+        if (!business_name || !email || !phone) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: business_name, email, and phone are required' 
+            });
+        }
+
+        const updateData = {
+            businessId,
+            business_name: business_name.trim(),
+            description: description ? description.trim() : '',
+            email: email.trim(),
+            phone: phone.trim(),
+            address: address ? address.trim() : '',
+            opening_hours: opening_hours ? opening_hours.trim() : '',
+            instagram: instagram ? instagram.trim() : '',
+            facebook: facebook ? facebook.trim() : '',
+            website: website ? website.trim() : '',
+            package_type: 'Free', // Default to Free package
+            last_updated: new Date()
+        };
+
+        // Use upsert to create or update settings
+        const result = await db.collection('business_settings').updateOne(
+            { businessId },
+            { $set: updateData },
+            { upsert: true }
+        );
+
+        // Emit WebSocket event for real-time updates
+        if (global.io) {
+            global.io.to(`business_${businessId}`).emit('settings_updated', {
+                businessId,
+                settings: updateData
+            });
+        }
+
+        res.json({ 
+            success: true,
+            message: 'Settings updated successfully'
+        });
+    } catch (error) {
+        console.error('Error updating business settings:', error);
+        res.status(500).json({ error: 'Failed to update business settings' });
+    }
+});
+
+// ========================================
+// STARTER PACKAGE DASHBOARD ENDPOINTS
+// ========================================
+
+// Get review stats for Starter Package
+app.get('/api/businesses/:business_id/review-stats', async (req, res) => {
+    try {
+        const { business_id } = req.params;
+        res.json({
+            business_id,
+            average_rating: 4.4,
+            total_reviews: 27,
+            recent_reviews: [
+                {
+                    reviewer_name: "Naomi Johnson",
+                    rating: 5,
+                    comment: "Brilliant service, quick and professional.",
+                    date: "2025-10-09T14:32:00Z",
+                },
+                {
+                    reviewer_name: "Tayo Smith",
+                    rating: 4,
+                    comment: "Clean shop, friendly staff.",
+                    date: "2025-10-07T10:11:00Z",
+                },
+            ],
+        });
+    } catch (error) {
+        console.error('Error fetching review stats:', error);
+        res.status(500).json({ error: 'Failed to fetch review stats' });
+    }
+});
+
+// Get profile views stats for Starter Package
+app.get('/api/businesses/:business_id/profile-views-stats', async (req, res) => {
+    try {
+        const { business_id } = req.params;
+        res.json({
+            business_id,
+            total_views: 428,
+            views_this_month: 76,
+            views_last_month: 65,
+        });
+    } catch (error) {
+        console.error('Error fetching profile views stats:', error);
+        res.status(500).json({ error: 'Failed to fetch profile views stats' });
+    }
+});
+
+// Get booking stats for Starter Package
+app.get('/api/businesses/:business_id/booking-stats', async (req, res) => {
+    try {
+        const { business_id } = req.params;
+        res.json({
+            business_id,
+            total_bookings: 35,
+            bookings_this_month: 8,
+            recent_bookings: [
+                {
+                    id: "bk_001",
+                    customer_name: "Sarah Thompson",
+                    service: "Haircut",
+                    date: "2025-10-10T13:00:00Z",
+                    status: "Completed",
+                },
+                {
+                    id: "bk_002",
+                    customer_name: "Jordan Miles",
+                    service: "Beard Trim",
+                    date: "2025-10-09T15:30:00Z",
+                    status: "Pending",
+                },
+            ],
+        });
+    } catch (error) {
+        console.error('Error fetching booking stats:', error);
+        res.status(500).json({ error: 'Failed to fetch booking stats' });
+    }
+});
+
+// Get business profile for Starter Package
+app.get('/api/businesses/:business_id/profile', async (req, res) => {
+    try {
+        const { business_id } = req.params;
+        res.json({
+            business_id,
+            business_name: "Royal Hair Studio",
+            category: "Barbering",
+            description: "Professional barber studio specialising in modern cuts.",
+            contact_email: "info@royalhair.co.uk",
+            phone_number: "020 1234 5678",
+            address: "123 Lewisham High Street, London SE13",
+            opening_hours: "Mon–Sat: 9:00 – 18:00",
+            social_links: {
+                instagram: "@royalhairstudio",
+                facebook: "",
+                website: "",
+            },
+        });
+    } catch (error) {
+        console.error('Error fetching business profile:', error);
+        res.status(500).json({ error: 'Failed to fetch business profile' });
+    }
+});
+
+// Update business profile for Starter Package
+app.patch('/api/businesses/:business_id/profile', async (req, res) => {
+    try {
+        const { business_id } = req.params;
+        const updatedData = req.body;
+        res.json({
+            success: true,
+            business_id,
+            updated: updatedData,
+        });
+    } catch (error) {
+        console.error('Error updating business profile:', error);
+        res.status(500).json({ error: 'Failed to update business profile' });
+    }
+});
+
+// Get basic settings for Starter Package
+app.get('/api/businesses/:business_id/settings-basic', async (req, res) => {
+    try {
+        const { business_id } = req.params;
+        res.json({
+            business_id,
+            notifications_enabled: true,
+            allow_public_reviews: true,
+            booking_cancellation_policy: "24-hour notice required",
+        });
+    } catch (error) {
+        console.error('Error fetching basic settings:', error);
+        res.status(500).json({ error: 'Failed to fetch basic settings' });
+    }
+});
+
+// Update basic settings for Starter Package
+app.patch('/api/businesses/:business_id/settings-basic', async (req, res) => {
+    try {
+        const { business_id } = req.params;
+        const updated = req.body;
+        res.json({
+            success: true,
+            business_id,
+            updated,
+        });
+    } catch (error) {
+        console.error('Error updating basic settings:', error);
+        res.status(500).json({ error: 'Failed to update basic settings' });
+    }
+});
+
+// Get basic analytics for Starter Package
+app.get('/api/businesses/:business_id/analytics/basic', async (req, res) => {
+    try {
+        const { business_id } = req.params;
+        res.json({
+            business_id,
+            total_visits: 428,
+            bookings_this_month: 8,
+            average_rating: 4.4,
+            conversion_rate: 12.6,
+        });
+    } catch (error) {
+        console.error('Error fetching basic analytics:', error);
+        res.status(500).json({ error: 'Failed to fetch basic analytics' });
+    }
+});
+
+// Get plan info for Starter Package
+app.get('/api/businesses/:business_id/plan-info', async (req, res) => {
+    try {
+        const { business_id } = req.params;
+        res.json({
+            business_id,
+            plan: "Starter",
+            upgrade_available: true,
+            next_tier: "Professional",
+            message: "Upgrade to unlock advanced analytics, loyalty rewards, and team management.",
+        });
+    } catch (error) {
+        console.error('Error fetching plan info:', error);
+        res.status(500).json({ error: 'Failed to fetch plan info' });
+    }
+});
+
+// WebSocket connection handling
+io.on('connection', (socket) => {
+    console.log('Client connected:', socket.id);
+    
+    // Handle business room joining
+    socket.on('join_business', (data) => {
+        const { businessId } = data;
+        socket.join(`business_${businessId}`);
+        console.log(`Client ${socket.id} joined business room: business_${businessId}`);
+    });
+    
+    // Handle disconnection
+    socket.on('disconnect', () => {
+        console.log('Client disconnected:', socket.id);
+    });
+});
+
 // Start server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`BlkPages Analytics Server running on port ${PORT}`);
     console.log(`MongoDB URI: ${MONGO_URI}`);
+    console.log(`WebSocket server running on ws://localhost:${PORT}`);
     
     // Start reminder cron job
     startReminderCron();

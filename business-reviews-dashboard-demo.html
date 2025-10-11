@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Reviews Dashboard - BlkPages</title>
+    <link rel="stylesheet" href="frontend/src/components/BusinessReviewsDashboard.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .demo-header {
+            background: linear-gradient(135deg, #1E90FF, #9c27b0);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .demo-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .demo-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .demo-controls {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-bottom: 1px solid #444444;
+        }
+        
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .control-group {
+            background: #333333;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid #555555;
+        }
+        
+        .control-group h3 {
+            margin: 0 0 1rem 0;
+            color: #1E90FF;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #cccccc;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #444444;
+            border: 1px solid #666666;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1E90FF;
+            box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1E90FF, #0066cc);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30, 144, 255, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .status-connected {
+            background: #28a745;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-disconnected {
+            background: #dc3545;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .demo-stats {
+            background: #2a2a2a;
+            padding: 1rem;
+            border-bottom: 1px solid #444444;
+            text-align: center;
+        }
+        
+        .demo-stats p {
+            margin: 0;
+            color: #cccccc;
+        }
+        
+        .demo-stats strong {
+            color: #1E90FF;
+        }
+        
+        @media (max-width: 768px) {
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>Business Reviews Dashboard</h1>
+        <p>Live review syncing with real-time updates and WebSocket integration</p>
+    </div>
+    
+    <div class="demo-controls">
+        <div class="controls-grid">
+            <!-- WebSocket Status -->
+            <div class="control-group">
+                <h3>🔌 WebSocket Connection</h3>
+                <p>
+                    <span id="ws-status" class="status-indicator status-disconnected"></span>
+                    <span id="ws-text">Disconnected</span>
+                </p>
+                <button id="connect-ws" class="btn btn-primary">Connect WebSocket</button>
+                <button id="disconnect-ws" class="btn btn-warning">Disconnect</button>
+            </div>
+            
+            <!-- Create Review -->
+            <div class="control-group">
+                <h3>📝 Create New Review</h3>
+                <div class="form-group">
+                    <label for="reviewer-name">Reviewer Name</label>
+                    <input type="text" id="reviewer-name" placeholder="e.g., Alex Brown">
+                </div>
+                <div class="form-group">
+                    <label for="review-rating">Rating</label>
+                    <select id="review-rating">
+                        <option value="5">5 Stars - Excellent</option>
+                        <option value="4">4 Stars - Good</option>
+                        <option value="3">3 Stars - Average</option>
+                        <option value="2">2 Stars - Poor</option>
+                        <option value="1">1 Star - Terrible</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="review-text">Review Text</label>
+                    <textarea id="review-text" rows="3" placeholder="Write your review here..."></textarea>
+                </div>
+                <button id="create-review" class="btn btn-success">Create Review</button>
+            </div>
+            
+            <!-- Generate Sample Data -->
+            <div class="control-group">
+                <h3>🎲 Sample Data</h3>
+                <p>Generate sample reviews for testing</p>
+                <button id="generate-samples" class="btn btn-primary">Generate 5 Sample Reviews</button>
+                <button id="clear-reviews" class="btn btn-warning">Clear All Reviews</button>
+            </div>
+            
+            <!-- Test Notifications -->
+            <div class="control-group">
+                <h3>🔔 Test Notifications</h3>
+                <p>Test the notification system</p>
+                <button id="test-notification" class="btn btn-primary">Show Test Notification</button>
+                <button id="simulate-new-review" class="btn btn-success">Simulate New Review</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="demo-stats">
+        <p>Business ID: <strong id="business-id">royal-hair-studio</strong> | 
+           Total Reviews: <strong id="total-reviews">0</strong> | 
+           Average Rating: <strong id="avg-rating">0.0</strong></p>
+    </div>
+    
+    <!-- Reviews Dashboard Component -->
+    <div id="reviews-dashboard"></div>
+    
+    <!-- Review Data Synchronization -->
+    <script src="review-data-sync.js"></script>
+    
+    <!-- React and Component Scripts -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // Business Reviews Dashboard Component
+        const BusinessReviewsDashboard = () => {
+            const [stats, setStats] = useState({
+                average_rating: 0,
+                total_reviews: 0,
+                reviews_this_month: 0,
+                positive_percentage: 0
+            });
+            const [reviews, setReviews] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [newReviewsCount, setNewReviewsCount] = useState(0);
+            const [replyingTo, setReplyingTo] = useState(null);
+            const [replyText, setReplyText] = useState('');
+            const [submittingReply, setSubmittingReply] = useState(false);
+            
+            const businessId = 'royal-hair-studio';
+
+            // Fetch review statistics
+            const fetchStats = async () => {
+                try {
+                    const response = await fetch(`/api/businesses/${businessId}/review-stats`);
+                    const data = await response.json();
+                    setStats(data);
+                    
+                    // Update demo stats
+                    document.getElementById('total-reviews').textContent = data.total_reviews;
+                    document.getElementById('avg-rating').textContent = data.average_rating.toFixed(1);
+                } catch (error) {
+                    console.error('Error fetching review stats:', error);
+                }
+            };
+
+            // Fetch reviews list
+            const fetchReviews = async () => {
+                try {
+                    const response = await fetch(`/api/businesses/${businessId}/reviews`);
+                    const data = await response.json();
+                    setReviews(data.reviews);
+                } catch (error) {
+                    console.error('Error fetching reviews:', error);
+                }
+            };
+
+            // Fetch all data
+            const fetchAllData = async () => {
+                setLoading(true);
+                await Promise.all([fetchStats(), fetchReviews()]);
+                setLoading(false);
+            };
+
+            // Initialize WebSocket connection
+            const initializeWebSocket = () => {
+                const wsUrl = `ws://localhost:5000`;
+                wsRef.current = new WebSocket(wsUrl);
+
+                wsRef.current.onopen = () => {
+                    console.log('WebSocket connected');
+                    document.getElementById('ws-status').className = 'status-indicator status-connected';
+                    document.getElementById('ws-text').textContent = 'Connected';
+                    
+                    // Join business room
+                    wsRef.current.send(JSON.stringify({
+                        type: 'join_business',
+                        businessId: businessId
+                    }));
+                };
+
+                wsRef.current.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'new_review') {
+                        // Add new review to the list
+                        const newReview = {
+                            id: data.id,
+                            reviewer_name: data.reviewerName,
+                            rating: data.rating,
+                            text: data.text,
+                            date: data.createdAt,
+                            reply: null,
+                            reply_date: null
+                        };
+                        
+                        setReviews(prev => [newReview, ...prev]);
+                        setNewReviewsCount(prev => prev + 1);
+                        
+                        // Update stats
+                        fetchStats();
+                        
+                        // Show notification
+                        showNewReviewNotification(newReview);
+                    }
+                };
+
+                wsRef.current.onclose = () => {
+                    console.log('WebSocket disconnected');
+                    document.getElementById('ws-status').className = 'status-indicator status-disconnected';
+                    document.getElementById('ws-text').textContent = 'Disconnected';
+                };
+
+                wsRef.current.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                };
+            };
+
+            // Show notification for new review
+            const showNewReviewNotification = (review) => {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = 'new-review-notification';
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <strong>New Review!</strong>
+                        <p>${review.reviewer_name} left a ${review.rating}-star review</p>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remove after 5 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            };
+
+            // Submit reply to review
+            const submitReply = async (reviewId) => {
+                if (!replyText.trim()) return;
+                
+                setSubmittingReply(true);
+                
+                if (window.reviewDataSync) {
+                    // Use shared data sync utility
+                    const success = await window.reviewDataSync.submitReply(reviewId, replyText);
+                    if (success) {
+                        setReplyingTo(null);
+                        setReplyText('');
+                    }
+                } else {
+                    // Fallback to direct API call
+                    try {
+                        const response = await fetch(`/api/reviews/${reviewId}/reply`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ reply: replyText })
+                        });
+                        
+                        if (response.ok) {
+                            // Update the review in the list
+                            setReviews(prev => prev.map(review => 
+                                review.id === reviewId 
+                                    ? { 
+                                        ...review, 
+                                        reply: replyText,
+                                        reply_date: new Date().toISOString()
+                                    }
+                                    : review
+                            ));
+                            
+                            setReplyingTo(null);
+                            setReplyText('');
+                        }
+                    } catch (error) {
+                        console.error('Error submitting reply:', error);
+                    }
+                }
+                setSubmittingReply(false);
+            };
+
+            // Clear new reviews count
+            const clearNewReviewsCount = () => {
+                if (window.reviewDataSync) {
+                    window.reviewDataSync.clearNewReviewsCount();
+                } else {
+                    setNewReviewsCount(0);
+                }
+            };
+
+            // Render star rating
+            const renderStars = (rating) => {
+                return Array.from({ length: 5 }, (_, i) => (
+                    React.createElement('span', {
+                        key: i,
+                        className: `star ${i < rating ? 'filled' : ''}`
+                    }, '★')
+                ));
+            };
+
+            // Format date
+            const formatDate = (dateString) => {
+                return new Date(dateString).toLocaleDateString('en-GB', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            };
+
+            useEffect(() => {
+                // Use shared data sync utility
+                if (window.reviewDataSync) {
+                    const unsubscribe = window.reviewDataSync.subscribe((data) => {
+                        switch (data.type) {
+                            case 'stats_update':
+                                setStats(data.stats);
+                                highlightStatCards();
+                                break;
+                            case 'reviews_update':
+                                setReviews(data.reviews);
+                                break;
+                            case 'new_review':
+                                setNewReviewsCount(data.newReviewsCount);
+                                showNewReviewNotification(data.review);
+                                break;
+                            case 'clear_new_reviews':
+                                setNewReviewsCount(0);
+                                break;
+                        }
+                    });
+                    
+                    setLoading(false);
+                    
+                    return () => {
+                        if (unsubscribe) unsubscribe();
+                    };
+                } else {
+                    // Fallback to direct API calls
+                    fetchAllData();
+                    setLoading(false);
+                    
+                    const pollInterval = setInterval(fetchAllData, 30000);
+                    return () => clearInterval(pollInterval);
+                }
+            }, []);
+
+            if (loading) {
+                return React.createElement('div', { className: 'reviews-dashboard' },
+                    React.createElement('div', { className: 'loading' }, 'Loading reviews...')
+                );
+            }
+
+            return React.createElement('div', { className: 'reviews-dashboard' },
+                React.createElement('div', { className: 'dashboard-header' },
+                    React.createElement('h1', null, 'Reviews Dashboard'),
+                    React.createElement('p', null, 'Manage and respond to customer reviews')
+                ),
+
+                // Stats Cards
+                React.createElement('div', { className: 'stats-grid' },
+                    React.createElement('div', { className: 'stat-card' },
+                        React.createElement('div', { className: 'stat-icon' }, '⭐'),
+                        React.createElement('div', { className: 'stat-content' },
+                            React.createElement('h3', null, stats.average_rating.toFixed(1)),
+                            React.createElement('p', null, 'Average Rating')
+                        )
+                    ),
+                    
+                    React.createElement('div', { className: 'stat-card' },
+                        React.createElement('div', { className: 'stat-icon' }, '📝'),
+                        React.createElement('div', { className: 'stat-content' },
+                            React.createElement('h3', null, stats.total_reviews),
+                            React.createElement('p', null, 'Total Reviews')
+                        )
+                    ),
+                    
+                    React.createElement('div', { className: 'stat-card' },
+                        React.createElement('div', { className: 'stat-icon' }, '📅'),
+                        React.createElement('div', { className: 'stat-content' },
+                            React.createElement('h3', null, stats.reviews_this_month),
+                            React.createElement('p', null, 'This Month')
+                        )
+                    ),
+                    
+                    React.createElement('div', { className: 'stat-card' },
+                        React.createElement('div', { className: 'stat-icon' }, '👍'),
+                        React.createElement('div', { className: 'stat-content' },
+                            React.createElement('h3', null, `${stats.positive_percentage}%`),
+                            React.createElement('p', null, 'Positive Reviews')
+                        )
+                    )
+                ),
+
+                // Reviews List
+                React.createElement('div', { className: 'reviews-section' },
+                    React.createElement('div', { className: 'section-header' },
+                        React.createElement('h2', null, 'All Reviews'),
+                        newReviewsCount > 0 && React.createElement('button', {
+                            className: 'new-reviews-badge',
+                            onClick: clearNewReviewsCount
+                        }, `${newReviewsCount} new`)
+                    ),
+                    
+                    React.createElement('div', { className: 'reviews-list' },
+                        reviews.length === 0 ? 
+                            React.createElement('div', { className: 'no-reviews' },
+                                React.createElement('p', null, 'No reviews yet. Encourage customers to leave reviews!')
+                            ) :
+                            reviews.map((review) => 
+                                React.createElement('div', { key: review.id, className: 'review-card' },
+                                    React.createElement('div', { className: 'review-header' },
+                                        React.createElement('div', { className: 'reviewer-info' },
+                                            React.createElement('h4', null, review.reviewer_name),
+                                            React.createElement('div', { className: 'review-rating' },
+                                                ...renderStars(review.rating)
+                                            )
+                                        ),
+                                        React.createElement('div', { className: 'review-date' },
+                                            formatDate(review.date)
+                                        )
+                                    ),
+                                    
+                                    React.createElement('div', { className: 'review-text' },
+                                        review.text
+                                    ),
+                                    
+                                    review.reply ? 
+                                        React.createElement('div', { className: 'review-reply' },
+                                            React.createElement('div', { className: 'reply-header' },
+                                                React.createElement('strong', null, 'Your Reply'),
+                                                React.createElement('span', { className: 'reply-date' },
+                                                    formatDate(review.reply_date)
+                                                )
+                                            ),
+                                            React.createElement('p', null, review.reply)
+                                        ) :
+                                        React.createElement('div', { className: 'reply-section' },
+                                            replyingTo === review.id ? 
+                                                React.createElement('div', { className: 'reply-form' },
+                                                    React.createElement('textarea', {
+                                                        value: replyText,
+                                                        onChange: (e) => setReplyText(e.target.value),
+                                                        placeholder: 'Write your reply...',
+                                                        rows: 3
+                                                    }),
+                                                    React.createElement('div', { className: 'reply-actions' },
+                                                        React.createElement('button', {
+                                                            onClick: () => submitReply(review.id),
+                                                            disabled: submittingReply || !replyText.trim(),
+                                                            className: 'btn-primary'
+                                                        }, submittingReply ? 'Sending...' : 'Send Reply'),
+                                                        React.createElement('button', {
+                                                            onClick: () => {
+                                                                setReplyingTo(null);
+                                                                setReplyText('');
+                                                            },
+                                                            className: 'btn-secondary'
+                                                        }, 'Cancel')
+                                                    )
+                                                ) :
+                                                React.createElement('button', {
+                                                    onClick: () => setReplyingTo(review.id),
+                                                    className: 'btn-reply'
+                                                }, 'Reply to Review')
+                                        )
+                                )
+                            )
+                    )
+                )
+            );
+        };
+
+        // Demo Controls
+        let ws = null;
+        
+        // WebSocket Controls
+        document.getElementById('connect-ws').addEventListener('click', () => {
+            if (ws) ws.close();
+            ws = new WebSocket('ws://localhost:5000');
+            
+            ws.onopen = () => {
+                document.getElementById('ws-status').className = 'status-indicator status-connected';
+                document.getElementById('ws-text').textContent = 'Connected';
+                ws.send(JSON.stringify({
+                    type: 'join_business',
+                    businessId: 'royal-hair-studio'
+                }));
+            };
+            
+            ws.onclose = () => {
+                document.getElementById('ws-status').className = 'status-indicator status-disconnected';
+                document.getElementById('ws-text').textContent = 'Disconnected';
+            };
+        });
+        
+        document.getElementById('disconnect-ws').addEventListener('click', () => {
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+        });
+        
+        // Create Review
+        document.getElementById('create-review').addEventListener('click', async () => {
+            const name = document.getElementById('reviewer-name').value;
+            const rating = document.getElementById('review-rating').value;
+            const text = document.getElementById('review-text').value;
+            
+            if (!name || !text) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/businesses/royal-hair-studio/reviews', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reviewerName: name, rating: parseInt(rating), text })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('reviewer-name').value = '';
+                    document.getElementById('review-text').value = '';
+                    document.getElementById('review-rating').value = '5';
+                    
+                    // Refresh the dashboard
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error('Error creating review:', error);
+            }
+        });
+        
+        // Generate Sample Data
+        document.getElementById('generate-samples').addEventListener('click', async () => {
+            const samples = [
+                { name: 'Sarah Johnson', rating: 5, text: 'Amazing service! The staff was incredibly professional and the results exceeded my expectations.' },
+                { name: 'Michael Brown', rating: 4, text: 'Great experience overall. Clean environment and friendly staff. Would definitely recommend.' },
+                { name: 'Emma Davis', rating: 5, text: 'Outstanding quality and attention to detail. I\'ve been coming here for years and they never disappoint.' },
+                { name: 'James Wilson', rating: 3, text: 'Good service but had to wait a bit longer than expected. Staff was apologetic about the delay.' },
+                { name: 'Lisa Anderson', rating: 5, text: 'Perfect! Exactly what I was looking for. The team really knows their stuff.' }
+            ];
+            
+            for (const sample of samples) {
+                try {
+                    await fetch('/api/businesses/royal-hair-studio/reviews', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(sample)
+                    });
+                } catch (error) {
+                    console.error('Error creating sample review:', error);
+                }
+            }
+            
+            // Refresh the dashboard
+            setTimeout(() => window.location.reload(), 1000);
+        });
+        
+        // Clear Reviews
+        document.getElementById('clear-reviews').addEventListener('click', async () => {
+            if (confirm('Are you sure you want to clear all reviews?')) {
+                // This would need a DELETE endpoint in the real implementation
+                alert('Clear reviews functionality would be implemented with a DELETE endpoint');
+            }
+        });
+        
+        // Test Notification
+        document.getElementById('test-notification').addEventListener('click', () => {
+            const notification = document.createElement('div');
+            notification.className = 'new-review-notification';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <strong>Test Notification!</strong>
+                    <p>This is a test notification to show the styling</p>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        });
+        
+        // Simulate New Review
+        document.getElementById('simulate-new-review').addEventListener('click', () => {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                const mockReview = {
+                    type: 'new_review',
+                    id: 'mock-' + Date.now(),
+                    reviewerName: 'Test Customer',
+                    rating: 5,
+                    text: 'This is a simulated review for testing purposes.',
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Simulate receiving the message
+                const event = new MessageEvent('message', {
+                    data: JSON.stringify(mockReview)
+                });
+                
+                // Trigger the message handler
+                ws.onmessage(event);
+            } else {
+                alert('Please connect WebSocket first');
+            }
+        });
+        
+        // Render the dashboard
+        ReactDOM.render(React.createElement(BusinessReviewsDashboard), document.getElementById('reviews-dashboard'));
+    </script>
+</body>
+</html>

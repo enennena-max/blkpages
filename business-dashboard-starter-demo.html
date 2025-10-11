@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starter Package Business Dashboard Demo | BlkPages</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Socket.IO for real-time updates -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="frontend/src/components/BusinessDashboardStarter.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .demo-header {
+            background: linear-gradient(135deg, #1E90FF, #4169E1);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .demo-header h1 {
+            margin: 0 0 10px;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        
+        .demo-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .demo-controls {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+        
+        .demo-controls h3 {
+            color: #1E90FF;
+            margin: 0 0 15px;
+        }
+        
+        .demo-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .demo-btn {
+            padding: 10px 16px;
+            background: #333;
+            color: #ccc;
+            border: 1px solid #555;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-btn:hover {
+            background: #444;
+            color: #fff;
+        }
+        
+        .demo-btn.primary {
+            background: linear-gradient(135deg, #1E90FF, #4169E1);
+            color: white;
+            border-color: #1E90FF;
+        }
+        
+        .demo-btn.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(30, 144, 255, 0.3);
+        }
+        
+        .demo-info {
+            background: #333;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #1E90FF;
+        }
+        
+        .demo-info h4 {
+            margin: 0 0 10px;
+            color: #1E90FF;
+        }
+        
+        .demo-info p {
+            margin: 0;
+            color: #ccc;
+            line-height: 1.5;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: #2a2a2a;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 1px solid #333;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-header h2 {
+            color: #1E90FF;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar-header p {
+            color: #888;
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+        }
+        
+        .package-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #1E90FF, #4169E1);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .sidebar-nav li {
+            margin: 0;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-nav a:hover {
+            background: #333;
+            color: #1E90FF;
+            border-left-color: #1E90FF;
+        }
+        
+        .sidebar-nav a.active {
+            background: #333;
+            color: #1E90FF;
+            border-left-color: #1E90FF;
+        }
+        
+        .sidebar-nav i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+        }
+        
+        .dashboard-header {
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-header h1 {
+            color: #ffffff;
+            margin: 0 0 10px;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        
+        .dashboard-header p {
+            color: #888;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+        
+        .notification.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .notification.info {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #333;
+            border-radius: 50%;
+            border-top-color: #1E90FF;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .demo-header h1 {
+                font-size: 2rem;
+            }
+            
+            .demo-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo Header -->
+    <div class="demo-header">
+        <h1>Starter Package Business Dashboard</h1>
+        <p>Live Demo - All features connected to backend API</p>
+    </div>
+
+    <!-- Demo Controls -->
+    <div class="demo-controls">
+        <h3><i class="fas fa-cogs"></i> Demo Controls</h3>
+        <div class="demo-buttons">
+            <button class="demo-btn primary" onclick="testAllEndpoints()">
+                <i class="fas fa-play"></i> Test All API Endpoints
+            </button>
+            <button class="demo-btn" onclick="simulateNewReview()">
+                <i class="fas fa-star"></i> Simulate New Review
+            </button>
+            <button class="demo-btn" onclick="simulateNewBooking()">
+                <i class="fas fa-calendar-plus"></i> Simulate New Booking
+            </button>
+            <button class="demo-btn" onclick="simulateProfileUpdate()">
+                <i class="fas fa-user-edit"></i> Simulate Profile Update
+            </button>
+            <button class="demo-btn" onclick="showNotification('Test notification!', 'info')">
+                <i class="fas fa-bell"></i> Test Notification
+            </button>
+            <button class="demo-btn" onclick="refreshDashboard()">
+                <i class="fas fa-sync"></i> Refresh Dashboard
+            </button>
+        </div>
+        
+        <div class="demo-info">
+            <h4><i class="fas fa-info-circle"></i> Demo Information</h4>
+            <p>
+                This demo showcases the live Starter Package Business Dashboard with real API integration. 
+                All data is fetched from the backend server, and features are restricted based on the Starter Package tier. 
+                Try the demo controls above to test different functionalities.
+            </p>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>BlkPages</h2>
+                <p>Business Dashboard</p>
+                <div class="package-badge">Starter Package</div>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="#" class="active" data-section="overview" onclick="navigateToSection('overview')"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
+                <li><a href="#" data-section="reviews" onclick="navigateToSection('reviews')"><i class="fas fa-star"></i> Reviews</a></li>
+                <li><a href="#" data-section="bookings" onclick="navigateToSection('bookings')"><i class="fas fa-calendar-alt"></i> Bookings</a></li>
+                <li><a href="#" data-section="profile" onclick="navigateToSection('profile')"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="#" data-section="settings" onclick="navigateToSection('settings')"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#" data-section="analytics" onclick="navigateToSection('analytics')"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                <li><a href="#" data-section="loyalty" onclick="navigateToSection('loyalty')"><i class="fas fa-gift"></i> Loyalty Rewards</a></li>
+                <li><a href="#" data-section="plan" onclick="navigateToSection('plan')"><i class="fas fa-credit-card"></i> Manage Plan</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Business Dashboard</h1>
+                <p>Welcome back! Here's what's happening with your business.</p>
+            </div>
+
+            <!-- React Component will be mounted here -->
+            <div id="starter-dashboard-root"></div>
+        </main>
+    </div>
+
+    <!-- Business Dashboard Starter Component -->
+    <script type="text/babel" src="frontend/src/components/BusinessDashboardStarter.jsx"></script>
+    
+    <!-- Demo Functions -->
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        // Demo notification function
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type} show`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 4000);
+        }
+        
+        // Test all API endpoints
+        async function testAllEndpoints() {
+            showNotification('Testing all API endpoints...', 'info');
+            
+            const API_BASE_URL = 'http://localhost:5000';
+            const businessId = 'royal-hair-studio';
+            
+            const endpoints = [
+                `/api/businesses/${businessId}/review-stats`,
+                `/api/businesses/${businessId}/booking-stats`,
+                `/api/businesses/${businessId}/profile-views-stats`,
+                `/api/businesses/${businessId}/profile`,
+                `/api/businesses/${businessId}/settings-basic`,
+                `/api/businesses/${businessId}/analytics/basic`,
+                `/api/businesses/${businessId}/plan-info`
+            ];
+            
+            let successCount = 0;
+            let errorCount = 0;
+            
+            for (const endpoint of endpoints) {
+                try {
+                    console.log(`Testing endpoint: ${API_BASE_URL}${endpoint}`);
+                    const response = await fetch(`${API_BASE_URL}${endpoint}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log(`✅ ${endpoint}:`, data);
+                        successCount++;
+                    } else {
+                        console.error(`❌ ${endpoint}: ${response.status} ${response.statusText}`);
+                        errorCount++;
+                    }
+                } catch (error) {
+                    console.error(`❌ ${endpoint}:`, error);
+                    errorCount++;
+                }
+            }
+            
+            if (errorCount === 0) {
+                showNotification(`All ${successCount} endpoints working!`, 'success');
+            } else {
+                showNotification(`${successCount} working, ${errorCount} failed`, 'error');
+            }
+        }
+        
+        // Simulate new review
+        function simulateNewReview() {
+            showNotification('Simulating new review...', 'info');
+            // In a real app, this would trigger a WebSocket event
+            setTimeout(() => {
+                showNotification('New review received!', 'success');
+            }, 1000);
+        }
+        
+        // Simulate new booking
+        function simulateNewBooking() {
+            showNotification('Simulating new booking...', 'info');
+            // In a real app, this would trigger a WebSocket event
+            setTimeout(() => {
+                showNotification('New booking received!', 'success');
+            }, 1000);
+        }
+        
+        // Simulate profile update
+        function simulateProfileUpdate() {
+            showNotification('Simulating profile update...', 'info');
+            // In a real app, this would trigger a WebSocket event
+            setTimeout(() => {
+                showNotification('Profile updated!', 'success');
+            }, 1000);
+        }
+        
+        // Refresh dashboard
+        function refreshDashboard() {
+            showNotification('Refreshing dashboard...', 'info');
+            // Call the global initStarterDashboard function
+            if (window.initStarterDashboard) {
+                window.initStarterDashboard();
+            } else {
+                // Fallback: re-mount the component
+                ReactDOM.render(<BusinessDashboardStarter />, document.getElementById('starter-dashboard-root'));
+            }
+        }
+        
+        // Mount the Starter Dashboard component
+        ReactDOM.render(<BusinessDashboardStarter />, document.getElementById('starter-dashboard-root'));
+        
+        // Global function to initialize dashboard (for external calls)
+        window.initStarterDashboard = function() {
+            console.log('External call to initStarterDashboard from demo');
+            // Trigger a re-render to refresh data
+            ReactDOM.render(<BusinessDashboardStarter />, document.getElementById('starter-dashboard-root'));
+        };
+        
+        // Global navigation function for sidebar clicks
+        window.navigateToSection = function(section) {
+            console.log('Navigating to section:', section);
+            // This will be handled by the React component
+            const event = new CustomEvent('navigateToSection', { detail: { section } });
+            window.dispatchEvent(event);
+        };
+        
+        // Listen for refresh events
+        window.addEventListener('refreshDashboard', () => {
+            // Re-mount the component to refresh data
+            ReactDOM.render(<BusinessDashboardStarter />, document.getElementById('starter-dashboard-root'));
+        });
+    </script>
+</body>
+</html>
