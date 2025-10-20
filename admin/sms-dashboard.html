@@ -1,640 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin SMS Dashboard - BlkPages</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- SMS System -->
-    <script src="../backend/sms-credit-system.js"></script>
-    <script src="../backend/verified-business-numbers.js"></script>
-    <script src="../backend/verified-customer-numbers.js"></script>
-    <script src="../backend/sms-messaging-system.js"></script>
-    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            color: #ffffff;
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        /* Header */
-        .header {
-            background: rgba(0, 0, 0, 0.95);
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+        }
+        
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .header-content {
+        .dropdown-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-        
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
             color: #ffffff;
             text-decoration: none;
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .admin-badge {
-            background: linear-gradient(135deg, #EF4444, #DC2626);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
             font-size: 0.9rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        /* Main Content */
-        .main-content {
-            padding: 2rem 0;
-        }
-        
-        .dashboard-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .dashboard-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .dashboard-subtitle {
-            color: #cccccc;
-            font-size: 1.1rem;
-        }
-        
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-        
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-        }
-        
-        .stat-card h3 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #10B981;
-        }
-        
-        .stat-card p {
-            color: #cccccc;
-            font-size: 0.9rem;
-        }
-        
-        /* Business Usage Table */
-        .business-usage-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #ffffff;
-        }
-        
-        .refresh-btn {
-            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .refresh-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-        }
-        
-        .business-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        
-        .business-table th,
-        .business-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .business-table th {
-            background: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
-            font-weight: 600;
-        }
-        
-        .business-table td {
-            color: #cccccc;
-        }
-        
-        .business-name {
-            font-weight: 600;
-            color: #ffffff;
-        }
-        
-        .usage-bar {
-            width: 100%;
-            height: 8px;
+        .dropdown-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 0.5rem 0;
         }
         
-        .usage-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        
-        .usage-fill.low {
-            background: linear-gradient(90deg, #10B981, #059669);
-        }
-        
-        .usage-fill.warning {
-            background: linear-gradient(90deg, #F59E0B, #D97706);
-        }
-        
-        .usage-fill.critical {
-            background: linear-gradient(90deg, #EF4444, #DC2626);
-        }
-        
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        
-        .status-badge.low {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #10B981;
-        }
-        
-        .status-badge.warning {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            color: #F59E0B;
-        }
-        
-        .status-badge.critical {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #EF4444;
-        }
-        
-        .action-btn {
-            background: linear-gradient(135deg, #10B981, #059669);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .action-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-        
-        /* Audit Logs */
-        .audit-logs-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-        
-        .audit-log {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .audit-log-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .audit-log-type {
-            font-weight: 600;
-            color: #10B981;
-        }
-        
-        .audit-log-time {
-            color: #cccccc;
-            font-size: 0.9rem;
-        }
-        
-        .audit-log-details {
-            color: #cccccc;
-            font-size: 0.9rem;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .business-table {
-                font-size: 0.8rem;
-            }
-            
-            .business-table th,
-            .business-table td {
-                padding: 0.5rem;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <a href="#" class="logo">BlkPages Admin</a>
-                <div class="admin-badge">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Admin Dashboard</span>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-            </div>
-        </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="dashboard-header">
-                <h1 class="dashboard-title">SMS System Admin Dashboard</h1>
-                <p class="dashboard-subtitle">Monitor SMS usage, credits, and system performance across all businesses</p>
-            </div>
-
-            <!-- Overall Stats -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3 id="totalBusinesses">0</h3>
-                    <p>Total Businesses</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="totalSMSSent">0</h3>
-                    <p>SMS Messages Sent</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="totalCreditsUsed">0</h3>
-                    <p>Credits Used This Month</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="lowCreditBusinesses">0</h3>
-                    <p>Businesses Under 20%</p>
-                </div>
-            </div>
-
-            <!-- Business Usage Table -->
-            <div class="business-usage-section">
-                <div class="section-header">
-                    <h2 class="section-title">Business SMS Usage</h2>
-                    <button class="refresh-btn" onclick="refreshBusinessUsage()">
-                        <i class="fas fa-sync-alt"></i>
-                        Refresh Data
-                    </button>
-                </div>
-                
-                <table class="business-table">
-                    <thead>
-                        <tr>
-                            <th>Business Name</th>
-                            <th>Plan</th>
-                            <th>Usage</th>
-                            <th>Remaining</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="businessUsageTable">
-                        <!-- Business data will be populated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Recent Audit Logs -->
-            <div class="audit-logs-section">
-                <div class="section-header">
-                    <h2 class="section-title">Recent SMS Audit Logs</h2>
-                    <button class="refresh-btn" onclick="refreshAuditLogs()">
-                        <i class="fas fa-sync-alt"></i>
-                        Refresh Logs
-                    </button>
-                </div>
-                
-                <div id="auditLogsContainer">
-                    <!-- Audit logs will be populated by JavaScript -->
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        // ==================== ADMIN SMS DASHBOARD ====================
-        
-        /**
-         * Initialize admin dashboard
-         */
-        function initializeAdminDashboard() {
-            loadOverallStats();
-            loadBusinessUsage();
-            loadAuditLogs();
-        }
-
-        /**
-         * Load overall statistics
-         */
-        function loadOverallStats() {
-            // Mock data for demo
-            const stats = {
-                totalBusinesses: 127,
-                totalSMSSent: 15420,
-                totalCreditsUsed: 12350,
-                lowCreditBusinesses: 23
-            };
-
-            document.getElementById('totalBusinesses').textContent = stats.totalBusinesses;
-            document.getElementById('totalSMSSent').textContent = stats.totalSMSSent.toLocaleString();
-            document.getElementById('totalCreditsUsed').textContent = stats.totalCreditsUsed.toLocaleString();
-            document.getElementById('lowCreditBusinesses').textContent = stats.lowCreditBusinesses;
-        }
-
-        /**
-         * Load business usage data
-         */
-        function loadBusinessUsage() {
-            const businesses = [
-                {
-                    name: "Royal Hair Studio",
-                    plan: "Starter",
-                    used: 45,
-                    total: 50,
-                    remaining: 5,
-                    status: "warning"
-                },
-                {
-                    name: "Beauty Studio",
-                    plan: "Professional",
-                    used: 12,
-                    total: 50,
-                    remaining: 38,
-                    status: "low"
-                },
-                {
-                    name: "Fitness Studio",
-                    plan: "Starter",
-                    used: 50,
-                    total: 50,
-                    remaining: 0,
-                    status: "critical"
-                },
-                {
-                    name: "Spa Retreat",
-                    plan: "Professional",
-                    used: 8,
-                    total: 50,
-                    remaining: 42,
-                    status: "low"
-                },
-                {
-                    name: "Nail Salon",
-                    plan: "Starter",
-                    used: 48,
-                    total: 50,
-                    remaining: 2,
-                    status: "warning"
-                }
-            ];
-
-            const tableBody = document.getElementById('businessUsageTable');
-            tableBody.innerHTML = '';
-
-            businesses.forEach(business => {
-                const usagePercentage = (business.used / business.total) * 100;
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td class="business-name">${business.name}</td>
-                    <td>${business.plan}</td>
-                    <td>
-                        <div class="usage-bar">
-                            <div class="usage-fill ${business.status}" style="width: ${usagePercentage}%"></div>
-                        </div>
-                        <div style="font-size: 0.8rem; color: #cccccc;">
-                            ${business.used}/${business.total} SMS
-                        </div>
-                    </td>
-                    <td>${business.remaining}</td>
-                    <td>
-                        <span class="status-badge ${business.status}">
-                            <i class="fas fa-${business.status === 'critical' ? 'exclamation-circle' : business.status === 'warning' ? 'exclamation-triangle' : 'check-circle'}"></i>
-                            ${business.status === 'critical' ? 'Critical' : business.status === 'warning' ? 'Warning' : 'Good'}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="action-btn" onclick="adjustCredits('${business.name}', ${business.remaining})">
-                            <i class="fas fa-plus"></i> Add Credits
-                        </button>
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-        }
-
-        /**
-         * Load audit logs
-         */
-        function loadAuditLogs() {
-            const auditLogs = [
-                {
-                    type: "credits_deducted",
-                    time: "2 minutes ago",
-                    details: "Royal Hair Studio - 1 SMS sent (booking confirmation)"
-                },
-                {
-                    type: "low_credit_warning_sent",
-                    time: "5 minutes ago",
-                    details: "Beauty Studio - 80% usage warning email sent"
-                },
-                {
-                    type: "addon_purchased",
-                    time: "15 minutes ago",
-                    details: "Fitness Studio - 50 SMS credits added (£3.00)"
-                },
-                {
-                    type: "sms_failed",
-                    time: "1 hour ago",
-                    details: "Spa Retreat - SMS delivery failed (invalid number)"
-                },
-                {
-                    type: "verification_successful",
-                    time: "2 hours ago",
-                    details: "Nail Salon - Business phone number verified"
-                }
-            ];
-
-            const container = document.getElementById('auditLogsContainer');
-            container.innerHTML = '';
-
-            auditLogs.forEach(log => {
-                const logElement = document.createElement('div');
-                logElement.className = 'audit-log';
-                
-                logElement.innerHTML = `
-                    <div class="audit-log-header">
-                        <span class="audit-log-type">${log.type.replace(/_/g, ' ').toUpperCase()}</span>
-                        <span class="audit-log-time">${log.time}</span>
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
                     </div>
-                    <div class="audit-log-details">${log.details}</div>
-                `;
-                
-                container.appendChild(logElement);
-            });
-        }
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
 
-        /**
-         * Refresh business usage data
-         */
-        function refreshBusinessUsage() {
-            console.log('Refreshing business usage data...');
-            loadBusinessUsage();
-            showNotification('Business usage data refreshed', 'success');
-        }
-
-        /**
-         * Refresh audit logs
-         */
-        function refreshAuditLogs() {
-            console.log('Refreshing audit logs...');
-            loadAuditLogs();
-            showNotification('Audit logs refreshed', 'success');
-        }
-
-        /**
-         * Adjust credits for a business
-         */
-        function adjustCredits(businessName, currentCredits) {
-            const credits = prompt(`Adjust SMS credits for ${businessName}:\n\nCurrent credits: ${currentCredits}\n\nEnter new credit amount:`, currentCredits);
-            
-            if (credits !== null && !isNaN(credits) && credits >= 0) {
-                console.log(`Adjusting credits for ${businessName} to ${credits}`);
-                showNotification(`Credits adjusted for ${businessName}`, 'success');
-                loadBusinessUsage(); // Refresh the table
-            }
-        }
-
-        /**
-         * Show notification
-         */
-        function showNotification(message, type = 'info') {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6'};
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-                z-index: 1000;
-                font-weight: 500;
-            `;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-
-        /**
-         * Initialize dashboard on page load
-         */
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeAdminDashboard();
-        });
-    </script>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><!-- Header --><!-- Main Content --><main><div><h1>SMS System Admin Dashboard</h1><p>Monitor SMS usage, credits, and system performance across all businesses</p></div><!-- Overall Stats --><div><div><h3>0</h3><p>Total Businesses</p></div><div><h3>0</h3><p>SMS Messages Sent</p></div><div><h3>0</h3><p>Credits Used This Month</p></div><div><h3>0</h3><p>Businesses Under 20%</p></div></div><!-- Business Usage Table --><div><div><h2>Business SMS Usage</h2><button onclick="refreshBusinessUsage()"><i></i> Refresh Data </button></div><table><thead><tr><th>Business Name</th><th>Plan</th><th>Usage</th><th>Remaining</th><th>Status</th><th>Actions</th></tr></thead><tbody><!-- Business data will be populated by JavaScript --></tbody></table></div><!-- Recent Audit Logs --><div><div><h2>Recent SMS Audit Logs</h2><button onclick="refreshAuditLogs()"><i></i> Refresh Logs </button></div><div><!-- Audit logs will be populated by JavaScript --></div></div></main></div><script> // ==================== ADMIN SMS DASHBOARD ==================== /** * Initialize admin dashboard */ function initializeAdminDashboard() { loadOverallStats(); loadBusinessUsage(); loadAuditLogs(); } /** * Load overall statistics */ function loadOverallStats() { // Mock data for demo const stats = { totalBusinesses: 127, totalSMSSent: 15420, totalCreditsUsed: 12350, lowCreditBusinesses: 23 }; document.getElementById('totalBusinesses').textContent = stats.totalBusinesses; document.getElementById('totalSMSSent').textContent = stats.totalSMSSent.toLocaleString(); document.getElementById('totalCreditsUsed').textContent = stats.totalCreditsUsed.toLocaleString(); document.getElementById('lowCreditBusinesses').textContent = stats.lowCreditBusinesses; } /** * Load business usage data */ function loadBusinessUsage() { const businesses = [ { name: "Royal Hair Studio", plan: "Starter", used: 45, total: 50, remaining: 5, status: "warning" }, { name: "Beauty Studio", plan: "Professional", used: 12, total: 50, remaining: 38, status: "low" }, { name: "Fitness Studio", plan: "Starter", used: 50, total: 50, remaining: 0, status: "critical" }, { name: "Spa Retreat", plan: "Professional", used: 8, total: 50, remaining: 42, status: "low" }, { name: "Nail Salon", plan: "Starter", used: 48, total: 50, remaining: 2, status: "warning" } ]; const tableBody = document.getElementById('businessUsageTable'); tableBody.innerHTML = ''; businesses.forEach(business => { const usagePercentage = (business.used / business.total) * 100; const row = document.createElement('tr'); row.innerHTML = ` <td>${business.name}</td><td>${business.plan}</td><td><div><div></div></div><div> ${business.used}/${business.total} SMS </div></td><td>${business.remaining}</td><td><span><i></i> ${business.status === 'critical' ? 'Critical' : business.status === 'warning' ? 'Warning' : 'Good'} </span></td><td><button onclick="adjustCredits('${business.name}', ${business.remaining})"><i></i> Add Credits </button></td> `; tableBody.appendChild(row); }); } /** * Load audit logs */ function loadAuditLogs() { const auditLogs = [ { type: "credits_deducted", time: "2 minutes ago", details: "Royal Hair Studio - 1 SMS sent (booking confirmation)" }, { type: "low_credit_warning_sent", time: "5 minutes ago", details: "Beauty Studio - 80% usage warning email sent" }, { type: "addon_purchased", time: "15 minutes ago", details: "Fitness Studio - 50 SMS credits added (£3.00)" }, { type: "sms_failed", time: "1 hour ago", details: "Spa Retreat - SMS delivery failed (invalid number)" }, { type: "verification_successful", time: "2 hours ago", details: "Nail Salon - Business phone number verified" } ]; const container = document.getElementById('auditLogsContainer'); container.innerHTML = ''; auditLogs.forEach(log => { const logElement = document.createElement('div'); logElement.className = 'audit-log'; logElement.innerHTML = ` <div><span>${log.type.replace(/_/g, ' ').toUpperCase()}</span><span>${log.time}</span></div><div>${log.details}</div> `; container.appendChild(logElement); }); } /** * Refresh business usage data */ function refreshBusinessUsage() { console.log('Refreshing business usage data...'); loadBusinessUsage(); showNotification('Business usage data refreshed', 'success'); } /** * Refresh audit logs */ function refreshAuditLogs() { console.log('Refreshing audit logs...'); loadAuditLogs(); showNotification('Audit logs refreshed', 'success'); } /** * Adjust credits for a business */ function adjustCredits(businessName, currentCredits) { const credits = prompt(`Adjust SMS credits for ${businessName}:\n\nCurrent credits: ${currentCredits}\n\nEnter new credit amount:`, currentCredits); if (credits !== null && !isNaN(credits) && credits >= 0) { console.log(`Adjusting credits for ${businessName} to ${credits}`); showNotification(`Credits adjusted for ${businessName}`, 'success'); loadBusinessUsage(); // Refresh the table } } /** * Show notification */ function showNotification(message, type = 'info') { // Create notification element const notification = document.createElement('div'); notification.style.cssText = ` position: fixed; top: 20px; right: 20px; background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6'}; color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); z-index: 1000; font-weight: 500; `; notification.textContent = message; document.body.appendChild(notification); // Remove after 3 seconds setTimeout(() => { notification.remove(); }, 3000); } /** * Initialize dashboard on page load */ document.addEventListener('DOMContentLoaded', function() { initializeAdminDashboard(); }); </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

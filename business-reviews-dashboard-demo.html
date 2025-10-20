@@ -1,770 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Business Reviews Dashboard - BlkPages</title>
-    <link rel="stylesheet" href="frontend/src/components/BusinessReviewsDashboard.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            background: #1a1a1a;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .demo-header {
-            background: linear-gradient(135deg, #1E90FF, #9c27b0);
-            color: white;
-            padding: 2rem;
-            text-align: center;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .demo-header h1 {
-            margin: 0 0 0.5rem 0;
-            font-size: 2.5rem;
-            font-weight: 700;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .demo-header p {
-            margin: 0;
-            opacity: 0.9;
-            font-size: 1.1rem;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .demo-controls {
-            background: #2a2a2a;
-            padding: 1.5rem;
-            border-bottom: 1px solid #444444;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .controls-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            max-width: 1200px;
-            margin: 0 auto;
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
         }
-        
-        .control-group {
-            background: #333333;
-            padding: 1rem;
-            border-radius: 12px;
-            border: 1px solid #555555;
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
         }
-        
-        .control-group h3 {
-            margin: 0 0 1rem 0;
-            color: #1E90FF;
-            font-size: 1.1rem;
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
         }
-        
-        .form-group {
-            margin-bottom: 1rem;
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
         }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #cccccc;
-            font-weight: 500;
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
         }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            background: #444444;
-            border: 1px solid #666666;
-            border-radius: 8px;
-            color: #ffffff;
-            font-size: 0.9rem;
-            box-sizing: border-box;
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
         }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #1E90FF;
-            box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
         }
-        
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
         }
         
-        .btn-primary {
-            background: linear-gradient(135deg, #1E90FF, #0066cc);
-            color: white;
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(30, 144, 255, 0.3);
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .btn-success {
-            background: linear-gradient(135deg, #28a745, #1e7e34);
-            color: white;
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .btn-success:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .btn-warning {
-            background: linear-gradient(135deg, #ffc107, #e0a800);
-            color: #212529;
-        }
-        
-        .btn-warning:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-        }
-        
-        .status-connected {
-            background: #28a745;
-            animation: pulse 2s infinite;
-        }
-        
-        .status-disconnected {
-            background: #dc3545;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .demo-stats {
-            background: #2a2a2a;
-            padding: 1rem;
-            border-bottom: 1px solid #444444;
-            text-align: center;
-        }
-        
-        .demo-stats p {
-            margin: 0;
-            color: #cccccc;
-        }
-        
-        .demo-stats strong {
-            color: #1E90FF;
-        }
-        
-        @media (max-width: 768px) {
-            .demo-header h1 {
-                font-size: 2rem;
-            }
-            
-            .controls-grid {
-                grid-template-columns: 1fr;
-            }
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="demo-header">
-        <h1>Business Reviews Dashboard</h1>
-        <p>Live review syncing with real-time updates and WebSocket integration</p>
-    </div>
-    
-    <div class="demo-controls">
-        <div class="controls-grid">
-            <!-- WebSocket Status -->
-            <div class="control-group">
-                <h3>🔌 WebSocket Connection</h3>
-                <p>
-                    <span id="ws-status" class="status-indicator status-disconnected"></span>
-                    <span id="ws-text">Disconnected</span>
-                </p>
-                <button id="connect-ws" class="btn btn-primary">Connect WebSocket</button>
-                <button id="disconnect-ws" class="btn btn-warning">Disconnect</button>
-            </div>
-            
-            <!-- Create Review -->
-            <div class="control-group">
-                <h3>📝 Create New Review</h3>
-                <div class="form-group">
-                    <label for="reviewer-name">Reviewer Name</label>
-                    <input type="text" id="reviewer-name" placeholder="e.g., Alex Brown">
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-                <div class="form-group">
-                    <label for="review-rating">Rating</label>
-                    <select id="review-rating">
-                        <option value="5">5 Stars - Excellent</option>
-                        <option value="4">4 Stars - Good</option>
-                        <option value="3">3 Stars - Average</option>
-                        <option value="2">2 Stars - Poor</option>
-                        <option value="1">1 Star - Terrible</option>
-                    </select>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
                 </div>
-                <div class="form-group">
-                    <label for="review-text">Review Text</label>
-                    <textarea id="review-text" rows="3" placeholder="Write your review here..."></textarea>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
                 </div>
-                <button id="create-review" class="btn btn-success">Create Review</button>
             </div>
-            
-            <!-- Generate Sample Data -->
-            <div class="control-group">
-                <h3>🎲 Sample Data</h3>
-                <p>Generate sample reviews for testing</p>
-                <button id="generate-samples" class="btn btn-primary">Generate 5 Sample Reviews</button>
-                <button id="clear-reviews" class="btn btn-warning">Clear All Reviews</button>
-            </div>
-            
-            <!-- Test Notifications -->
-            <div class="control-group">
-                <h3>🔔 Test Notifications</h3>
-                <p>Test the notification system</p>
-                <button id="test-notification" class="btn btn-primary">Show Test Notification</button>
-                <button id="simulate-new-review" class="btn btn-success">Simulate New Review</button>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
-    </div>
+    </header>
     
-    <div class="demo-stats">
-        <p>Business ID: <strong id="business-id">royal-hair-studio</strong> | 
-           Total Reviews: <strong id="total-reviews">0</strong> | 
-           Average Rating: <strong id="avg-rating">0.0</strong></p>
-    </div>
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><h1>Business Reviews Dashboard</h1><p>Live review syncing with real-time updates and WebSocket integration</p></div><div><div><!-- WebSocket Status --><div><h3>🔌 WebSocket Connection</h3><p><span></span><span>Disconnected</span></p><button>Connect WebSocket</button><button>Disconnect</button></div><!-- Create Review --><div><h3>📝 Create New Review</h3><div><label for="reviewer-name">Reviewer Name</label><input type="text" placeholder="e.g., Alex Brown"></div><div><label for="review-rating">Rating</label><select><option value="5">5 Stars - Excellent</option><option value="4">4 Stars - Good</option><option value="3">3 Stars - Average</option><option value="2">2 Stars - Poor</option><option value="1">1 Star - Terrible</option></select></div><div><label for="review-text">Review Text</label><textarea rows="3" placeholder="Write your review here..."></textarea></div><button>Create Review</button></div><!-- Generate Sample Data --><div><h3>🎲 Sample Data</h3><p>Generate sample reviews for testing</p><button>Generate 5 Sample Reviews</button><button>Clear All Reviews</button></div><!-- Test Notifications --><div><h3>🔔 Test Notifications</h3><p>Test the notification system</p><button>Show Test Notification</button><button>Simulate New Review</button></div></div></div><div><p>Business ID: <strong>royal-hair-studio</strong> | Total Reviews: <strong>0</strong> | Average Rating: <strong>0.0</strong></p></div><!-- Reviews Dashboard Component --><div></div><!-- Review Data Synchronization --><script src="review-data-sync.js"></script><!-- React and Component Scripts --><script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script><script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script><script src="https://unpkg.com/@babel/standalone/babel.min.js"></script><script type="text/babel"> const { useState, useEffect, useRef } = React; // Business Reviews Dashboard Component const BusinessReviewsDashboard = () => { const [stats, setStats] = useState({ average_rating: 0, total_reviews: 0, reviews_this_month: 0, positive_percentage: 0 }); const [reviews, setReviews] = useState([]); const [loading, setLoading] = useState(true); const [newReviewsCount, setNewReviewsCount] = useState(0); const [replyingTo, setReplyingTo] = useState(null); const [replyText, setReplyText] = useState(''); const [submittingReply, setSubmittingReply] = useState(false); const businessId = 'royal-hair-studio'; // Fetch review statistics const fetchStats = async () => { try { const response = await fetch(`/api/businesses/${businessId}/review-stats`); const data = await response.json(); setStats(data); // Update demo stats document.getElementById('total-reviews').textContent = data.total_reviews; document.getElementById('avg-rating').textContent = data.average_rating.toFixed(1); } catch (error) { console.error('Error fetching review stats:', error); } }; // Fetch reviews list const fetchReviews = async () => { try { const response = await fetch(`/api/businesses/${businessId}/reviews`); const data = await response.json(); setReviews(data.reviews); } catch (error) { console.error('Error fetching reviews:', error); } }; // Fetch all data const fetchAllData = async () => { setLoading(true); await Promise.all([fetchStats(), fetchReviews()]); setLoading(false); }; // Initialize WebSocket connection const initializeWebSocket = () => { const wsUrl = `ws://localhost:5000`; wsRef.current = new WebSocket(wsUrl); wsRef.current.onopen = () => { console.log('WebSocket connected'); document.getElementById('ws-status').className = 'status-indicator status-connected'; document.getElementById('ws-text').textContent = 'Connected'; // Join business room wsRef.current.send(JSON.stringify({ type: 'join_business', businessId: businessId })); }; wsRef.current.onmessage = (event) => { const data = JSON.parse(event.data); if (data.type === 'new_review') { // Add new review to the list const newReview = { id: data.id, reviewer_name: data.reviewerName, rating: data.rating, text: data.text, date: data.createdAt, reply: null, reply_date: null }; setReviews(prev => [newReview, ...prev]); setNewReviewsCount(prev => prev + 1); // Update stats fetchStats(); // Show notification showNewReviewNotification(newReview); } }; wsRef.current.onclose = () => { console.log('WebSocket disconnected'); document.getElementById('ws-status').className = 'status-indicator status-disconnected'; document.getElementById('ws-text').textContent = 'Disconnected'; }; wsRef.current.onerror = (error) => { console.error('WebSocket error:', error); }; }; // Show notification for new review const showNewReviewNotification = (review) => { // Create notification element const notification = document.createElement('div'); notification.className = 'new-review-notification'; notification.innerHTML = ` <div><strong>New Review!</strong><p>${review.reviewer_name} left a ${review.rating}-star review</p></div> `; document.body.appendChild(notification); // Remove after 5 seconds setTimeout(() => { notification.remove(); }, 5000); }; // Submit reply to review const submitReply = async (reviewId) => { if (!replyText.trim()) return; setSubmittingReply(true); if (window.reviewDataSync) { // Use shared data sync utility const success = await window.reviewDataSync.submitReply(reviewId, replyText); if (success) { setReplyingTo(null); setReplyText(''); } } else { // Fallback to direct API call try { const response = await fetch(`/api/reviews/${reviewId}/reply`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reply: replyText }) }); if (response.ok) { // Update the review in the list setReviews(prev => prev.map(review => review.id === reviewId ? { ...review, reply: replyText, reply_date: new Date().toISOString() } : review )); setReplyingTo(null); setReplyText(''); } } catch (error) { console.error('Error submitting reply:', error); } } setSubmittingReply(false); }; // Clear new reviews count const clearNewReviewsCount = () => { if (window.reviewDataSync) { window.reviewDataSync.clearNewReviewsCount(); } else { setNewReviewsCount(0); } }; // Render star rating const renderStars = (rating) => { return Array.from({ length: 5 }, (_, i) => ( React.createElement('span', { key: i, className: `star ${i < rating ? 'filled' : ''}` }, '★') )); }; // Format date const formatDate = (dateString) => { return new Date(dateString).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); }; useEffect(() => { // Use shared data sync utility if (window.reviewDataSync) { const unsubscribe = window.reviewDataSync.subscribe((data) => { switch (data.type) { case 'stats_update': setStats(data.stats); highlightStatCards(); break; case 'reviews_update': setReviews(data.reviews); break; case 'new_review': setNewReviewsCount(data.newReviewsCount); showNewReviewNotification(data.review); break; case 'clear_new_reviews': setNewReviewsCount(0); break; } }); setLoading(false); return () => { if (unsubscribe) unsubscribe(); }; } else { // Fallback to direct API calls fetchAllData(); setLoading(false); const pollInterval = setInterval(fetchAllData, 30000); return () => clearInterval(pollInterval); } }, []); if (loading) { return React.createElement('div', { className: 'reviews-dashboard' }, React.createElement('div', { className: 'loading' }, 'Loading reviews...') ); } return React.createElement('div', { className: 'reviews-dashboard' }, React.createElement('div', { className: 'dashboard-header' }, React.createElement('h1', null, 'Reviews Dashboard'), React.createElement('p', null, 'Manage and respond to customer reviews') ), // Stats Cards React.createElement('div', { className: 'stats-grid' }, React.createElement('div', { className: 'stat-card' }, React.createElement('div', { className: 'stat-icon' }, '⭐'), React.createElement('div', { className: 'stat-content' }, React.createElement('h3', null, stats.average_rating.toFixed(1)), React.createElement('p', null, 'Average Rating') ) ), React.createElement('div', { className: 'stat-card' }, React.createElement('div', { className: 'stat-icon' }, '📝'), React.createElement('div', { className: 'stat-content' }, React.createElement('h3', null, stats.total_reviews), React.createElement('p', null, 'Total Reviews') ) ), React.createElement('div', { className: 'stat-card' }, React.createElement('div', { className: 'stat-icon' }, '📅'), React.createElement('div', { className: 'stat-content' }, React.createElement('h3', null, stats.reviews_this_month), React.createElement('p', null, 'This Month') ) ), React.createElement('div', { className: 'stat-card' }, React.createElement('div', { className: 'stat-icon' }, '👍'), React.createElement('div', { className: 'stat-content' }, React.createElement('h3', null, `${stats.positive_percentage}%`), React.createElement('p', null, 'Positive Reviews') ) ) ), // Reviews List React.createElement('div', { className: 'reviews-section' }, React.createElement('div', { className: 'section-header' }, React.createElement('h2', null, 'All Reviews'), newReviewsCount > 0 && React.createElement('button', { className: 'new-reviews-badge', onClick: clearNewReviewsCount }, `${newReviewsCount} new`) ), React.createElement('div', { className: 'reviews-list' }, reviews.length === 0 ? React.createElement('div', { className: 'no-reviews' }, React.createElement('p', null, 'No reviews yet. Encourage customers to leave reviews!') ) : reviews.map((review) => React.createElement('div', { key: review.id, className: 'review-card' }, React.createElement('div', { className: 'review-header' }, React.createElement('div', { className: 'reviewer-info' }, React.createElement('h4', null, review.reviewer_name), React.createElement('div', { className: 'review-rating' }, ...renderStars(review.rating) ) ), React.createElement('div', { className: 'review-date' }, formatDate(review.date) ) ), React.createElement('div', { className: 'review-text' }, review.text ), review.reply ? React.createElement('div', { className: 'review-reply' }, React.createElement('div', { className: 'reply-header' }, React.createElement('strong', null, 'Your Reply'), React.createElement('span', { className: 'reply-date' }, formatDate(review.reply_date) ) ), React.createElement('p', null, review.reply) ) : React.createElement('div', { className: 'reply-section' }, replyingTo === review.id ? React.createElement('div', { className: 'reply-form' }, React.createElement('textarea', { value: replyText, onChange: (e) => setReplyText(e.target.value), placeholder: 'Write your reply...', rows: 3 }), React.createElement('div', { className: 'reply-actions' }, React.createElement('button', { onClick: () => submitReply(review.id), disabled: submittingReply || !replyText.trim(), className: 'btn-primary' }, submittingReply ? 'Sending...' : 'Send Reply'), React.createElement('button', { onClick: () => { setReplyingTo(null); setReplyText(''); }, className: 'btn-secondary' }, 'Cancel') ) ) : React.createElement('button', { onClick: () => setReplyingTo(review.id), className: 'btn-reply' }, 'Reply to Review') ) ) ) ) ) ); }; // Demo Controls let ws = null; // WebSocket Controls document.getElementById('connect-ws').addEventListener('click', () => { if (ws) ws.close(); ws = new WebSocket('ws://localhost:5000'); ws.onopen = () => { document.getElementById('ws-status').className = 'status-indicator status-connected'; document.getElementById('ws-text').textContent = 'Connected'; ws.send(JSON.stringify({ type: 'join_business', businessId: 'royal-hair-studio' })); }; ws.onclose = () => { document.getElementById('ws-status').className = 'status-indicator status-disconnected'; document.getElementById('ws-text').textContent = 'Disconnected'; }; }); document.getElementById('disconnect-ws').addEventListener('click', () => { if (ws) { ws.close(); ws = null; } }); // Create Review document.getElementById('create-review').addEventListener('click', async () => { const name = document.getElementById('reviewer-name').value; const rating = document.getElementById('review-rating').value; const text = document.getElementById('review-text').value; if (!name || !text) { alert('Please fill in all fields'); return; } try { const response = await fetch('/api/businesses/royal-hair-studio/reviews', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reviewerName: name, rating: parseInt(rating), text }) }); if (response.ok) { document.getElementById('reviewer-name').value = ''; document.getElementById('review-text').value = ''; document.getElementById('review-rating').value = '5'; // Refresh the dashboard window.location.reload(); } } catch (error) { console.error('Error creating review:', error); } }); // Generate Sample Data document.getElementById('generate-samples').addEventListener('click', async () => { const samples = [ { name: 'Sarah Johnson', rating: 5, text: 'Amazing service! The staff was incredibly professional and the results exceeded my expectations.' }, { name: 'Michael Brown', rating: 4, text: 'Great experience overall. Clean environment and friendly staff. Would definitely recommend.' }, { name: 'Emma Davis', rating: 5, text: 'Outstanding quality and attention to detail. I\'ve been coming here for years and they never disappoint.' }, { name: 'James Wilson', rating: 3, text: 'Good service but had to wait a bit longer than expected. Staff was apologetic about the delay.' }, { name: 'Lisa Anderson', rating: 5, text: 'Perfect! Exactly what I was looking for. The team really knows their stuff.' } ]; for (const sample of samples) { try { await fetch('/api/businesses/royal-hair-studio/reviews', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sample) }); } catch (error) { console.error('Error creating sample review:', error); } } // Refresh the dashboard setTimeout(() => window.location.reload(), 1000); }); // Clear Reviews document.getElementById('clear-reviews').addEventListener('click', async () => { if (confirm('Are you sure you want to clear all reviews?')) { // This would need a DELETE endpoint in the real implementation alert('Clear reviews functionality would be implemented with a DELETE endpoint'); } }); // Test Notification document.getElementById('test-notification').addEventListener('click', () => { const notification = document.createElement('div'); notification.className = 'new-review-notification'; notification.innerHTML = ` <div><strong>Test Notification!</strong><p>This is a test notification to show the styling</p></div> `; document.body.appendChild(notification); setTimeout(() => { notification.remove(); }, 5000); }); // Simulate New Review document.getElementById('simulate-new-review').addEventListener('click', () => { if (ws && ws.readyState === WebSocket.OPEN) { const mockReview = { type: 'new_review', id: 'mock-' + Date.now(), reviewerName: 'Test Customer', rating: 5, text: 'This is a simulated review for testing purposes.', createdAt: new Date().toISOString() }; // Simulate receiving the message const event = new MessageEvent('message', { data: JSON.stringify(mockReview) }); // Trigger the message handler ws.onmessage(event); } else { alert('Please connect WebSocket first'); } }); // Render the dashboard ReactDOM.render(React.createElement(BusinessReviewsDashboard), document.getElementById('reviews-dashboard')); </script>
+        </div>
+    </main>
     
-    <!-- Reviews Dashboard Component -->
-    <div id="reviews-dashboard"></div>
-    
-    <!-- Review Data Synchronization -->
-    <script src="review-data-sync.js"></script>
-    
-    <!-- React and Component Scripts -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-        
-        // Business Reviews Dashboard Component
-        const BusinessReviewsDashboard = () => {
-            const [stats, setStats] = useState({
-                average_rating: 0,
-                total_reviews: 0,
-                reviews_this_month: 0,
-                positive_percentage: 0
-            });
-            const [reviews, setReviews] = useState([]);
-            const [loading, setLoading] = useState(true);
-            const [newReviewsCount, setNewReviewsCount] = useState(0);
-            const [replyingTo, setReplyingTo] = useState(null);
-            const [replyText, setReplyText] = useState('');
-            const [submittingReply, setSubmittingReply] = useState(false);
-            
-            const businessId = 'royal-hair-studio';
-
-            // Fetch review statistics
-            const fetchStats = async () => {
-                try {
-                    const response = await fetch(`/api/businesses/${businessId}/review-stats`);
-                    const data = await response.json();
-                    setStats(data);
-                    
-                    // Update demo stats
-                    document.getElementById('total-reviews').textContent = data.total_reviews;
-                    document.getElementById('avg-rating').textContent = data.average_rating.toFixed(1);
-                } catch (error) {
-                    console.error('Error fetching review stats:', error);
-                }
-            };
-
-            // Fetch reviews list
-            const fetchReviews = async () => {
-                try {
-                    const response = await fetch(`/api/businesses/${businessId}/reviews`);
-                    const data = await response.json();
-                    setReviews(data.reviews);
-                } catch (error) {
-                    console.error('Error fetching reviews:', error);
-                }
-            };
-
-            // Fetch all data
-            const fetchAllData = async () => {
-                setLoading(true);
-                await Promise.all([fetchStats(), fetchReviews()]);
-                setLoading(false);
-            };
-
-            // Initialize WebSocket connection
-            const initializeWebSocket = () => {
-                const wsUrl = `ws://localhost:5000`;
-                wsRef.current = new WebSocket(wsUrl);
-
-                wsRef.current.onopen = () => {
-                    console.log('WebSocket connected');
-                    document.getElementById('ws-status').className = 'status-indicator status-connected';
-                    document.getElementById('ws-text').textContent = 'Connected';
-                    
-                    // Join business room
-                    wsRef.current.send(JSON.stringify({
-                        type: 'join_business',
-                        businessId: businessId
-                    }));
-                };
-
-                wsRef.current.onmessage = (event) => {
-                    const data = JSON.parse(event.data);
-                    
-                    if (data.type === 'new_review') {
-                        // Add new review to the list
-                        const newReview = {
-                            id: data.id,
-                            reviewer_name: data.reviewerName,
-                            rating: data.rating,
-                            text: data.text,
-                            date: data.createdAt,
-                            reply: null,
-                            reply_date: null
-                        };
-                        
-                        setReviews(prev => [newReview, ...prev]);
-                        setNewReviewsCount(prev => prev + 1);
-                        
-                        // Update stats
-                        fetchStats();
-                        
-                        // Show notification
-                        showNewReviewNotification(newReview);
-                    }
-                };
-
-                wsRef.current.onclose = () => {
-                    console.log('WebSocket disconnected');
-                    document.getElementById('ws-status').className = 'status-indicator status-disconnected';
-                    document.getElementById('ws-text').textContent = 'Disconnected';
-                };
-
-                wsRef.current.onerror = (error) => {
-                    console.error('WebSocket error:', error);
-                };
-            };
-
-            // Show notification for new review
-            const showNewReviewNotification = (review) => {
-                // Create notification element
-                const notification = document.createElement('div');
-                notification.className = 'new-review-notification';
-                notification.innerHTML = `
-                    <div class="notification-content">
-                        <strong>New Review!</strong>
-                        <p>${review.reviewer_name} left a ${review.rating}-star review</p>
-                    </div>
-                `;
-                
-                document.body.appendChild(notification);
-                
-                // Remove after 5 seconds
-                setTimeout(() => {
-                    notification.remove();
-                }, 5000);
-            };
-
-            // Submit reply to review
-            const submitReply = async (reviewId) => {
-                if (!replyText.trim()) return;
-                
-                setSubmittingReply(true);
-                
-                if (window.reviewDataSync) {
-                    // Use shared data sync utility
-                    const success = await window.reviewDataSync.submitReply(reviewId, replyText);
-                    if (success) {
-                        setReplyingTo(null);
-                        setReplyText('');
-                    }
-                } else {
-                    // Fallback to direct API call
-                    try {
-                        const response = await fetch(`/api/reviews/${reviewId}/reply`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ reply: replyText })
-                        });
-                        
-                        if (response.ok) {
-                            // Update the review in the list
-                            setReviews(prev => prev.map(review => 
-                                review.id === reviewId 
-                                    ? { 
-                                        ...review, 
-                                        reply: replyText,
-                                        reply_date: new Date().toISOString()
-                                    }
-                                    : review
-                            ));
-                            
-                            setReplyingTo(null);
-                            setReplyText('');
-                        }
-                    } catch (error) {
-                        console.error('Error submitting reply:', error);
-                    }
-                }
-                setSubmittingReply(false);
-            };
-
-            // Clear new reviews count
-            const clearNewReviewsCount = () => {
-                if (window.reviewDataSync) {
-                    window.reviewDataSync.clearNewReviewsCount();
-                } else {
-                    setNewReviewsCount(0);
-                }
-            };
-
-            // Render star rating
-            const renderStars = (rating) => {
-                return Array.from({ length: 5 }, (_, i) => (
-                    React.createElement('span', {
-                        key: i,
-                        className: `star ${i < rating ? 'filled' : ''}`
-                    }, '★')
-                ));
-            };
-
-            // Format date
-            const formatDate = (dateString) => {
-                return new Date(dateString).toLocaleDateString('en-GB', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            };
-
-            useEffect(() => {
-                // Use shared data sync utility
-                if (window.reviewDataSync) {
-                    const unsubscribe = window.reviewDataSync.subscribe((data) => {
-                        switch (data.type) {
-                            case 'stats_update':
-                                setStats(data.stats);
-                                highlightStatCards();
-                                break;
-                            case 'reviews_update':
-                                setReviews(data.reviews);
-                                break;
-                            case 'new_review':
-                                setNewReviewsCount(data.newReviewsCount);
-                                showNewReviewNotification(data.review);
-                                break;
-                            case 'clear_new_reviews':
-                                setNewReviewsCount(0);
-                                break;
-                        }
-                    });
-                    
-                    setLoading(false);
-                    
-                    return () => {
-                        if (unsubscribe) unsubscribe();
-                    };
-                } else {
-                    // Fallback to direct API calls
-                    fetchAllData();
-                    setLoading(false);
-                    
-                    const pollInterval = setInterval(fetchAllData, 30000);
-                    return () => clearInterval(pollInterval);
-                }
-            }, []);
-
-            if (loading) {
-                return React.createElement('div', { className: 'reviews-dashboard' },
-                    React.createElement('div', { className: 'loading' }, 'Loading reviews...')
-                );
-            }
-
-            return React.createElement('div', { className: 'reviews-dashboard' },
-                React.createElement('div', { className: 'dashboard-header' },
-                    React.createElement('h1', null, 'Reviews Dashboard'),
-                    React.createElement('p', null, 'Manage and respond to customer reviews')
-                ),
-
-                // Stats Cards
-                React.createElement('div', { className: 'stats-grid' },
-                    React.createElement('div', { className: 'stat-card' },
-                        React.createElement('div', { className: 'stat-icon' }, '⭐'),
-                        React.createElement('div', { className: 'stat-content' },
-                            React.createElement('h3', null, stats.average_rating.toFixed(1)),
-                            React.createElement('p', null, 'Average Rating')
-                        )
-                    ),
-                    
-                    React.createElement('div', { className: 'stat-card' },
-                        React.createElement('div', { className: 'stat-icon' }, '📝'),
-                        React.createElement('div', { className: 'stat-content' },
-                            React.createElement('h3', null, stats.total_reviews),
-                            React.createElement('p', null, 'Total Reviews')
-                        )
-                    ),
-                    
-                    React.createElement('div', { className: 'stat-card' },
-                        React.createElement('div', { className: 'stat-icon' }, '📅'),
-                        React.createElement('div', { className: 'stat-content' },
-                            React.createElement('h3', null, stats.reviews_this_month),
-                            React.createElement('p', null, 'This Month')
-                        )
-                    ),
-                    
-                    React.createElement('div', { className: 'stat-card' },
-                        React.createElement('div', { className: 'stat-icon' }, '👍'),
-                        React.createElement('div', { className: 'stat-content' },
-                            React.createElement('h3', null, `${stats.positive_percentage}%`),
-                            React.createElement('p', null, 'Positive Reviews')
-                        )
-                    )
-                ),
-
-                // Reviews List
-                React.createElement('div', { className: 'reviews-section' },
-                    React.createElement('div', { className: 'section-header' },
-                        React.createElement('h2', null, 'All Reviews'),
-                        newReviewsCount > 0 && React.createElement('button', {
-                            className: 'new-reviews-badge',
-                            onClick: clearNewReviewsCount
-                        }, `${newReviewsCount} new`)
-                    ),
-                    
-                    React.createElement('div', { className: 'reviews-list' },
-                        reviews.length === 0 ? 
-                            React.createElement('div', { className: 'no-reviews' },
-                                React.createElement('p', null, 'No reviews yet. Encourage customers to leave reviews!')
-                            ) :
-                            reviews.map((review) => 
-                                React.createElement('div', { key: review.id, className: 'review-card' },
-                                    React.createElement('div', { className: 'review-header' },
-                                        React.createElement('div', { className: 'reviewer-info' },
-                                            React.createElement('h4', null, review.reviewer_name),
-                                            React.createElement('div', { className: 'review-rating' },
-                                                ...renderStars(review.rating)
-                                            )
-                                        ),
-                                        React.createElement('div', { className: 'review-date' },
-                                            formatDate(review.date)
-                                        )
-                                    ),
-                                    
-                                    React.createElement('div', { className: 'review-text' },
-                                        review.text
-                                    ),
-                                    
-                                    review.reply ? 
-                                        React.createElement('div', { className: 'review-reply' },
-                                            React.createElement('div', { className: 'reply-header' },
-                                                React.createElement('strong', null, 'Your Reply'),
-                                                React.createElement('span', { className: 'reply-date' },
-                                                    formatDate(review.reply_date)
-                                                )
-                                            ),
-                                            React.createElement('p', null, review.reply)
-                                        ) :
-                                        React.createElement('div', { className: 'reply-section' },
-                                            replyingTo === review.id ? 
-                                                React.createElement('div', { className: 'reply-form' },
-                                                    React.createElement('textarea', {
-                                                        value: replyText,
-                                                        onChange: (e) => setReplyText(e.target.value),
-                                                        placeholder: 'Write your reply...',
-                                                        rows: 3
-                                                    }),
-                                                    React.createElement('div', { className: 'reply-actions' },
-                                                        React.createElement('button', {
-                                                            onClick: () => submitReply(review.id),
-                                                            disabled: submittingReply || !replyText.trim(),
-                                                            className: 'btn-primary'
-                                                        }, submittingReply ? 'Sending...' : 'Send Reply'),
-                                                        React.createElement('button', {
-                                                            onClick: () => {
-                                                                setReplyingTo(null);
-                                                                setReplyText('');
-                                                            },
-                                                            className: 'btn-secondary'
-                                                        }, 'Cancel')
-                                                    )
-                                                ) :
-                                                React.createElement('button', {
-                                                    onClick: () => setReplyingTo(review.id),
-                                                    className: 'btn-reply'
-                                                }, 'Reply to Review')
-                                        )
-                                )
-                            )
-                    )
-                )
-            );
-        };
-
-        // Demo Controls
-        let ws = null;
-        
-        // WebSocket Controls
-        document.getElementById('connect-ws').addEventListener('click', () => {
-            if (ws) ws.close();
-            ws = new WebSocket('ws://localhost:5000');
-            
-            ws.onopen = () => {
-                document.getElementById('ws-status').className = 'status-indicator status-connected';
-                document.getElementById('ws-text').textContent = 'Connected';
-                ws.send(JSON.stringify({
-                    type: 'join_business',
-                    businessId: 'royal-hair-studio'
-                }));
-            };
-            
-            ws.onclose = () => {
-                document.getElementById('ws-status').className = 'status-indicator status-disconnected';
-                document.getElementById('ws-text').textContent = 'Disconnected';
-            };
-        });
-        
-        document.getElementById('disconnect-ws').addEventListener('click', () => {
-            if (ws) {
-                ws.close();
-                ws = null;
-            }
-        });
-        
-        // Create Review
-        document.getElementById('create-review').addEventListener('click', async () => {
-            const name = document.getElementById('reviewer-name').value;
-            const rating = document.getElementById('review-rating').value;
-            const text = document.getElementById('review-text').value;
-            
-            if (!name || !text) {
-                alert('Please fill in all fields');
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/businesses/royal-hair-studio/reviews', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ reviewerName: name, rating: parseInt(rating), text })
-                });
-                
-                if (response.ok) {
-                    document.getElementById('reviewer-name').value = '';
-                    document.getElementById('review-text').value = '';
-                    document.getElementById('review-rating').value = '5';
-                    
-                    // Refresh the dashboard
-                    window.location.reload();
-                }
-            } catch (error) {
-                console.error('Error creating review:', error);
-            }
-        });
-        
-        // Generate Sample Data
-        document.getElementById('generate-samples').addEventListener('click', async () => {
-            const samples = [
-                { name: 'Sarah Johnson', rating: 5, text: 'Amazing service! The staff was incredibly professional and the results exceeded my expectations.' },
-                { name: 'Michael Brown', rating: 4, text: 'Great experience overall. Clean environment and friendly staff. Would definitely recommend.' },
-                { name: 'Emma Davis', rating: 5, text: 'Outstanding quality and attention to detail. I\'ve been coming here for years and they never disappoint.' },
-                { name: 'James Wilson', rating: 3, text: 'Good service but had to wait a bit longer than expected. Staff was apologetic about the delay.' },
-                { name: 'Lisa Anderson', rating: 5, text: 'Perfect! Exactly what I was looking for. The team really knows their stuff.' }
-            ];
-            
-            for (const sample of samples) {
-                try {
-                    await fetch('/api/businesses/royal-hair-studio/reviews', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(sample)
-                    });
-                } catch (error) {
-                    console.error('Error creating sample review:', error);
-                }
-            }
-            
-            // Refresh the dashboard
-            setTimeout(() => window.location.reload(), 1000);
-        });
-        
-        // Clear Reviews
-        document.getElementById('clear-reviews').addEventListener('click', async () => {
-            if (confirm('Are you sure you want to clear all reviews?')) {
-                // This would need a DELETE endpoint in the real implementation
-                alert('Clear reviews functionality would be implemented with a DELETE endpoint');
-            }
-        });
-        
-        // Test Notification
-        document.getElementById('test-notification').addEventListener('click', () => {
-            const notification = document.createElement('div');
-            notification.className = 'new-review-notification';
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <strong>Test Notification!</strong>
-                    <p>This is a test notification to show the styling</p>
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 5000);
-        });
-        
-        // Simulate New Review
-        document.getElementById('simulate-new-review').addEventListener('click', () => {
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                const mockReview = {
-                    type: 'new_review',
-                    id: 'mock-' + Date.now(),
-                    reviewerName: 'Test Customer',
-                    rating: 5,
-                    text: 'This is a simulated review for testing purposes.',
-                    createdAt: new Date().toISOString()
-                };
-                
-                // Simulate receiving the message
-                const event = new MessageEvent('message', {
-                    data: JSON.stringify(mockReview)
-                });
-                
-                // Trigger the message handler
-                ws.onmessage(event);
-            } else {
-                alert('Please connect WebSocket first');
-            }
-        });
-        
-        // Render the dashboard
-        ReactDOM.render(React.createElement(BusinessReviewsDashboard), document.getElementById('reviews-dashboard'));
-    </script>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

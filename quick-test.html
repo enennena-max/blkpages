@@ -1,114 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quick Test - Business Registration Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
-            color: white;
-            padding: 2rem;
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #1a1a1a;
-            padding: 2rem;
-            border-radius: 15px;
-            border: 1px solid #333;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .step {
-            background: #2a2a2a;
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            border-left: 4px solid #1E90FF;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .step h3 {
-            color: #1E90FF;
-            margin-bottom: 0.5rem;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            margin: 0.5rem;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
             text-decoration: none;
-            display: inline-block;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .btn:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .btn-success {
-            background: #28a745;
-        }
-        
-        .btn-success:hover {
-            background: #1e7e34;
-        }
-        
-        .highlight {
-            background: #1E90FF;
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-weight: 600;
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1 style="text-align: center; margin-bottom: 2rem; color: #1E90FF;">🚀 Quick Test: Business Registration Flow</h1>
-        
-        <div class="step">
-            <h3>Step 1: Register a Business</h3>
-            <p>Click the button below to open the business registration form. Fill it out completely and submit it.</p>
-            <a href="business-register.html" target="_blank" class="btn">Open Registration Form</a>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
         </div>
-        
-        <div class="step">
-            <h3>Step 2: See Your Business in Browse</h3>
-            <p>After submitting the form, click the button below to see your business automatically appear in the browse tool.</p>
-            <a href="browse-demo.html" target="_blank" class="btn btn-success">View Browse Demo</a>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><h1>🚀 Quick Test: Business Registration Flow</h1><div><h3>Step 1: Register a Business</h3><p>Click the button below to open the business registration form. Fill it out completely and submit it.</p><a href="business-register.html" target="_blank">Open Registration Form</a></div><div><h3>Step 2: See Your Business in Browse</h3><p>After submitting the form, click the button below to see your business automatically appear in the browse tool.</p><a href="browse-demo.html" target="_blank">View Browse Demo</a></div><div><h3>Step 3: Test Search Results</h3><p>Your business will also appear in search results when customers search by category or location.</p><a href="search-results.html" target="_blank">Test Search Results</a></div><div><h3>Step 4: Complete System Test</h3><p>For a comprehensive test of all features, use the business flow test page.</p><a href="business-flow-test.html" target="_blank">Full System Test</a></div><div><h3>✅ What Happens When You Register:</h3><ul><li>Business data is <span>automatically saved</span> to the system</li><li>Business appears in <span>category listings</span> (e.g., "Hairdresser")</li><li>Business appears in <span>location searches</span> (e.g., "London")</li><li>Business shows appropriate <span>features based on package</span></li><li>Business is <span>immediately available</span> in browse tool</li></ul></div></div>
         </div>
-        
-        <div class="step">
-            <h3>Step 3: Test Search Results</h3>
-            <p>Your business will also appear in search results when customers search by category or location.</p>
-            <a href="search-results.html" target="_blank" class="btn">Test Search Results</a>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
         </div>
-        
-        <div class="step">
-            <h3>Step 4: Complete System Test</h3>
-            <p>For a comprehensive test of all features, use the business flow test page.</p>
-            <a href="business-flow-test.html" target="_blank" class="btn">Full System Test</a>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
         </div>
-        
-        <div style="background: #2a2a2a; padding: 1.5rem; border-radius: 10px; margin-top: 2rem; border: 1px solid #1E90FF;">
-            <h3 style="color: #1E90FF; margin-bottom: 1rem;">✅ What Happens When You Register:</h3>
-            <ul style="color: #cccccc; line-height: 1.8;">
-                <li>Business data is <span class="highlight">automatically saved</span> to the system</li>
-                <li>Business appears in <span class="highlight">category listings</span> (e.g., "Hairdresser")</li>
-                <li>Business appears in <span class="highlight">location searches</span> (e.g., "London")</li>
-                <li>Business shows appropriate <span class="highlight">features based on package</span></li>
-                <li>Business is <span class="highlight">immediately available</span> in browse tool</li>
-            </ul>
-        </div>
-    </div>
+    </footer>
 </body>
 </html>

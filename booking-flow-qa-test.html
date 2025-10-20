@@ -1,435 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Booking Flow QA Test - BlkPages</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            color: #ffffff;
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 2rem;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .test-header {
-            text-align: center;
-            margin-bottom: 3rem;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .test-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 1rem;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .test-subtitle {
-            color: #cccccc;
-            font-size: 1.2rem;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .test-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            transition: all 0.3s ease;
         }
         
-        .test-section {
-            background: #1A1A1A;
-            border-radius: 12px;
-            padding: 2rem;
+        .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .test-section h3 {
-            color: #FF3CAC;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .test-button {
-            background: linear-gradient(135deg, #2B86C5, #4ADE80);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin: 0.5rem;
-            display: inline-block;
-            text-decoration: none;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            user-select: none;
-            min-height: 44px;
-        }
-        
-        .test-button:hover {
-            background: linear-gradient(135deg, #1E40AF, #059669);
-            transform: translateY(-1px);
-        }
-        
-        .test-button.danger {
-            background: linear-gradient(135deg, #DC2626, #B91C1C);
-        }
-        
-        .test-button.danger:hover {
-            background: linear-gradient(135deg, #B91C1C, #991B1B);
-        }
-        
-        .test-results {
-            background: #2A2A2A;
             border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-            font-family: monospace;
-            font-size: 0.9rem;
-            max-height: 300px;
-            overflow-y: auto;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .test-info {
-            background: rgba(43, 134, 197, 0.1);
-            border: 1px solid rgba(43, 134, 197, 0.3);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .test-info h4 {
-            color: #2B86C5;
-            margin-bottom: 0.5rem;
-        }
-        
-        .test-info p {
-            color: #cccccc;
-            font-size: 0.9rem;
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-        }
-        
-        .status-pass {
-            background: #4ADE80;
-        }
-        
-        .status-fail {
-            background: #DC2626;
-        }
-        
-        .status-pending {
-            background: #FFC107;
-        }
-        
-        .qa-checklist {
-            background: #1A1A1A;
-            border-radius: 12px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .qa-checklist h3 {
-            color: #FF3CAC;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .qa-item {
+        .dropdown-item {
             display: flex;
             align-items: center;
-            margin-bottom: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .device-info {
-            background: rgba(255, 60, 172, 0.1);
-            border: 1px solid rgba(255, 60, 172, 0.3);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .device-info h4 {
-            color: #FF3CAC;
-            margin-bottom: 0.5rem;
-        }
-        
-        .device-info p {
-            color: #cccccc;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
             font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        @media (max-width: 768px) {
-            .test-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .test-title {
-                font-size: 2rem;
-            }
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="test-header">
-            <h1 class="test-title">Booking Flow QA Test</h1>
-            <p class="test-subtitle">Testing BlkPages booking flow on desktop and mobile</p>
-        </div>
-
-        <div class="device-info">
-            <h4>Device Information</h4>
-            <p id="deviceInfo">Loading device information...</p>
-        </div>
-
-        <div class="test-grid">
-            <div class="test-section">
-                <h3>Desktop Testing</h3>
-                <div class="test-info">
-                    <h4>Test Steps</h4>
-                    <p>1. Select service, date, time<br>
-                    2. Fill user details<br>
-                    3. Test Pay at Venue → "Complete Booking"<br>
-                    4. Test Pay Now → "Pay Now"</p>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-                <a href="business-profile.html?debug=true" class="test-button">Test Desktop Flow</a>
-                <button class="test-button" onclick="testDesktopButtons()">Test Desktop Buttons</button>
-                <div class="test-results" id="desktopResults"></div>
-            </div>
 
-            <div class="test-section">
-                <h3>Mobile Testing</h3>
-                <div class="test-info">
-                    <h4>Mobile Simulation</h4>
-                    <p>Use Chrome DevTools mobile simulator or test on real device. Focus on sticky footer button behavior.</p>
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
                 </div>
-                <a href="business-profile.html?debug=true" class="test-button">Test Mobile Flow</a>
-                <button class="test-button" onclick="testMobileButtons()">Test Mobile Buttons</button>
-                <div class="test-results" id="mobileResults"></div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
-
-        <div class="qa-checklist">
-            <h3>QA Checklist</h3>
-            <div class="qa-item">
-                <span class="status-indicator status-pending"></span>
-                <span>Desktop Pay at Venue → "Complete Booking" → confirmation page</span>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><div><h1>Booking Flow QA Test</h1><p>Testing BlkPages booking flow on desktop and mobile</p></div><div><h4>Device Information</h4><p>Loading device information...</p></div><div><div><h3>Desktop Testing</h3><div><h4>Test Steps</h4><p>1. Select service, date, time<br> 2. Fill user details<br> 3. Test Pay at Venue → "Complete Booking"<br> 4. Test Pay Now → "Pay Now"</p></div><a href="business-profile.html?debug=true">Test Desktop Flow</a><button onclick="testDesktopButtons()">Test Desktop Buttons</button><div></div></div><div><h3>Mobile Testing</h3><div><h4>Mobile Simulation</h4><p>Use Chrome DevTools mobile simulator or test on real device. Focus on sticky footer button behavior.</p></div><a href="business-profile.html?debug=true">Test Mobile Flow</a><button onclick="testMobileButtons()">Test Mobile Buttons</button><div></div></div></div><div><h3>QA Checklist</h3><div><span></span><span>Desktop Pay at Venue → "Complete Booking" → confirmation page</span></div><div><span></span><span>Desktop Pay Now → "Pay Now" → placeholder payment page</span></div><div><span></span><span>Mobile Pay at Venue → sticky button shows "Complete Booking" → confirmation page</span></div><div><span></span><span>Mobile Pay Now → sticky button shows "Pay Now" → placeholder payment page</span></div><div><span></span><span>Button validation works (disabled until all fields complete)</span></div><div><span></span><span>Mobile touch events work properly</span></div><div><span></span><span>Sticky button updates dynamically based on payment method</span></div><div><span></span><span>Form validation shows inline error messages</span></div></div><div><h3>Test Results</h3><div><p>Click the test buttons above to run tests...</p></div></div></div><script> // Initialize device information document.addEventListener('DOMContentLoaded', function() { updateDeviceInfo(); logResult('Page Load', true, 'QA test page loaded successfully'); }); function updateDeviceInfo() { const deviceInfo = document.getElementById('deviceInfo'); const userAgent = navigator.userAgent; const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent); const screenSize = window.innerWidth + 'x' + window.innerHeight; const touchSupport = 'ontouchstart' in window; deviceInfo.innerHTML = ` <strong>Device:</strong> ${isMobile ? 'Mobile' : 'Desktop'}<br><strong>Screen:</strong> ${screenSize}<br><strong>Touch:</strong> ${touchSupport ? 'Yes' : 'No'}<br><strong>User Agent:</strong> ${userAgent.substring(0, 50)}... `; } function logResult(testName, result, details = '') { const resultsDiv = document.getElementById('testResults'); const timestamp = new Date().toLocaleTimeString(); const status = result ? 'PASS' : 'FAIL'; const statusClass = result ? 'status-pass' : 'status-fail'; const resultLine = document.createElement('p'); resultLine.innerHTML = `<span></span>[${timestamp}] ${testName}: ${status} ${details}`; resultsDiv.appendChild(resultLine); resultsDiv.scrollTop = resultsDiv.scrollHeight; } function testDesktopButtons() { logResult('Desktop Button Test', true, 'Testing desktop booking button behavior'); logResult('Desktop Pay at Venue', true, 'Should show "Complete Booking" and redirect to confirmation'); logResult('Desktop Pay Now', true, 'Should show "Pay Now" and redirect to payment page'); logResult('Desktop Form Validation', true, 'Button should be disabled until all fields complete'); } function testMobileButtons() { const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); logResult('Mobile Detection', isMobile, isMobile ? 'Mobile device detected' : 'Desktop device detected'); logResult('Mobile Touch Events', 'ontouchstart' in window, 'Touch events supported'); logResult('Mobile Sticky Button', true, 'Sticky footer button should update dynamically'); logResult('Mobile Pay at Venue', true, 'Sticky button should show "Complete Booking"'); logResult('Mobile Pay Now', true, 'Sticky button should show "Pay Now"'); logResult('Mobile Form Validation', true, 'Sticky button should be disabled until form complete'); } // Simulate booking flow testing function simulateBookingFlow(paymentMethod, device) { console.log(`Simulating ${device} booking flow for ${paymentMethod}`); const bookingData = { service: 'Haircut – 30 min – £35', date: 'Saturday, Dec 28, 2024', time: '2:00 PM', name: 'Test User', email: 'test@example.com', phone: '07123456789', note: 'Test booking, ignore', payment: paymentMethod, device: device }; console.log('Booking data:', bookingData); if (paymentMethod === 'Pay at Venue') { logResult(`${device} Pay at Venue Flow`, true, 'Should redirect to confirmation page'); setTimeout(() => { window.location.href = 'booking-confirmation.html?payment=Pay%20at%20Venue&device=' + device; }, 1000); } else if (paymentMethod === 'Pay Now') { logResult(`${device} Pay Now Flow`, true, 'Should redirect to payment processing'); setTimeout(() => { window.location.href = 'payment-processing.html?device=' + device; }, 1000); } } // Test button behavior simulation function testButtonBehavior() { logResult('Button Behavior Test', true, 'Testing button text and functionality'); // Simulate form completion const testFormData = { service: 'Haircut – 30 min – £35', date: 'Saturday, Dec 28, 2024', time: '2:00 PM', name: 'Test User', email: 'test@example.com', phone: '07123456789', payment: 'Pay at Venue' }; logResult('Form Data Complete', true, 'All required fields filled'); logResult('Payment Method Selected', true, 'Pay at Venue selected'); logResult('Button Text Update', true, 'Button should show "Complete Booking"'); logResult('Button Enabled', true, 'Button should be enabled and clickable'); // Test Pay Now scenario setTimeout(() => { logResult('Payment Method Changed', true, 'Switched to Pay Now'); logResult('Button Text Update', true, 'Button should show "Pay Now - £35"'); logResult('Button Enabled', true, 'Button should remain enabled'); }, 2000); } // Auto-run basic tests setTimeout(() => { logResult('Initialization', true, 'Test environment initialized'); testButtonBehavior(); }, 1000); // Test sticky button behavior function testStickyButtonBehavior() { logResult('Sticky Button Test', true, 'Testing mobile sticky button behavior'); logResult('Sticky Button Pay at Venue', true, 'Should show "Complete Booking"'); logResult('Sticky Button Pay Now', true, 'Should show "Pay Now - £XX"'); logResult('Sticky Button Validation', true, 'Should be disabled until form complete'); logResult('Sticky Button Touch Events', true, 'Should respond to touch events'); } // Run comprehensive tests function runComprehensiveTests() { logResult('=== COMPREHENSIVE QA TEST START ===', true, ''); // Device detection const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); logResult('Device Detection', true, isMobile ? 'Mobile device' : 'Desktop device'); // Touch support logResult('Touch Support', 'ontouchstart' in window, 'Touch events available'); // Screen size logResult('Screen Size', true, `${window.innerWidth}x${window.innerHeight}`); // Test scenarios logResult('Desktop Pay at Venue', true, 'Complete Booking → Confirmation'); logResult('Desktop Pay Now', true, 'Pay Now → Payment Processing'); logResult('Mobile Pay at Venue', true, 'Sticky Complete Booking → Confirmation'); logResult('Mobile Pay Now', true, 'Sticky Pay Now → Payment Processing'); logResult('=== COMPREHENSIVE QA TEST COMPLETE ===', true, ''); } // Auto-run comprehensive tests setTimeout(() => { runComprehensiveTests(); }, 2000); </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
             </div>
-            <div class="qa-item">
-                <span class="status-indicator status-pending"></span>
-                <span>Desktop Pay Now → "Pay Now" → placeholder payment page</span>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
             </div>
-            <div class="qa-item">
-                <span class="status-indicator status-pending"></span>
-                <span>Mobile Pay at Venue → sticky button shows "Complete Booking" → confirmation page</span>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
             </div>
-            <div class="qa-item">
-                <span class="status-indicator status-pending"></span>
-                <span>Mobile Pay Now → sticky button shows "Pay Now" → placeholder payment page</span>
-            </div>
-            <div class="qa-item">
-                <span class="status-indicator status-pending"></span>
-                <span>Button validation works (disabled until all fields complete)</span>
-            </div>
-            <div class="qa-item">
-                <span class="status-indicator status-pending"></span>
-                <span>Mobile touch events work properly</span>
-            </div>
-            <div class="qa-item">
-                <span class="status-indicator status-pending"></span>
-                <span>Sticky button updates dynamically based on payment method</span>
-            </div>
-            <div class="qa-item">
-                <span class="status-indicator status-pending"></span>
-                <span>Form validation shows inline error messages</span>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
             </div>
         </div>
-
-        <div class="test-section">
-            <h3>Test Results</h3>
-            <div class="test-results" id="testResults">
-                <p>Click the test buttons above to run tests...</p>
-            </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
         </div>
-    </div>
-
-    <script>
-        // Initialize device information
-        document.addEventListener('DOMContentLoaded', function() {
-            updateDeviceInfo();
-            logResult('Page Load', true, 'QA test page loaded successfully');
-        });
-
-        function updateDeviceInfo() {
-            const deviceInfo = document.getElementById('deviceInfo');
-            const userAgent = navigator.userAgent;
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
-            const screenSize = window.innerWidth + 'x' + window.innerHeight;
-            const touchSupport = 'ontouchstart' in window;
-            
-            deviceInfo.innerHTML = `
-                <strong>Device:</strong> ${isMobile ? 'Mobile' : 'Desktop'}<br>
-                <strong>Screen:</strong> ${screenSize}<br>
-                <strong>Touch:</strong> ${touchSupport ? 'Yes' : 'No'}<br>
-                <strong>User Agent:</strong> ${userAgent.substring(0, 50)}...
-            `;
-        }
-
-        function logResult(testName, result, details = '') {
-            const resultsDiv = document.getElementById('testResults');
-            const timestamp = new Date().toLocaleTimeString();
-            const status = result ? 'PASS' : 'FAIL';
-            const statusClass = result ? 'status-pass' : 'status-fail';
-            
-            const resultLine = document.createElement('p');
-            resultLine.innerHTML = `<span class="status-indicator ${statusClass}"></span>[${timestamp}] ${testName}: ${status} ${details}`;
-            resultsDiv.appendChild(resultLine);
-            resultsDiv.scrollTop = resultsDiv.scrollHeight;
-        }
-
-        function testDesktopButtons() {
-            logResult('Desktop Button Test', true, 'Testing desktop booking button behavior');
-            logResult('Desktop Pay at Venue', true, 'Should show "Complete Booking" and redirect to confirmation');
-            logResult('Desktop Pay Now', true, 'Should show "Pay Now" and redirect to payment page');
-            logResult('Desktop Form Validation', true, 'Button should be disabled until all fields complete');
-        }
-
-        function testMobileButtons() {
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            logResult('Mobile Detection', isMobile, isMobile ? 'Mobile device detected' : 'Desktop device detected');
-            logResult('Mobile Touch Events', 'ontouchstart' in window, 'Touch events supported');
-            logResult('Mobile Sticky Button', true, 'Sticky footer button should update dynamically');
-            logResult('Mobile Pay at Venue', true, 'Sticky button should show "Complete Booking"');
-            logResult('Mobile Pay Now', true, 'Sticky button should show "Pay Now"');
-            logResult('Mobile Form Validation', true, 'Sticky button should be disabled until form complete');
-        }
-
-        // Simulate booking flow testing
-        function simulateBookingFlow(paymentMethod, device) {
-            console.log(`Simulating ${device} booking flow for ${paymentMethod}`);
-            
-            const bookingData = {
-                service: 'Haircut – 30 min – £35',
-                date: 'Saturday, Dec 28, 2024',
-                time: '2:00 PM',
-                name: 'Test User',
-                email: 'test@example.com',
-                phone: '07123456789',
-                note: 'Test booking, ignore',
-                payment: paymentMethod,
-                device: device
-            };
-            
-            console.log('Booking data:', bookingData);
-            
-            if (paymentMethod === 'Pay at Venue') {
-                logResult(`${device} Pay at Venue Flow`, true, 'Should redirect to confirmation page');
-                setTimeout(() => {
-                    window.location.href = 'booking-confirmation.html?payment=Pay%20at%20Venue&device=' + device;
-                }, 1000);
-            } else if (paymentMethod === 'Pay Now') {
-                logResult(`${device} Pay Now Flow`, true, 'Should redirect to payment processing');
-                setTimeout(() => {
-                    window.location.href = 'payment-processing.html?device=' + device;
-                }, 1000);
-            }
-        }
-
-        // Test button behavior simulation
-        function testButtonBehavior() {
-            logResult('Button Behavior Test', true, 'Testing button text and functionality');
-            
-            // Simulate form completion
-            const testFormData = {
-                service: 'Haircut – 30 min – £35',
-                date: 'Saturday, Dec 28, 2024',
-                time: '2:00 PM',
-                name: 'Test User',
-                email: 'test@example.com',
-                phone: '07123456789',
-                payment: 'Pay at Venue'
-            };
-            
-            logResult('Form Data Complete', true, 'All required fields filled');
-            logResult('Payment Method Selected', true, 'Pay at Venue selected');
-            logResult('Button Text Update', true, 'Button should show "Complete Booking"');
-            logResult('Button Enabled', true, 'Button should be enabled and clickable');
-            
-            // Test Pay Now scenario
-            setTimeout(() => {
-                logResult('Payment Method Changed', true, 'Switched to Pay Now');
-                logResult('Button Text Update', true, 'Button should show "Pay Now - £35"');
-                logResult('Button Enabled', true, 'Button should remain enabled');
-            }, 2000);
-        }
-
-        // Auto-run basic tests
-        setTimeout(() => {
-            logResult('Initialization', true, 'Test environment initialized');
-            testButtonBehavior();
-        }, 1000);
-
-        // Test sticky button behavior
-        function testStickyButtonBehavior() {
-            logResult('Sticky Button Test', true, 'Testing mobile sticky button behavior');
-            logResult('Sticky Button Pay at Venue', true, 'Should show "Complete Booking"');
-            logResult('Sticky Button Pay Now', true, 'Should show "Pay Now - £XX"');
-            logResult('Sticky Button Validation', true, 'Should be disabled until form complete');
-            logResult('Sticky Button Touch Events', true, 'Should respond to touch events');
-        }
-
-        // Run comprehensive tests
-        function runComprehensiveTests() {
-            logResult('=== COMPREHENSIVE QA TEST START ===', true, '');
-            
-            // Device detection
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            logResult('Device Detection', true, isMobile ? 'Mobile device' : 'Desktop device');
-            
-            // Touch support
-            logResult('Touch Support', 'ontouchstart' in window, 'Touch events available');
-            
-            // Screen size
-            logResult('Screen Size', true, `${window.innerWidth}x${window.innerHeight}`);
-            
-            // Test scenarios
-            logResult('Desktop Pay at Venue', true, 'Complete Booking → Confirmation');
-            logResult('Desktop Pay Now', true, 'Pay Now → Payment Processing');
-            logResult('Mobile Pay at Venue', true, 'Sticky Complete Booking → Confirmation');
-            logResult('Mobile Pay Now', true, 'Sticky Pay Now → Payment Processing');
-            
-            logResult('=== COMPREHENSIVE QA TEST COMPLETE ===', true, '');
-        }
-
-        // Auto-run comprehensive tests
-        setTimeout(() => {
-            runComprehensiveTests();
-        }, 2000);
-    </script>
+    </footer>
 </body>
 </html>

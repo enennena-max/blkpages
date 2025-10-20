@@ -1,394 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BlkPages - Find Black-owned Businesses Near You</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="js/suppress-tailwind-warning.js"></script>
-    
-    <!-- Basket Count Sync Fix -->
-    <script src="assets/js/basket.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'inter': ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'charcoal': '#1A1A1A',
-                        'charcoal-light': '#2A2A2A',
-                        'neon-pink': '#ff6b6b',
-                        'neon-purple': '#9c27b0',
-                        'neon-blue': '#2196f3',
-                        'neon-green': '#4caf50',
-                        'text-primary': '#ffffff',
-                        'text-secondary': '#e5e5e5',
-                        'text-muted': '#b3b3b3',
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.8s ease-in-out',
-                        'slide-up': 'slideUp 0.6s ease-out',
-                        'glow': 'glow 2s ease-in-out infinite alternate',
-                        'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(30px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        },
-                        glow: {
-                            '0%': { boxShadow: '0 0 20px rgba(255, 107, 107, 0.2)' },
-                            '100%': { boxShadow: '0 0 30px rgba(255, 107, 107, 0.4)' }
-                        },
-                        pulseSubtle: {
-                            '0%, 100%': { opacity: '1' },
-                            '50%': { opacity: '0.8' }
-                        }
-                    }
-                },
-            },
-        }
-    </script>
-    <style>
-        .list-buwhsiness-btn:hover { box-shadow: 0 0 16px rgba(16,185,129,0.6); }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
         }
-        
-        .hero-bg {
-            background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1920&h=1080&fit=crop&crop=center&blur=2');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #ff6b6b, #9c27b0, #2196f3, #4caf50);
-            background-size: 400% 400%;
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 3s ease-in-out infinite;
         }
         
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .search-glow:focus {
-            box-shadow: 0 0 30px rgba(33, 150, 243, 0.6);
-            border-color: #2196f3;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .category-card {
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
         }
         
-        .category-card:hover {
-            transform: translateY(-8px);
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .business-card {
-            transition: all 0.3s ease;
-        }
-        
-        .business-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        
-        .fade-in-section {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
-        }
-        
-        .fade-in-section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Ensure navigation buttons are visible */
-        #loginBtn, #signupBtn {
-            display: inline-block !important;
-        }
-        
-        .animate-scroll {
-            animation: scroll 20s linear infinite;
-        }
-        
-        .animate-scroll-banner {
-            animation: scroll-banner 15s linear infinite;
-        }
-        
-        @keyframes scroll {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-        
-        @keyframes scroll-banner {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-        
-        /* FAQ Widget Styles */
-        .little-black-book {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 1000;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .book-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #ff6b6b, #9c27b0);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.4);
-            animation: bookWiggle 3s ease-in-out infinite;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .book-icon:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(255, 107, 107, 0.6);
-        }
-        
-        .book-icon i {
-            color: white;
-            font-size: 24px;
-            animation: sparkle 2s ease-in-out infinite;
-        }
-        
-        .book-sparkle {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 12px;
-            height: 12px;
-            background: #FFD700;
-            border-radius: 50%;
-            animation: sparkle 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes bookWiggle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
-        }
-        
-        @keyframes sparkle {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.2); }
-        }
-        
-        .faq-popup {
-            position: fixed;
-            bottom: 100px;
-            right: 30px;
-            width: 350px;
-            max-height: 500px;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 107, 107, 0.3);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            z-index: 1001;
+        /* Customer Menu Styles */
+        .customer-dropdown {
             display: none;
-            animation: slideUp 0.3s ease-out;
-        }
-        
-        .faq-content {
-            padding: 20px;
-        }
-        
-        .faq-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 107, 107, 0.3);
-        }
-        
-        .faq-header h3 {
-            color: #ff6b6b;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        .faq-close {
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
-            transition: background 0.3s ease;
-        }
-        
-        .faq-close:hover {
-            background: rgba(255, 107, 107, 0.2);
-        }
-        
-        .faq-body {
-            max-height: 350px;
-            overflow-y: auto;
-        }
-        
-        .faq-item {
-            margin-bottom: 15px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            border-left: 3px solid #ff6b6b;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .faq-item h4 {
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .faq-item p {
-            color: #cccccc;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-        
-        .faq-footer {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 107, 107, 0.3);
-            text-align: center;
-        }
-        
-        .faq-link {
-            color: #ff6b6b;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        
-        .faq-link:hover {
-            color: #ffffff;
-        }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .little-black-book {
-                bottom: 20px;
-                right: 20px;
-            }
-            
-            .faq-popup {
-                right: 20px;
-                width: 300px;
-                bottom: 90px;
-            }
-        }
-
-        /* Back Button Styling */
-        .back-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: #ffffff;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .dropdown-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        .back-btn:hover {
-            background: rgba(255, 60, 172, 0.2);
-            border-color: rgba(255, 60, 172, 0.4);
-            transform: translateX(-2px);
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
-
-        .back-btn i {
-            font-size: 0.8rem;
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body class="bg-charcoal text-text-primary">
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-charcoal/95 backdrop-blur-md border-b border-white/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Desktop Navigation -->
-            <div class="hidden lg:flex items-center justify-between h-16">
-                <!-- Left: Logo -->
-                <div class="flex items-center">
-                    <a href="index.html" class="text-2xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-                
-                <!-- Center: Main Navigation -->
-                <div class="flex items-center space-x-8">
-                    <a href="index.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Home</a>
-                    <a href="search-results.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Browse</a>
-                    <a href="offers.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Offers</a>
-                    <a href="preview-test.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                        <i class="fas fa-flask mr-1"></i>Preview Test
-                    </a>
-                    <a href="demo-hub.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                        <i class="fas fa-cogs mr-1"></i>Demo Hub
-                    </a>
-                    <a href="dummy-demo.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                        <i class="fas fa-rocket mr-1"></i>Demo Showcase
-                    </a>
-                    <a href="demo/contextual-banners-demo.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                        <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
-                    </a>
-                    <a href="business-profile.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                        <i class="fas fa-clock mr-1"></i>WLO System
-                    </a>
-                    </div>
-                
-                <!-- Right: Actions -->
-                <div class="flex items-center space-x-4">
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
                     <!-- Basket Icon -->
                     <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
                         <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
@@ -397,11 +179,11 @@
                     
                     <!-- Sign In / Sign Up (for signed out users) -->
                     <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
                             <i class="fas fa-sign-in-alt mr-1"></i>Sign In
-                    </button>
-                        <span class="text-text-secondary">/</span>
-                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm">
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
                             <i class="fas fa-user-plus mr-1"></i>Sign Up
                         </a>
                     </div>
@@ -410,1779 +192,96 @@
                     <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
                         <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
                             <span id="customerInitialText">U</span>
-                    </button>
-                        <div class="customer-dropdown" id="customerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
-                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
                                 <i class="fas fa-tachometer-alt"></i>
                                 Dashboard
                             </a>
-                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
                                 <i class="fas fa-cog"></i>
                                 Account Settings
                             </a>
-                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
-                                <i class="fas fa-sign-out-alt"></i>
-                                Sign Out
-                            </a>
-                </div>
-                    </div>
-                    
-                    <!-- List Business Button (smaller and less overpowering) -->
-                    <a href="business-register.html" class="text-text-secondary hover:text-green-400 transition-colors duration-300 font-medium text-sm list-business-btn">+ List Business</a>
-                </div>
-            </div>
-            
-            <!-- Mobile Navigation -->
-            <div class="lg:hidden flex items-center justify-between h-16">
-                <!-- Left: Logo -->
-                <div class="flex items-center">
-                    <a href="index.html" class="text-xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
-                </div>
-                
-                <!-- Right: Actions -->
-                <div class="flex items-center space-x-3">
-                    <!-- Basket Icon -->
-                    <div class="basket-icon" id="mobileBasketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
-                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
-                        <span class="basket-count" id="mobileBasketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
-                    </div>
-                    
-                    <!-- Sign In / Sign Up (Mobile) -->
-                    <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
-                        <i class="fas fa-sign-in-alt"></i>
-                    </button>
-                    </div>
-                    
-                    <!-- Customer Menu (Mobile) -->
-                    <div class="customer-menu" id="mobileCustomerMenu" style="display: none; position: relative;">
-                        <button class="customer-initial" id="mobileCustomerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
-                            <span id="mobileCustomerInitialText">U</span>
-                    </button>
-                        <div class="customer-dropdown" id="mobileCustomerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
-                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                                <i class="fas fa-tachometer-alt"></i>
-                                Dashboard
-                            </a>
-                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                                <i class="fas fa-cog"></i>
-                                Account Settings
-                            </a>
-                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                            <a href="#" onclick="signOut()" class="dropdown-item">
                                 <i class="fas fa-sign-out-alt"></i>
                                 Sign Out
                             </a>
                         </div>
                     </div>
                     
-                    <!-- Hamburger Menu -->
-                    <button class="text-white hover:text-neon-pink transition-colors duration-300" onclick="toggleMobileMenu()">
-                        <i class="fas fa-bars text-xl"></i>
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     </button>
                 </div>
             </div>
-            
             <!-- Mobile Menu -->
-            <div id="mobileMenu" class="lg:hidden hidden bg-charcoal/95 backdrop-blur-md border-t border-white/10">
-                <div class="px-4 py-4 space-y-4">
-                    <a href="index.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Home</a>
-                    <a href="search-results.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Browse</a>
-                    <a href="offers.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Offers</a>
-                    <a href="why-list-with-us.html#pricing" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Plans</a>
-                    <a href="preview-test.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                        <i class="fas fa-flask mr-2"></i>Preview Test
-                    </a>
-                    <a href="business-register.html" class="block text-neon-green hover:text-green-400 transition-colors duration-300 font-medium">
-                        <i class="fas fa-plus mr-2"></i>List Business
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Login Modal -->
-    <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-bold gradient-text">Login</h3>
-                    <button onclick="toggleLoginModal(event)" class="text-white/70 hover:text-white">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="mb-4">
-                        <label class="block text-white/70 mb-2">Email</label>
-                        <input type="email" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="customer@example.com">
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-white/70 mb-2">Password</label>
-                        <input type="password" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="password123">
-                    </div>
-                    <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
-                        Login
-                    </button>
-                </form>
-                <div class="mt-4 text-center">
-                    <p class="text-white/70 text-sm">Don't have an account? <a href="#" onclick="redirectToRegister()" class="text-neon-pink hover:text-neon-purple transition-colors duration-300">Sign up</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero-bg relative min-h-screen flex items-center justify-center">
-        <div class="absolute inset-0 bg-charcoal/70"></div>
-        <div class="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-white animate-fade-in">
-                BlkPages.
-            </h1>
-            <p class="text-lg sm:text-xl lg:text-2xl font-medium mb-12 text-text-secondary animate-slide-up">
-                Find Black-owned Businesses Near You
-            </p>
-            
-            <!-- Search Bar -->
-            <div class="max-w-6xl mx-auto animate-slide-up px-4">
-                <form class="relative" onsubmit="handleSearch(event)">
-                    <!-- Mobile Layout (Stacked) -->
-                    <div class="block md:hidden space-y-3">
-                        <input 
-                            type="text" 
-                            placeholder="What are you looking for?" 
-                            class="w-full px-4 py-2.5 rounded-xl bg-charcoal-light/80 backdrop-blur-md border border-white/20 text-text-primary placeholder-text-muted focus:outline-none focus:border-neon-blue focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300 text-base"
-                            required
-                        >
-                        <input 
-                            type="text" 
-                            placeholder="Location" 
-                            class="w-full px-4 py-2.5 rounded-xl bg-charcoal-light/80 backdrop-blur-md border border-white/20 text-text-primary placeholder-text-muted focus:outline-none focus:border-neon-blue focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300 text-base"
-                            required
-                        >
-                        <div class="flex gap-2">
-                            <button 
-                                type="submit"
-                                class="flex-1 px-4 py-2.5 rounded-xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-base"
-                            >
-                                <i class="fas fa-search mr-2"></i>Search
-                            </button>
-                            <button 
-                                type="button"
-                                onclick="findNearMe()"
-                                class="px-4 py-2.5 rounded-xl border border-white/20 text-text-primary font-semibold hover:bg-white/10 hover:border-neon-pink/50 transition-all duration-300 text-base"
-                            >
-                                <i class="fas fa-map-marker-alt"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Desktop Layout (Horizontal) -->
-                    <div class="hidden md:grid md:grid-cols-12 gap-3">
-                        <div class="col-span-5">
-                        <input 
-                            type="text" 
-                            placeholder="Search for services, businesses..." 
-                                class="w-full px-4 py-2.5 rounded-xl bg-charcoal-light/80 backdrop-blur-md border border-white/20 text-text-primary placeholder-text-muted focus:outline-none focus:border-neon-blue focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300 text-base"
-                            required
-                        >
-                        </div>
-                        <div class="col-span-3">
-                        <input 
-                            type="text" 
-                            placeholder="City, Area, Postcode" 
-                                class="w-full px-4 py-2.5 rounded-xl bg-charcoal-light/80 backdrop-blur-md border border-white/20 text-text-primary placeholder-text-muted focus:outline-none focus:border-neon-blue focus:ring-2 focus:ring-neon-blue/20 transition-all duration-300 text-base"
-                            required
-                        >
-                        </div>
-                        <div class="col-span-2">
-                            <button 
-                                type="submit"
-                                class="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-base"
-                            >
-                                <i class="fas fa-search mr-2"></i>Search
-                            </button>
-                        </div>
-                        <div class="col-span-2">
-                            <button 
-                                type="button"
-                                onclick="findNearMe()"
-                                class="w-full px-4 py-2.5 rounded-xl border border-white/20 text-text-primary font-semibold hover:bg-white/10 hover:border-neon-pink/50 transition-all duration-300 text-base"
-                            >
-                                <i class="fas fa-map-marker-alt mr-2"></i>Near Me
-                            </button>
-                        </div>
-                    </div>
-                </form>
-                
-                <!-- Subtle Booking Hint -->
-                <div class="mt-6 text-center">
-                    <p class="text-white/70 text-sm flex items-center justify-center space-x-2">
-                        <i class="fas fa-calendar-check text-neon-blue"></i>
-                        <span>Book appointments directly online</span>
-                        <span class="text-white/50">•</span>
-                        <span>No phone calls needed</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Continue Your Search Section -->
-    <section id="continue-search" class="py-4 bg-black/80 backdrop-blur-sm fade-in-section" style="display: none;">
-        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-4">
-                <h2 class="text-lg sm:text-xl font-bold mb-2 gradient-text">Continue Your Search</h2>
-                <p class="text-sm text-white/70">Pick up where you left off</p>
-            </div>
-            
-            <div id="recent-searches" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <!-- Recent searches will be populated here -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Business Listing Popup -->
-    <div id="businessPopup" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-dark-grey/95 backdrop-blur-md rounded-2xl p-8 max-w-lg w-full border border-neon-pink/30 shadow-2xl shadow-neon-pink/20">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-bold gradient-text">List Your Business</h3>
-                    <button onclick="toggleBusinessPopup()" class="text-white/70 hover:text-white hover:bg-white/10 rounded-full p-2 transition-all duration-300">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <div class="text-center">
-                    <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-neon-pink to-neon-purple flex items-center justify-center animate-pulse">
-                        <i class="fas fa-store text-3xl text-white"></i>
-                    </div>
-                    <h4 class="text-xl font-semibold text-white mb-4">Own a Hair or Beauty Business?</h4>
-                    <p class="text-light-grey mb-6">Join BlkPages today and connect with customers in your area. List your business with us and grow your client base.</p>
-                    <div class="space-y-3">
-                        <a href="business-register.html" class="block w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-center neon-glow transform hover:scale-105">
-                            <i class="fas fa-plus mr-2"></i>List Your Business
-                        </a>
-                        <a href="why-list-with-us.html" class="block w-full py-3 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 text-center">
-                            <i class="fas fa-info-circle mr-2"></i>Learn More
-                        </a>
-                    </div>
-                    <p class="text-sm text-light-grey mt-4">
-                        <i class="fas fa-star text-neon-pink mr-1"></i>
-                        Join 500+ businesses already on BlkPages
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Categories Section -->
-    <section id="categories" class="py-20 bg-charcoal fade-in-section">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl sm:text-5xl font-bold mb-4 text-white font-poppins">Browse Categories</h2>
-                <p class="text-xl text-light-grey">Discover businesses by category</p>
-            </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Hair Category -->
-                <a href="hair-businesses.html" class="card-hover bg-dark-grey rounded-2xl p-8 text-center border border-white/10 hover:border-neon-pink/50 hover:shadow-2xl hover:shadow-neon-pink/20 transition-all duration-300 group">
-                    <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-neon-pink to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-cut text-3xl text-white"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-4 text-white font-poppins">Hair</h3>
-                    <p class="text-light-grey leading-relaxed">Professional hair styling, cutting, and coloring services</p>
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
                 </a>
-
-                <!-- Beauty Category -->
-                <a href="beauty-businesses.html" class="card-hover bg-dark-grey rounded-2xl p-8 text-center border border-white/10 hover:border-neon-green/50 hover:shadow-2xl hover:shadow-neon-green/20 transition-all duration-300 group">
-                    <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-neon-green to-green-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-spa text-3xl text-white"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-4 text-white font-poppins">Beauty</h3>
-                    <p class="text-light-grey leading-relaxed">Makeup, skincare, and beauty treatments</p>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
                 </a>
-
-                <!-- Barbers Category -->
-                <a href="barber-businesses.html" class="card-hover bg-dark-grey rounded-2xl p-8 text-center border border-white/10 hover:border-neon-blue/50 hover:shadow-2xl hover:shadow-neon-blue/20 transition-all duration-300 group">
-                    <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-neon-blue to-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-cut text-3xl text-white"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-4 text-white font-poppins">Barbers</h3>
-                    <p class="text-light-grey leading-relaxed">Traditional and modern barbering services</p>
-                </a>
-
-                <!-- Nails Category -->
-                <a href="nail-businesses.html" class="card-hover bg-dark-grey rounded-2xl p-8 text-center border border-white/10 hover:border-neon-purple/50 hover:shadow-2xl hover:shadow-neon-purple/20 transition-all duration-300 group">
-                    <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-neon-purple to-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-hand-paper text-3xl text-white"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-4 text-white font-poppins">Nails</h3>
-                    <p class="text-light-grey leading-relaxed">Manicures, pedicures, and nail art services</p>
-                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
-    </section>
-
-    <!-- Featured Businesses Moving Banner -->
-    <section id="featured" class="py-20 bg-charcoal fade-in-section">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl sm:text-5xl font-bold mb-4 text-white font-poppins">Featured Businesses</h2>
-                <p class="text-xl text-light-grey">Discover top-rated Black-owned businesses</p>
-            </div>
-            
-            <div class="relative overflow-hidden">
-                <div class="flex animate-scroll">
-                    <!-- Business 1 -->
-                    <a href="business-royal-hair.html" class="flex-shrink-0 mx-4 bg-dark-grey rounded-2xl overflow-hidden border border-white/10 hover:border-neon-pink/50 min-w-[320px] transition-all duration-300 card-hover">
-                        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=200&fit=crop&crop=center" alt="Royal Hair Studio" class="w-full h-36 object-cover">
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-xl font-bold text-white font-poppins">Royal Hair Studio</h3>
-                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
-                                    Hair
-                                </span>
-                                </div>
-                            <p class="text-sm text-light-grey mb-4 leading-relaxed">Professional hair styling and cutting services with over 10 years of experience</p>
-                            <div class="flex items-center text-yellow-400 mb-3">
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <span class="ml-2 text-sm text-light-grey">4.9 (127 reviews)</span>
-                            </div>
-                            <button class="w-full py-2 rounded-xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow">
-                                View Profile
-                            </button>
-                            </div>
-                    </a>
-                    
-                    <!-- Business 2 -->
-                    <a href="business-elite-beauty.html" class="flex-shrink-0 mx-4 bg-dark-grey rounded-2xl overflow-hidden border border-white/10 hover:border-neon-green/50 min-w-[320px] transition-all duration-300 card-hover">
-                        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=200&fit=crop&crop=center" alt="Elite Beauty Lounge" class="w-full h-36 object-cover">
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-xl font-bold text-white font-poppins">Elite Beauty Lounge</h3>
-                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-neon-green/20 text-neon-green border border-neon-green/30">
-                                    Beauty
-                                </span>
-                                </div>
-                            <p class="text-sm text-light-grey mb-4 leading-relaxed">Luxury beauty treatments and skincare services specializing in melanin-rich skin care</p>
-                            <div class="flex items-center text-yellow-400 mb-3">
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <span class="ml-2 text-sm text-light-grey">4.8 (89 reviews)</span>
-                            </div>
-                            <button class="w-full py-2 rounded-xl bg-gradient-to-r from-neon-green to-green-500 text-white font-semibold hover:from-green-500 hover:to-neon-green transition-all duration-300 neon-glow" onclick="event.stopPropagation(); bookBusiness('elite-beauty')">
-                                Book Now
-                            </button>
-                            </div>
-                    </a>
-                    
-                    <!-- Business 3 -->
-                    <a href="business-golden-touch.html" class="flex-shrink-0 mx-4 bg-dark-grey rounded-2xl overflow-hidden border border-white/10 hover:border-neon-blue/50 min-w-[320px] transition-all duration-300 card-hover">
-                        <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&h=200&fit=crop&crop=center" alt="Golden Touch Barbershop" class="w-full h-36 object-cover">
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-xl font-bold text-white font-poppins">Golden Touch Barbershop</h3>
-                                <span class="px-3 py-1 rounded-full text-sm font-medium bg-neon-blue/20 text-neon-blue border border-neon-blue/30">
-                                    Barbers
-                                </span>
-                                </div>
-                            <p class="text-sm text-light-grey mb-4 leading-relaxed">Traditional and modern barbering services with a focus on precision cuts</p>
-                            <div class="flex items-center text-yellow-400 mb-3">
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <i class="fas fa-star text-sm"></i>
-                                <span class="ml-2 text-sm text-light-grey">4.7 (156 reviews)</span>
-                            </div>
-                            <button class="w-full py-2 rounded-xl bg-gradient-to-r from-neon-blue to-blue-500 text-white font-semibold hover:from-blue-500 hover:to-neon-blue transition-all duration-300 neon-glow">
-                                View Profile
-                            </button>
-                            </div>
-                    </a>
-                    
-                    <!-- Duplicate for seamless loop -->
-                    <div class="flex-shrink-0 mx-4 bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 hover:border-neon-pink/50 min-w-[300px]">
-                        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=200&fit=crop&crop=center" alt="Royal Hair Studio" class="w-full h-32 object-cover">
-                        <div class="p-4">
-                            <div class="flex items-center mb-3">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-neon-pink to-pink-500 flex items-center justify-center mr-3">
-                                    <i class="fas fa-cut text-white"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-white">Royal Hair Studio</h3>
-                                    <span class="text-xs opacity-90">Hair</span>
-                                </div>
-                            </div>
-                            <p class="text-xs opacity-90 mb-3">Professional hair styling and cutting services</p>
-                            <div class="flex items-center text-yellow-300 mb-2">
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <span class="ml-2 text-xs">4.9 (127)</span>
-                            </div>
-                            <div class="text-xs text-white/60 italic">
-                                "Amazing service! My hair looks fantastic." - Sarah J.
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex-shrink-0 mx-4 bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 hover:border-neon-green/50 min-w-[300px]">
-                        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=200&fit=crop&crop=center" alt="Elite Beauty Lounge" class="w-full h-32 object-cover">
-                        <div class="p-4">
-                            <div class="flex items-center mb-3">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-neon-green to-green-500 flex items-center justify-center mr-3">
-                                    <i class="fas fa-spa text-white"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-white">Elite Beauty Lounge</h3>
-                                    <span class="text-xs opacity-90">Beauty</span>
-                                </div>
-                            </div>
-                            <p class="text-xs opacity-90 mb-3">Luxury beauty treatments and skincare services</p>
-                            <div class="flex items-center text-yellow-300 mb-2">
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <span class="ml-2 text-xs">4.8 (89)</span>
-                            </div>
-                            <div class="text-xs text-white/60 italic">
-                                "Best beauty treatment I've ever had!" - Lisa M.
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex-shrink-0 mx-4 bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 hover:border-neon-blue/50 min-w-[300px]">
-                        <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&h=200&fit=crop&crop=center" alt="Golden Touch Barbershop" class="w-full h-32 object-cover">
-                        <div class="p-4">
-                            <div class="flex items-center mb-3">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-neon-blue to-blue-500 flex items-center justify-center mr-3">
-                                    <i class="fas fa-cut text-white"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-white">Golden Touch Barbershop</h3>
-                                    <span class="text-xs opacity-90">Hair</span>
-                                </div>
-                            </div>
-                            <p class="text-xs opacity-90 mb-3">Traditional and modern barbering services</p>
-                            <div class="flex items-center text-yellow-300 mb-2">
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <i class="fas fa-star text-xs"></i>
-                                <span class="ml-2 text-xs">4.7 (156)</span>
-                            </div>
-                            <div class="text-xs text-white/60 italic">
-                                "Perfect cut every time!" - Mike B.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Get Started Today Section -->
-    <section id="get-started" class="py-20 bg-charcoal fade-in-section my-8 mx-4 rounded-2xl border border-white/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl sm:text-5xl font-bold mb-8 text-text-primary">Get Started Today</h2>
-            <p class="text-xl text-text-secondary mb-12 max-w-2xl mx-auto">
-                Join thousands of customers who have discovered amazing Black-owned businesses through BlkPages.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="why-list-with-us.html" class="px-8 py-4 rounded-full bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 transform hover:scale-105 text-center">
-                    Why List with Us?
-                </a>
-                <a href="business-register.html" class="px-8 py-4 rounded-full border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300 text-center">
-                    List Your Business
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Login Modal -->
-    <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-bold gradient-text">Login</h3>
-                    <button onclick="toggleLoginModal(event)" class="text-white/70 hover:text-white">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="mb-4">
-                        <label class="block text-white/70 mb-2">Email</label>
-                        <input type="email" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="customer@example.com">
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-white/70 mb-2">Password</label>
-                        <input type="password" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink" placeholder="password123">
-                    </div>
-                    <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
-                        Login
-                    </button>
-                </form>
-                
-                <!-- Demo Credentials -->
-                <div class="mt-4 p-4 bg-white/5 rounded-lg border border-white/10">
-                    <h4 class="text-white font-semibold mb-2">Demo Credentials:</h4>
-                    <p class="text-white/70 text-sm mb-1">Email: customer@example.com</p>
-                    <p class="text-white/70 text-sm mb-2">Password: password123</p>
-                    <div class="flex space-x-2">
-                        <button type="button" onclick="fillDemoCredentials()" class="text-neon-pink hover:underline text-sm">
-                            Use Demo Credentials
-                        </button>
-                        <button type="button" onclick="testRedirect()" class="text-neon-green hover:underline text-sm">
-                            Test Direct Link
-                        </button>
-                    </div>
-                </div>
-                <p class="text-center text-white/70 mt-4">
-                    Don't have an account? 
-                    <button onclick="toggleSignupModal(event); toggleLoginModal(event);" class="text-neon-pink hover:underline">Sign up</button>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Signup Modal -->
-    <div id="signupModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-bold gradient-text">Sign Up</h3>
-                    <button onclick="toggleSignupModal(event)" class="text-white/70 hover:text-white">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <form id="signupForm" onsubmit="handleSignup(event)">
-                    <div class="mb-4">
-                        <label class="block text-white/70 mb-2">Full Name</label>
-                        <input type="text" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-white/70 mb-2">Email</label>
-                        <input type="email" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-white/70 mb-2">Password</label>
-                        <input type="password" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
-                    </div>
-                    <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
-                        Sign Up
-                    </button>
-                </form>
-                <!-- Demo Credentials -->
-                <div class="mt-4 p-4 bg-white/5 rounded-lg border border-white/10">
-                    <h4 class="text-white font-semibold mb-2">Demo Credentials:</h4>
-                    <p class="text-white/70 text-sm mb-1">Full Name: John Doe</p>
-                    <p class="text-white/70 text-sm mb-1">Email: customer@example.com</p>
-                    <p class="text-white/70 text-sm mb-2">Password: Password123</p>
-                    <button type="button" onclick="fillDemoCredentials()" class="text-neon-pink hover:underline text-sm">
-                        <i class="fas fa-magic mr-1"></i>
-                        Use Demo Credentials
-                    </button>
-                </div>
-                <p class="text-center text-white/70 mt-4">
-                    Already have an account? 
-                    <button onclick="toggleLoginModal(event); toggleSignupModal(event);" class="text-neon-pink hover:underline">Login</button>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-charcoal/90 backdrop-blur-md border-t border-white/10 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <span class="text-2xl font-bold text-text-primary mb-4 block">BlkPages</span>
-                <p class="text-text-secondary mb-8">Supporting Black-owned businesses, one search at a time.</p>
-                <div class="flex justify-center space-x-8 text-text-secondary mb-6">
-                    <a href="about.html" class="hover:text-neon-pink transition-colors font-medium">About</a>
-                    <a href="contact.html" class="hover:text-neon-pink transition-colors font-medium">Contact</a>
-                    <a href="privacy.html" class="hover:text-neon-pink transition-colors font-medium">Privacy</a>
-                    <a href="terms.html" class="hover:text-neon-pink transition-colors font-medium">Terms</a>
-                </div>
-                <div class="max-w-4xl mx-auto mb-6">
-                    <p class="text-xs text-text-muted leading-relaxed">
-                        <strong>Disclaimer:</strong> BlkPages is a third-party directory and booking facilitator. Each business listed on our platform is an independent provider and is solely responsible for its own services, pricing, availability, and cancellation or refund policies. By booking through BlkPages, you agree that any cancellations, changes, or disputes must be resolved directly with the business.
-                    </p>
-                </div>
-                <p class="text-text-muted">&copy; 2025 BlkPages. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- The Little Black Book FAQ Widget -->
-    <div id="littleBlackBook" class="little-black-book" onclick="toggleFAQ()">
-        <div class="book-icon">
-            <i class="fas fa-book"></i>
-            <div class="book-sparkle"></div>
-        </div>
-    </div>
-
-    <!-- FAQ Popup -->
-    <div id="faqPopup" class="faq-popup">
-        <div class="faq-content">
-            <div class="faq-header">
-                <h3>The Little Black Book</h3>
-                <button class="faq-close" onclick="toggleFAQ()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="faq-body">
-                <div class="faq-item">
-                    <h4>How do I search for businesses?</h4>
-                    <p>Use the search bar at the top of the page to find businesses by name, service, or location.</p>
-                </div>
-                <div class="faq-item">
-                    <h4>Can I save my searches?</h4>
-                    <p>Yes! Create an account to save your searches and access them later.</p>
-                </div>
-                <div class="faq-item">
-                    <h4>How do I list my business?</h4>
-                    <p>Click "List Your Business" to register and create your business profile.</p>
-                </div>
-                <div class="faq-item">
-                    <h4>Are there different business categories?</h4>
-                    <p>We focus on Hair and Beauty services, with plans to expand to more categories.</p>
-                </div>
-                <div class="faq-item">
-                    <h4>How do I contact a business?</h4>
-                    <p>Each business profile shows contact information and booking options.</p>
-                </div>
-            </div>
-            <div class="faq-footer">
-                <a href="faq.html" class="faq-link">View Full FAQ →</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Business Manager Script -->
-    <script src="business-manager.js"></script>
-
-    <script>
-        // Handle search form submission
-        function handleSearch(event) {
-            event.preventDefault();
-            const form = event.target;
-            // Handle both mobile and desktop layouts
-            const searchInput = form.querySelector('input[placeholder*="Search for services"], input[placeholder*="What are you looking for"]');
-            const locationInput = form.querySelector('input[placeholder*="City, Area, Postcode"], input[placeholder*="Location"]');
-            const searchTerm = searchInput ? searchInput.value : '';
-            const location = locationInput ? locationInput.value : '';
-            
-            // Save search to history
-            saveSearchToHistory(searchTerm);
-            
-            // Store current search
-            localStorage.setItem('searchTerm', searchTerm);
-            
-            // Redirect to search results page with all parameters
-            const params = new URLSearchParams();
-            if (searchTerm.trim()) params.set('q', searchTerm);
-            if (location.trim()) params.set('location', location);
-            
-            window.location.href = `search-results.html?${params.toString()}`;
-        }
-        
-        // Handle advanced search
-        function handleAdvancedSearch(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const searchTerm = formData.get('search') || event.target.querySelector('input[type="text"]').value;
-            
-            // Save search to history
-            saveSearchToHistory(searchTerm);
-            
-            // Store current search
-            localStorage.setItem('searchTerm', searchTerm);
-            
-            // Perform search
-            performSearch(searchTerm);
-        }
-        
-        // Perform search and show results
-        function performSearch(searchTerm) {
-            const searchResults = document.getElementById('searchResults');
-            
-            // Demo search results
-            const demoResults = [
-                {
-                    name: 'Royal Hair Studio',
-                    category: 'Hair',
-                    rating: 4.9,
-                    reviews: 127,
-                    distance: '0.5 miles',
-                    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=200&fit=crop&crop=center',
-                    description: 'Professional hair styling and cutting services with over 10 years of experience.'
-                },
-                {
-                    name: 'Elite Beauty Lounge',
-                    category: 'Beauty',
-                    rating: 4.8,
-                    reviews: 89,
-                    distance: '1.2 miles',
-                    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=200&fit=crop&crop=center',
-                    description: 'Luxury beauty treatments and skincare services specializing in melanin-rich skin care.'
-                },
-                {
-                    name: 'Golden Touch Barbershop',
-                    category: 'Hair',
-                    rating: 4.7,
-                    reviews: 156,
-                    distance: '0.8 miles',
-                    image: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&h=200&fit=crop&crop=center',
-                    description: 'Traditional and modern barbering services with a focus on precision cuts.'
-                }
-            ];
-            
-            searchResults.innerHTML = demoResults.map(business => `
-                <div class="bg-white/5 backdrop-blur-md rounded-2xl overflow-hidden border border-white/10 hover:border-neon-pink/50 transition-all duration-300">
-                    <img src="${business.image}" alt="${business.name}" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <h3 class="text-xl font-bold text-white">${business.name}</h3>
-                                <span class="inline-block px-3 py-1 rounded-full text-sm font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
-                                    ${business.category}
-                                </span>
-                            </div>
-                            <div class="text-right">
-                                <div class="flex items-center text-yellow-400 mb-1">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <span class="ml-2 text-white/70">${business.rating}</span>
-                                </div>
-                                <p class="text-white/60 text-sm">${business.reviews} reviews</p>
-                            </div>
-                        </div>
-                        <p class="text-white/70 mb-4">${business.description}</p>
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center text-white/60">
-                                <i class="fas fa-map-marker-alt mr-2"></i>
-                                <span class="text-sm">${business.distance}</span>
-                            </div>
-                            <div class="flex space-x-2">
-                                <button class="px-4 py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
-                                    View Details
-                                </button>
-                                <button class="px-4 py-2 rounded-lg border border-white/20 text-white font-semibold hover:bg-white/10 transition-all duration-300">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        // Find near me function
-        function findNearMe() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    localStorage.setItem('userLat', position.coords.latitude);
-                    localStorage.setItem('userLng', position.coords.longitude);
-                    localStorage.setItem('userLocation', 'Current Location');
-                    
-                    // Redirect to search results page with "near me" parameter
-                    window.location.href = 'search-results.html?nearme=true';
-                });
-            } else {
-                alert('Geolocation is not supported by this browser.');
-            }
-        }
-        
-        // Save search to history
-        function saveSearchToHistory(searchTerm) {
-            let searches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
-            
-            // Remove if already exists
-            searches = searches.filter(s => s !== searchTerm);
-            
-            // Add to beginning
-            searches.unshift(searchTerm);
-            
-            // Keep only last 3
-            searches = searches.slice(0, 3);
-            
-            localStorage.setItem('recentSearches', JSON.stringify(searches));
-            updateContinueSearchSection();
-        }
-        
-        // Update continue search section
-        function updateContinueSearchSection() {
-            const searches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
-            const section = document.getElementById('continue-search');
-            const container = document.getElementById('recent-searches');
-            
-            if (searches.length > 0) {
-                section.style.display = 'block';
-                container.innerHTML = searches.map((search, index) => `
-                    <div class="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300 cursor-pointer" onclick="continueSearch('${search}')">
-                        <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-neon-pink to-pink-500 flex items-center justify-center mr-4">
-                                <i class="fas fa-search text-white"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-white">${search}</h3>
-                                <span class="text-sm text-white/70">Recent search</span>
-                            </div>
-                        </div>
-                        <p class="text-white/60 text-sm">Click to continue this search</p>
-                    </div>
-                `).join('');
-            } else {
-                section.style.display = 'none';
-            }
-        }
-        
-        // Continue a previous search
-        function continueSearch(searchTerm) {
-            localStorage.setItem('searchTerm', searchTerm);
-            document.getElementById('search').scrollIntoView({ behavior: 'smooth' });
-            performSearch(searchTerm);
-        }
-        
-        // Modal functions
-        function toggleLoginModal(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            const modal = document.getElementById('loginModal');
-            modal.classList.toggle('hidden');
-        }
-        
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.toggle('hidden');
-        }
-        
-        function closeMobileMenu() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.add('hidden');
-        }
-        
-        function toggleSignupModal(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            const modal = document.getElementById('signupModal');
-            modal.classList.toggle('hidden');
-        }
-        
-        function toggleBusinessPopup() {
-            const modal = document.getElementById('businessPopup');
-            modal.classList.toggle('hidden');
-        }
-        
-        // Handle login
-        function handleLogin(event) {
-            event.preventDefault();
-            const email = event.target.querySelector('input[type="email"]').value;
-            const password = event.target.querySelector('input[type="password"]').value;
-            
-            console.log('Login attempt:', email, password);
-            
-            // Demo credentials check
-            if (email === 'customer@example.com' && password === 'password123') {
-                console.log('Credentials valid, logging in...');
-                localStorage.setItem('userLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userName', 'Demo Customer');
-                
-                // Close modal
-                toggleLoginModal();
-                
-                // Show success message
-                alert('Login successful! Redirecting to dashboard...');
-                
-                // Force redirect using multiple methods
-                setTimeout(() => {
-                    console.log('Attempting redirect...');
-                    window.location.replace('customer-dashboard.html');
-                }, 500);
-                
-            } else {
-                alert('Invalid credentials. Use the demo credentials: customer@example.com / password123');
-            }
-        }
-        
-        // Fill demo credentials
-        function fillDemoCredentials() {
-            const emailInput = document.querySelector('#loginForm input[type="email"]');
-            const passwordInput = document.querySelector('#loginForm input[type="password"]');
-            emailInput.value = 'customer@example.com';
-            passwordInput.value = 'password123';
-        }
-        
-        // Test direct redirect
-        function testRedirect() {
-            console.log('Testing direct redirect...');
-            alert('Testing direct link to dashboard...');
-            window.location.href = 'customer-dashboard.html';
-        }
-        
-        // Handle signup
-        function handleSignup(event) {
-            event.preventDefault();
-            const name = event.target.querySelector('input[type="text"]').value;
-            const email = event.target.querySelector('input[type="email"]').value;
-            const password = event.target.querySelector('input[type="password"]').value;
-            
-            // Simple validation
-            if (name && email && password) {
-                localStorage.setItem('userLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userName', name);
-                updateLoginState();
-                toggleSignupModal();
-                alert('Account created successfully! You can now save searches.');
-            }
-        }
-        
-        // Update login state
-        function updateLoginState() {
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            const isBusinessLoggedIn = localStorage.getItem('businessLoggedIn') === 'true';
-            const loginBtn = document.getElementById('loginBtn');
-            const signupBtn = document.getElementById('signupBtn');
-            
-            console.log('Updating login state, isLoggedIn:', isLoggedIn, 'isBusinessLoggedIn:', isBusinessLoggedIn);
-            
-            // Make sure signup button is visible by default
-            if (signupBtn) {
-                signupBtn.style.display = 'inline-block';
-            }
-            
-            // Handle mobile buttons
-            const mobileLoginBtn = document.getElementById('mobileLoginBtn');
-            const mobileSignupBtn = document.getElementById('mobileSignupBtn');
-            const signOutBtn = document.getElementById('signOutBtn');
-            const mobileSignOutBtn = document.getElementById('mobileSignOutBtn');
-            
-            if (isLoggedIn) {
-                const userEmail = localStorage.getItem('userEmail');
-                loginBtn.innerHTML = `<i class="fas fa-user mr-2"></i>Dashboard`;
-                loginBtn.onclick = function() {
-                    console.log('Dashboard button clicked');
-                    window.location.href = 'customer-dashboard.html';
-                };
-                // Hide signup button when logged in
-                if (signupBtn) {
-                    signupBtn.style.display = 'none';
-                }
-                if (mobileSignupBtn) {
-                    mobileSignupBtn.style.display = 'none';
-                }
-                // Show sign out button
-                if (signOutBtn) {
-                    signOutBtn.classList.remove('hidden');
-                }
-                if (mobileSignOutBtn) {
-                    mobileSignOutBtn.classList.remove('hidden');
-                }
-            } else if (isBusinessLoggedIn) {
-                loginBtn.innerHTML = `<i class="fas fa-briefcase mr-2"></i>Dashboard`;
-                loginBtn.onclick = function() {
-                    console.log('Business Dashboard button clicked');
-                    window.location.href = 'business-dashboard.html';
-                };
-                // Hide signup button when logged in
-                if (signupBtn) {
-                    signupBtn.style.display = 'none';
-                }
-                if (mobileSignupBtn) {
-                    mobileSignupBtn.style.display = 'none';
-                }
-                // Show sign out button
-                if (signOutBtn) {
-                    signOutBtn.classList.remove('hidden');
-                }
-                if (mobileSignOutBtn) {
-                    mobileSignOutBtn.classList.remove('hidden');
-                }
-            } else {
-                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
-                loginBtn.onclick = toggleLoginModal;
-                // Show signup button when not logged in
-                const signupBtn = document.getElementById('signupBtn');
-                if (signupBtn) {
-                    signupBtn.style.display = 'inline-block';
-                }
-                // Hide sign out button when not logged in
-                if (signOutBtn) {
-                    signOutBtn.classList.add('hidden');
-                }
-                if (mobileSignOutBtn) {
-                    mobileSignOutBtn.classList.add('hidden');
-                }
-            }
-        }
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Fade in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in-section').forEach(section => {
-            observer.observe(section);
-        });
-
-        // Add glow effect to search input on focus
-        document.querySelector('input[type="text"]').addEventListener('focus', function() {
-            this.classList.add('animate-glow');
-        });
-
-        document.querySelector('input[type="text"]').addEventListener('blur', function() {
-            this.classList.remove('animate-glow');
-        });
-        
-        // FAQ Widget Functions
-        function toggleFAQ() {
-            const popup = document.getElementById('faqPopup');
-            const book = document.getElementById('littleBlackBook');
-            
-            if (popup.style.display === 'none' || popup.style.display === '') {
-                popup.style.display = 'block';
-                book.style.transform = 'scale(1.1)';
-            } else {
-                popup.style.display = 'none';
-                book.style.transform = 'scale(1)';
-            }
-        }
-        
-        // Close FAQ when clicking outside
-        document.addEventListener('click', function(event) {
-            const popup = document.getElementById('faqPopup');
-            const book = document.getElementById('littleBlackBook');
-            
-            if (popup.style.display === 'block' && 
-                !popup.contains(event.target) && 
-                !book.contains(event.target)) {
-                popup.style.display = 'none';
-                book.style.transform = 'scale(1)';
-            }
-        });
-        
-        // Require login for favorites
-        function requireLoginForFavorite() {
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            const isBusinessLoggedIn = localStorage.getItem('businessLoggedIn') === 'true';
-            
-            if (!isLoggedIn && !isBusinessLoggedIn) {
-                alert('Please sign in to save favorites!');
-                toggleLoginModal();
-            } else {
-                // User is logged in, add to favorites
-                alert('Added to favorites! ❤️');
-                // Here you would add the business to the user's favorites list
-            }
-        }
-
-        function signOut() {
-            // Clear all login data
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('isBusinessLoggedIn');
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('businessEmail');
-            localStorage.removeItem('userLoggedIn');
-            localStorage.removeItem('businessLoggedIn');
-            
-            // Update UI
-            updateLoginState();
-            
-            // Show confirmation
-            alert('You have been signed out successfully.');
-            
-            // Update the UI
-            updateLoginState();
-            
-            // Redirect to homepage if on dashboard pages
-            if (window.location.pathname.includes('dashboard') || window.location.pathname.includes('business-dashboard')) {
-                window.location.href = 'index.html';
-            }
-        }
-
-        // Check if popup should be shown (once per day)
-        function shouldShowBusinessPopup() {
-            const lastShown = localStorage.getItem('businessPopupLastShown');
-            const today = new Date().toDateString();
-            
-            // If never shown or shown on a different day, show it
-            if (!lastShown || lastShown !== today) {
-                localStorage.setItem('businessPopupLastShown', today);
-                return true;
-            }
-            return false;
-        }
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            updateLoginState();
-            updateContinueSearchSection();
-            
-            // Show business popup once per day
-            setTimeout(() => {
-                if (shouldShowBusinessPopup()) {
-                    toggleBusinessPopup();
-                }
-            }, 2000); // 2 second delay
-        });
-
-        // Back button function
-        function goBack() {
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                // If no history, go to homepage
-                window.location.href = 'index.html';
-            }
-        }
-        
-        // Navigation Functions
-        function toggleLoginModal() {
-            const modal = document.getElementById('loginModal');
-            if (modal) {
-                modal.classList.toggle('hidden');
-            }
-        }
-        
-        function toggleCustomerMenu() {
-            const dropdown = document.getElementById('customerDropdown');
-            const mobileDropdown = document.getElementById('mobileCustomerDropdown');
-            
-            if (dropdown) {
-                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-            }
-            if (mobileDropdown) {
-                mobileDropdown.style.display = mobileDropdown.style.display === 'none' ? 'block' : 'none';
-            }
-        }
-        
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            if (menu) {
-                menu.classList.toggle('hidden');
-            }
-        }
-        
-        function handleLogin(event) {
-            event.preventDefault();
-            // Simulate login
-            const email = event.target.querySelector('input[type="email"]').value;
-            const password = event.target.querySelector('input[type="password"]').value;
-            
-            // Simple validation
-            if (email === 'customer@example.com' && password === 'password123') {
-                // Show customer menu, hide login
-                document.getElementById('authLinks').style.display = 'none';
-                document.getElementById('mobileAuthLinks').style.display = 'none';
-                document.getElementById('customerMenu').style.display = 'block';
-                document.getElementById('mobileCustomerMenu').style.display = 'block';
-                
-                // Close modal
-                toggleLoginModal();
-                
-                // Show success message
-                alert('Login successful!');
-            } else {
-                alert('Invalid credentials. Use customer@example.com / password123');
-            }
-        }
-        
-        function signOut() {
-            // Clear all login data
-            localStorage.removeItem('customerLoggedIn');
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('userLoggedIn');
-            
-            // Close any open dropdowns
-            document.getElementById('customerDropdown').style.display = 'none';
-            document.getElementById('mobileCustomerDropdown').style.display = 'none';
-            
-            // Update UI
-            checkLoginStatus();
-            
-            alert('Signed out successfully!');
-        }
-        
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function(event) {
-            const customerMenu = document.getElementById('customerMenu');
-            const mobileCustomerMenu = document.getElementById('mobileCustomerMenu');
-            
-            if (customerMenu && !customerMenu.contains(event.target)) {
-                document.getElementById('customerDropdown').style.display = 'none';
-            }
-            if (mobileCustomerMenu && !mobileCustomerMenu.contains(event.target)) {
-                document.getElementById('mobileCustomerDropdown').style.display = 'none';
-            }
-        });
-
-        // Handle Book Now button clicks
-        function bookBusiness(businessId) {
-            // Check if user is logged in
-            const isLoggedIn = localStorage.getItem('customerLoggedIn') === 'true';
-            
-            if (!isLoggedIn) {
-                // Redirect to customer login with booking intent
-                localStorage.setItem('bookingIntent', businessId);
-                window.location.href = 'customer-login.html';
-            } else {
-                // Redirect to booking page for the specific business
-                window.location.href = `booking.html?business=${businessId}`;
-            }
-        }
-
-        // Check login status and update UI
-        function checkLoginStatus() {
-            const isLoggedIn = localStorage.getItem('customerLoggedIn') === 'true';
-            const userEmail = localStorage.getItem('userEmail');
-            
-            if (isLoggedIn && userEmail) {
-                // User is logged in - show customer menu, hide sign in/up
-                document.getElementById('authLinks').style.display = 'none';
-                document.getElementById('mobileAuthLinks').style.display = 'none';
-                document.getElementById('customerMenu').style.display = 'block';
-                document.getElementById('mobileCustomerMenu').style.display = 'block';
-                
-                // Update initials
-                const initials = userEmail.charAt(0).toUpperCase();
-                document.getElementById('customerInitialText').textContent = initials;
-                document.getElementById('mobileCustomerInitialText').textContent = initials;
-            } else {
-                // User is not logged in - show sign in/up, hide customer menu
-                document.getElementById('authLinks').style.display = 'flex';
-                document.getElementById('mobileAuthLinks').style.display = 'flex';
-                document.getElementById('customerMenu').style.display = 'none';
-                document.getElementById('mobileCustomerMenu').style.display = 'none';
-            }
-        }
-
-        // Initialize login state on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            checkLoginStatus();
-        });
-
-        // Redirect to account tab in customer dashboard
-        function redirectToAccountTab() {
-            // Set a flag to indicate we want to go to the account tab
-            localStorage.setItem('redirectToAccount', 'true');
-            // Navigate to customer dashboard
-            window.location.href = 'customer-dashboard.html';
-        }
-
-        // Redirect to login page with return URL
-        function redirectToLogin() {
-            // Store current page URL for redirect after login
-            localStorage.setItem('returnUrl', window.location.href);
-            // Navigate to login page
-            window.location.href = 'customer-login.html';
-        }
-
-        // Redirect to register page with return URL
-        function redirectToRegister() {
-            // Store current page URL for redirect after registration
-            localStorage.setItem('returnUrl', window.location.href);
-            // Navigate to register page
-            window.location.href = 'customer-register.html';
-        }
-        
-        // Basket management functions
-        const BASKET_KEY = 'blkpages_basket';
-        const GUEST_BASKET_KEY = 'blkpages_guest_basket';
-        let selectedServices = [];
-        
-        function updateBasketCount() {
-            const basketCount = document.getElementById('basketCount');
-            const mobileBasketCount = document.getElementById('mobileBasketCount');
-            const count = selectedServices ? selectedServices.length : 0;
-            
-            if (basketCount) {
-                basketCount.textContent = count;
-            }
-            if (mobileBasketCount) {
-                mobileBasketCount.textContent = count;
-            }
-        }
-        
-        function saveBasket() {
-            const basketData = {
-                selectedServices: selectedServices,
-                timestamp: Date.now()
-            };
-            
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            if (isLoggedIn) {
-                localStorage.setItem(BASKET_KEY, JSON.stringify(basketData));
-            } else {
-                sessionStorage.setItem(GUEST_BASKET_KEY, JSON.stringify(basketData));
-            }
-        }
-        
-        function loadBasket() {
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            let basketData = null;
-            
-            if (isLoggedIn) {
-                const savedBasket = localStorage.getItem(BASKET_KEY);
-                if (savedBasket) basketData = JSON.parse(savedBasket);
-            } else {
-                const guestBasket = sessionStorage.getItem(GUEST_BASKET_KEY);
-                if (guestBasket) basketData = JSON.parse(guestBasket);
-            }
-            
-            if (basketData) {
-                selectedServices = basketData.selectedServices || [];
-                updateBasketCount();
-            }
-        }
-        
-        // Load basket on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadBasket();
-        });
-
-    </script>
+    </header>
     
-    <!-- SMS System Demo Section -->
-    <section id="sms-demo" class="py-20 bg-gradient-to-br from-charcoal to-charcoal-light fade-in-section">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl sm:text-5xl font-bold mb-4 text-white font-poppins">SMS Messaging System Demo</h2>
-                <p class="text-xl text-text-secondary mb-8 max-w-3xl mx-auto">
-                    Experience our complete SMS credit management, phone verification, and messaging system
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                <!-- SMS Credit Demo -->
-                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-br from-neon-green to-green-600 rounded-xl flex items-center justify-center mr-4">
-                            <i class="fas fa-mobile-alt text-white text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white">SMS Credit Management</h3>
-                    </div>
-                    <p class="text-text-secondary mb-6">
-                        Track SMS usage, purchase add-ons, and manage automatic notifications for your business.
-                    </p>
-                    
-                    <!-- Credit Progress Bar -->
-                    <div class="mb-6">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm text-text-secondary">Monthly Credits</span>
-                            <span class="text-sm font-semibold text-neon-green">32 of 50 remaining</span>
-                        </div>
-                        <div class="w-full bg-white/10 rounded-full h-3">
-                            <div class="bg-gradient-to-r from-neon-green to-green-600 h-3 rounded-full" style="width: 64%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="text-center p-4 bg-white/5 rounded-xl">
-                            <div class="text-2xl font-bold text-neon-green">15</div>
-                            <div class="text-sm text-text-secondary">Booking SMS</div>
-                        </div>
-                        <div class="text-center p-4 bg-white/5 rounded-xl">
-                            <div class="text-2xl font-bold text-neon-blue">3</div>
-                            <div class="text-sm text-text-secondary">Promotional SMS</div>
-                        </div>
-                    </div>
-                    
-                    <button onclick="window.open('demo/sms-system-demo.html', '_blank')" 
-                            class="w-full bg-gradient-to-r from-neon-green to-green-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-play mr-2"></i> Try SMS Demo
-                    </button>
-                </div>
-                
-                <!-- Phone Verification Demo -->
-                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-br from-neon-purple to-purple-600 rounded-xl flex items-center justify-center mr-4">
-                            <i class="fas fa-shield-alt text-white text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white">Phone Verification</h3>
-                    </div>
-                    <p class="text-text-secondary mb-6">
-                        Secure phone number verification for both businesses and customers with encrypted storage.
-                    </p>
-                    
-                    <!-- Verification Status -->
-                    <div class="space-y-4 mb-6">
-                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl">
-                            <div class="flex items-center">
-                                <i class="fas fa-building text-neon-blue mr-3"></i>
-                                <span class="text-white">Business Phone</span>
-                            </div>
-                            <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm font-medium">
-                                <i class="fas fa-check mr-1"></i> Verified
-                            </span>
-                        </div>
-                        
-                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl">
-                            <div class="flex items-center">
-                                <i class="fas fa-user text-neon-pink mr-3"></i>
-                                <span class="text-white">Customer Phone</span>
-                            </div>
-                            <span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-sm font-medium">
-                                <i class="fas fa-exclamation-triangle mr-1"></i> Unverified
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <button onclick="window.open('customer-dashboard.html', '_blank')" 
-                            class="w-full bg-gradient-to-r from-neon-purple to-purple-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-mobile-alt mr-2"></i> Verify Phone
-                    </button>
-                </div>
-            </div>
-            
-            <!-- SMS Features Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div class="text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-                    <div class="w-16 h-16 bg-gradient-to-br from-neon-blue to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-comment text-white text-2xl"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-white mb-2">Booking SMS</h4>
-                    <p class="text-text-secondary text-sm">Automatic confirmations, cancellations, and reschedule notifications</p>
-                </div>
-                
-                <div class="text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-                    <div class="w-16 h-16 bg-gradient-to-br from-neon-pink to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-bullhorn text-white text-2xl"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-white mb-2">Promotional SMS</h4>
-                    <p class="text-text-secondary text-sm">Send targeted campaigns to your customer base with credit tracking</p>
-                </div>
-                
-                <div class="text-center p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-                    <div class="w-16 h-16 bg-gradient-to-br from-neon-green to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-chart-bar text-white text-2xl"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-white mb-2">Analytics</h4>
-                    <p class="text-text-secondary text-sm">Track delivery rates, usage patterns, and customer engagement</p>
-                </div>
-            </div>
-            
-            <!-- Demo Actions -->
-            <div class="text-center">
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button onclick="window.open('demo/sms-system-demo.html', '_blank')" 
-                            class="bg-gradient-to-r from-neon-pink to-pink-600 text-white font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-pink-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-play mr-2"></i> Full SMS Demo
-                    </button>
-                    
-                    <button onclick="window.open('admin/sms-dashboard.html', '_blank')" 
-                            class="bg-gradient-to-r from-neon-blue to-blue-600 text-white font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-tachometer-alt mr-2"></i> Admin Dashboard
-                    </button>
-                    
-                    <button onclick="window.open('business-dashboard.html', '_blank')" 
-                            class="bg-gradient-to-r from-neon-green to-green-600 text-white font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-building mr-2"></i> Business Dashboard
-                    </button>
-                </div>
-                
-                <p class="text-text-secondary text-sm mt-6 max-w-2xl mx-auto">
-                    <i class="fas fa-shield-alt text-neon-green mr-2"></i>
-                    All phone numbers are encrypted with AES-256. GDPR compliant with comprehensive audit logging.
-                </p>
-            </div>
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Navigation --><!-- Login Modal --><div><div><div><div><h3>Login</h3><button onclick="toggleLoginModal(event)"><i></i></button></div><form onsubmit="handleLogin(event)"><div><label>Email</label><input type="email" required placeholder="customer@example.com"></div><div><label>Password</label><input type="password" required placeholder="password123"></div><button type="submit"> Login </button></form><div><p>Don't have an account? <a href="#" onclick="redirectToRegister()">Sign up</a></p></div></div></div></div><!-- Hero Section --><section><div></div><div><h1> BlkPages. </h1><p> Find Black-owned Businesses Near You </p><!-- Search Bar --><div><form onsubmit="handleSearch(event)"><!-- Mobile Layout (Stacked) --><div><input type="text" placeholder="What are you looking for?" required ><input type="text" placeholder="Location" required ><div><button type="submit" ><i></i>Search </button><button type="button" onclick="findNearMe()" ><i></i></button></div></div><!-- Desktop Layout (Horizontal) --><div><div><input type="text" placeholder="Search for services, businesses..." required ></div><div><input type="text" placeholder="City, Area, Postcode" required ></div><div><button type="submit" ><i></i>Search </button></div><div><button type="button" onclick="findNearMe()" ><i></i>Near Me </button></div></div></form><!-- Subtle Booking Hint --><div><p><i></i><span>Book appointments directly online</span><span>•</span><span>No phone calls needed</span></p></div></div></div></section><!-- Continue Your Search Section --><section><div><div><h2>Continue Your Search</h2><p>Pick up where you left off</p></div><div><!-- Recent searches will be populated here --></div></div></section><!-- Business Listing Popup --><div><div><div><div><h3>List Your Business</h3><button onclick="toggleBusinessPopup()"><i></i></button></div><div><div><i></i></div><h4>Own a Hair or Beauty Business?</h4><p>Join BlkPages today and connect with customers in your area. List your business with us and grow your client base.</p><div><a href="business-register.html"><i></i>List Your Business </a><a href="why-list-with-us.html"><i></i>Learn More </a></div><p><i></i> Join 500+ businesses already on BlkPages </p></div></div></div></div><!-- Categories Section --><section><div><div><h2>Browse Categories</h2><p>Discover businesses by category</p></div><div><!-- Hair Category --><a href="hair-businesses.html"><div><i></i></div><h3>Hair</h3><p>Professional hair styling, cutting, and coloring services</p></a><!-- Beauty Category --><a href="beauty-businesses.html"><div><i></i></div><h3>Beauty</h3><p>Makeup, skincare, and beauty treatments</p></a><!-- Barbers Category --><a href="barber-businesses.html"><div><i></i></div><h3>Barbers</h3><p>Traditional and modern barbering services</p></a><!-- Nails Category --><a href="nail-businesses.html"><div><i></i></div><h3>Nails</h3><p>Manicures, pedicures, and nail art services</p></a></div></div></section><!-- Featured Businesses Moving Banner --><section><div><div><h2>Featured Businesses</h2><p>Discover top-rated Black-owned businesses</p></div><div><div><!-- Business 1 --><a href="business-royal-hair.html"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=200&fit=crop&crop=center" alt="Royal Hair Studio"><div><div><h3>Royal Hair Studio</h3><span> Hair </span></div><p>Professional hair styling and cutting services with over 10 years of experience</p><div><i></i><i></i><i></i><i></i><i></i><span>4.9 (127 reviews)</span></div><button> View Profile </button></div></a><!-- Business 2 --><a href="business-elite-beauty.html"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=200&fit=crop&crop=center" alt="Elite Beauty Lounge"><div><div><h3>Elite Beauty Lounge</h3><span> Beauty </span></div><p>Luxury beauty treatments and skincare services specializing in melanin-rich skin care</p><div><i></i><i></i><i></i><i></i><i></i><span>4.8 (89 reviews)</span></div><button onclick="event.stopPropagation(); bookBusiness('elite-beauty')"> Book Now </button></div></a><!-- Business 3 --><a href="business-golden-touch.html"><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&h=200&fit=crop&crop=center" alt="Golden Touch Barbershop"><div><div><h3>Golden Touch Barbershop</h3><span> Barbers </span></div><p>Traditional and modern barbering services with a focus on precision cuts</p><div><i></i><i></i><i></i><i></i><i></i><span>4.7 (156 reviews)</span></div><button> View Profile </button></div></a><!-- Duplicate for seamless loop --><div><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=200&fit=crop&crop=center" alt="Royal Hair Studio"><div><div><div><i></i></div><div><h3>Royal Hair Studio</h3><span>Hair</span></div></div><p>Professional hair styling and cutting services</p><div><i></i><i></i><i></i><i></i><i></i><span>4.9 (127)</span></div><div> "Amazing service! My hair looks fantastic." - Sarah J. </div></div></div><div><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=200&fit=crop&crop=center" alt="Elite Beauty Lounge"><div><div><div><i></i></div><div><h3>Elite Beauty Lounge</h3><span>Beauty</span></div></div><p>Luxury beauty treatments and skincare services</p><div><i></i><i></i><i></i><i></i><i></i><span>4.8 (89)</span></div><div> "Best beauty treatment I've ever had!" - Lisa M. </div></div></div><div><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&h=200&fit=crop&crop=center" alt="Golden Touch Barbershop"><div><div><div><i></i></div><div><h3>Golden Touch Barbershop</h3><span>Hair</span></div></div><p>Traditional and modern barbering services</p><div><i></i><i></i><i></i><i></i><i></i><span>4.7 (156)</span></div><div> "Perfect cut every time!" - Mike B. </div></div></div></div></div></div></section><!-- Get Started Today Section --><section><div><h2>Get Started Today</h2><p> Join thousands of customers who have discovered amazing Black-owned businesses through BlkPages. </p><div><a href="why-list-with-us.html"> Why List with Us? </a><a href="business-register.html"> List Your Business </a></div></div></section><!-- Login Modal --><div><div><div><div><h3>Login</h3><button onclick="toggleLoginModal(event)"><i></i></button></div><form onsubmit="handleLogin(event)"><div><label>Email</label><input type="email" required placeholder="customer@example.com"></div><div><label>Password</label><input type="password" required placeholder="password123"></div><button type="submit"> Login </button></form><!-- Demo Credentials --><div><h4>Demo Credentials:</h4><p>Email: customer@example.com</p><p>Password: password123</p><div><button type="button" onclick="fillDemoCredentials()"> Use Demo Credentials </button><button type="button" onclick="testRedirect()"> Test Direct Link </button></div></div><p> Don't have an account? <button onclick="toggleSignupModal(event); toggleLoginModal(event);">Sign up</button></p></div></div></div><!-- Signup Modal --><div><div><div><div><h3>Sign Up</h3><button onclick="toggleSignupModal(event)"><i></i></button></div><form onsubmit="handleSignup(event)"><div><label>Full Name</label><input type="text" required></div><div><label>Email</label><input type="email" required></div><div><label>Password</label><input type="password" required></div><button type="submit"> Sign Up </button></form><!-- Demo Credentials --><div><h4>Demo Credentials:</h4><p>Full Name: John Doe</p><p>Email: customer@example.com</p><p>Password: Password123</p><button type="button" onclick="fillDemoCredentials()"><i></i> Use Demo Credentials </button></div><p> Already have an account? <button onclick="toggleLoginModal(event); toggleSignupModal(event);">Login</button></p></div></div></div><!-- Footer --><!-- The Little Black Book FAQ Widget --><div onclick="toggleFAQ()"><div><i></i><div></div></div></div><!-- FAQ Popup --><div><div><div><h3>The Little Black Book</h3><button onclick="toggleFAQ()"><i></i></button></div><div><div><h4>How do I search for businesses?</h4><p>Use the search bar at the top of the page to find businesses by name, service, or location.</p></div><div><h4>Can I save my searches?</h4><p>Yes! Create an account to save your searches and access them later.</p></div><div><h4>How do I list my business?</h4><p>Click "List Your Business" to register and create your business profile.</p></div><div><h4>Are there different business categories?</h4><p>We focus on Hair and Beauty services, with plans to expand to more categories.</p></div><div><h4>How do I contact a business?</h4><p>Each business profile shows contact information and booking options.</p></div></div><div><a href="faq.html">View Full FAQ →</a></div></div></div><!-- Business Manager Script --><script src="business-manager.js"></script><script> // Handle search form submission function handleSearch(event) { event.preventDefault(); const form = event.target; // Handle both mobile and desktop layouts const searchInput = form.querySelector('input[placeholder*="Search for services"], input[placeholder*="What are you looking for"]'); const locationInput = form.querySelector('input[placeholder*="City, Area, Postcode"], input[placeholder*="Location"]'); const searchTerm = searchInput ? searchInput.value : ''; const location = locationInput ? locationInput.value : ''; // Save search to history saveSearchToHistory(searchTerm); // Store current search localStorage.setItem('searchTerm', searchTerm); // Redirect to search results page with all parameters const params = new URLSearchParams(); if (searchTerm.trim()) params.set('q', searchTerm); if (location.trim()) params.set('location', location); window.location.href = `search-results.html?${params.toString()}`; } // Handle advanced search function handleAdvancedSearch(event) { event.preventDefault(); const formData = new FormData(event.target); const searchTerm = formData.get('search') || event.target.querySelector('input[type="text"]').value; // Save search to history saveSearchToHistory(searchTerm); // Store current search localStorage.setItem('searchTerm', searchTerm); // Perform search performSearch(searchTerm); } // Perform search and show results function performSearch(searchTerm) { const searchResults = document.getElementById('searchResults'); // Demo search results const demoResults = [ { name: 'Royal Hair Studio', category: 'Hair', rating: 4.9, reviews: 127, distance: '0.5 miles', image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=200&fit=crop&crop=center', description: 'Professional hair styling and cutting services with over 10 years of experience.' }, { name: 'Elite Beauty Lounge', category: 'Beauty', rating: 4.8, reviews: 89, distance: '1.2 miles', image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=200&fit=crop&crop=center', description: 'Luxury beauty treatments and skincare services specializing in melanin-rich skin care.' }, { name: 'Golden Touch Barbershop', category: 'Hair', rating: 4.7, reviews: 156, distance: '0.8 miles', image: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=400&h=200&fit=crop&crop=center', description: 'Traditional and modern barbering services with a focus on precision cuts.' } ]; searchResults.innerHTML = demoResults.map(business => ` <div><img src="${business.image}" alt="${business.name}"><div><div><div><h3>${business.name}</h3><span> ${business.category} </span></div><div><div><i></i><i></i><i></i><i></i><i></i><span>${business.rating}</span></div><p>${business.reviews} reviews</p></div></div><p>${business.description}</p><div><div><i></i><span>${business.distance}</span></div><div><button> View Details </button><button><i></i></button></div></div></div></div> `).join(''); } // Find near me function function findNearMe() { if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(function(position) { localStorage.setItem('userLat', position.coords.latitude); localStorage.setItem('userLng', position.coords.longitude); localStorage.setItem('userLocation', 'Current Location'); // Redirect to search results page with "near me" parameter window.location.href = 'search-results.html?nearme=true'; }); } else { alert('Geolocation is not supported by this browser.'); } } // Save search to history function saveSearchToHistory(searchTerm) { let searches = JSON.parse(localStorage.getItem('recentSearches') || '[]'); // Remove if already exists searches = searches.filter(s => s !== searchTerm); // Add to beginning searches.unshift(searchTerm); // Keep only last 3 searches = searches.slice(0, 3); localStorage.setItem('recentSearches', JSON.stringify(searches)); updateContinueSearchSection(); } // Update continue search section function updateContinueSearchSection() { const searches = JSON.parse(localStorage.getItem('recentSearches') || '[]'); const section = document.getElementById('continue-search'); const container = document.getElementById('recent-searches'); if (searches.length > 0) { section.style.display = 'block'; container.innerHTML = searches.map((search, index) => ` <div onclick="continueSearch('${search}')"><div><div><i></i></div><div><h3>${search}</h3><span>Recent search</span></div></div><p>Click to continue this search</p></div> `).join(''); } else { section.style.display = 'none'; } } // Continue a previous search function continueSearch(searchTerm) { localStorage.setItem('searchTerm', searchTerm); document.getElementById('search').scrollIntoView({ behavior: 'smooth' }); performSearch(searchTerm); } // Modal functions function toggleLoginModal(event) { if (event) { event.preventDefault(); event.stopPropagation(); } const modal = document.getElementById('loginModal'); modal.classList.toggle('hidden'); } function toggleMobileMenu() { const mobileMenu = document.getElementById('mobileMenu'); mobileMenu.classList.toggle('hidden'); } function closeMobileMenu() { const mobileMenu = document.getElementById('mobileMenu'); mobileMenu.classList.add('hidden'); } function toggleSignupModal(event) { if (event) { event.preventDefault(); event.stopPropagation(); } const modal = document.getElementById('signupModal'); modal.classList.toggle('hidden'); } function toggleBusinessPopup() { const modal = document.getElementById('businessPopup'); modal.classList.toggle('hidden'); } // Handle login function handleLogin(event) { event.preventDefault(); const email = event.target.querySelector('input[type="email"]').value; const password = event.target.querySelector('input[type="password"]').value; console.log('Login attempt:', email, password); // Demo credentials check if (email === 'customer@example.com' && password === 'password123') { console.log('Credentials valid, logging in...'); localStorage.setItem('userLoggedIn', 'true'); localStorage.setItem('userEmail', email); localStorage.setItem('userName', 'Demo Customer'); // Close modal toggleLoginModal(); // Show success message alert('Login successful! Redirecting to dashboard...'); // Force redirect using multiple methods setTimeout(() => { console.log('Attempting redirect...'); window.location.replace('customer-dashboard.html'); }, 500); } else { alert('Invalid credentials. Use the demo credentials: customer@example.com / password123'); } } // Fill demo credentials function fillDemoCredentials() { const emailInput = document.querySelector('#loginForm input[type="email"]'); const passwordInput = document.querySelector('#loginForm input[type="password"]'); emailInput.value = 'customer@example.com'; passwordInput.value = 'password123'; } // Test direct redirect function testRedirect() { console.log('Testing direct redirect...'); alert('Testing direct link to dashboard...'); window.location.href = 'customer-dashboard.html'; } // Handle signup function handleSignup(event) { event.preventDefault(); const name = event.target.querySelector('input[type="text"]').value; const email = event.target.querySelector('input[type="email"]').value; const password = event.target.querySelector('input[type="password"]').value; // Simple validation if (name && email && password) { localStorage.setItem('userLoggedIn', 'true'); localStorage.setItem('userEmail', email); localStorage.setItem('userName', name); updateLoginState(); toggleSignupModal(); alert('Account created successfully! You can now save searches.'); } } // Update login state function updateLoginState() { const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true'; const isBusinessLoggedIn = localStorage.getItem('businessLoggedIn') === 'true'; const loginBtn = document.getElementById('loginBtn'); const signupBtn = document.getElementById('signupBtn'); console.log('Updating login state, isLoggedIn:', isLoggedIn, 'isBusinessLoggedIn:', isBusinessLoggedIn); // Make sure signup button is visible by default if (signupBtn) { signupBtn.style.display = 'inline-block'; } // Handle mobile buttons const mobileLoginBtn = document.getElementById('mobileLoginBtn'); const mobileSignupBtn = document.getElementById('mobileSignupBtn'); const signOutBtn = document.getElementById('signOutBtn'); const mobileSignOutBtn = document.getElementById('mobileSignOutBtn'); if (isLoggedIn) { const userEmail = localStorage.getItem('userEmail'); loginBtn.innerHTML = `<i></i>Dashboard`; loginBtn.onclick = function() { console.log('Dashboard button clicked'); window.location.href = 'customer-dashboard.html'; }; // Hide signup button when logged in if (signupBtn) { signupBtn.style.display = 'none'; } if (mobileSignupBtn) { mobileSignupBtn.style.display = 'none'; } // Show sign out button if (signOutBtn) { signOutBtn.classList.remove('hidden'); } if (mobileSignOutBtn) { mobileSignOutBtn.classList.remove('hidden'); } } else if (isBusinessLoggedIn) { loginBtn.innerHTML = `<i></i>Dashboard`; loginBtn.onclick = function() { console.log('Business Dashboard button clicked'); window.location.href = 'business-dashboard.html'; }; // Hide signup button when logged in if (signupBtn) { signupBtn.style.display = 'none'; } if (mobileSignupBtn) { mobileSignupBtn.style.display = 'none'; } // Show sign out button if (signOutBtn) { signOutBtn.classList.remove('hidden'); } if (mobileSignOutBtn) { mobileSignOutBtn.classList.remove('hidden'); } } else { loginBtn.innerHTML = '<i></i>Sign In'; loginBtn.onclick = toggleLoginModal; // Show signup button when not logged in const signupBtn = document.getElementById('signupBtn'); if (signupBtn) { signupBtn.style.display = 'inline-block'; } // Hide sign out button when not logged in if (signOutBtn) { signOutBtn.classList.add('hidden'); } if (mobileSignOutBtn) { mobileSignOutBtn.classList.add('hidden'); } } } // Smooth scrolling for navigation links document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function (e) { e.preventDefault(); const target = document.querySelector(this.getAttribute('href')); if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }); }); // Fade in animation on scroll const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }; const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } }); }, observerOptions); document.querySelectorAll('.fade-in-section').forEach(section => { observer.observe(section); }); // Add glow effect to search input on focus document.querySelector('input[type="text"]').addEventListener('focus', function() { this.classList.add('animate-glow'); }); document.querySelector('input[type="text"]').addEventListener('blur', function() { this.classList.remove('animate-glow'); }); // FAQ Widget Functions function toggleFAQ() { const popup = document.getElementById('faqPopup'); const book = document.getElementById('littleBlackBook'); if (popup.style.display === 'none' || popup.style.display === '') { popup.style.display = 'block'; book.style.transform = 'scale(1.1)'; } else { popup.style.display = 'none'; book.style.transform = 'scale(1)'; } } // Close FAQ when clicking outside document.addEventListener('click', function(event) { const popup = document.getElementById('faqPopup'); const book = document.getElementById('littleBlackBook'); if (popup.style.display === 'block' && !popup.contains(event.target) && !book.contains(event.target)) { popup.style.display = 'none'; book.style.transform = 'scale(1)'; } }); // Require login for favorites function requireLoginForFavorite() { const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true'; const isBusinessLoggedIn = localStorage.getItem('businessLoggedIn') === 'true'; if (!isLoggedIn && !isBusinessLoggedIn) { alert('Please sign in to save favorites!'); toggleLoginModal(); } else { // User is logged in, add to favorites alert('Added to favorites! ❤️'); // Here you would add the business to the user's favorites list } } function signOut() { // Clear all login data localStorage.removeItem('isLoggedIn'); localStorage.removeItem('isBusinessLoggedIn'); localStorage.removeItem('userEmail'); localStorage.removeItem('businessEmail'); localStorage.removeItem('userLoggedIn'); localStorage.removeItem('businessLoggedIn'); // Update UI updateLoginState(); // Show confirmation alert('You have been signed out successfully.'); // Update the UI updateLoginState(); // Redirect to homepage if on dashboard pages if (window.location.pathname.includes('dashboard') || window.location.pathname.includes('business-dashboard')) { window.location.href = 'index.html'; } } // Check if popup should be shown (once per day) function shouldShowBusinessPopup() { const lastShown = localStorage.getItem('businessPopupLastShown'); const today = new Date().toDateString(); // If never shown or shown on a different day, show it if (!lastShown || lastShown !== today) { localStorage.setItem('businessPopupLastShown', today); return true; } return false; } // Initialize page document.addEventListener('DOMContentLoaded', function() { updateLoginState(); updateContinueSearchSection(); // Show business popup once per day setTimeout(() => { if (shouldShowBusinessPopup()) { toggleBusinessPopup(); } }, 2000); // 2 second delay }); // Back button function function goBack() { if (window.history.length > 1) { window.history.back(); } else { // If no history, go to homepage window.location.href = 'index.html'; } } // Navigation Functions function toggleLoginModal() { const modal = document.getElementById('loginModal'); if (modal) { modal.classList.toggle('hidden'); } } function toggleCustomerMenu() { const dropdown = document.getElementById('customerDropdown'); const mobileDropdown = document.getElementById('mobileCustomerDropdown'); if (dropdown) { dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none'; } if (mobileDropdown) { mobileDropdown.style.display = mobileDropdown.style.display === 'none' ? 'block' : 'none'; } } function toggleMobileMenu() { const menu = document.getElementById('mobileMenu'); if (menu) { menu.classList.toggle('hidden'); } } function handleLogin(event) { event.preventDefault(); // Simulate login const email = event.target.querySelector('input[type="email"]').value; const password = event.target.querySelector('input[type="password"]').value; // Simple validation if (email === 'customer@example.com' && password === 'password123') { // Show customer menu, hide login document.getElementById('authLinks').style.display = 'none'; document.getElementById('mobileAuthLinks').style.display = 'none'; document.getElementById('customerMenu').style.display = 'block'; document.getElementById('mobileCustomerMenu').style.display = 'block'; // Close modal toggleLoginModal(); // Show success message alert('Login successful!'); } else { alert('Invalid credentials. Use customer@example.com / password123'); } } function signOut() { // Clear all login data localStorage.removeItem('customerLoggedIn'); localStorage.removeItem('userEmail'); localStorage.removeItem('userLoggedIn'); // Close any open dropdowns document.getElementById('customerDropdown').style.display = 'none'; document.getElementById('mobileCustomerDropdown').style.display = 'none'; // Update UI checkLoginStatus(); alert('Signed out successfully!'); } // Close dropdowns when clicking outside document.addEventListener('click', function(event) { const customerMenu = document.getElementById('customerMenu'); const mobileCustomerMenu = document.getElementById('mobileCustomerMenu'); if (customerMenu && !customerMenu.contains(event.target)) { document.getElementById('customerDropdown').style.display = 'none'; } if (mobileCustomerMenu && !mobileCustomerMenu.contains(event.target)) { document.getElementById('mobileCustomerDropdown').style.display = 'none'; } }); // Handle Book Now button clicks function bookBusiness(businessId) { // Check if user is logged in const isLoggedIn = localStorage.getItem('customerLoggedIn') === 'true'; if (!isLoggedIn) { // Redirect to customer login with booking intent localStorage.setItem('bookingIntent', businessId); window.location.href = 'customer-login.html'; } else { // Redirect to booking page for the specific business window.location.href = `booking.html?business=${businessId}`; } } // Check login status and update UI function checkLoginStatus() { const isLoggedIn = localStorage.getItem('customerLoggedIn') === 'true'; const userEmail = localStorage.getItem('userEmail'); if (isLoggedIn && userEmail) { // User is logged in - show customer menu, hide sign in/up document.getElementById('authLinks').style.display = 'none'; document.getElementById('mobileAuthLinks').style.display = 'none'; document.getElementById('customerMenu').style.display = 'block'; document.getElementById('mobileCustomerMenu').style.display = 'block'; // Update initials const initials = userEmail.charAt(0).toUpperCase(); document.getElementById('customerInitialText').textContent = initials; document.getElementById('mobileCustomerInitialText').textContent = initials; } else { // User is not logged in - show sign in/up, hide customer menu document.getElementById('authLinks').style.display = 'flex'; document.getElementById('mobileAuthLinks').style.display = 'flex'; document.getElementById('customerMenu').style.display = 'none'; document.getElementById('mobileCustomerMenu').style.display = 'none'; } } // Initialize login state on page load document.addEventListener('DOMContentLoaded', function() { checkLoginStatus(); }); // Redirect to account tab in customer dashboard function redirectToAccountTab() { // Set a flag to indicate we want to go to the account tab localStorage.setItem('redirectToAccount', 'true'); // Navigate to customer dashboard window.location.href = 'customer-dashboard.html'; } // Redirect to login page with return URL function redirectToLogin() { // Store current page URL for redirect after login localStorage.setItem('returnUrl', window.location.href); // Navigate to login page window.location.href = 'customer-login.html'; } // Redirect to register page with return URL function redirectToRegister() { // Store current page URL for redirect after registration localStorage.setItem('returnUrl', window.location.href); // Navigate to register page window.location.href = 'customer-register.html'; } // Basket management functions const BASKET_KEY = 'blkpages_basket'; const GUEST_BASKET_KEY = 'blkpages_guest_basket'; let selectedServices = []; function updateBasketCount() { const basketCount = document.getElementById('basketCount'); const mobileBasketCount = document.getElementById('mobileBasketCount'); const count = selectedServices ? selectedServices.length : 0; if (basketCount) { basketCount.textContent = count; } if (mobileBasketCount) { mobileBasketCount.textContent = count; } } function saveBasket() { const basketData = { selectedServices: selectedServices, timestamp: Date.now() }; const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true'; if (isLoggedIn) { localStorage.setItem(BASKET_KEY, JSON.stringify(basketData)); } else { sessionStorage.setItem(GUEST_BASKET_KEY, JSON.stringify(basketData)); } } function loadBasket() { const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true'; let basketData = null; if (isLoggedIn) { const savedBasket = localStorage.getItem(BASKET_KEY); if (savedBasket) basketData = JSON.parse(savedBasket); } else { const guestBasket = sessionStorage.getItem(GUEST_BASKET_KEY); if (guestBasket) basketData = JSON.parse(guestBasket); } if (basketData) { selectedServices = basketData.selectedServices || []; updateBasketCount(); } } // Load basket on page load document.addEventListener('DOMContentLoaded', function() { loadBasket(); }); </script><!-- SMS System Demo Section --><section><div><div><h2>SMS Messaging System Demo</h2><p> Experience our complete SMS credit management, phone verification, and messaging system </p></div><div><!-- SMS Credit Demo --><div><div><div><i></i></div><h3>SMS Credit Management</h3></div><p> Track SMS usage, purchase add-ons, and manage automatic notifications for your business. </p><!-- Credit Progress Bar --><div><div><span>Monthly Credits</span><span>32 of 50 remaining</span></div><div><div></div></div></div><div><div><div>15</div><div>Booking SMS</div></div><div><div>3</div><div>Promotional SMS</div></div></div><button onclick="window.open('demo/sms-system-demo.html', '_blank')"><i></i> Try SMS Demo </button></div><!-- Phone Verification Demo --><div><div><div><i></i></div><h3>Phone Verification</h3></div><p> Secure phone number verification for both businesses and customers with encrypted storage. </p><!-- Verification Status --><div><div><div><i></i><span>Business Phone</span></div><span><i></i> Verified </span></div><div><div><i></i><span>Customer Phone</span></div><span><i></i> Unverified </span></div></div><button onclick="window.open('customer-dashboard.html', '_blank')"><i></i> Verify Phone </button></div></div><!-- SMS Features Grid --><div><div><div><i></i></div><h4>Booking SMS</h4><p>Automatic confirmations, cancellations, and reschedule notifications</p></div><div><div><i></i></div><h4>Promotional SMS</h4><p>Send targeted campaigns to your customer base with credit tracking</p></div><div><div><i></i></div><h4>Analytics</h4><p>Track delivery rates, usage patterns, and customer engagement</p></div></div><!-- Demo Actions --><div><div><button onclick="window.open('demo/sms-system-demo.html', '_blank')"><i></i> Full SMS Demo </button><button onclick="window.open('admin/sms-dashboard.html', '_blank')"><i></i> Admin Dashboard </button><button onclick="window.open('business-dashboard.html', '_blank')"><i></i> Business Dashboard </button></div><p><i></i> All phone numbers are encrypted with AES-256. GDPR compliant with comprehensive audit logging. </p></div></div></section><!-- Contextual Banners Demo Section --><section><div><div><h2>Contextual Dashboard Banners</h2><p> Smart notification banners that appear dynamically based on user status and events </p></div><div><!-- Customer Banners Demo --><div><div><div><i></i></div><h3>Customer Dashboard</h3></div><p> Smart banners for customer experience including waiting list offers, payment notifications, and review requests. </p><!-- Banner Examples --><div><div><div><span>💬</span><div><div>Waiting List Offer</div><div>A slot opened at Royal Hair Studio...</div></div></div></div><div><div><span>💬</span><div><div>Review Request</div><div>How was your experience at Royal Hair Studio?</div></div></div></div></div><button onclick="window.open('customer-dashboard.html', '_blank')"><i></i> View Customer Dashboard </button></div><!-- Business Banners Demo --><div><div><div><i></i></div><h3>Business Dashboard</h3></div><p> Management banners for business operations including SMS credits, payment failures, and review responses. </p><!-- Banner Examples --><div><div><div><span>⚠️</span><div><div>Low SMS Credits</div><div>You have 8 SMS credits remaining...</div></div></div></div><div><div><span>💬</span><div><div>New Review Received</div><div>Sarah M. left a 5-star review...</div></div></div></div></div><button onclick="window.open('business-dashboard.html', '_blank')"><i></i> View Business Dashboard </button></div></div><!-- Interactive Demo --><div><div><button onclick="window.open('demo/contextual-banners-demo.html', '_blank')"><i></i> Interactive Demo </button><button onclick="window.open('demo-hub.html', '_blank')"><i></i> All Demos </button></div><p><i></i> Banners appear dynamically based on user status, events, and system conditions with smooth animations and interactive controls. </p></div></div></section><!-- Waiting List Offer System Section --><section><div><div><h2>Waiting List Offer System</h2><p> Automated waiting list management with premium plan access control and GDPR compliance </p></div><div><!-- Customer Experience --><div><div><div><i></i></div><h3>Customer Experience</h3></div><p> Seamless waiting list joining with clear privacy messaging and automated notifications. </p><!-- Feature Examples --><div><div><div><span>📝</span><div><div>Join Waiting List</div><div>Simple form with privacy consent</div></div></div></div><div><div><span>🔔</span><div><div>Automated Notifications</div><div>Email + SMS when slots open</div></div></div></div></div><button onclick="window.open('business-profile.html', '_blank')"><i></i> View Customer Experience </button></div><!-- Business Management --><div><div><div><i></i></div><h3>Business Management</h3></div><p> Complete waiting list management with premium plan access control and customer data protection. </p><!-- Feature Examples --><div><div><div><span>💎</span><div><div>Premium Plan Only</div><div>£29/month plan required</div></div></div></div><div><div><span>🔒</span><div><div>GDPR Compliant</div><div>Encrypted data, masked customer info</div></div></div></div></div><button onclick="window.open('business-dashboard.html', '_blank')"><i></i> View Business Dashboard </button></div></div><!-- Interactive Demo --><div><div><button onclick="window.open('business-profile.html', '_blank')"><i></i> Interactive Demo </button><button onclick="window.open('test-wlo-system.html', '_blank')"><i></i> System Test </button><button onclick="window.open('demo-hub.html', '_blank')"><i></i> All Demos </button></div><p><i></i> Premium businesses can offer waiting lists with automated slot notifications, 2-hour hold windows, and complete GDPR compliance. </p><div><a href="waiting-list-terms.html"><i></i> View Waiting List Terms </a><a href="terms-appendix-waiting-list.html"><i></i> Full Terms Appendix </a></div></div></div></section><!-- Footer -->
         </div>
-    </section>
+    </main>
     
-    <!-- Contextual Banners Demo Section -->
-    <section id="banners-demo" class="py-20 bg-gradient-to-br from-charcoal to-charcoal-light fade-in-section">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl sm:text-5xl font-bold mb-4 text-white font-poppins">Contextual Dashboard Banners</h2>
-                <p class="text-xl text-text-secondary mb-8 max-w-3xl mx-auto">
-                    Smart notification banners that appear dynamically based on user status and events
-                </p>
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
             </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                <!-- Customer Banners Demo -->
-                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-br from-neon-blue to-blue-600 rounded-xl flex items-center justify-center mr-4">
-                            <i class="fas fa-user text-white text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white">Customer Dashboard</h3>
-                    </div>
-                    <p class="text-text-secondary mb-6">
-                        Smart banners for customer experience including waiting list offers, payment notifications, and review requests.
-                    </p>
-                    
-                    <!-- Banner Examples -->
-                    <div class="space-y-4 mb-6">
-                        <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">💬</span>
-                                <div>
-                                    <div class="text-blue-400 font-semibold">Waiting List Offer</div>
-                                    <div class="text-text-secondary text-sm">A slot opened at Royal Hair Studio...</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">💬</span>
-                                <div>
-                                    <div class="text-green-400 font-semibold">Review Request</div>
-                                    <div class="text-text-secondary text-sm">How was your experience at Royal Hair Studio?</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button onclick="window.open('customer-dashboard.html', '_blank')" 
-                            class="w-full bg-gradient-to-r from-neon-blue to-blue-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-user mr-2"></i> View Customer Dashboard
-                    </button>
-                </div>
-                
-                <!-- Business Banners Demo -->
-                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-br from-neon-green to-green-600 rounded-xl flex items-center justify-center mr-4">
-                            <i class="fas fa-building text-white text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white">Business Dashboard</h3>
-                    </div>
-                    <p class="text-text-secondary mb-6">
-                        Management banners for business operations including SMS credits, payment failures, and review responses.
-                    </p>
-                    
-                    <!-- Banner Examples -->
-                    <div class="space-y-4 mb-6">
-                        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">⚠️</span>
-                                <div>
-                                    <div class="text-yellow-400 font-semibold">Low SMS Credits</div>
-                                    <div class="text-text-secondary text-sm">You have 8 SMS credits remaining...</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">💬</span>
-                                <div>
-                                    <div class="text-green-400 font-semibold">New Review Received</div>
-                                    <div class="text-text-secondary text-sm">Sarah M. left a 5-star review...</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button onclick="window.open('business-dashboard.html', '_blank')" 
-                            class="w-full bg-gradient-to-r from-neon-green to-green-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-building mr-2"></i> View Business Dashboard
-                    </button>
-                </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
             </div>
-            
-            <!-- Interactive Demo -->
-            <div class="text-center">
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button onclick="window.open('demo/contextual-banners-demo.html', '_blank')" 
-                            class="bg-gradient-to-r from-neon-pink to-pink-600 text-white font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-pink-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-play mr-2"></i> Interactive Demo
-                    </button>
-                    
-                    <button onclick="window.open('demo-hub.html', '_blank')" 
-                            class="bg-gradient-to-r from-neon-purple to-purple-600 text-white font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-cogs mr-2"></i> All Demos
-                    </button>
-                </div>
-                
-                <p class="text-text-secondary text-sm mt-6 max-w-2xl mx-auto">
-                    <i class="fas fa-magic text-neon-pink mr-2"></i>
-                    Banners appear dynamically based on user status, events, and system conditions with smooth animations and interactive controls.
-                </p>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
             </div>
-        </div>
-    </section>
-    
-    <!-- Waiting List Offer System Section -->
-    <section id="wlo-system" class="py-20 bg-gradient-to-br from-charcoal-light to-charcoal fade-in-section">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl sm:text-5xl font-bold mb-4 text-white font-poppins">Waiting List Offer System</h2>
-                <p class="text-xl text-text-secondary mb-8 max-w-3xl mx-auto">
-                    Automated waiting list management with premium plan access control and GDPR compliance
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                <!-- Customer Experience -->
-                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-br from-neon-blue to-blue-600 rounded-xl flex items-center justify-center mr-4">
-                            <i class="fas fa-user text-white text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white">Customer Experience</h3>
-                    </div>
-                    <p class="text-text-secondary mb-6">
-                        Seamless waiting list joining with clear privacy messaging and automated notifications.
-                    </p>
-                    <!-- Feature Examples -->
-                    <div class="space-y-4 mb-6">
-                        <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">📝</span>
-                                <div>
-                                    <div class="text-blue-400 font-semibold">Join Waiting List</div>
-                                    <div class="text-text-secondary text-sm">Simple form with privacy consent</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🔔</span>
-                                <div>
-                                    <div class="text-green-400 font-semibold">Automated Notifications</div>
-                                    <div class="text-text-secondary text-sm">Email + SMS when slots open</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button onclick="window.open('business-profile.html', '_blank')" 
-                            class="w-full bg-gradient-to-r from-neon-blue to-blue-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-user mr-2"></i> View Customer Experience
-                    </button>
-                </div>
-                
-                <!-- Business Management -->
-                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-gradient-to-br from-neon-green to-green-600 rounded-xl flex items-center justify-center mr-4">
-                            <i class="fas fa-building text-white text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-white">Business Management</h3>
-                    </div>
-                    <p class="text-text-secondary mb-6">
-                        Complete waiting list management with premium plan access control and customer data protection.
-                    </p>
-                    <!-- Feature Examples -->
-                    <div class="space-y-4 mb-6">
-                        <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">💎</span>
-                                <div>
-                                    <div class="text-yellow-400 font-semibold">Premium Plan Only</div>
-                                    <div class="text-text-secondary text-sm">£29/month plan required</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🔒</span>
-                                <div>
-                                    <div class="text-green-400 font-semibold">GDPR Compliant</div>
-                                    <div class="text-text-secondary text-sm">Encrypted data, masked customer info</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button onclick="window.open('business-dashboard.html', '_blank')" 
-                            class="w-full bg-gradient-to-r from-neon-green to-green-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-building mr-2"></i> View Business Dashboard
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Interactive Demo -->
-            <div class="text-center">
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button onclick="window.open('business-profile.html', '_blank')" 
-                            class="bg-gradient-to-r from-neon-pink to-pink-600 text-white font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-pink-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-play mr-2"></i> Interactive Demo
-                    </button>
-                    <button onclick="window.open('test-wlo-system.html', '_blank')" 
-                            class="bg-gradient-to-r from-neon-purple to-purple-600 text-white font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-cogs mr-2"></i> System Test
-                    </button>
-                    <button onclick="window.open('demo-hub.html', '_blank')" 
-                            class="bg-gradient-to-r from-neon-orange to-orange-600 text-white font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300 transform hover:-translate-y-1">
-                        <i class="fas fa-th mr-2"></i> All Demos
-                    </button>
-                </div>
-                <p class="text-text-secondary text-sm mt-6 max-w-2xl mx-auto">
-                    <i class="fas fa-magic text-neon-pink mr-2"></i>
-                    Premium businesses can offer waiting lists with automated slot notifications, 2-hour hold windows, and complete GDPR compliance.
-                </p>
-                <div class="mt-4 flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="waiting-list-terms.html" class="text-neon-green hover:text-green-400 transition-colors duration-300 font-medium">
-                        <i class="fas fa-file-contract mr-1"></i> View Waiting List Terms
-                    </a>
-                    <a href="terms-appendix-waiting-list.html" class="text-neon-blue hover:text-blue-400 transition-colors duration-300 font-medium">
-                        <i class="fas fa-book mr-1"></i> Full Terms Appendix
-                    </a>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer class="bg-charcoal border-t border-white/10 py-8 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                <div class="flex items-center space-x-6">
-                    <a href="blog.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300">Blog</a>
-                    <a href="terms.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300">Terms & Conditions</a>
-                    <a href="privacy.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300">Privacy Policy</a>
-                </div>
-                <div class="text-text-secondary text-sm">
-                    © 2024 BlkPages. All rights reserved.
-                </div>
-            </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
         </div>
     </footer>
 </body>
 </html>
-

@@ -1,478 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Refund Flow Demo - Black Pages</title>
-    <link rel="stylesheet" href="css/refund-flow.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .demo-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .demo-header {
-            text-align: center;
-            margin-bottom: 40px;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .demo-header h1 {
-            color: #fff;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .demo-header p {
-            color: #999;
-            font-size: 1.1rem;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .demo-section {
-            background: #1a1a1a;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid #333;
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
         }
-        
-        .demo-section h2 {
-            color: #fff;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
         }
-        
-        .booking-card {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #333;
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
         }
         
-        .booking-card:hover {
-            border-color: #4ade80;
-            transform: translateY(-2px);
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .booking-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .booking-title {
-            color: #fff;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-        
-        .booking-status {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        
-        .status-confirmed {
-            background: #065f46;
-            color: #10b981;
-        }
-        
-        .booking-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .detail-item {
-            color: #ccc;
-        }
-        
-        .detail-label {
-            font-size: 0.9rem;
-            color: #999;
-            margin-bottom: 4px;
-        }
-        
-        .detail-value {
-            color: #fff;
-            font-weight: 500;
-        }
-        
-        .booking-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .btn-refund {
-            background: #f87171;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-        }
-        
-        .btn-refund:hover {
-            background: #ef4444;
-            transform: translateY(-1px);
-        }
-        
-        .btn-view {
-            background: #374151;
-            color: #fff;
-            border: 1px solid #4b5563;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-        }
-        
-        .btn-view:hover {
-            background: #4b5563;
-        }
-        
-        .policy-info {
-            background: #2a2a2a;
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .policy-info h4 {
-            color: #fff;
-            font-size: 1rem;
-            margin-bottom: 8px;
-        }
-        
-        .policy-info p {
-            color: #ccc;
-            margin: 0;
-            font-size: 0.9rem;
-        }
-        
-        .test-controls {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        .test-controls h3 {
-            color: #fff;
-            margin-bottom: 15px;
-        }
-        
-        .test-buttons {
+        .dropdown-item {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .btn-test {
-            background: #3b82f6;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
             font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .btn-test:hover {
-            background: #2563eb;
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="demo-container">
-        <!-- Header -->
-        <div class="demo-header">
-            <h1>Refund Flow Demo</h1>
-            <p>Test the refund processing system with different cancellation policies</p>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
         </div>
-
-        <!-- Demo Bookings -->
-        <div class="demo-section">
-            <h2>📋 Sample Bookings</h2>
-            
-            <!-- Flexible Policy Booking -->
-            <div class="booking-card">
-                <div class="booking-header">
-                    <div class="booking-title">Haircut & Styling</div>
-                    <div class="booking-status status-confirmed">Confirmed</div>
-                </div>
-                
-                <div class="booking-details">
-                    <div class="detail-item">
-                        <div class="detail-label">Business</div>
-                        <div class="detail-value">Hair Studio Pro</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Date & Time</div>
-                        <div class="detail-value">Jan 20, 2024 at 2:00 PM</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Amount</div>
-                        <div class="detail-value">£45.00</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Status</div>
-                        <div class="detail-value">Confirmed</div>
-                    </div>
-                </div>
-                
-                <div class="policy-info">
-                    <h4>📋 Cancellation Policy: Flexible</h4>
-                    <p>Full refund up to 24 hours before booking</p>
-                </div>
-                
-                <div class="booking-actions">
-                    <button class="btn-refund" data-refund-trigger data-booking-id="booking_1">
-                        <i class="fas fa-undo"></i> Request Refund
-                    </button>
-                    <button class="btn-view">
-                        <i class="fas fa-eye"></i> View Details
-                    </button>
-                </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><!-- Header --><div><h1>Refund Flow Demo</h1><p>Test the refund processing system with different cancellation policies</p></div><!-- Demo Bookings --><div><h2>📋 Sample Bookings</h2><!-- Flexible Policy Booking --><div><div><div>Haircut & Styling</div><div>Confirmed</div></div><div><div><div>Business</div><div>Hair Studio Pro</div></div><div><div>Date & Time</div><div>Jan 20, 2024 at 2:00 PM</div></div><div><div>Amount</div><div>£45.00</div></div><div><div>Status</div><div>Confirmed</div></div></div><div><h4>📋 Cancellation Policy: Flexible</h4><p>Full refund up to 24 hours before booking</p></div><div><button data-refund-trigger data-booking-id="booking_1"><i></i> Request Refund </button><button><i></i> View Details </button></div></div><!-- Moderate Policy Booking --><div><div><div>Full Service Package</div><div>Confirmed</div></div><div><div><div>Business</div><div>Beauty Lounge</div></div><div><div>Date & Time</div><div>Jan 25, 2024 at 10:00 AM</div></div><div><div>Amount</div><div>£120.00</div></div><div><div>Status</div><div>Confirmed</div></div></div><div><h4>📋 Cancellation Policy: Moderate</h4><p>Full refund up to 5 days before booking</p></div><div><button data-refund-trigger data-booking-id="booking_2"><i></i> Request Refund </button><button><i></i> View Details </button></div></div><!-- Strict Policy Booking --><div><div><div>VIP Treatment</div><div>Confirmed</div></div><div><div><div>Business</div><div>Luxury Spa</div></div><div><div>Date & Time</div><div>Jan 18, 2024 at 3:00 PM</div></div><div><div>Amount</div><div>£200.00</div></div><div><div>Status</div><div>Confirmed</div></div></div><div><h4>📋 Cancellation Policy: Strict</h4><p>No refunds, but can reschedule up to 24 hours before</p></div><div><button data-refund-trigger data-booking-id="booking_3"><i></i> Request Refund </button><button><i></i> View Details </button></div></div><!-- Non-Refundable Booking --><div><div><div>Special Event Styling</div><div>Confirmed</div></div><div><div><div>Business</div><div>Event Stylists</div></div><div><div>Date & Time</div><div>Jan 22, 2024 at 1:00 PM</div></div><div><div>Amount</div><div>£80.00</div></div><div><div>Status</div><div>Confirmed</div></div></div><div><h4>📋 Cancellation Policy: Non-Refundable</h4><p>No refunds or rescheduling allowed</p></div><div><button data-refund-trigger data-booking-id="booking_4"><i></i> Request Refund </button><button><i></i> View Details </button></div></div></div><!-- Test Controls --><div><h2>🧪 Test Controls</h2><div><h3>Quick Test Actions</h3><div><button onclick="testRefundable()"> Test Refundable Booking </button><button onclick="testNonRefundable()"> Test Non-Refundable Booking </button><button onclick="testStripeIntegration()"> Test Stripe Integration </button><button onclick="testEmailSystem()"> Test Email System </button></div></div></div><!-- Features Overview --><div><h2>✨ Refund Flow Features</h2><div><div><h4>🔄 Policy-Based Logic</h4><p>Automatically checks business cancellation policies to determine refund eligibility</p></div><div><h4>💳 Stripe Integration</h4><p>Seamless refund processing through Stripe API with real-time status updates</p></div><div><h4>📧 Email Notifications</h4><p>Automatic email confirmations for successful refunds with processing timelines</p></div><div><h4>❌ Non-Refundable Handling</h4><p>Clear messaging for non-refundable bookings with alternative options</p></div></div></div></div><!-- Scripts --><script src="js/refund-flow.js"></script><script> // Test functions function testRefundable() { const bookingData = { id: 'test_1', businessId: 'biz_123', businessName: 'Test Studio', serviceName: 'Test Service', amount: 50.00, currency: 'GBP', bookingDate: '2024-01-15', serviceDate: '2024-01-25', policy: 'flexible', customerEmail: 'test@example.com', stripePaymentIntentId: 'pi_test123' }; refundFlow.processRefundRequest(bookingData); } function testNonRefundable() { const bookingData = { id: 'test_2', businessId: 'biz_456', businessName: 'Test Studio', serviceName: 'Test Service', amount: 50.00, currency: 'GBP', bookingDate: '2024-01-15', serviceDate: '2024-01-25', policy: 'non-refundable', customerEmail: 'test@example.com', stripePaymentIntentId: 'pi_test456' }; refundFlow.processRefundRequest(bookingData); } function testStripeIntegration() { alert('Stripe integration test would process a real refund via Stripe API'); } function testEmailSystem() { alert('Email system test would send a refund confirmation email'); } </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
             </div>
-
-            <!-- Moderate Policy Booking -->
-            <div class="booking-card">
-                <div class="booking-header">
-                    <div class="booking-title">Full Service Package</div>
-                    <div class="booking-status status-confirmed">Confirmed</div>
-                </div>
-                
-                <div class="booking-details">
-                    <div class="detail-item">
-                        <div class="detail-label">Business</div>
-                        <div class="detail-value">Beauty Lounge</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Date & Time</div>
-                        <div class="detail-value">Jan 25, 2024 at 10:00 AM</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Amount</div>
-                        <div class="detail-value">£120.00</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Status</div>
-                        <div class="detail-value">Confirmed</div>
-                    </div>
-                </div>
-                
-                <div class="policy-info">
-                    <h4>📋 Cancellation Policy: Moderate</h4>
-                    <p>Full refund up to 5 days before booking</p>
-                </div>
-                
-                <div class="booking-actions">
-                    <button class="btn-refund" data-refund-trigger data-booking-id="booking_2">
-                        <i class="fas fa-undo"></i> Request Refund
-                    </button>
-                    <button class="btn-view">
-                        <i class="fas fa-eye"></i> View Details
-                    </button>
-                </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
             </div>
-
-            <!-- Strict Policy Booking -->
-            <div class="booking-card">
-                <div class="booking-header">
-                    <div class="booking-title">VIP Treatment</div>
-                    <div class="booking-status status-confirmed">Confirmed</div>
-                </div>
-                
-                <div class="booking-details">
-                    <div class="detail-item">
-                        <div class="detail-label">Business</div>
-                        <div class="detail-value">Luxury Spa</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Date & Time</div>
-                        <div class="detail-value">Jan 18, 2024 at 3:00 PM</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Amount</div>
-                        <div class="detail-value">£200.00</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Status</div>
-                        <div class="detail-value">Confirmed</div>
-                    </div>
-                </div>
-                
-                <div class="policy-info">
-                    <h4>📋 Cancellation Policy: Strict</h4>
-                    <p>No refunds, but can reschedule up to 24 hours before</p>
-                </div>
-                
-                <div class="booking-actions">
-                    <button class="btn-refund" data-refund-trigger data-booking-id="booking_3">
-                        <i class="fas fa-undo"></i> Request Refund
-                    </button>
-                    <button class="btn-view">
-                        <i class="fas fa-eye"></i> View Details
-                    </button>
-                </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
             </div>
-
-            <!-- Non-Refundable Booking -->
-            <div class="booking-card">
-                <div class="booking-header">
-                    <div class="booking-title">Special Event Styling</div>
-                    <div class="booking-status status-confirmed">Confirmed</div>
-                </div>
-                
-                <div class="booking-details">
-                    <div class="detail-item">
-                        <div class="detail-label">Business</div>
-                        <div class="detail-value">Event Stylists</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Date & Time</div>
-                        <div class="detail-value">Jan 22, 2024 at 1:00 PM</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Amount</div>
-                        <div class="detail-value">£80.00</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Status</div>
-                        <div class="detail-value">Confirmed</div>
-                    </div>
-                </div>
-                
-                <div class="policy-info">
-                    <h4>📋 Cancellation Policy: Non-Refundable</h4>
-                    <p>No refunds or rescheduling allowed</p>
-                </div>
-                
-                <div class="booking-actions">
-                    <button class="btn-refund" data-refund-trigger data-booking-id="booking_4">
-                        <i class="fas fa-undo"></i> Request Refund
-                    </button>
-                    <button class="btn-view">
-                        <i class="fas fa-eye"></i> View Details
-                    </button>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-
-        <!-- Test Controls -->
-        <div class="demo-section">
-            <h2>🧪 Test Controls</h2>
-            <div class="test-controls">
-                <h3>Quick Test Actions</h3>
-                <div class="test-buttons">
-                    <button class="btn-test" onclick="testRefundable()">
-                        Test Refundable Booking
-                    </button>
-                    <button class="btn-test" onclick="testNonRefundable()">
-                        Test Non-Refundable Booking
-                    </button>
-                    <button class="btn-test" onclick="testStripeIntegration()">
-                        Test Stripe Integration
-                    </button>
-                    <button class="btn-test" onclick="testEmailSystem()">
-                        Test Email System
-                    </button>
-                </div>
-            </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
         </div>
-
-        <!-- Features Overview -->
-        <div class="demo-section">
-            <h2>✨ Refund Flow Features</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                <div style="background: #2a2a2a; padding: 20px; border-radius: 10px;">
-                    <h4 style="color: #4ade80; margin-bottom: 10px;">🔄 Policy-Based Logic</h4>
-                    <p style="color: #ccc; margin: 0;">Automatically checks business cancellation policies to determine refund eligibility</p>
-                </div>
-                <div style="background: #2a2a2a; padding: 20px; border-radius: 10px;">
-                    <h4 style="color: #3b82f6; margin-bottom: 10px;">💳 Stripe Integration</h4>
-                    <p style="color: #ccc; margin: 0;">Seamless refund processing through Stripe API with real-time status updates</p>
-                </div>
-                <div style="background: #2a2a2a; padding: 20px; border-radius: 10px;">
-                    <h4 style="color: #f59e0b; margin-bottom: 10px;">📧 Email Notifications</h4>
-                    <p style="color: #ccc; margin: 0;">Automatic email confirmations for successful refunds with processing timelines</p>
-                </div>
-                <div style="background: #2a2a2a; padding: 20px; border-radius: 10px;">
-                    <h4 style="color: #ef4444; margin-bottom: 10px;">❌ Non-Refundable Handling</h4>
-                    <p style="color: #ccc; margin: 0;">Clear messaging for non-refundable bookings with alternative options</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="js/refund-flow.js"></script>
-    <script>
-        // Test functions
-        function testRefundable() {
-            const bookingData = {
-                id: 'test_1',
-                businessId: 'biz_123',
-                businessName: 'Test Studio',
-                serviceName: 'Test Service',
-                amount: 50.00,
-                currency: 'GBP',
-                bookingDate: '2024-01-15',
-                serviceDate: '2024-01-25',
-                policy: 'flexible',
-                customerEmail: 'test@example.com',
-                stripePaymentIntentId: 'pi_test123'
-            };
-            refundFlow.processRefundRequest(bookingData);
-        }
-
-        function testNonRefundable() {
-            const bookingData = {
-                id: 'test_2',
-                businessId: 'biz_456',
-                businessName: 'Test Studio',
-                serviceName: 'Test Service',
-                amount: 50.00,
-                currency: 'GBP',
-                bookingDate: '2024-01-15',
-                serviceDate: '2024-01-25',
-                policy: 'non-refundable',
-                customerEmail: 'test@example.com',
-                stripePaymentIntentId: 'pi_test456'
-            };
-            refundFlow.processRefundRequest(bookingData);
-        }
-
-        function testStripeIntegration() {
-            alert('Stripe integration test would process a real refund via Stripe API');
-        }
-
-        function testEmailSystem() {
-            alert('Email system test would send a refund confirmation email');
-        }
-    </script>
+    </footer>
 </body>
 </html>

@@ -1,414 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Waiting List Offer - BlkPages</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'inter': ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'charcoal': '#1A1A1A',
-                        'charcoal-light': '#2A2A2A',
-                        'neon-pink': '#ff6b6b',
-                        'neon-purple': '#9c27b0',
-                        'neon-blue': '#2196f3',
-                        'neon-green': '#4caf50',
-                        'text-primary': '#ffffff',
-                        'text-secondary': '#e5e5e5',
-                        'text-muted': '#b3b3b3',
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .offer-card {
-            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
+        }
+        
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+        }
+        
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .offer-icon {
-            background: linear-gradient(135deg, #10B981, #059669);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-        }
-        
-        .urgency-timer {
-            background: linear-gradient(135deg, #F59E0B, #D97706);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        .btn-accept {
-            background: linear-gradient(135deg, #10B981, #059669);
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .btn-accept:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4);
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .btn-decline {
-            background: linear-gradient(135deg, #EF4444, #DC2626);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-decline:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.4);
-        }
-        
-        .countdown-timer {
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-2xl">
-            <!-- Header -->
-            <div class="text-center mb-8">
-                <a href="index.html" class="inline-block">
-                    <h1 class="text-3xl font-bold text-white mb-2">
-                        <span class="bg-gradient-to-r from-neon-pink to-neon-purple bg-clip-text text-transparent">
-                            BlkPages
-                        </span>
-                    </h1>
-                </a>
-                <p class="text-text-secondary">Waiting List Offer</p>
-            </div>
-            
-            <!-- Offer Card -->
-            <div class="offer-card rounded-2xl p-8">
-                <!-- Offer Icon -->
-                <div class="text-center mb-6">
-                    <div class="offer-icon w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-calendar-check text-white text-3xl"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-white mb-2">Slot Available!</h2>
-                    <p class="text-text-secondary">A slot has opened for your requested service</p>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-                
-                <!-- Urgency Timer -->
-                <div class="urgency-timer rounded-xl p-4 mb-6 text-center">
-                    <div class="flex items-center justify-center gap-2 mb-2">
-                        <i class="fas fa-clock text-white"></i>
-                        <span class="text-white font-semibold">Limited Time Offer</span>
-                    </div>
-                    <div class="countdown-timer text-2xl text-white" id="countdownTimer">
-                        Loading...
-                    </div>
-                    <p class="text-sm text-white/80 mt-2">This slot is held for you for the next 2 hours</p>
-                </div>
-                
-                <!-- Offer Details -->
-                <div class="bg-charcoal-light rounded-xl p-6 mb-6">
-                    <h3 class="text-xl font-semibold text-white mb-4">Your Slot Details</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-neon-blue/20 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-building text-neon-blue"></i>
-                            </div>
-                            <div>
-                                <p class="text-text-muted text-sm">Business</p>
-                                <p class="text-white font-semibold" id="businessName">Royal Hair Studio</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-neon-green/20 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-cut text-neon-green"></i>
-                            </div>
-                            <div>
-                                <p class="text-text-muted text-sm">Service</p>
-                                <p class="text-white font-semibold" id="serviceName">Hair Cut & Style</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-neon-purple/20 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-calendar text-neon-purple"></i>
-                            </div>
-                            <div>
-                                <p class="text-text-muted text-sm">Date & Time</p>
-                                <p class="text-white font-semibold" id="slotDateTime">Tomorrow, 2:00 PM</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-neon-pink/20 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-pound-sign text-neon-pink"></i>
-                            </div>
-                            <div>
-                                <p class="text-text-muted text-sm">Price</p>
-                                <p class="text-white font-semibold" id="servicePrice">£45</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <button onclick="acceptOffer()" class="btn-accept flex-1 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2">
-                        <i class="fas fa-check"></i>
-                        Accept & Book Now
-                    </button>
-                    
-                    <button onclick="declineOffer()" class="btn-decline flex-1 text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2">
-                        <i class="fas fa-times"></i>
-                        Decline Offer
-                    </button>
-                </div>
-                
-                <!-- Privacy Notice -->
-                <div class="mt-6 p-4 bg-charcoal-light rounded-lg border border-neon-green/20">
-                    <div class="flex items-start gap-3">
-                        <i class="fas fa-shield-alt text-neon-green mt-1"></i>
-                        <div>
-                            <p class="text-sm text-text-secondary">
-                                <strong>Privacy Protected:</strong> Your contact details are securely stored by BlkPages. 
-                                The business only sees your first name and booking details.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Terms -->
-                <div class="mt-4 text-center">
-                    <p class="text-xs text-text-muted">
-                        By accepting this offer, you agree to our 
-                        <a href="terms.html" class="text-neon-blue hover:underline">Terms & Conditions</a>
-                    </p>
-                </div>
-            </div>
-            
-            <!-- Footer -->
-            <div class="text-center mt-8">
-                <p class="text-text-muted text-sm">
-                    Need help? Contact us at 
-                    <a href="mailto:support@blkpages.co.uk" class="text-neon-blue hover:underline">
-                        support@blkpages.co.uk
-                    </a>
-                </p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" style="display: none;">
-        <div class="bg-charcoal rounded-xl p-8 text-center">
-            <div class="animate-spin w-12 h-12 border-4 border-neon-green border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p class="text-white">Processing your request...</p>
-        </div>
-    </div>
-    
-    <!-- Success Modal -->
-    <div id="successModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" style="display: none;">
-        <div class="bg-charcoal rounded-xl p-8 text-center max-w-md mx-4">
-            <div class="w-16 h-16 bg-neon-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-check text-neon-green text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">Booking Confirmed!</h3>
-            <p class="text-text-secondary mb-6">Your slot has been successfully booked. You'll receive a confirmation email shortly.</p>
-            <button onclick="redirectToDashboard()" class="bg-neon-green text-white font-semibold py-3 px-6 rounded-xl">
-                View My Bookings
-            </button>
-        </div>
-    </div>
-    
-    <!-- Decline Modal -->
-    <div id="declineModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" style="display: none;">
-        <div class="bg-charcoal rounded-xl p-8 text-center max-w-md mx-4">
-            <div class="w-16 h-16 bg-neon-pink/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-times text-neon-pink text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">Offer Declined</h3>
-            <p class="text-text-secondary mb-6">This slot will be offered to the next person on the waiting list.</p>
-            <button onclick="redirectToHome()" class="bg-neon-pink text-white font-semibold py-3 px-6 rounded-xl">
-                Return to Home
-            </button>
-        </div>
-    </div>
 
-    <script>
-        // Get offer token from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const offerToken = urlParams.get('token') || 'demo_token_123';
-        
-        // Mock offer data
-        const offerData = {
-            business_name: 'Royal Hair Studio',
-            service_name: 'Hair Cut & Style',
-            slot_date_time: '2024-01-16 14:00:00',
-            service_price: '£45',
-            expires_at: new Date(Date.now() + 2 * 60 * 60 * 1000) // 2 hours from now
-        };
-        
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            loadOfferData();
-            startCountdown();
-        });
-        
-        /**
-         * Load offer data
-         */
-        function loadOfferData() {
-            document.getElementById('businessName').textContent = offerData.business_name;
-            document.getElementById('serviceName').textContent = offerData.service_name;
-            document.getElementById('slotDateTime').textContent = formatDateTime(offerData.slot_date_time);
-            document.getElementById('servicePrice').textContent = offerData.service_price;
-        }
-        
-        /**
-         * Start countdown timer
-         */
-        function startCountdown() {
-            const timerElement = document.getElementById('countdownTimer');
-            const expiresAt = offerData.expires_at;
-            
-            function updateTimer() {
-                const now = new Date();
-                const timeLeft = expiresAt - now;
-                
-                if (timeLeft <= 0) {
-                    timerElement.textContent = 'EXPIRED';
-                    timerElement.className = 'countdown-timer text-2xl text-red-500';
-                    disableButtons();
-                    return;
-                }
-                
-                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                
-                timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }
-            
-            updateTimer();
-            setInterval(updateTimer, 1000);
-        }
-        
-        /**
-         * Format date time for display
-         */
-        function formatDateTime(dateTimeString) {
-            const date = new Date(dateTimeString);
-            return date.toLocaleDateString('en-GB', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-        
-        /**
-         * Accept offer
-         */
-        function acceptOffer() {
-            showLoading();
-            
-            // Simulate API call
-            setTimeout(() => {
-                hideLoading();
-                showSuccessModal();
-                
-                // Log acceptance
-                console.log('Offer accepted:', offerToken);
-            }, 2000);
-        }
-        
-        /**
-         * Decline offer
-         */
-        function declineOffer() {
-            showLoading();
-            
-            // Simulate API call
-            setTimeout(() => {
-                hideLoading();
-                showDeclineModal();
-                
-                // Log decline
-                console.log('Offer declined:', offerToken);
-            }, 1500);
-        }
-        
-        /**
-         * Show loading overlay
-         */
-        function showLoading() {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-        }
-        
-        /**
-         * Hide loading overlay
-         */
-        function hideLoading() {
-            document.getElementById('loadingOverlay').style.display = 'none';
-        }
-        
-        /**
-         * Show success modal
-         */
-        function showSuccessModal() {
-            document.getElementById('successModal').style.display = 'flex';
-        }
-        
-        /**
-         * Show decline modal
-         */
-        function showDeclineModal() {
-            document.getElementById('declineModal').style.display = 'flex';
-        }
-        
-        /**
-         * Disable buttons when expired
-         */
-        function disableButtons() {
-            const buttons = document.querySelectorAll('button');
-            buttons.forEach(button => {
-                button.disabled = true;
-                button.classList.add('opacity-50', 'cursor-not-allowed');
-            });
-        }
-        
-        /**
-         * Redirect to dashboard
-         */
-        function redirectToDashboard() {
-            window.location.href = 'customer-dashboard.html';
-        }
-        
-        /**
-         * Redirect to home
-         */
-        function redirectToHome() {
-            window.location.href = 'index.html';
-        }
-    </script>
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><div><!-- Header --><div><a href="index.html"><h1><span> BlkPages </span></h1></a><p>Waiting List Offer</p></div><!-- Offer Card --><div><!-- Offer Icon --><div><div><i></i></div><h2>Slot Available!</h2><p>A slot has opened for your requested service</p></div><!-- Urgency Timer --><div><div><i></i><span>Limited Time Offer</span></div><div> Loading... </div><p>This slot is held for you for the next 2 hours</p></div><!-- Offer Details --><div><h3>Your Slot Details</h3><div><div><div><i></i></div><div><p>Business</p><p>Royal Hair Studio</p></div></div><div><div><i></i></div><div><p>Service</p><p>Hair Cut & Style</p></div></div><div><div><i></i></div><div><p>Date & Time</p><p>Tomorrow, 2:00 PM</p></div></div><div><div><i></i></div><div><p>Price</p><p>£45</p></div></div></div></div><!-- Action Buttons --><div><button onclick="acceptOffer()"><i></i> Accept & Book Now </button><button onclick="declineOffer()"><i></i> Decline Offer </button></div><!-- Privacy Notice --><div><div><i></i><div><p><strong>Privacy Protected:</strong> Your contact details are securely stored by BlkPages. The business only sees your first name and booking details. </p></div></div></div><!-- Terms --><div><p> By accepting this offer, you agree to our <a href="terms.html">Terms & Conditions</a></p></div></div><!-- Footer --><div><p> Need help? Contact us at <a href="mailto:support@blkpages.co.uk"> support@blkpages.co.uk </a></p></div></div></div><!-- Loading Overlay --><div><div><div></div><p>Processing your request...</p></div></div><!-- Success Modal --><div><div><div><i></i></div><h3>Booking Confirmed!</h3><p>Your slot has been successfully booked. You'll receive a confirmation email shortly.</p><button onclick="redirectToDashboard()"> View My Bookings </button></div></div><!-- Decline Modal --><div><div><div><i></i></div><h3>Offer Declined</h3><p>This slot will be offered to the next person on the waiting list.</p><button onclick="redirectToHome()"> Return to Home </button></div></div><script> // Get offer token from URL const urlParams = new URLSearchParams(window.location.search); const offerToken = urlParams.get('token') || 'demo_token_123'; // Mock offer data const offerData = { business_name: 'Royal Hair Studio', service_name: 'Hair Cut & Style', slot_date_time: '2024-01-16 14:00:00', service_price: '£45', expires_at: new Date(Date.now() + 2 * 60 * 60 * 1000) // 2 hours from now }; // Initialize page document.addEventListener('DOMContentLoaded', function() { loadOfferData(); startCountdown(); }); /** * Load offer data */ function loadOfferData() { document.getElementById('businessName').textContent = offerData.business_name; document.getElementById('serviceName').textContent = offerData.service_name; document.getElementById('slotDateTime').textContent = formatDateTime(offerData.slot_date_time); document.getElementById('servicePrice').textContent = offerData.service_price; } /** * Start countdown timer */ function startCountdown() { const timerElement = document.getElementById('countdownTimer'); const expiresAt = offerData.expires_at; function updateTimer() { const now = new Date(); const timeLeft = expiresAt - now; if (timeLeft <= 0) { timerElement.textContent = 'EXPIRED'; timerElement.className = 'countdown-timer text-2xl text-red-500'; disableButtons(); return; } const hours = Math.floor(timeLeft / (1000 * 60 * 60)); const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60)); const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000); timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`; } updateTimer(); setInterval(updateTimer, 1000); } /** * Format date time for display */ function formatDateTime(dateTimeString) { const date = new Date(dateTimeString); return date.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }); } /** * Accept offer */ function acceptOffer() { showLoading(); // Simulate API call setTimeout(() => { hideLoading(); showSuccessModal(); // Log acceptance console.log('Offer accepted:', offerToken); }, 2000); } /** * Decline offer */ function declineOffer() { showLoading(); // Simulate API call setTimeout(() => { hideLoading(); showDeclineModal(); // Log decline console.log('Offer declined:', offerToken); }, 1500); } /** * Show loading overlay */ function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; } /** * Hide loading overlay */ function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; } /** * Show success modal */ function showSuccessModal() { document.getElementById('successModal').style.display = 'flex'; } /** * Show decline modal */ function showDeclineModal() { document.getElementById('declineModal').style.display = 'flex'; } /** * Disable buttons when expired */ function disableButtons() { const buttons = document.querySelectorAll('button'); buttons.forEach(button => { button.disabled = true; button.classList.add('opacity-50', 'cursor-not-allowed'); }); } /** * Redirect to dashboard */ function redirectToDashboard() { window.location.href = 'customer-dashboard.html'; } /** * Redirect to home */ function redirectToHome() { window.location.href = 'index.html'; } </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

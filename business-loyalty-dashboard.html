@@ -1,982 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Loyalty Programme Dashboard - BLKPAGES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
-            min-height: 100vh;
-            color: #ffffff;
-            line-height: 1.6;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        /* Navigation */
-        .navbar {
-            background: rgba(0, 0, 0, 0.95);
-            box-shadow: 0 2px 10px rgba(255,255,255,0.1);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .nav-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 0;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #ffffff;
-            text-decoration: none;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
         }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: 500;
-            transition: color 0.3s;
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
         }
-        
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: #1E90FF;
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
         }
-        
-        .btn-nav {
-            background: #1E90FF;
-            color: white !important;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            transition: background 0.3s;
-            text-decoration: none;
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
         }
-        
-        .btn-nav:hover {
-            background: #0056b3;
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
         }
-        
-        /* Main Content */
-        .main-content {
-            padding: 120px 0 80px;
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
         }
-        
-        /* Back Button */
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(30, 144, 255, 0.1);
-            border: 1px solid #1E90FF;
-            color: #1E90FF;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
-            margin-bottom: 2rem;
         }
         
-        .back-btn:hover {
-            background: #1E90FF;
-            color: white;
-            transform: translateY(-2px);
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .page-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .page-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #ffffff;
-        }
-        
-        .page-subtitle {
-            color: #cccccc;
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        /* Dashboard Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        /* Cards */
-        .card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .card h3 {
-            color: #1E90FF;
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-        
-        /* Setup Panel */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            color: #ffffff;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-        
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            background: #2a2a2a;
-            border: 1px solid #444;
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            color: #ffffff;
-            font-size: 1rem;
-            transition: border-color 0.3s;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #1E90FF;
-            box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
-        }
-        
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
-        /* Toggle Switch */
-        .toggle-container {
+        .dropdown-item {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .toggle-switch {
-            position: relative;
-            width: 60px;
-            height: 30px;
-            background: #444;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .toggle-switch.active {
-            background: #1E90FF;
-        }
-        
-        .toggle-slider {
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 24px;
-            height: 24px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s;
-        }
-        
-        .toggle-switch.active .toggle-slider {
-            transform: translateX(30px);
-        }
-        
-        .toggle-label {
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
             color: #ffffff;
-            font-weight: 500;
-        }
-        
-        /* Buttons */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
             text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-        
-        .btn-primary {
-            background: #1E90FF;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-        
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-        
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: #1e7e34;
-        }
-        
-        .btn-warning {
-            background: #ffc107;
-            color: #000;
-        }
-        
-        .btn-warning:hover {
-            background: #e0a800;
-        }
-        
-        /* QR Code Section */
-        .qr-section {
-            text-align: center;
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            background: #2a2a2a;
-            border-radius: 10px;
-            border: 1px solid #1E90FF;
-        }
-        
-        .qr-code {
-            margin: 1rem 0;
-        }
-        
-        .qr-link {
-            color: #1E90FF;
             font-size: 0.9rem;
-            word-break: break-all;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        /* Analytics Cards */
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .analytics-card {
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 10px;
-            padding: 1.5rem;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .analytics-card:hover {
-            border-color: #1E90FF;
-            transform: translateY(-2px);
-        }
-        
-        .analytics-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1E90FF;
-            margin-bottom: 0.5rem;
-        }
-        
-        .analytics-label {
-            color: #cccccc;
-            font-size: 0.9rem;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #444;
-            border-radius: 2px;
-            margin-top: 0.5rem;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: #1E90FF;
-            border-radius: 2px;
-            transition: width 0.3s;
-        }
-        
-        /* Activity Table */
-        .activity-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        
-        .activity-table th,
-        .activity-table td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #444;
-        }
-        
-        .activity-table th {
-            background: #2a2a2a;
-            color: #1E90FF;
-            font-weight: 600;
-        }
-        
-        .activity-table td {
-            color: #cccccc;
-        }
-        
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .status-active {
-            background: #28a745;
-            color: white;
-        }
-        
-        .status-pending {
-            background: #ffc107;
-            color: #000;
-        }
-        
-        /* Controls */
-        .controls-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        /* Tips Section */
-        .tips-card {
-            background: linear-gradient(135deg, #1E90FF, #0056b3);
-            color: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-            text-align: center;
-        }
-        
-        .tips-card h4 {
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-        
-        .tips-card p {
-            opacity: 0.9;
-            font-size: 0.95rem;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .page-title {
-                font-size: 2rem;
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .analytics-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .controls-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .activity-table {
-                font-size: 0.9rem;
-            }
-            
-            .activity-table th,
-            .activity-table td {
-                padding: 0.5rem;
-            }
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        /* Tooltip */
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.8rem;
-        }
-        
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <a href="index.html" class="logo">BLKPAGES</a>
-                <ul class="nav-links">
-                    <li><a href="business-dashboard.html">Dashboard</a></li>
-                    <li><a href="business-profile.html">Profile</a></li>
-                    <li><a href="business-booking-manager.html">Bookings</a></li>
-                    <li><a href="business-plan-management.html">Plan</a></li>
-                    <li><a href="business-loyalty-dashboard.html" class="active">Loyalty</a></li>
-                </ul>
-                <a href="business-login.html" class="btn-nav">Logout</a>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
-    </nav>
-
+    </header>
+    
     <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <a href="business-dashboard.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-                Back to Dashboard
-            </a>
-            
-            <div class="page-header">
-                <h1 class="page-title">Loyalty Programme Dashboard</h1>
-                <p class="page-subtitle">Manage your customer rewards and track engagement directly from your BlkPages account.</p>
-            </div>
-            
-            <div class="dashboard-grid">
-                <!-- Setup Panel -->
-                <div class="card">
-                    <h3>Programme Setup</h3>
-                    
-                    <div class="toggle-container">
-                        <div class="toggle-switch" id="loyaltyToggle" onclick="toggleLoyaltyProgramme()">
-                            <div class="toggle-slider"></div>
-                        </div>
-                        <span class="toggle-label">Offer loyalty programme</span>
-                    </div>
-                    
-                    <div id="setupForm" style="display: none;">
-                        <div class="form-group">
-                            <label for="rewardTitle">Reward Title</label>
-                            <input type="text" id="rewardTitle" placeholder="e.g., Free Coffee, 10% Discount">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="rewardDescription">Reward Description</label>
-                            <textarea id="rewardDescription" placeholder="Describe what customers get when they redeem their reward..."></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="pointsRequired">Points or Visits Required</label>
-                            <input type="number" id="pointsRequired" min="1" value="10" placeholder="10">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="rewardType">Reward Type</label>
-                            <select id="rewardType">
-                                <option value="points">Points</option>
-                                <option value="stamps">Stamps</option>
-                                <option value="visits">Visits</option>
-                            </select>
-                        </div>
-                        
-                        <button class="btn btn-primary" onclick="generateQRCode()">
-                            <i class="fas fa-qrcode"></i> Generate QR Code
-                        </button>
-                        
-                        <div id="qrSection" class="qr-section" style="display: none;">
-                            <h4>Your Loyalty QR Code</h4>
-                            <div id="qrCode" class="qr-code"></div>
-                            <p class="qr-link" id="qrLink"></p>
-                            <p style="color: #cccccc; font-size: 0.9rem; margin-top: 1rem;">
-                                Share this QR code with your customers or display it at your business location.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Analytics Panel -->
-                <div class="card">
-                    <h3>Loyalty Performance Overview</h3>
-                    
-                    <div class="analytics-grid">
-                        <div class="analytics-card">
-                            <div class="analytics-number" id="activeMembers">0</div>
-                            <div class="analytics-label">Active Members</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="analytics-card">
-                            <div class="analytics-number" id="totalPoints">0</div>
-                            <div class="analytics-label">Total Points Issued</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="analytics-card">
-                            <div class="analytics-number" id="totalRewards">0</div>
-                            <div class="analytics-label">Total Rewards Redeemed</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="analytics-card">
-                            <div class="analytics-number" id="lastRedemption">-</div>
-                            <div class="analytics-label">Most Recent Redemption</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Recent Activity -->
-            <div class="card">
-                <h3>Recent Activity</h3>
-                <table class="activity-table">
-                    <thead>
-                        <tr>
-                            <th>Customer ID</th>
-                            <th>Points Earned</th>
-                            <th>Last Visit</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="activityTableBody">
-                        <tr>
-                            <td>User#1021</td>
-                            <td>5</td>
-                            <td>2 days ago</td>
-                            <td><span class="status-badge status-active">Active</span></td>
-                        </tr>
-                        <tr>
-                            <td>User#1045</td>
-                            <td>3</td>
-                            <td>1 week ago</td>
-                            <td><span class="status-badge status-pending">Pending</span></td>
-                        </tr>
-                        <tr>
-                            <td>User#1089</td>
-                            <td>8</td>
-                            <td>3 days ago</td>
-                            <td><span class="status-badge status-active">Active</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Programme Controls -->
-            <div class="card">
-                <h3>Programme Controls</h3>
-                <div class="controls-grid">
-                    <button class="btn btn-primary" onclick="editLoyaltyOffer()">
-                        <i class="fas fa-edit"></i> Edit Loyalty Offer
-                    </button>
-                    <button class="btn btn-warning" onclick="pauseProgramme()">
-                        <i class="fas fa-pause"></i> Pause Programme
-                    </button>
-                    <button class="btn btn-secondary" onclick="exportData()">
-                        <i class="fas fa-download"></i> Export Data (CSV)
-                    </button>
-                </div>
-                <div class="tooltip" style="margin-top: 1rem;">
-                    <i class="fas fa-info-circle" style="color: #1E90FF;"></i>
-                    <span class="tooltiptext">Paused programmes remain visible but cannot be redeemed.</span>
-                </div>
-            </div>
-            
-            <!-- Tips Section -->
-            <div class="tips-card">
-                <h4>💡 Tip</h4>
-                <p>Display your QR code at your business location or share it online to help customers collect points easily.</p>
-            </div>
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Navigation --><!-- Main Content --><main><div><a href="business-dashboard.html"><i></i> Back to Dashboard </a><div><h1>Loyalty Programme Dashboard</h1><p>Manage your customer rewards and track engagement directly from your BlkPages account.</p></div><div><!-- Setup Panel --><div><h3>Programme Setup</h3><div><div onclick="toggleLoyaltyProgramme()"><div></div></div><span>Offer loyalty programme</span></div><div><div><label for="rewardTitle">Reward Title</label><input type="text" placeholder="e.g., Free Coffee, 10% Discount"></div><div><label for="rewardDescription">Reward Description</label><textarea placeholder="Describe what customers get when they redeem their reward..."></textarea></div><div><label for="pointsRequired">Points or Visits Required</label><input type="number" min="1" value="10" placeholder="10"></div><div><label for="rewardType">Reward Type</label><select><option value="points">Points</option><option value="stamps">Stamps</option><option value="visits">Visits</option></select></div><button onclick="generateQRCode()"><i></i> Generate QR Code </button><div><h4>Your Loyalty QR Code</h4><div></div><p></p><p> Share this QR code with your customers or display it at your business location. </p></div></div></div><!-- Analytics Panel --><div><h3>Loyalty Performance Overview</h3><div><div><div>0</div><div>Active Members</div><div><div></div></div></div><div><div>0</div><div>Total Points Issued</div><div><div></div></div></div><div><div>0</div><div>Total Rewards Redeemed</div><div><div></div></div></div><div><div>-</div><div>Most Recent Redemption</div><div><div></div></div></div></div></div></div><!-- Recent Activity --><div><h3>Recent Activity</h3><table><thead><tr><th>Customer ID</th><th>Points Earned</th><th>Last Visit</th><th>Status</th></tr></thead><tbody><tr><td>User#1021</td><td>5</td><td>2 days ago</td><td><span>Active</span></td></tr><tr><td>User#1045</td><td>3</td><td>1 week ago</td><td><span>Pending</span></td></tr><tr><td>User#1089</td><td>8</td><td>3 days ago</td><td><span>Active</span></td></tr></tbody></table></div><!-- Programme Controls --><div><h3>Programme Controls</h3><div><button onclick="editLoyaltyOffer()"><i></i> Edit Loyalty Offer </button><button onclick="pauseProgramme()"><i></i> Pause Programme </button><button onclick="exportData()"><i></i> Export Data (CSV) </button></div><div><i></i><span>Paused programmes remain visible but cannot be redeemed.</span></div></div><!-- Tips Section --><div><h4>💡 Tip</h4><p>Display your QR code at your business location or share it online to help customers collect points easily.</p></div></div></main><script> // Business loyalty dashboard functionality let loyaltyProgrammeActive = false; let qrCodeGenerated = false; // Initialize dashboard document.addEventListener('DOMContentLoaded', function() { loadLoyaltyData(); updateAnalytics(); }); function loadLoyaltyData() { // Load saved loyalty programme data const savedData = localStorage.getItem('loyaltyProgrammeData'); if (savedData) { const data = JSON.parse(savedData); loyaltyProgrammeActive = data.active || false; if (loyaltyProgrammeActive) { document.getElementById('loyaltyToggle').classList.add('active'); document.getElementById('setupForm').style.display = 'block'; // Populate form fields if (data.rewardTitle) document.getElementById('rewardTitle').value = data.rewardTitle; if (data.rewardDescription) document.getElementById('rewardDescription').value = data.rewardDescription; if (data.pointsRequired) document.getElementById('pointsRequired').value = data.pointsRequired; if (data.rewardType) document.getElementById('rewardType').value = data.rewardType; // Show QR code if generated if (data.qrGenerated) { qrCodeGenerated = true; document.getElementById('qrSection').style.display = 'block'; generateQRCode(); } } } } function toggleLoyaltyProgramme() { const toggle = document.getElementById('loyaltyToggle'); const setupForm = document.getElementById('setupForm'); loyaltyProgrammeActive = !loyaltyProgrammeActive; if (loyaltyProgrammeActive) { toggle.classList.add('active'); setupForm.style.display = 'block'; setupForm.classList.add('fade-in'); } else { toggle.classList.remove('active'); setupForm.style.display = 'none'; document.getElementById('qrSection').style.display = 'none'; qrCodeGenerated = false; } saveLoyaltyData(); } function generateQRCode() { const rewardTitle = document.getElementById('rewardTitle').value; const pointsRequired = document.getElementById('pointsRequired').value; if (!rewardTitle || !pointsRequired) { alert('Please fill in the reward title and points required before generating QR code.'); return; } // Generate or retrieve unique business ID let businessId = localStorage.getItem('businessId'); if (!businessId) { businessId = 'biz_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5); localStorage.setItem('businessId', businessId); } // Create loyalty URL pattern as specified const loyaltyUrl = `blkpages.co.uk/loyalty/${businessId}`; // Generate QR code const qrCodeElement = document.getElementById('qrCode'); qrCodeElement.innerHTML = ''; QRCode.toCanvas(qrCodeElement, loyaltyUrl, { width: 200, height: 200, color: { dark: '#1E90FF', light: '#ffffff' } }, function (error) { if (error) { console.error('QR Code generation error:', error); alert('Error generating QR code. Please try again.'); } else { document.getElementById('qrSection').style.display = 'block'; document.getElementById('qrLink').textContent = loyaltyUrl; qrCodeGenerated = true; // Save business loyalty data with URL const loyaltyData = { active: loyaltyProgrammeActive, rewardTitle: rewardTitle, rewardDescription: document.getElementById('rewardDescription').value, pointsRequired: pointsRequired, rewardType: document.getElementById('rewardType').value, qrGenerated: qrCodeGenerated, businessId: businessId, loyaltyUrl: loyaltyUrl }; localStorage.setItem('loyaltyProgrammeData', JSON.stringify(loyaltyData)); // Initialize business analytics if not exists initializeBusinessAnalytics(businessId); } }); } function saveLoyaltyData() { const data = { active: loyaltyProgrammeActive, rewardTitle: document.getElementById('rewardTitle').value, rewardDescription: document.getElementById('rewardDescription').value, pointsRequired: document.getElementById('pointsRequired').value, rewardType: document.getElementById('rewardType').value, qrGenerated: qrCodeGenerated }; localStorage.setItem('loyaltyProgrammeData', JSON.stringify(data)); } function initializeBusinessAnalytics(businessId) { const analyticsKey = `analytics_${businessId}`; const existingAnalytics = localStorage.getItem(analyticsKey); if (!existingAnalytics) { const initialAnalytics = { activeMembers: 0, totalPoints: 0, totalRewards: 0, lastRedemption: null, customerData: {} }; localStorage.setItem(analyticsKey, JSON.stringify(initialAnalytics)); } } function updateAnalytics() { const businessId = localStorage.getItem('businessId'); if (!businessId) return; const analyticsKey = `analytics_${businessId}`; const analyticsData = localStorage.getItem(analyticsKey); if (analyticsData) { const analytics = JSON.parse(analyticsData); document.getElementById('activeMembers').textContent = analytics.activeMembers; document.getElementById('totalPoints').textContent = analytics.totalPoints; document.getElementById('totalRewards').textContent = analytics.totalRewards; document.getElementById('lastRedemption').textContent = analytics.lastRedemption || '-'; // Update progress bars const progressBars = document.querySelectorAll('.progress-fill'); progressBars.forEach((bar, index) => { const values = [analytics.activeMembers, analytics.totalPoints, analytics.totalRewards, 100]; const maxValues = [100, 1000, 50, 100]; const percentage = Math.min((values[index] / maxValues[index]) * 100, 100); bar.style.width = percentage + '%'; }); } else { // Fallback to simulated data if no analytics exist const analytics = { activeMembers: Math.floor(Math.random() * 50) + 10, totalPoints: Math.floor(Math.random() * 500) + 100, totalRewards: Math.floor(Math.random() * 20) + 5, lastRedemption: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toLocaleDateString() }; document.getElementById('activeMembers').textContent = analytics.activeMembers; document.getElementById('totalPoints').textContent = analytics.totalPoints; document.getElementById('totalRewards').textContent = analytics.totalRewards; document.getElementById('lastRedemption').textContent = analytics.lastRedemption; // Update progress bars const progressBars = document.querySelectorAll('.progress-fill'); progressBars.forEach((bar, index) => { const values = [analytics.activeMembers, analytics.totalPoints, analytics.totalRewards, 100]; const maxValues = [100, 1000, 50, 100]; const percentage = Math.min((values[index] / maxValues[index]) * 100, 100); bar.style.width = percentage + '%'; }); } } // Function to update analytics when customer scans QR (called from customer page) function updateBusinessAnalytics(businessId, customerId, action) { const analyticsKey = `analytics_${businessId}`; const analyticsData = localStorage.getItem(analyticsKey); if (analyticsData) { const analytics = JSON.parse(analyticsData); if (action === 'scan') { // Increment points and update customer data analytics.totalPoints++; if (!analytics.customerData[customerId]) { analytics.customerData[customerId] = { points: 0, lastVisit: new Date().toISOString() }; analytics.activeMembers++; } else { analytics.customerData[customerId].points++; analytics.customerData[customerId].lastVisit = new Date().toISOString(); } } else if (action === 'redeem') { // Handle reward redemption analytics.totalRewards++; analytics.lastRedemption = new Date().toLocaleDateString(); if (analytics.customerData[customerId]) { analytics.customerData[customerId].points = 0; analytics.customerData[customerId].lastRedemption = new Date().toISOString(); } } localStorage.setItem(analyticsKey, JSON.stringify(analytics)); // Update display if dashboard is open updateAnalytics(); } } function editLoyaltyOffer() { if (!loyaltyProgrammeActive) { alert('Please enable the loyalty programme first.'); return; } // Focus on the first input field document.getElementById('rewardTitle').focus(); // Scroll to setup form document.getElementById('setupForm').scrollIntoView({ behavior: 'smooth' }); } function pauseProgramme() { if (!loyaltyProgrammeActive) { alert('No active programme to pause.'); return; } const confirmed = confirm('Are you sure you want to pause the loyalty programme?\n\nPaused programmes remain visible but cannot be redeemed.'); if (confirmed) { // In real app, this would update the database alert('Loyalty programme paused successfully.'); } } function exportData() { if (!loyaltyProgrammeActive) { alert('No loyalty programme data to export.'); return; } // Generate CSV data const csvData = [ ['Customer ID', 'Points Earned', 'Last Visit', 'Status'], ['User#1021', '5', '2 days ago', 'Active'], ['User#1045', '3', '1 week ago', 'Pending'], ['User#1089', '8', '3 days ago', 'Active'] ]; const csvContent = csvData.map(row => row.join(',')).join('\n'); // Create and download file const blob = new Blob([csvContent], { type: 'text/csv' }); const url = window.URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'loyalty_data.csv'; a.click(); window.URL.revokeObjectURL(url); alert('Data exported successfully!'); } // Auto-save form data document.getElementById('rewardTitle').addEventListener('input', saveLoyaltyData); document.getElementById('rewardDescription').addEventListener('input', saveLoyaltyData); document.getElementById('pointsRequired').addEventListener('input', saveLoyaltyData); document.getElementById('rewardType').addEventListener('change', saveLoyaltyData); </script>
         </div>
     </main>
-
-    <script>
-        // Business loyalty dashboard functionality
-        let loyaltyProgrammeActive = false;
-        let qrCodeGenerated = false;
-        
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            loadLoyaltyData();
-            updateAnalytics();
-        });
-        
-        function loadLoyaltyData() {
-            // Load saved loyalty programme data
-            const savedData = localStorage.getItem('loyaltyProgrammeData');
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                loyaltyProgrammeActive = data.active || false;
-                
-                if (loyaltyProgrammeActive) {
-                    document.getElementById('loyaltyToggle').classList.add('active');
-                    document.getElementById('setupForm').style.display = 'block';
-                    
-                    // Populate form fields
-                    if (data.rewardTitle) document.getElementById('rewardTitle').value = data.rewardTitle;
-                    if (data.rewardDescription) document.getElementById('rewardDescription').value = data.rewardDescription;
-                    if (data.pointsRequired) document.getElementById('pointsRequired').value = data.pointsRequired;
-                    if (data.rewardType) document.getElementById('rewardType').value = data.rewardType;
-                    
-                    // Show QR code if generated
-                    if (data.qrGenerated) {
-                        qrCodeGenerated = true;
-                        document.getElementById('qrSection').style.display = 'block';
-                        generateQRCode();
-                    }
-                }
-            }
-        }
-        
-        function toggleLoyaltyProgramme() {
-            const toggle = document.getElementById('loyaltyToggle');
-            const setupForm = document.getElementById('setupForm');
-            
-            loyaltyProgrammeActive = !loyaltyProgrammeActive;
-            
-            if (loyaltyProgrammeActive) {
-                toggle.classList.add('active');
-                setupForm.style.display = 'block';
-                setupForm.classList.add('fade-in');
-            } else {
-                toggle.classList.remove('active');
-                setupForm.style.display = 'none';
-                document.getElementById('qrSection').style.display = 'none';
-                qrCodeGenerated = false;
-            }
-            
-            saveLoyaltyData();
-        }
-        
-        function generateQRCode() {
-            const rewardTitle = document.getElementById('rewardTitle').value;
-            const pointsRequired = document.getElementById('pointsRequired').value;
-            
-            if (!rewardTitle || !pointsRequired) {
-                alert('Please fill in the reward title and points required before generating QR code.');
-                return;
-            }
-            
-            // Generate or retrieve unique business ID
-            let businessId = localStorage.getItem('businessId');
-            if (!businessId) {
-                businessId = 'biz_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5);
-                localStorage.setItem('businessId', businessId);
-            }
-            
-            // Create loyalty URL pattern as specified
-            const loyaltyUrl = `blkpages.co.uk/loyalty/${businessId}`;
-            
-            // Generate QR code
-            const qrCodeElement = document.getElementById('qrCode');
-            qrCodeElement.innerHTML = '';
-            
-            QRCode.toCanvas(qrCodeElement, loyaltyUrl, {
-                width: 200,
-                height: 200,
-                color: {
-                    dark: '#1E90FF',
-                    light: '#ffffff'
-                }
-            }, function (error) {
-                if (error) {
-                    console.error('QR Code generation error:', error);
-                    alert('Error generating QR code. Please try again.');
-                } else {
-                    document.getElementById('qrSection').style.display = 'block';
-                    document.getElementById('qrLink').textContent = loyaltyUrl;
-                    qrCodeGenerated = true;
-                    
-                    // Save business loyalty data with URL
-                    const loyaltyData = {
-                        active: loyaltyProgrammeActive,
-                        rewardTitle: rewardTitle,
-                        rewardDescription: document.getElementById('rewardDescription').value,
-                        pointsRequired: pointsRequired,
-                        rewardType: document.getElementById('rewardType').value,
-                        qrGenerated: qrCodeGenerated,
-                        businessId: businessId,
-                        loyaltyUrl: loyaltyUrl
-                    };
-                    localStorage.setItem('loyaltyProgrammeData', JSON.stringify(loyaltyData));
-                    
-                    // Initialize business analytics if not exists
-                    initializeBusinessAnalytics(businessId);
-                }
-            });
-        }
-        
-        function saveLoyaltyData() {
-            const data = {
-                active: loyaltyProgrammeActive,
-                rewardTitle: document.getElementById('rewardTitle').value,
-                rewardDescription: document.getElementById('rewardDescription').value,
-                pointsRequired: document.getElementById('pointsRequired').value,
-                rewardType: document.getElementById('rewardType').value,
-                qrGenerated: qrCodeGenerated
-            };
-            
-            localStorage.setItem('loyaltyProgrammeData', JSON.stringify(data));
-        }
-        
-        function initializeBusinessAnalytics(businessId) {
-            const analyticsKey = `analytics_${businessId}`;
-            const existingAnalytics = localStorage.getItem(analyticsKey);
-            
-            if (!existingAnalytics) {
-                const initialAnalytics = {
-                    activeMembers: 0,
-                    totalPoints: 0,
-                    totalRewards: 0,
-                    lastRedemption: null,
-                    customerData: {}
-                };
-                localStorage.setItem(analyticsKey, JSON.stringify(initialAnalytics));
-            }
-        }
-        
-        function updateAnalytics() {
-            const businessId = localStorage.getItem('businessId');
-            if (!businessId) return;
-            
-            const analyticsKey = `analytics_${businessId}`;
-            const analyticsData = localStorage.getItem(analyticsKey);
-            
-            if (analyticsData) {
-                const analytics = JSON.parse(analyticsData);
-                
-                document.getElementById('activeMembers').textContent = analytics.activeMembers;
-                document.getElementById('totalPoints').textContent = analytics.totalPoints;
-                document.getElementById('totalRewards').textContent = analytics.totalRewards;
-                document.getElementById('lastRedemption').textContent = analytics.lastRedemption || '-';
-                
-                // Update progress bars
-                const progressBars = document.querySelectorAll('.progress-fill');
-                progressBars.forEach((bar, index) => {
-                    const values = [analytics.activeMembers, analytics.totalPoints, analytics.totalRewards, 100];
-                    const maxValues = [100, 1000, 50, 100];
-                    const percentage = Math.min((values[index] / maxValues[index]) * 100, 100);
-                    bar.style.width = percentage + '%';
-                });
-            } else {
-                // Fallback to simulated data if no analytics exist
-                const analytics = {
-                    activeMembers: Math.floor(Math.random() * 50) + 10,
-                    totalPoints: Math.floor(Math.random() * 500) + 100,
-                    totalRewards: Math.floor(Math.random() * 20) + 5,
-                    lastRedemption: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toLocaleDateString()
-                };
-                
-                document.getElementById('activeMembers').textContent = analytics.activeMembers;
-                document.getElementById('totalPoints').textContent = analytics.totalPoints;
-                document.getElementById('totalRewards').textContent = analytics.totalRewards;
-                document.getElementById('lastRedemption').textContent = analytics.lastRedemption;
-                
-                // Update progress bars
-                const progressBars = document.querySelectorAll('.progress-fill');
-                progressBars.forEach((bar, index) => {
-                    const values = [analytics.activeMembers, analytics.totalPoints, analytics.totalRewards, 100];
-                    const maxValues = [100, 1000, 50, 100];
-                    const percentage = Math.min((values[index] / maxValues[index]) * 100, 100);
-                    bar.style.width = percentage + '%';
-                });
-            }
-        }
-        
-        // Function to update analytics when customer scans QR (called from customer page)
-        function updateBusinessAnalytics(businessId, customerId, action) {
-            const analyticsKey = `analytics_${businessId}`;
-            const analyticsData = localStorage.getItem(analyticsKey);
-            
-            if (analyticsData) {
-                const analytics = JSON.parse(analyticsData);
-                
-                if (action === 'scan') {
-                    // Increment points and update customer data
-                    analytics.totalPoints++;
-                    
-                    if (!analytics.customerData[customerId]) {
-                        analytics.customerData[customerId] = { points: 0, lastVisit: new Date().toISOString() };
-                        analytics.activeMembers++;
-                    } else {
-                        analytics.customerData[customerId].points++;
-                        analytics.customerData[customerId].lastVisit = new Date().toISOString();
-                    }
-                } else if (action === 'redeem') {
-                    // Handle reward redemption
-                    analytics.totalRewards++;
-                    analytics.lastRedemption = new Date().toLocaleDateString();
-                    
-                    if (analytics.customerData[customerId]) {
-                        analytics.customerData[customerId].points = 0;
-                        analytics.customerData[customerId].lastRedemption = new Date().toISOString();
-                    }
-                }
-                
-                localStorage.setItem(analyticsKey, JSON.stringify(analytics));
-                
-                // Update display if dashboard is open
-                updateAnalytics();
-            }
-        }
-        
-        function editLoyaltyOffer() {
-            if (!loyaltyProgrammeActive) {
-                alert('Please enable the loyalty programme first.');
-                return;
-            }
-            
-            // Focus on the first input field
-            document.getElementById('rewardTitle').focus();
-            
-            // Scroll to setup form
-            document.getElementById('setupForm').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        function pauseProgramme() {
-            if (!loyaltyProgrammeActive) {
-                alert('No active programme to pause.');
-                return;
-            }
-            
-            const confirmed = confirm('Are you sure you want to pause the loyalty programme?\n\nPaused programmes remain visible but cannot be redeemed.');
-            
-            if (confirmed) {
-                // In real app, this would update the database
-                alert('Loyalty programme paused successfully.');
-            }
-        }
-        
-        function exportData() {
-            if (!loyaltyProgrammeActive) {
-                alert('No loyalty programme data to export.');
-                return;
-            }
-            
-            // Generate CSV data
-            const csvData = [
-                ['Customer ID', 'Points Earned', 'Last Visit', 'Status'],
-                ['User#1021', '5', '2 days ago', 'Active'],
-                ['User#1045', '3', '1 week ago', 'Pending'],
-                ['User#1089', '8', '3 days ago', 'Active']
-            ];
-            
-            const csvContent = csvData.map(row => row.join(',')).join('\n');
-            
-            // Create and download file
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'loyalty_data.csv';
-            a.click();
-            window.URL.revokeObjectURL(url);
-            
-            alert('Data exported successfully!');
-        }
-        
-        // Auto-save form data
-        document.getElementById('rewardTitle').addEventListener('input', saveLoyaltyData);
-        document.getElementById('rewardDescription').addEventListener('input', saveLoyaltyData);
-        document.getElementById('pointsRequired').addEventListener('input', saveLoyaltyData);
-        document.getElementById('rewardType').addEventListener('change', saveLoyaltyData);
-    </script>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

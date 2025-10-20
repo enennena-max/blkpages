@@ -1,688 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Views Analytics - BLKPAGES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Inter', sans-serif; 
-            line-height: 1.6; 
-            color: #ffffff; 
-            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%); 
-            min-height: 100vh; 
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        
-        /* Navigation */
-        .navbar { 
-            background: rgba(0, 0, 0, 0.95); 
-            box-shadow: 0 2px 10px rgba(255,255,255,0.1); 
-            position: fixed; 
-            top: 0; 
-            width: 100%; 
-            z-index: 1000; 
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
-        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; }
-        .logo { font-size: 1.8rem; font-weight: 700; color: #ffffff; text-decoration: none; }
-        .nav-links { display: flex; list-style: none; gap: 2rem; }
-        .nav-links a { text-decoration: none; color: #ffffff; font-weight: 500; transition: color 0.3s; }
-        .nav-links a:hover, .nav-links a.active { color: #1E90FF; }
-        .btn-nav { background: #1E90FF; color: white !important; padding: 0.5rem 1.5rem; border-radius: 25px; transition: background 0.3s; text-decoration: none; }
-        .btn-nav:hover { background: #007bff; }
         
-        /* Main Content */
-        .main-content { padding: 120px 0 80px; }
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+        }
         
-        /* Back Button */
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(30, 144, 255, 0.1);
-            border: 1px solid #1E90FF;
-            color: #1E90FF;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
-            margin-bottom: 2rem;
         }
         
-        .back-btn:hover {
-            background: #1E90FF;
-            color: white;
-            transform: translateY(-2px);
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        /* Page Header */
-        .page-header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem 0;
-            background: linear-gradient(135deg, rgba(30, 144, 255, 0.1), rgba(0, 123, 255, 0.05));
-            border-radius: 20px;
-            border: 1px solid rgba(30, 144, 255, 0.2);
-        }
-        
-        .page-title {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-        }
-        
-        .page-title i {
-            color: #1E90FF;
-            font-size: 2.5rem;
-        }
-        
-        .page-subtitle {
-            font-size: 1.2rem;
-            color: #cccccc;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-        
-        .stat-card {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stat-card::before {
-            content: '';
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 100%;
             right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, #1E90FF, #007bff);
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border-color: #1E90FF;
-        }
-        
-        .stat-icon {
-            font-size: 2.5rem;
-            color: #1E90FF;
-            margin-bottom: 1rem;
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
             color: #ffffff;
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-label {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1E90FF;
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-description {
+            text-decoration: none;
             font-size: 0.9rem;
-            color: #cccccc;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        /* Chart Section */
-        .chart-section {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 3rem;
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .chart-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-        
-        .chart-container {
-            width: 100%;
-            height: 400px;
-            background: linear-gradient(135deg, rgba(30, 144, 255, 0.1), rgba(0, 123, 255, 0.05));
-            border: 2px dashed #1E90FF;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #1E90FF;
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-        }
-        
-        .chart-description {
-            text-align: center;
-            color: #cccccc;
-            font-size: 1rem;
-        }
-        
-        /* Breakdown Section */
-        .breakdown-section {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-        }
-        
-        .breakdown-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 1.5rem;
-        }
-        
-        .breakdown-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        
-        .breakdown-item {
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-        
-        .breakdown-item-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #1E90FF;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .breakdown-item-title i {
-            font-size: 1.1rem;
-        }
-        
-        .breakdown-list {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .breakdown-list li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #444;
-            color: #cccccc;
-        }
-        
-        .breakdown-list li:last-child {
+        .dropdown-item:last-child {
             border-bottom: none;
-        }
-        
-        .breakdown-list li .value {
-            font-weight: 600;
-            color: #ffffff;
-        }
-        
-        /* Insights Section */
-        .insights-section {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-        }
-        
-        .insights-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 1.5rem;
-        }
-        
-        .insights-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .insight-card {
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-        }
-        
-        .insight-icon {
-            font-size: 2rem;
-            color: #1E90FF;
-            margin-bottom: 1rem;
-        }
-        
-        .insight-text {
-            font-size: 1rem;
-            color: #cccccc;
-            line-height: 1.5;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 16px;
-            }
-            
-            .page-title {
-                font-size: 2.5rem;
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .breakdown-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .insights-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .chart-container {
-                height: 300px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .page-title {
-                font-size: 2rem;
-            }
-            
-            .stat-number {
-                font-size: 2rem;
-            }
-            
-            .chart-container {
-                height: 250px;
-            }
         }
     </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <a href="business-analytics-dashboard.html" class="logo">BlkPages</a>
-                <ul class="nav-links">
-                    <li><a href="business-dashboard.html">Dashboard</a></li>
-                    <li><a href="business-profile.html">Profile</a></li>
-                    <li><a href="business-plan-management.html">Manage Plan</a></li>
-                    <li><a href="#" class="btn-nav">Logout</a></li>
-                </ul>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
-    </nav>
+    </header>
     
     <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <a href="business-analytics-dashboard.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-                Back to Analytics Dashboard
-            </a>
-            
-            <!-- Page Header -->
-            <div class="page-header">
-                <h1 class="page-title">
-                    <i class="fas fa-eye"></i>
-                    Profile Views Analytics
-                </h1>
-                <p class="page-subtitle">Detailed insights into how customers discover and view your business profile</p>
-            </div>
-            
-            <!-- Key Stats -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <div class="stat-number">1,247</div>
-                    <div class="stat-label">Total Views</div>
-                    <div class="stat-description">All-time profile views</div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-calendar-day"></i>
-                    </div>
-                    <div class="stat-number">89</div>
-                    <div class="stat-label">Today's Views</div>
-                    <div class="stat-description">Views in the last 24 hours</div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="stat-number">+23%</div>
-                    <div class="stat-label">Growth Rate</div>
-                    <div class="stat-description">Increase from last month</div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-number">2:34</div>
-                    <div class="stat-label">Avg. Time</div>
-                    <div class="stat-description">Average time spent viewing</div>
-                </div>
-            </div>
-            
-            <!-- Views Over Time Chart -->
-            <div class="chart-section">
-                <h2 class="chart-title">Profile Views Over Time</h2>
-                <div class="chart-container">
-                    <i class="fas fa-chart-line"></i>
-                    <span style="margin-left: 0.5rem;">Views Trend Chart</span>
-                </div>
-                <p class="chart-description">Track your profile visibility and engagement trends over the past 30 days</p>
-            </div>
-            
-            <!-- Traffic Sources Breakdown -->
-            <div class="breakdown-section">
-                <h2 class="breakdown-title">Traffic Sources</h2>
-                <div class="breakdown-grid">
-                    <div class="breakdown-item">
-                        <h3 class="breakdown-item-title">
-                            <i class="fas fa-search"></i>
-                            Search Results
-                        </h3>
-                        <ul class="breakdown-list">
-                            <li>
-                                <span>Google Search</span>
-                                <span class="value">456 views</span>
-                            </li>
-                            <li>
-                                <span>BlkPages Search</span>
-                                <span class="value">389 views</span>
-                            </li>
-                            <li>
-                                <span>Category Browse</span>
-                                <span class="value">234 views</span>
-                            </li>
-                            <li>
-                                <span>Location Search</span>
-                                <span class="value">168 views</span>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <div class="breakdown-item">
-                        <h3 class="breakdown-item-title">
-                            <i class="fas fa-share-alt"></i>
-                            Direct & Social
-                        </h3>
-                        <ul class="breakdown-list">
-                            <li>
-                                <span>Direct Link</span>
-                                <span class="value">123 views</span>
-                            </li>
-                            <li>
-                                <span>Social Media</span>
-                                <span class="value">89 views</span>
-                            </li>
-                            <li>
-                                <span>Email Campaign</span>
-                                <span class="value">67 views</span>
-                            </li>
-                            <li>
-                                <span>Word of Mouth</span>
-                                <span class="value">45 views</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Device & Location Breakdown -->
-            <div class="breakdown-section">
-                <h2 class="breakdown-title">Device & Location Analytics</h2>
-                <div class="breakdown-grid">
-                    <div class="breakdown-item">
-                        <h3 class="breakdown-item-title">
-                            <i class="fas fa-mobile-alt"></i>
-                            Device Types
-                        </h3>
-                        <ul class="breakdown-list">
-                            <li>
-                                <span>Mobile</span>
-                                <span class="value">68% (848 views)</span>
-                            </li>
-                            <li>
-                                <span>Desktop</span>
-                                <span class="value">24% (299 views)</span>
-                            </li>
-                            <li>
-                                <span>Tablet</span>
-                                <span class="value">8% (100 views)</span>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <div class="breakdown-item">
-                        <h3 class="breakdown-item-title">
-                            <i class="fas fa-map-marker-alt"></i>
-                            Top Locations
-                        </h3>
-                        <ul class="breakdown-list">
-                            <li>
-                                <span>London</span>
-                                <span class="value">45% (561 views)</span>
-                            </li>
-                            <li>
-                                <span>Birmingham</span>
-                                <span class="value">18% (224 views)</span>
-                            </li>
-                            <li>
-                                <span>Manchester</span>
-                                <span class="value">12% (150 views)</span>
-                            </li>
-                            <li>
-                                <span>Other</span>
-                                <span class="value">25% (312 views)</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Key Insights -->
-            <div class="insights-section">
-                <h2 class="insights-title">Key Insights</h2>
-                <div class="insights-grid">
-                    <div class="insight-card">
-                        <div class="insight-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="insight-text">
-                            <strong>Peak Viewing Time:</strong> Most views occur between 2-4 PM on weekdays
-                        </div>
-                    </div>
-                    
-                    <div class="insight-card">
-                        <div class="insight-icon">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <div class="insight-text">
-                            <strong>Mobile Dominance:</strong> 68% of your views come from mobile devices
-                        </div>
-                    </div>
-                    
-                    <div class="insight-card">
-                        <div class="insight-icon">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <div class="insight-text">
-                            <strong>Search Performance:</strong> Google Search drives 37% of your profile views
-                        </div>
-                    </div>
-                    
-                    <div class="insight-card">
-                        <div class="insight-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="insight-text">
-                            <strong>Growth Trend:</strong> Views have increased 23% compared to last month
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Navigation --><!-- Main Content --><main><div><a href="business-analytics-dashboard.html"><i></i> Back to Analytics Dashboard </a><!-- Page Header --><div><h1><i></i> Profile Views Analytics </h1><p>Detailed insights into how customers discover and view your business profile</p></div><!-- Key Stats --><div><div><div><i></i></div><div>1,247</div><div>Total Views</div><div>All-time profile views</div></div><div><div><i></i></div><div>89</div><div>Today's Views</div><div>Views in the last 24 hours</div></div><div><div><i></i></div><div>+23%</div><div>Growth Rate</div><div>Increase from last month</div></div><div><div><i></i></div><div>2:34</div><div>Avg. Time</div><div>Average time spent viewing</div></div></div><!-- Views Over Time Chart --><div><h2>Profile Views Over Time</h2><div><i></i><span>Views Trend Chart</span></div><p>Track your profile visibility and engagement trends over the past 30 days</p></div><!-- Traffic Sources Breakdown --><div><h2>Traffic Sources</h2><div><div><h3><i></i> Search Results </h3><ul><li><span>Google Search</span><span>456 views</span></li><li><span>BlkPages Search</span><span>389 views</span></li><li><span>Category Browse</span><span>234 views</span></li><li><span>Location Search</span><span>168 views</span></li></ul></div><div><h3><i></i> Direct & Social </h3><ul><li><span>Direct Link</span><span>123 views</span></li><li><span>Social Media</span><span>89 views</span></li><li><span>Email Campaign</span><span>67 views</span></li><li><span>Word of Mouth</span><span>45 views</span></li></ul></div></div></div><!-- Device & Location Breakdown --><div><h2>Device & Location Analytics</h2><div><div><h3><i></i> Device Types </h3><ul><li><span>Mobile</span><span>68% (848 views)</span></li><li><span>Desktop</span><span>24% (299 views)</span></li><li><span>Tablet</span><span>8% (100 views)</span></li></ul></div><div><h3><i></i> Top Locations </h3><ul><li><span>London</span><span>45% (561 views)</span></li><li><span>Birmingham</span><span>18% (224 views)</span></li><li><span>Manchester</span><span>12% (150 views)</span></li><li><span>Other</span><span>25% (312 views)</span></li></ul></div></div></div><!-- Key Insights --><div><h2>Key Insights</h2><div><div><div><i></i></div><div><strong>Peak Viewing Time:</strong> Most views occur between 2-4 PM on weekdays </div></div><div><div><i></i></div><div><strong>Mobile Dominance:</strong> 68% of your views come from mobile devices </div></div><div><div><i></i></div><div><strong>Search Performance:</strong> Google Search drives 37% of your profile views </div></div><div><div><i></i></div><div><strong>Growth Trend:</strong> Views have increased 23% compared to last month </div></div></div></div></div></main><!-- Footer --><script> // Simple counter animation for stat numbers function animateCounters() { const counters = document.querySelectorAll('.stat-number'); counters.forEach(counter => { const target = counter.textContent; const numericValue = parseFloat(target.replace(/[^\d.]/g, '')); const suffix = target.replace(/[\d.]/g, ''); if (numericValue) { let current = 0; const increment = numericValue / 50; const timer = setInterval(() => { current += increment; if (current >= numericValue) { counter.textContent = target; clearInterval(timer); } else { counter.textContent = Math.floor(current) + suffix; } }, 30); } }); } // Load real analytics data function loadAnalyticsData() { const businessId = 'royalHairStudio'; const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}'); if (analyticsData[businessId]) { const data = analyticsData[businessId]; const today = new Date().toISOString().split('T')[0]; const todayViews = data.dailyViews[today] || 0; // Update the stat cards with real data updateStatCard('Total Views', data.totalViews); updateStatCard('Today\'s Views', todayViews); updateStatCard('Growth Rate', calculateGrowthRate(data)); updateStatCard('Avg. Time', '2:34'); // Keep as static for now console.log('Profile views analytics loaded:', { totalViews: data.totalViews, todayViews: todayViews, lastView: data.lastView }); } } function calculateGrowthRate(data) { const today = new Date().toISOString().split('T')[0]; const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]; const todayViews = data.dailyViews[today] || 0; const yesterdayViews = data.dailyViews[yesterday] || 0; if (yesterdayViews === 0) return '+100%'; const growth = ((todayViews - yesterdayViews) / yesterdayViews) * 100; return growth > 0 ? `+${Math.round(growth)}%` : `${Math.round(growth)}%`; } function updateStatCard(label, value) { const statCards = document.querySelectorAll('.stat-card'); statCards.forEach(card => { const labelElement = card.querySelector('.stat-label'); if (labelElement && labelElement.textContent.includes(label)) { const numberElement = card.querySelector('.stat-number'); if (numberElement) { numberElement.textContent = value; } } }); } // Listen for analytics updates window.addEventListener('analyticsUpdated', function(e) { console.log('Analytics updated event received:', e.detail); loadAnalyticsData(); }); // Listen for storage changes window.addEventListener('storage', function(e) { if (e.key === 'businessAnalytics') { loadAnalyticsData(); } }); // Initialize animations when page loads document.addEventListener('DOMContentLoaded', function() { loadAnalyticsData(); setTimeout(animateCounters, 500); }); </script>
         </div>
     </main>
     
-    <!-- Footer -->
-    <footer style="background: #0F0F0F; color: #ffffff; padding: 2rem 0; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-        <div class="container">
-            <p>&copy; 2024 BLKPAGES. All rights reserved.</p>
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
         </div>
     </footer>
-    
-    <script>
-        // Simple counter animation for stat numbers
-        function animateCounters() {
-            const counters = document.querySelectorAll('.stat-number');
-            
-            counters.forEach(counter => {
-                const target = counter.textContent;
-                const numericValue = parseFloat(target.replace(/[^\d.]/g, ''));
-                const suffix = target.replace(/[\d.]/g, '');
-                
-                if (numericValue) {
-                    let current = 0;
-                    const increment = numericValue / 50;
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= numericValue) {
-                            counter.textContent = target;
-                            clearInterval(timer);
-                        } else {
-                            counter.textContent = Math.floor(current) + suffix;
-                        }
-                    }, 30);
-                }
-            });
-        }
-        
-        // Load real analytics data
-        function loadAnalyticsData() {
-            const businessId = 'royalHairStudio';
-            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
-            
-            if (analyticsData[businessId]) {
-                const data = analyticsData[businessId];
-                const today = new Date().toISOString().split('T')[0];
-                const todayViews = data.dailyViews[today] || 0;
-                
-                // Update the stat cards with real data
-                updateStatCard('Total Views', data.totalViews);
-                updateStatCard('Today\'s Views', todayViews);
-                updateStatCard('Growth Rate', calculateGrowthRate(data));
-                updateStatCard('Avg. Time', '2:34'); // Keep as static for now
-                
-                console.log('Profile views analytics loaded:', {
-                    totalViews: data.totalViews,
-                    todayViews: todayViews,
-                    lastView: data.lastView
-                });
-            }
-        }
-        
-        function calculateGrowthRate(data) {
-            const today = new Date().toISOString().split('T')[0];
-            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-            const todayViews = data.dailyViews[today] || 0;
-            const yesterdayViews = data.dailyViews[yesterday] || 0;
-            
-            if (yesterdayViews === 0) return '+100%';
-            const growth = ((todayViews - yesterdayViews) / yesterdayViews) * 100;
-            return growth > 0 ? `+${Math.round(growth)}%` : `${Math.round(growth)}%`;
-        }
-        
-        function updateStatCard(label, value) {
-            const statCards = document.querySelectorAll('.stat-card');
-            statCards.forEach(card => {
-                const labelElement = card.querySelector('.stat-label');
-                if (labelElement && labelElement.textContent.includes(label)) {
-                    const numberElement = card.querySelector('.stat-number');
-                    if (numberElement) {
-                        numberElement.textContent = value;
-                    }
-                }
-            });
-        }
-        
-        // Listen for analytics updates
-        window.addEventListener('analyticsUpdated', function(e) {
-            console.log('Analytics updated event received:', e.detail);
-            loadAnalyticsData();
-        });
-        
-        // Listen for storage changes
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'businessAnalytics') {
-                loadAnalyticsData();
-            }
-        });
-        
-        // Initialize animations when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAnalyticsData();
-            setTimeout(animateCounters, 500);
-        });
-    </script>
 </body>
 </html>

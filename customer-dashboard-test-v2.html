@@ -1,1045 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Customer Dashboard Preview - BlkPages</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            color: #ffffff;
-            line-height: 1.6;
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        /* Header */
-        .header {
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+        }
+        
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .preview-banner {
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            color: white;
-            text-align: center;
-            padding: 0.5rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        .preview-banner i {
-            margin-right: 0.5rem;
-        }
-        
-        /* Main Content */
-        .main-content {
-            padding: 2rem 0;
-        }
-        
-        .page-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .page-subtitle {
-            color: #9CA3AF;
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-        }
-        
-        /* Tab Navigation */
-        .tab-navigation {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .tab-button {
-            background: none;
-            border: none;
-            color: #9CA3AF;
-            padding: 1rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        
-        .tab-button.active {
-            color: #FF3CAC;
-            border-bottom-color: #FF3CAC;
-        }
-        
-        .tab-button:hover {
-            color: #ffffff;
-        }
-        
-        /* Bookings Grid */
-        .bookings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .booking-card {
-            background: #1A1A1A;
-            border-radius: 12px;
-            padding: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
-        }
-        
-        .booking-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-        
-        .booking-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-        }
-        
-        .business-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .business-logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
-        
-        .business-details h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-        
-        .business-category {
-            color: #9CA3AF;
-            font-size: 0.9rem;
-        }
-        
-        .booking-status {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        
-        .status-confirmed {
-            background: rgba(40, 167, 69, 0.2);
-            color: #28a745;
-            border: 1px solid rgba(40, 167, 69, 0.3);
-        }
-        
-        .status-cancelled {
-            background: rgba(220, 53, 69, 0.2);
-            color: #dc3545;
-            border: 1px solid rgba(220, 53, 69, 0.3);
-        }
-        
-        .status-completed {
-            background: rgba(108, 117, 125, 0.2);
-            color: #6c757d;
-            border: 1px solid rgba(108, 117, 125, 0.3);
-        }
-        
-        /* Booking Details */
-        .booking-details {
-            margin-bottom: 1.5rem;
-        }
-        
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-        
-        .detail-label {
-            color: #9CA3AF;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        
-        .detail-value {
-            color: #ffffff;
-            font-weight: 500;
-        }
-        
-        .payment-model-status {
-            background: rgba(255, 60, 172, 0.1);
-            border: 1px solid rgba(255, 60, 172, 0.3);
-            border-radius: 6px;
-            padding: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .payment-model-status .detail-label {
-            color: #FF3CAC;
-            font-weight: 600;
-        }
-        
-        .payment-model-status .detail-value {
-            color: #ffffff;
-            font-weight: 500;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-        
-        .cancellation-note {
-            background: rgba(255, 60, 172, 0.1);
-            border: 1px solid rgba(255, 60, 172, 0.3);
-            border-radius: 6px;
-            padding: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .cancellation-note .detail-label {
-            color: #FF3CAC;
-            font-weight: 600;
-        }
-        
-        .cancellation-note .detail-value {
-            color: #ffffff;
-            font-weight: 500;
-        }
-        
-        /* Services List */
-        .services-list {
-            margin-bottom: 1.5rem;
-        }
-        
-        .services-title {
-            color: #9CA3AF;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .service-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .service-item:last-child {
-            border-bottom: none;
-        }
-        
-        .service-name {
-            color: #ffffff;
-            font-weight: 500;
-        }
-        
-        .service-price {
-            font-weight: 600;
-            color: #4ADE80;
-        }
-        
-        /* Action Buttons */
-        .booking-actions {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        
-        .action-btn {
-            padding: 0.75rem 1.5rem;
             border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
             text-decoration: none;
-            font-weight: 600;
             font-size: 0.9rem;
             transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .btn-primary {
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            color: white;
-            border: none;
-        }
-        
-        .btn-primary:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-        
-        .btn-danger {
-            background: rgba(220, 53, 69, 0.2);
-            color: #dc3545;
-            border: 1px solid rgba(220, 53, 69, 0.3);
-        }
-        
-        .btn-danger:hover {
-            background: rgba(220, 53, 69, 0.3);
-        }
-        
-        .btn-secondary {
+        .dropdown-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .cancellation-status {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .non-refundable-notice {
-            background: rgba(255, 60, 172, 0.1);
-            border: 1px solid rgba(255, 60, 172, 0.3);
-            border-radius: 6px;
-            padding: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #FF3CAC;
-            font-size: 0.9rem;
-        }
-        
-        .non-refundable-notice i {
-            color: #FF3CAC;
-        }
-        
-        .section-header {
-            margin-bottom: 2rem;
-        }
-        
-        .section-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #ffffff;
-        }
-        
-        .section-header p {
-            color: #9CA3AF;
-            font-size: 1rem;
-        }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #9CA3AF;
-        }
-        
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: #6c757d;
-        }
-        
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #ffffff;
-        }
-        
-        .empty-state p {
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 15px;
-            }
-            
-            .page-title {
-                font-size: 2rem;
-            }
-            
-            .booking-card {
-                padding: 1.5rem;
-            }
-            
-            .booking-header {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .bookings-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .tab-navigation {
-                flex-wrap: wrap;
-            }
-            
-            .tab-button {
-                padding: 0.75rem 1rem;
-                font-size: 0.9rem;
-            }
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <!-- Preview Banner -->
-    <div class="preview-banner">
-        <i class="fas fa-flask"></i>
-        Preview Mode – Dummy Data Only (8 Customer Scenarios)
-    </div>
-    
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">BlkPages</div>
-                <div style="color: #9CA3AF; font-size: 0.9rem;">
-                    <i class="fas fa-user"></i> Customer Dashboard Preview
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
     </header>
     
     <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <h1 class="page-title">My Bookings</h1>
-            <p class="page-subtitle">Preview of customer dashboard with 8 different scenarios covering all payment models and cancellation outcomes</p>
-            
-            <!-- Tab Navigation -->
-            <div class="tab-navigation">
-                <button class="tab-button active" onclick="showTab('upcoming')">
-                    <i class="fas fa-calendar-alt"></i> Upcoming
-                </button>
-                <button class="tab-button" onclick="showTab('past')">
-                    <i class="fas fa-history"></i> Past
-                </button>
-                <button class="tab-button" onclick="showTab('cancelled')">
-                    <i class="fas fa-times-circle"></i> Cancelled
-                </button>
-            </div>
-            
-            <!-- Upcoming Bookings -->
-            <div id="upcoming-tab" class="tab-content">
-                <div class="section-header">
-                    <h2>Upcoming Bookings</h2>
-                    <p>Your confirmed and pending appointments</p>
-                </div>
-                <div class="bookings-grid">
-                    <!-- Customer A: Jane Smith - Full Payment Online, Upcoming -->
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <div class="business-info">
-                                <div class="business-logo">GS</div>
-                                <div class="business-details">
-                                    <h3>Glow Salon</h3>
-                                    <div class="business-category">Hair Salon</div>
-                                </div>
-                            </div>
-                            <div class="booking-status status-confirmed">Confirmed</div>
-                        </div>
-                        
-                        <div class="booking-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Date:</span>
-                                <span class="detail-value">Monday, Jan 15, 2025</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Time:</span>
-                                <span class="detail-value">2:00 PM</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Duration:</span>
-                                <span class="detail-value">1h 30m</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Payment:</span>
-                                <span class="detail-value">Paid Online</span>
-                            </div>
-                            <div class="detail-row payment-model-status">
-                                <span class="detail-label">Payment Status:</span>
-                                <span class="detail-value">✅ Haircut £45 paid in full online.</span>
-                            </div>
-                            <div class="detail-row cancellation-note">
-                                <span class="detail-label">Cancellation:</span>
-                                <span class="detail-value">24h notice required (Flexible)</span>
-                            </div>
-                        </div>
-                        
-                        <div class="services-list">
-                            <div class="services-title">Services</div>
-                            <div class="service-item">
-                                <span class="service-name">Haircut</span>
-                                <span class="service-price">£45</span>
-                            </div>
-                        </div>
-                        
-                        <div class="booking-actions">
-                            <a href="/booking-test" class="action-btn btn-secondary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <div class="cancellation-status">
-                                <a href="/cancel-test" class="action-btn btn-danger">
-                                    <i class="fas fa-times"></i> Cancel Booking
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Customer C: Sarah Brown - Deposit 10%, Upcoming -->
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <div class="business-info">
-                                <div class="business-logo">SH</div>
-                                <div class="business-details">
-                                    <h3>Spa Haven</h3>
-                                    <div class="business-category">Beauty Spa</div>
-                                </div>
-                            </div>
-                            <div class="booking-status status-confirmed">Confirmed</div>
-                        </div>
-                        
-                        <div class="booking-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Date:</span>
-                                <span class="detail-value">Wednesday, Jan 17, 2025</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Time:</span>
-                                <span class="detail-value">10:00 AM</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Duration:</span>
-                                <span class="detail-value">2h 00m</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Payment:</span>
-                                <span class="detail-value">Deposit Paid</span>
-                            </div>
-                            <div class="detail-row payment-model-status">
-                                <span class="detail-label">Payment Status:</span>
-                                <span class="detail-value">💳 Facial £100 → £10 deposit paid, £90 due at venue.</span>
-                            </div>
-                            <div class="detail-row cancellation-note">
-                                <span class="detail-label">Cancellation:</span>
-                                <span class="detail-value">48h notice required (Moderate)</span>
-                            </div>
-                        </div>
-                        
-                        <div class="services-list">
-                            <div class="services-title">Services</div>
-                            <div class="service-item">
-                                <span class="service-name">Facial</span>
-                                <span class="service-price">£100</span>
-                            </div>
-                        </div>
-                        
-                        <div class="booking-actions">
-                            <a href="/booking-test" class="action-btn btn-secondary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <div class="cancellation-status">
-                                <a href="/cancel-test" class="action-btn btn-danger">
-                                    <i class="fas fa-times"></i> Cancel Booking
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Customer F: Daniel Carter - Pay at Venue, Upcoming -->
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <div class="business-info">
-                                <div class="business-logo">RM</div>
-                                <div class="business-details">
-                                    <h3>Relax Massage</h3>
-                                    <div class="business-category">Wellness Center</div>
-                                </div>
-                            </div>
-                            <div class="booking-status status-confirmed">Confirmed</div>
-                        </div>
-                        
-                        <div class="booking-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Date:</span>
-                                <span class="detail-value">Friday, Jan 19, 2025</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Time:</span>
-                                <span class="detail-value">3:00 PM</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Duration:</span>
-                                <span class="detail-value">1h 00m</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Payment:</span>
-                                <span class="detail-value">Pay at Venue</span>
-                            </div>
-                            <div class="detail-row payment-model-status">
-                                <span class="detail-label">Payment Status:</span>
-                                <span class="detail-value">💷 Massage £45 payable at the venue. No online payment taken.</span>
-                            </div>
-                            <div class="detail-row cancellation-note">
-                                <span class="detail-label">Cancellation:</span>
-                                <span class="detail-value">24h notice required (Flexible)</span>
-                            </div>
-                        </div>
-                        
-                        <div class="services-list">
-                            <div class="services-title">Services</div>
-                            <div class="service-item">
-                                <span class="service-name">Massage</span>
-                                <span class="service-price">£45</span>
-                            </div>
-                        </div>
-                        
-                        <div class="booking-actions">
-                            <a href="/booking-test" class="action-btn btn-secondary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <div class="cancellation-status">
-                                <a href="/cancel-test" class="action-btn btn-danger">
-                                    <i class="fas fa-times"></i> Cancel Booking
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Customer H: Tom Evans - Custom Cancellation (Premium), Upcoming -->
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <div class="business-info">
-                                <div class="business-logo">LB</div>
-                                <div class="business-details">
-                                    <h3>Luxe Beauty</h3>
-                                    <div class="business-category">Premium Spa</div>
-                                </div>
-                            </div>
-                            <div class="booking-status status-confirmed">Confirmed</div>
-                        </div>
-                        
-                        <div class="booking-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Date:</span>
-                                <span class="detail-value">Saturday, Jan 20, 2025</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Time:</span>
-                                <span class="detail-value">11:00 AM</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Duration:</span>
-                                <span class="detail-value">2h 30m</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Payment:</span>
-                                <span class="detail-value">Paid Online</span>
-                            </div>
-                            <div class="detail-row payment-model-status">
-                                <span class="detail-label">Payment Status:</span>
-                                <span class="detail-value">✅ Deluxe Facial £120 paid in full online.</span>
-                            </div>
-                            <div class="detail-row cancellation-note">
-                                <span class="detail-label">Cancellation:</span>
-                                <span class="detail-value">72h notice required (Custom Premium)</span>
-                            </div>
-                        </div>
-                        
-                        <div class="services-list">
-                            <div class="services-title">Services</div>
-                            <div class="service-item">
-                                <span class="service-name">Deluxe Facial</span>
-                                <span class="service-price">£120</span>
-                            </div>
-                        </div>
-                        
-                        <div class="booking-actions">
-                            <a href="/booking-test" class="action-btn btn-secondary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <div class="cancellation-status">
-                                <a href="/cancel-test" class="action-btn btn-danger">
-                                    <i class="fas fa-times"></i> Cancel Booking
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Past Bookings -->
-            <div id="past-tab" class="tab-content" style="display: none;">
-                <div class="section-header">
-                    <h2>Past Bookings</h2>
-                    <p>Your completed appointments</p>
-                </div>
-                <div class="bookings-grid">
-                    <!-- Completed booking example -->
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <div class="business-info">
-                                <div class="business-logo">GS</div>
-                                <div class="business-details">
-                                    <h3>Glow Salon</h3>
-                                    <div class="business-category">Hair Salon</div>
-                                </div>
-                            </div>
-                            <div class="booking-status status-completed">Completed</div>
-                        </div>
-                        
-                        <div class="booking-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Date:</span>
-                                <span class="detail-value">Monday, Dec 30, 2024</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Time:</span>
-                                <span class="detail-value">2:00 PM</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Duration:</span>
-                                <span class="detail-value">1h 30m</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Payment:</span>
-                                <span class="detail-value">Paid Online</span>
-                            </div>
-                            <div class="detail-row payment-model-status">
-                                <span class="detail-label">Payment Status:</span>
-                                <span class="detail-value">✅ Haircut £45 paid in full online.</span>
-                            </div>
-                        </div>
-                        
-                        <div class="services-list">
-                            <div class="services-title">Services</div>
-                            <div class="service-item">
-                                <span class="service-name">Haircut</span>
-                                <span class="service-price">£45</span>
-                            </div>
-                        </div>
-                        
-                        <div class="booking-actions">
-                            <a href="/booking-test" class="action-btn btn-secondary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <a href="/booking-test" class="action-btn btn-primary">
-                                <i class="fas fa-calendar-plus"></i> Book Again
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Cancelled Bookings -->
-            <div id="cancelled-tab" class="tab-content" style="display: none;">
-                <div class="section-header">
-                    <h2>Cancelled Bookings</h2>
-                    <p>Your cancelled appointments</p>
-                </div>
-                <div class="bookings-grid">
-                    <!-- Customer B: David Lee - Full Payment Online, Cancelled, Refunded -->
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <div class="business-info">
-                                <div class="business-logo">GS</div>
-                                <div class="business-details">
-                                    <h3>Glow Salon</h3>
-                                    <div class="business-category">Hair Salon</div>
-                                </div>
-                            </div>
-                            <div class="booking-status status-cancelled">Cancelled</div>
-                        </div>
-                        
-                        <div class="booking-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Date:</span>
-                                <span class="detail-value">Monday, Jan 8, 2025</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Time:</span>
-                                <span class="detail-value">2:00 PM</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Duration:</span>
-                                <span class="detail-value">1h 30m</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Payment:</span>
-                                <span class="detail-value">Refunded</span>
-                            </div>
-                            <div class="detail-row payment-model-status">
-                                <span class="detail-label">Refund Status:</span>
-                                <span class="detail-value">🔄 Refund £60 issued to your payment method.</span>
-                            </div>
-                        </div>
-                        
-                        <div class="services-list">
-                            <div class="services-title">Services</div>
-                            <div class="service-item">
-                                <span class="service-name">Spa Treatment</span>
-                                <span class="service-price">£60</span>
-                            </div>
-                        </div>
-                        
-                        <div class="booking-actions">
-                            <a href="/booking-test" class="action-btn btn-secondary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <a href="/booking-test" class="action-btn btn-primary">
-                                <i class="fas fa-calendar-plus"></i> Book Again
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Customer D: Michael Chan - Deposit 50%, Cancelled, Refunded -->
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <div class="business-info">
-                                <div class="business-logo">FS</div>
-                                <div class="business-details">
-                                    <h3>Fitness Studio</h3>
-                                    <div class="business-category">Wellness Center</div>
-                                </div>
-                            </div>
-                            <div class="booking-status status-cancelled">Cancelled</div>
-                        </div>
-                        
-                        <div class="booking-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Date:</span>
-                                <span class="detail-value">Wednesday, Jan 10, 2025</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Time:</span>
-                                <span class="detail-value">10:00 AM</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Duration:</span>
-                                <span class="detail-value">1h 00m</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Payment:</span>
-                                <span class="detail-value">Deposit Refunded</span>
-                            </div>
-                            <div class="detail-row payment-model-status">
-                                <span class="detail-label">Refund Status:</span>
-                                <span class="detail-value">🔄 Deposit £40 refunded (£80 service → £40 refunded).</span>
-                            </div>
-                        </div>
-                        
-                        <div class="services-list">
-                            <div class="services-title">Services</div>
-                            <div class="service-item">
-                                <span class="service-name">PT Session</span>
-                                <span class="service-price">£80</span>
-                            </div>
-                        </div>
-                        
-                        <div class="booking-actions">
-                            <a href="/booking-test" class="action-btn btn-secondary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <a href="/booking-test" class="action-btn btn-primary">
-                                <i class="fas fa-calendar-plus"></i> Book Again
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Customer E: Emma Wilson - Deposit 50%, Cancelled, Not Refunded -->
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <div class="business-info">
-                                <div class="business-logo">FS</div>
-                                <div class="business-details">
-                                    <h3>Fitness Studio</h3>
-                                    <div class="business-category">Wellness Center</div>
-                                </div>
-                            </div>
-                            <div class="booking-status status-cancelled">Cancelled</div>
-                        </div>
-                        
-                        <div class="booking-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Date:</span>
-                                <span class="detail-value">Friday, Jan 12, 2025</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Time:</span>
-                                <span class="detail-value">3:00 PM</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Duration:</span>
-                                <span class="detail-value">1h 00m</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Payment:</span>
-                                <span class="detail-value">Deposit Non-Refundable</span>
-                            </div>
-                            <div class="detail-row payment-model-status">
-                                <span class="detail-label">Refund Status:</span>
-                                <span class="detail-value">🚫 Deposit £25 was non-refundable under the venue's cancellation policy.</span>
-                            </div>
-                        </div>
-                        
-                        <div class="services-list">
-                            <div class="services-title">Services</div>
-                            <div class="service-item">
-                                <span class="service-name">Manicure</span>
-                                <span class="service-price">£50</span>
-                            </div>
-                        </div>
-                        
-                        <div class="booking-actions">
-                            <a href="/booking-test" class="action-btn btn-secondary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <a href="/booking-test" class="action-btn btn-primary">
-                                <i class="fas fa-calendar-plus"></i> Book Again
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Customer G: Lucy Hall - Pay at Venue, Cancelled -->
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <div class="business-info">
-                                <div class="business-logo">RM</div>
-                                <div class="business-details">
-                                    <h3>Relax Massage</h3>
-                                    <div class="business-category">Wellness Center</div>
-                                </div>
-                            </div>
-                            <div class="booking-status status-cancelled">Cancelled</div>
-                        </div>
-                        
-                        <div class="booking-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Date:</span>
-                                <span class="detail-value">Sunday, Jan 14, 2025</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Time:</span>
-                                <span class="detail-value">2:00 PM</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Duration:</span>
-                                <span class="detail-value">1h 00m</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Payment:</span>
-                                <span class="detail-value">No Payment Taken</span>
-                            </div>
-                            <div class="detail-row payment-model-status">
-                                <span class="detail-label">Cancellation Status:</span>
-                                <span class="detail-value">⚠️ No refund required as no payment was taken. Venue policy may still apply.</span>
-                            </div>
-                        </div>
-                        
-                        <div class="services-list">
-                            <div class="services-title">Services</div>
-                            <div class="service-item">
-                                <span class="service-name">Yoga Class</span>
-                                <span class="service-price">£35</span>
-                            </div>
-                        </div>
-                        
-                        <div class="booking-actions">
-                            <a href="/booking-test" class="action-btn btn-secondary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <a href="/booking-test" class="action-btn btn-primary">
-                                <i class="fas fa-calendar-plus"></i> Book Again
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Preview Banner --><div><i></i> Preview Mode – Dummy Data Only (8 Customer Scenarios) </div><!-- Header --><!-- Main Content --><main><div><h1>My Bookings</h1><p>Preview of customer dashboard with 8 different scenarios covering all payment models and cancellation outcomes</p><!-- Tab Navigation --><div><button onclick="showTab('upcoming')"><i></i> Upcoming </button><button onclick="showTab('past')"><i></i> Past </button><button onclick="showTab('cancelled')"><i></i> Cancelled </button></div><!-- Upcoming Bookings --><div><div><h2>Upcoming Bookings</h2><p>Your confirmed and pending appointments</p></div><div><!-- Customer A: Jane Smith - Full Payment Online, Upcoming --><div><div><div><div>GS</div><div><h3>Glow Salon</h3><div>Hair Salon</div></div></div><div>Confirmed</div></div><div><div><span>Date:</span><span>Monday, Jan 15, 2025</span></div><div><span>Time:</span><span>2:00 PM</span></div><div><span>Duration:</span><span>1h 30m</span></div><div><span>Payment:</span><span>Paid Online</span></div><div><span>Payment Status:</span><span>✅ Haircut £45 paid in full online.</span></div><div><span>Cancellation:</span><span>24h notice required (Flexible)</span></div></div><div><div>Services</div><div><span>Haircut</span><span>£45</span></div></div><div><a href="/booking-test"><i></i> View Details </a><div><a href="/cancel-test"><i></i> Cancel Booking </a></div></div></div><!-- Customer C: Sarah Brown - Deposit 10%, Upcoming --><div><div><div><div>SH</div><div><h3>Spa Haven</h3><div>Beauty Spa</div></div></div><div>Confirmed</div></div><div><div><span>Date:</span><span>Wednesday, Jan 17, 2025</span></div><div><span>Time:</span><span>10:00 AM</span></div><div><span>Duration:</span><span>2h 00m</span></div><div><span>Payment:</span><span>Deposit Paid</span></div><div><span>Payment Status:</span><span>💳 Facial £100 → £10 deposit paid, £90 due at venue.</span></div><div><span>Cancellation:</span><span>48h notice required (Moderate)</span></div></div><div><div>Services</div><div><span>Facial</span><span>£100</span></div></div><div><a href="/booking-test"><i></i> View Details </a><div><a href="/cancel-test"><i></i> Cancel Booking </a></div></div></div><!-- Customer F: Daniel Carter - Pay at Venue, Upcoming --><div><div><div><div>RM</div><div><h3>Relax Massage</h3><div>Wellness Center</div></div></div><div>Confirmed</div></div><div><div><span>Date:</span><span>Friday, Jan 19, 2025</span></div><div><span>Time:</span><span>3:00 PM</span></div><div><span>Duration:</span><span>1h 00m</span></div><div><span>Payment:</span><span>Pay at Venue</span></div><div><span>Payment Status:</span><span>💷 Massage £45 payable at the venue. No online payment taken.</span></div><div><span>Cancellation:</span><span>24h notice required (Flexible)</span></div></div><div><div>Services</div><div><span>Massage</span><span>£45</span></div></div><div><a href="/booking-test"><i></i> View Details </a><div><a href="/cancel-test"><i></i> Cancel Booking </a></div></div></div><!-- Customer H: Tom Evans - Custom Cancellation (Premium), Upcoming --><div><div><div><div>LB</div><div><h3>Luxe Beauty</h3><div>Premium Spa</div></div></div><div>Confirmed</div></div><div><div><span>Date:</span><span>Saturday, Jan 20, 2025</span></div><div><span>Time:</span><span>11:00 AM</span></div><div><span>Duration:</span><span>2h 30m</span></div><div><span>Payment:</span><span>Paid Online</span></div><div><span>Payment Status:</span><span>✅ Deluxe Facial £120 paid in full online.</span></div><div><span>Cancellation:</span><span>72h notice required (Custom Premium)</span></div></div><div><div>Services</div><div><span>Deluxe Facial</span><span>£120</span></div></div><div><a href="/booking-test"><i></i> View Details </a><div><a href="/cancel-test"><i></i> Cancel Booking </a></div></div></div></div></div><!-- Past Bookings --><div><div><h2>Past Bookings</h2><p>Your completed appointments</p></div><div><!-- Completed booking example --><div><div><div><div>GS</div><div><h3>Glow Salon</h3><div>Hair Salon</div></div></div><div>Completed</div></div><div><div><span>Date:</span><span>Monday, Dec 30, 2024</span></div><div><span>Time:</span><span>2:00 PM</span></div><div><span>Duration:</span><span>1h 30m</span></div><div><span>Payment:</span><span>Paid Online</span></div><div><span>Payment Status:</span><span>✅ Haircut £45 paid in full online.</span></div></div><div><div>Services</div><div><span>Haircut</span><span>£45</span></div></div><div><a href="/booking-test"><i></i> View Details </a><a href="/booking-test"><i></i> Book Again </a></div></div></div></div><!-- Cancelled Bookings --><div><div><h2>Cancelled Bookings</h2><p>Your cancelled appointments</p></div><div><!-- Customer B: David Lee - Full Payment Online, Cancelled, Refunded --><div><div><div><div>GS</div><div><h3>Glow Salon</h3><div>Hair Salon</div></div></div><div>Cancelled</div></div><div><div><span>Date:</span><span>Monday, Jan 8, 2025</span></div><div><span>Time:</span><span>2:00 PM</span></div><div><span>Duration:</span><span>1h 30m</span></div><div><span>Payment:</span><span>Refunded</span></div><div><span>Refund Status:</span><span>🔄 Refund £60 issued to your payment method.</span></div></div><div><div>Services</div><div><span>Spa Treatment</span><span>£60</span></div></div><div><a href="/booking-test"><i></i> View Details </a><a href="/booking-test"><i></i> Book Again </a></div></div><!-- Customer D: Michael Chan - Deposit 50%, Cancelled, Refunded --><div><div><div><div>FS</div><div><h3>Fitness Studio</h3><div>Wellness Center</div></div></div><div>Cancelled</div></div><div><div><span>Date:</span><span>Wednesday, Jan 10, 2025</span></div><div><span>Time:</span><span>10:00 AM</span></div><div><span>Duration:</span><span>1h 00m</span></div><div><span>Payment:</span><span>Deposit Refunded</span></div><div><span>Refund Status:</span><span>🔄 Deposit £40 refunded (£80 service → £40 refunded).</span></div></div><div><div>Services</div><div><span>PT Session</span><span>£80</span></div></div><div><a href="/booking-test"><i></i> View Details </a><a href="/booking-test"><i></i> Book Again </a></div></div><!-- Customer E: Emma Wilson - Deposit 50%, Cancelled, Not Refunded --><div><div><div><div>FS</div><div><h3>Fitness Studio</h3><div>Wellness Center</div></div></div><div>Cancelled</div></div><div><div><span>Date:</span><span>Friday, Jan 12, 2025</span></div><div><span>Time:</span><span>3:00 PM</span></div><div><span>Duration:</span><span>1h 00m</span></div><div><span>Payment:</span><span>Deposit Non-Refundable</span></div><div><span>Refund Status:</span><span>🚫 Deposit £25 was non-refundable under the venue's cancellation policy.</span></div></div><div><div>Services</div><div><span>Manicure</span><span>£50</span></div></div><div><a href="/booking-test"><i></i> View Details </a><a href="/booking-test"><i></i> Book Again </a></div></div><!-- Customer G: Lucy Hall - Pay at Venue, Cancelled --><div><div><div><div>RM</div><div><h3>Relax Massage</h3><div>Wellness Center</div></div></div><div>Cancelled</div></div><div><div><span>Date:</span><span>Sunday, Jan 14, 2025</span></div><div><span>Time:</span><span>2:00 PM</span></div><div><span>Duration:</span><span>1h 00m</span></div><div><span>Payment:</span><span>No Payment Taken</span></div><div><span>Cancellation Status:</span><span>⚠️ No refund required as no payment was taken. Venue policy may still apply.</span></div></div><div><div>Services</div><div><span>Yoga Class</span><span>£35</span></div></div><div><a href="/booking-test"><i></i> View Details </a><a href="/booking-test"><i></i> Book Again </a></div></div></div></div></div></main><script> function showTab(tabName) { // Hide all tab contents const tabContents = document.querySelectorAll('.tab-content'); tabContents.forEach(content => { content.style.display = 'none'; }); // Remove active class from all tab buttons const tabButtons = document.querySelectorAll('.tab-button'); tabButtons.forEach(button => { button.classList.remove('active'); }); // Show selected tab content document.getElementById(tabName + '-tab').style.display = 'block'; // Add active class to clicked tab button event.target.classList.add('active'); } </script>
         </div>
     </main>
     
-    <script>
-        function showTab(tabName) {
-            // Hide all tab contents
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => {
-                content.style.display = 'none';
-            });
-            
-            // Remove active class from all tab buttons
-            const tabButtons = document.querySelectorAll('.tab-button');
-            tabButtons.forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            // Show selected tab content
-            document.getElementById(tabName + '-tab').style.display = 'block';
-            
-            // Add active class to clicked tab button
-            event.target.classList.add('active');
-        }
-    </script>
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

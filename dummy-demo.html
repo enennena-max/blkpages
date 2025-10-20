@@ -1,579 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BlkPages Demo - Complete System Showcase</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'inter': ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        'charcoal': '#1A1A1A',
-                        'charcoal-light': '#2A2A2A',
-                        'neon-pink': '#ff6b6b',
-                        'neon-purple': '#9c27b0',
-                        'neon-blue': '#2196f3',
-                        'neon-green': '#4caf50',
-                        'text-primary': '#ffffff',
-                        'text-secondary': '#e5e5e5',
-                        'text-muted': '#b3b3b3',
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .demo-card {
-            background: linear-gradient(135deg, #2A2A2A, #1A1A1A);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .feature-icon {
-            background: linear-gradient(135deg, #10B981, #059669);
-            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .btn-demo {
-            background: linear-gradient(135deg, #10B981, #059669);
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
         }
         
-        .btn-demo:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4);
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .phone-verification-demo {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-        }
-        
-        .notification-demo {
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-        }
-        
-        .sms-demo {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-        
-        .loyalty-demo {
-            background: rgba(255, 107, 107, 0.1);
-            border: 1px solid rgba(255, 107, 107, 0.3);
-        }
-        
-        .punch-card {
-            background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
-            border: 2px solid #10B981;
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .punch-card::before {
-            content: '';
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 100%;
             right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #10B981, #059669, #10B981);
-            background-size: 200% 100%;
-            animation: shimmer 2s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        
-        .progress-dots {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .progress-dot {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #333;
-            border: 2px solid #555;
-            transition: all 0.3s ease;
-        }
-        
-        .progress-dot.completed {
-            background: #10B981;
-            border-color: #10B981;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
-        }
-        
-        .progress-dot.current {
-            background: #F59E0B;
-            border-color: #F59E0B;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .demo-form {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .form-input {
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .dropdown-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
         }
         
-        .form-input:focus {
-            border-color: #10B981;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .status-verified {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10B981;
-            border: 1px solid #10B981;
-        }
-        
-        .status-pending {
-            background: rgba(245, 158, 11, 0.2);
-            color: #F59E0B;
-            border: 1px solid #F59E0B;
-        }
-        
-        .status-unverified {
-            background: rgba(239, 68, 68, 0.2);
-            color: #EF4444;
-            border: 1px solid #EF4444;
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="min-h-screen p-4">
-        <div class="max-w-7xl mx-auto">
-            <!-- Header -->
-            <div class="text-center mb-12">
-                <h1 class="text-5xl font-bold text-white mb-4">
-                    <span class="bg-gradient-to-r from-neon-pink to-neon-purple bg-clip-text text-transparent">
-                        BlkPages Demo
-                    </span>
-                </h1>
-                <p class="text-xl text-text-secondary max-w-3xl mx-auto">
-                    Complete system showcase featuring phone verification, SMS messaging, notification automation, 
-                    loyalty rewards, and comprehensive privacy protection
-                </p>
-            </div>
-            
-            <!-- Phone Verification Demo -->
-            <div class="demo-card rounded-2xl p-8 mb-8">
-                <div class="flex items-center mb-6">
-                    <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mr-4">
-                        <i class="fas fa-mobile-alt text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-3xl font-bold text-white mb-2">Phone Verification System</h2>
-                        <p class="text-text-secondary">Customer phone number verification with encryption and privacy protection</p>
-                    </div>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Demo Form -->
-                    <div class="demo-form">
-                        <h3 class="text-xl font-bold text-white mb-4">Customer Registration</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-white font-semibold mb-2">Full Name</label>
-                                <input type="text" class="form-input w-full p-3 rounded-lg" placeholder="Enter your full name" value="John Doe">
-                            </div>
-                            <div>
-                                <label class="block text-white font-semibold mb-2">Email Address</label>
-                                <input type="email" class="form-input w-full p-3 rounded-lg" placeholder="Enter your email" value="john.doe@example.com">
-                            </div>
-                            <div>
-                                <label class="block text-white font-semibold mb-2">Mobile Number *</label>
-                                <input type="tel" class="form-input w-full p-3 rounded-lg" placeholder="Enter your mobile number" value="07123 456789">
-                                <div class="text-text-muted text-sm mt-2">
-                                    We use your number to send booking confirmations, changes, and cancellations. 
-                                    It's stored securely and never shown to businesses in full.
-                                </div>
-                            </div>
-                            <div class="phone-verification-demo rounded-lg p-4">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <i class="fas fa-exclamation-triangle text-yellow-500"></i>
-                                    <span class="text-yellow-500 font-semibold">Phone Verification Required</span>
-                                </div>
-                                <p class="text-text-secondary text-sm mb-3">
-                                    Make sure your mobile number is correct. If it's wrong, you may miss important updates about your booking.
-                                </p>
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">
-                                    <i class="fas fa-mobile-alt mr-2"></i>Verify Later
-                                </button>
-                            </div>
-                        </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
                     </div>
                     
-                    <!-- Features List -->
-                    <div>
-                        <h3 class="text-xl font-bold text-white mb-4">System Features</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-shield-alt text-green-500"></i>
-                                </div>
-                                <div>
-                                    <div class="text-white font-semibold">AES-256 Encryption</div>
-                                    <div class="text-text-secondary text-sm">All phone numbers encrypted at rest</div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-eye-slash text-blue-500"></i>
-                                </div>
-                                <div>
-                                    <div class="text-white font-semibold">Data Masking</div>
-                                    <div class="text-text-secondary text-sm">Businesses see only ••••••••••7891</div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-clipboard-list text-purple-500"></i>
-                                </div>
-                                <div>
-                                    <div class="text-white font-semibold">Audit Logging</div>
-                                    <div class="text-text-secondary text-sm">Complete activity tracking</div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-user-shield text-pink-500"></i>
-                                </div>
-                                <div>
-                                    <div class="text-white font-semibold">GDPR Compliance</div>
-                                    <div class="text-text-secondary text-sm">Privacy notices and data protection</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- SMS Messaging Demo -->
-            <div class="demo-card rounded-2xl p-8 mb-8">
-                <div class="flex items-center mb-6">
-                    <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mr-4">
-                        <i class="fas fa-sms text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-3xl font-bold text-white mb-2">SMS Messaging System</h2>
-                        <p class="text-text-secondary">Complete SMS credit management and messaging system</p>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- SMS Credits -->
-                    <div class="sms-demo rounded-xl p-6">
-                        <h3 class="text-lg font-bold text-white mb-4">SMS Credits</h3>
-                        <div class="mb-4">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-text-secondary">Monthly Credits</span>
-                                <span class="text-green-500 font-semibold">32 of 50 remaining</span>
-                            </div>
-                            <div class="w-full bg-gray-700 rounded-full h-3">
-                                <div class="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full" style="width: 64%"></div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 text-center">
-                            <div>
-                                <div class="text-2xl font-bold text-green-500">15</div>
-                                <div class="text-text-secondary text-sm">Booking SMS</div>
-                            </div>
-                            <div>
-                                <div class="text-2xl font-bold text-blue-500">3</div>
-                                <div class="text-text-secondary text-sm">Promotional SMS</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Phone Verification -->
-                    <div class="sms-demo rounded-xl p-6">
-                        <h3 class="text-lg font-bold text-white mb-4">Phone Verification</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between">
-                                <span class="text-text-secondary">Business Phone</span>
-                                <span class="status-badge status-verified">Verified</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-text-secondary">Customer Phone</span>
-                                <span class="status-badge status-pending">Unverified</span>
-                            </div>
-                        </div>
-                        <button class="w-full mt-4 bg-green-500 text-white py-2 rounded-lg font-semibold">
-                            <i class="fas fa-mobile-alt mr-2"></i>Verify Phone
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
                         </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
                     </div>
                     
-                    <!-- Analytics -->
-                    <div class="sms-demo rounded-xl p-6">
-                        <h3 class="text-lg font-bold text-white mb-4">Analytics</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span class="text-text-secondary">Weekly Usage</span>
-                                <span class="text-white font-semibold">18 SMS</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-text-secondary">Days Remaining</span>
-                                <span class="text-white font-semibold">12 days</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-text-secondary">Est. Depletion</span>
-                                <span class="text-yellow-500 font-semibold">2.5 weeks</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Notification Automation Demo -->
-            <div class="demo-card rounded-2xl p-8 mb-8">
-                <div class="flex items-center mb-6">
-                    <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mr-4">
-                        <i class="fas fa-bell text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-3xl font-bold text-white mb-2">Notification Automation</h2>
-                        <p class="text-text-secondary">Waiting list offers, bounce handling, and comprehensive logging</p>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Activity Log -->
-                    <div class="notification-demo rounded-xl p-6">
-                        <h3 class="text-lg font-bold text-white mb-4">Activity Log</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                                <div class="flex-1">
-                                    <div class="text-white text-sm">Booking confirmation sent</div>
-                                    <div class="text-text-muted text-xs">2 minutes ago</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                                <div class="flex-1">
-                                    <div class="text-white text-sm">Waiting list offer created</div>
-                                    <div class="text-text-muted text-xs">5 minutes ago</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <div class="w-3 h-3 bg-red-500 rounded-full"></div>
-                                <div class="flex-1">
-                                    <div class="text-white text-sm">SMS delivery failed</div>
-                                    <div class="text-text-muted text-xs">10 minutes ago</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                <div class="flex-1">
-                                    <div class="text-white text-sm">Payment failure notification</div>
-                                    <div class="text-text-muted text-xs">15 minutes ago</div>
-                                </div>
-                            </div>
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
                         </div>
                     </div>
                     
-                    <!-- System Status -->
-                    <div class="notification-demo rounded-xl p-6">
-                        <h3 class="text-lg font-bold text-white mb-4">System Status</h3>
-                        <div class="grid grid-cols-2 gap-4 text-center">
-                            <div>
-                                <div class="text-3xl font-bold text-green-500">24</div>
-                                <div class="text-text-secondary text-sm">Total Sent</div>
-                            </div>
-                            <div>
-                                <div class="text-3xl font-bold text-blue-500">18</div>
-                                <div class="text-text-secondary text-sm">Successful</div>
-                            </div>
-                            <div>
-                                <div class="text-3xl font-bold text-red-500">3</div>
-                                <div class="text-text-secondary text-sm">Failed</div>
-                            </div>
-                            <div>
-                                <div class="text-3xl font-bold text-yellow-500">3</div>
-                                <div class="text-text-secondary text-sm">Pending</div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
                 </div>
             </div>
-            
-            <!-- Loyalty Rewards Demo -->
-            <div class="demo-card rounded-2xl p-8 mb-8">
-                <div class="flex items-center mb-6">
-                    <div class="feature-icon w-16 h-16 rounded-2xl flex items-center justify-center mr-4">
-                        <i class="fas fa-gift text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-3xl font-bold text-white mb-2">Loyalty Rewards System</h2>
-                        <p class="text-text-secondary">Digital punch cards and reward management</p>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Punch Card Demo -->
-                    <div class="punch-card">
-                        <div class="text-2xl font-bold text-white mb-2">Royal Hair Studio</div>
-                        <div class="text-text-secondary mb-4">Visit-based Loyalty Program</div>
-                        
-                        <div class="progress-dots">
-                            <div class="progress-dot completed"></div>
-                            <div class="progress-dot completed"></div>
-                            <div class="progress-dot completed"></div>
-                            <div class="progress-dot current"></div>
-                            <div class="progress-dot"></div>
-                        </div>
-                        
-                        <div class="text-white font-semibold mb-2">3 of 5 visits completed</div>
-                        <div class="text-text-secondary text-sm mb-4">2 more visits to unlock your reward!</div>
-                        
-                        <div class="loyalty-demo rounded-lg p-4">
-                            <div class="text-green-500 font-semibold mb-1">🎁 Reward</div>
-                            <div class="text-white">Free Haircut (worth £45)</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Reward Status -->
-                    <div class="loyalty-demo rounded-xl p-6">
-                        <h3 class="text-lg font-bold text-white mb-4">Reward Status</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <span class="text-text-secondary">Program Type</span>
-                                <span class="text-white font-semibold">Visit-based</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-text-secondary">Threshold</span>
-                                <span class="text-white font-semibold">5 visits</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-text-secondary">Progress</span>
-                                <span class="text-green-500 font-semibold">60%</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-text-secondary">Reward Value</span>
-                                <span class="text-white font-semibold">£45</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-text-secondary">Status</span>
-                                <span class="status-badge status-pending">In Progress</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
-            
-            <!-- Quick Links -->
-            <div class="demo-card rounded-2xl p-8">
-                <h2 class="text-2xl font-bold text-white mb-6 text-center">Quick Access Links</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <a href="customer-register.html" class="bg-charcoal-light text-white font-semibold py-4 px-6 rounded-xl hover:bg-charcoal transition-colors text-center">
-                        <i class="fas fa-user-plus mb-2 block text-2xl"></i>
-                        Customer Signup
-                    </a>
-                    <a href="business-profile.html" class="bg-charcoal-light text-white font-semibold py-4 px-6 rounded-xl hover:bg-charcoal transition-colors text-center">
-                        <i class="fas fa-calendar-plus mb-2 block text-2xl"></i>
-                        Book Appointment
-                    </a>
-                    <a href="customer-dashboard.html" class="bg-charcoal-light text-white font-semibold py-4 px-6 rounded-xl hover:bg-charcoal transition-colors text-center">
-                        <i class="fas fa-tachometer-alt mb-2 block text-2xl"></i>
-                        Customer Dashboard
-                    </a>
-                    <a href="business-dashboard.html" class="bg-charcoal-light text-white font-semibold py-4 px-6 rounded-xl hover:bg-charcoal transition-colors text-center">
-                        <i class="fas fa-building mb-2 block text-2xl"></i>
-                        Business Dashboard
-                    </a>
-                    <a href="demo/sms-system-demo.html" class="bg-charcoal-light text-white font-semibold py-4 px-6 rounded-xl hover:bg-charcoal transition-colors text-center">
-                        <i class="fas fa-mobile-alt mb-2 block text-2xl"></i>
-                        SMS Demo
-                    </a>
-                    <a href="demo/notification-automation-demo.html" class="bg-charcoal-light text-white font-semibold py-4 px-6 rounded-xl hover:bg-charcoal transition-colors text-center">
-                        <i class="fas fa-bell mb-2 block text-2xl"></i>
-                        Notifications Demo
-                    </a>
-                    <a href="waiting-list-offer.html?token=demo_token_123" class="bg-charcoal-light text-white font-semibold py-4 px-6 rounded-xl hover:bg-charcoal transition-colors text-center">
-                        <i class="fas fa-clock mb-2 block text-2xl"></i>
-                        Waiting List Offer
-                    </a>
-                    <a href="demo-hub.html" class="bg-charcoal-light text-white font-semibold py-4 px-6 rounded-xl hover:bg-charcoal transition-colors text-center">
-                        <i class="fas fa-flask mb-2 block text-2xl"></i>
-                        Demo Hub
-                    </a>
-                    <a href="demo/contextual-banners-demo.html" class="bg-charcoal-light text-white font-semibold py-4 px-6 rounded-xl hover:bg-charcoal transition-colors text-center">
-                        <i class="fas fa-exclamation-triangle mb-2 block text-2xl"></i>
-                        Banner Demo
-                    </a>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><div><!-- Header --><div><h1><span> BlkPages Demo </span></h1><p> Complete system showcase featuring phone verification, SMS messaging, notification automation, loyalty rewards, and comprehensive privacy protection </p></div><!-- Phone Verification Demo --><div><div><div><i></i></div><div><h2>Phone Verification System</h2><p>Customer phone number verification with encryption and privacy protection</p></div></div><div><!-- Demo Form --><div><h3>Customer Registration</h3><div><div><label>Full Name</label><input type="text" placeholder="Enter your full name" value="John Doe"></div><div><label>Email Address</label><input type="email" placeholder="Enter your email" value="john.doe@example.com"></div><div><label>Mobile Number *</label><input type="tel" placeholder="Enter your mobile number" value="07123 456789"><div> We use your number to send booking confirmations, changes, and cancellations. It's stored securely and never shown to businesses in full. </div></div><div><div><i></i><span>Phone Verification Required</span></div><p> Make sure your mobile number is correct. If it's wrong, you may miss important updates about your booking. </p><button><i></i>Verify Later </button></div></div></div><!-- Features List --><div><h3>System Features</h3><div><div><div><i></i></div><div><div>AES-256 Encryption</div><div>All phone numbers encrypted at rest</div></div></div><div><div><i></i></div><div><div>Data Masking</div><div>Businesses see only ••••••••••7891</div></div></div><div><div><i></i></div><div><div>Audit Logging</div><div>Complete activity tracking</div></div></div><div><div><i></i></div><div><div>GDPR Compliance</div><div>Privacy notices and data protection</div></div></div></div></div></div></div><!-- SMS Messaging Demo --><div><div><div><i></i></div><div><h2>SMS Messaging System</h2><p>Complete SMS credit management and messaging system</p></div></div><div><!-- SMS Credits --><div><h3>SMS Credits</h3><div><div><span>Monthly Credits</span><span>32 of 50 remaining</span></div><div><div></div></div></div><div><div><div>15</div><div>Booking SMS</div></div><div><div>3</div><div>Promotional SMS</div></div></div></div><!-- Phone Verification --><div><h3>Phone Verification</h3><div><div><span>Business Phone</span><span>Verified</span></div><div><span>Customer Phone</span><span>Unverified</span></div></div><button><i></i>Verify Phone </button></div><!-- Analytics --><div><h3>Analytics</h3><div><div><span>Weekly Usage</span><span>18 SMS</span></div><div><span>Days Remaining</span><span>12 days</span></div><div><span>Est. Depletion</span><span>2.5 weeks</span></div></div></div></div></div><!-- Notification Automation Demo --><div><div><div><i></i></div><div><h2>Notification Automation</h2><p>Waiting list offers, bounce handling, and comprehensive logging</p></div></div><div><!-- Activity Log --><div><h3>Activity Log</h3><div><div><div></div><div><div>Booking confirmation sent</div><div>2 minutes ago</div></div></div><div><div></div><div><div>Waiting list offer created</div><div>5 minutes ago</div></div></div><div><div></div><div><div>SMS delivery failed</div><div>10 minutes ago</div></div></div><div><div></div><div><div>Payment failure notification</div><div>15 minutes ago</div></div></div></div></div><!-- System Status --><div><h3>System Status</h3><div><div><div>24</div><div>Total Sent</div></div><div><div>18</div><div>Successful</div></div><div><div>3</div><div>Failed</div></div><div><div>3</div><div>Pending</div></div></div></div></div></div><!-- Loyalty Rewards Demo --><div><div><div><i></i></div><div><h2>Loyalty Rewards System</h2><p>Digital punch cards and reward management</p></div></div><div><!-- Punch Card Demo --><div><div>Royal Hair Studio</div><div>Visit-based Loyalty Program</div><div><div></div><div></div><div></div><div></div><div></div></div><div>3 of 5 visits completed</div><div>2 more visits to unlock your reward!</div><div><div>🎁 Reward</div><div>Free Haircut (worth £45)</div></div></div><!-- Reward Status --><div><h3>Reward Status</h3><div><div><span>Program Type</span><span>Visit-based</span></div><div><span>Threshold</span><span>5 visits</span></div><div><span>Progress</span><span>60%</span></div><div><span>Reward Value</span><span>£45</span></div><div><span>Status</span><span>In Progress</span></div></div></div></div></div><!-- Quick Links --><div><h2>Quick Access Links</h2><div><a href="customer-register.html"><i></i> Customer Signup </a><a href="business-profile.html"><i></i> Book Appointment </a><a href="customer-dashboard.html"><i></i> Customer Dashboard </a><a href="business-dashboard.html"><i></i> Business Dashboard </a><a href="demo/sms-system-demo.html"><i></i> SMS Demo </a><a href="demo/notification-automation-demo.html"><i></i> Notifications Demo </a><a href="waiting-list-offer.html?token=demo_token_123"><i></i> Waiting List Offer </a><a href="demo-hub.html"><i></i> Demo Hub </a><a href="demo/contextual-banners-demo.html"><i></i> Banner Demo </a></div></div></div></div><!-- Scripts --><script src="backend/customer-phone-verification.js"></script><script> // Initialize demo interactions document.addEventListener('DOMContentLoaded', function() { console.log('BlkPages Demo Page Loaded'); console.log('Phone Verification System:', window.customerPhoneVerificationSystem); // Add some interactive elements const demoButtons = document.querySelectorAll('.btn-demo'); demoButtons.forEach(button => { button.addEventListener('click', function() { console.log('Demo button clicked:', this.textContent); }); }); // Simulate phone verification status setTimeout(() => { console.log('Phone verification status checked'); console.log('Privacy notice:', window.customerPhoneVerificationSystem?.getPrivacyNotice()); }, 1000); }); </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Scripts -->
-    <script src="backend/customer-phone-verification.js"></script>
-    <script>
-        // Initialize demo interactions
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('BlkPages Demo Page Loaded');
-            console.log('Phone Verification System:', window.customerPhoneVerificationSystem);
-            
-            // Add some interactive elements
-            const demoButtons = document.querySelectorAll('.btn-demo');
-            demoButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    console.log('Demo button clicked:', this.textContent);
-                });
-            });
-            
-            // Simulate phone verification status
-            setTimeout(() => {
-                console.log('Phone verification status checked');
-                console.log('Privacy notice:', window.customerPhoneVerificationSystem?.getPrivacyNotice());
-            }, 1000);
-        });
-    </script>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

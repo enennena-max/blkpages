@@ -1,863 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Basket - BlkPages</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="assets/js/basket.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 50%, #121212 100%);
-            min-height: 100vh;
-            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
         }
-        
-        .session-timer {
-            background: linear-gradient(90deg, #1a1a1a, #2a2a2a);
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .session-timer.warning {
-            background: linear-gradient(90deg, #F59E0B, #D97706);
-            color: #000;
-            border-color: #B45309;
-        }
-        
-        .session-timer.expired {
-            background: linear-gradient(90deg, #EF4444, #DC2626);
-            color: #fff;
-            border-color: #B91C1C;
-        }
-        
-        .timer-display {
-            font-size: 1.2rem;
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .basket-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .basket-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .basket-header h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(90deg, #FF007F, #C20056);
-            background-clip: text;
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
         }
         
-        .basket-items {
-            background: #1a1a1a;
-            border-radius: 12px;
-            border: 1px solid #333;
-            overflow: hidden;
-            margin-bottom: 2rem;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .basket-table {
-            width: 100%;
-            border-collapse: collapse;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .basket-table th {
-            background: #222;
-            color: #fff;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 1px solid #333;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .basket-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #333;
-            vertical-align: middle;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .basket-table tr:last-child td {
-            border-bottom: none;
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
         }
-        
-        .service-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
         }
-        
-        .service-name {
-            font-weight: 600;
-            color: #fff;
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
         }
-        
-        .service-duration {
-            font-size: 0.9rem;
-            color: #999;
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
         }
-        
-        .business-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
         }
-        
-        .business-name {
-            font-weight: 500;
-            color: #FF007F;
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
         }
-        
-        .date-time {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
         }
-        
-        .booking-date {
-            font-weight: 500;
-        }
-        
-        .booking-time {
-            font-size: 0.9rem;
-            color: #999;
-        }
-        
-        .price-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-            text-align: right;
-        }
-        
-        .total-price {
-            font-weight: 600;
-            color: #fff;
-        }
-        
-        .deposit-info {
-            font-size: 0.9rem;
-            color: #999;
-        }
-        
-        .remove-btn {
-            background: #EF4444;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
         }
         
-        .remove-btn:hover {
-            background: #DC2626;
-            transform: translateY(-1px);
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .booking-summary {
-            background: linear-gradient(135deg, #1a1a1a, #222);
-            border-radius: 12px;
-            border: 1px solid #333;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .summary-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: #FF007F;
-        }
-        
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #333;
-        }
-        
-        .summary-row:last-child {
-            border-bottom: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #FF007F;
-        }
-        
-        .checkout-btn {
-            background: linear-gradient(90deg, #FF007F, #C20056);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-top: 1.5rem;
-        }
-        
-        .checkout-btn:hover {
-            background: linear-gradient(90deg, #C20056, #FF007F);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 0, 127, 0.3);
-        }
-        
-        .checkout-btn:disabled {
-            background: #666;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .empty-basket-section {
-            text-align: center;
-            padding: 2rem;
-            background: #1a1a1a;
-            border-radius: 12px;
-            border: 1px solid #333;
-        }
-        
-        .empty-basket-btn {
-            background: #EF4444;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .empty-basket-btn:hover {
-            background: #DC2626;
-            transform: translateY(-1px);
-        }
-        
-        .empty-basket {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: #1a1a1a;
-            border-radius: 12px;
-            border: 1px solid #333;
-        }
-        
-        .empty-basket i {
-            font-size: 4rem;
-            color: #666;
-            margin-bottom: 1rem;
-        }
-        
-        .empty-basket h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #fff;
-        }
-        
-        .empty-basket p {
-            color: #999;
-            margin-bottom: 2rem;
-        }
-        
-        .continue-shopping-btn {
-            background: linear-gradient(90deg, #0D9488, #059669);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .continue-shopping-btn:hover {
-            background: linear-gradient(90deg, #059669, #047857);
-            transform: translateY(-1px);
-        }
-        
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        
-        .modal-content {
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 2rem;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid #333;
-        }
-        
-        .modal h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #fff;
-        }
-        
-        .modal p {
-            color: #ccc;
-            margin-bottom: 2rem;
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-        
-        .modal-btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .modal-btn.primary {
-            background: #0D9488;
-            color: white;
-        }
-        
-        .modal-btn.secondary {
-            background: #666;
-            color: white;
-        }
-        
-        .modal-btn:hover {
-            transform: translateY(-1px);
-        }
-        
-        .session-expired {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: #1a1a1a;
-            border-radius: 12px;
-            border: 1px solid #EF4444;
-        }
-        
-        .session-expired i {
-            font-size: 4rem;
-            color: #EF4444;
-            margin-bottom: 1rem;
-        }
-        
-        .session-expired h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #EF4444;
-        }
-        
-        .session-expired p {
-            color: #ccc;
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-        }
-        
-        .start-fresh-btn {
-            background: linear-gradient(90deg, #0D9488, #059669);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .start-fresh-btn:hover {
-            background: linear-gradient(90deg, #059669, #047857);
-            transform: translateY(-2px);
-        }
-        
-        @media (max-width: 768px) {
-            .basket-container {
-                padding: 1rem;
-            }
-            
-            .basket-table {
-                font-size: 0.9rem;
-            }
-            
-            .basket-table th,
-            .basket-table td {
-                padding: 0.75rem 0.5rem;
-            }
-            
-            .basket-header h1 {
-                font-size: 2rem;
-            }
-            
-            .session-timer {
-                flex-direction: column;
-                gap: 0.5rem;
-                text-align: center;
-            }
-        }
-        
-        .sr-only {
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
             position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <!-- Session Timer Banner -->
-    <div class="session-timer" id="sessionTimer">
-        <div>
-            <i class="fas fa-clock"></i>
-            <span>Session Time Remaining:</span>
-        </div>
-        <div class="timer-display" id="timerDisplay">30:00</div>
-        <div class="sr-only" id="timerScreenReader" aria-live="polite"></div>
-    </div>
-
-    <div class="basket-container">
-        <!-- Basket Header -->
-        <div class="basket-header">
-            <h1>Your Basket</h1>
-            <p>Review your selected services and complete your booking</p>
-        </div>
-
-        <!-- Basket Content -->
-        <div id="basketContent">
-            <!-- Basket Items Table -->
-            <div class="basket-items" id="basketItemsSection">
-                <table class="basket-table">
-                    <thead>
-                        <tr>
-                            <th>Service</th>
-                            <th>Business</th>
-                            <th>Date & Time</th>
-                            <th>Price</th>
-                            <th>Deposit</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="basketTableBody">
-                        <!-- Items will be populated dynamically -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Booking Summary -->
-            <div class="booking-summary">
-                <h3 class="summary-title">Booking Summary</h3>
-                <div class="summary-row">
-                    <span>Subtotal:</span>
-                    <span id="subtotal">£0</span>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-                <div class="summary-row">
-                    <span>Deposit (30%):</span>
-                    <span id="deposit">£0</span>
-                </div>
-                <div class="summary-row">
-                    <span>Balance at Venue:</span>
-                    <span id="balance">£0</span>
-                </div>
-                <div class="summary-row">
-                    <span>Total:</span>
-                    <span id="total">£0</span>
-                </div>
-                <button class="checkout-btn" id="checkoutBtn" onclick="proceedToCheckout()">
-                    <i class="fas fa-credit-card"></i>
-                    Proceed to Checkout
-                </button>
-            </div>
 
-            <!-- Empty Basket Section -->
-            <div class="empty-basket-section">
-                <button class="empty-basket-btn" onclick="clearBasketWithConfirmation()">
-                    <i class="fas fa-trash"></i>
-                    Empty Basket
-                </button>
-            </div>
-        </div>
-
-        <!-- Empty Basket State -->
-        <div class="empty-basket hidden" id="emptyBasketState">
-            <i class="fas fa-shopping-basket"></i>
-            <h2>Your basket is empty</h2>
-            <p>Add some services to get started with your booking</p>
-            <a href="index.html" class="continue-shopping-btn">
-                <i class="fas fa-arrow-left"></i>
-                Continue Shopping
-            </a>
-        </div>
-
-        <!-- Session Expired State -->
-        <div class="session-expired hidden" id="sessionExpiredState">
-            <i class="fas fa-clock"></i>
-            <h2>Session Expired</h2>
-            <p>Your basket has expired for security and accuracy. Please start again.</p>
-            <button class="start-fresh-btn" onclick="restartSession()">
-                <i class="fas fa-refresh"></i>
-                Start Fresh
-            </button>
-        </div>
-    </div>
-
-    <!-- Modals -->
-    <!-- Unavailable Slot Modal -->
-    <div class="modal hidden" id="unavailableSlotModal">
-        <div class="modal-content">
-            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #F59E0B; margin-bottom: 1rem;"></i>
-            <h3>Slot No Longer Available</h3>
-            <p>That slot has just been booked by another customer.</p>
-            <div class="modal-buttons">
-                <button class="modal-btn primary" onclick="closeUnavailableSlotModal()">OK</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Business Switch Modal -->
-    <div class="modal hidden" id="businessSwitchModal">
-        <div class="modal-content">
-            <i class="fas fa-info-circle" style="font-size: 3rem; color: #3B82F6; margin-bottom: 1rem;"></i>
-            <h3>Switch Business</h3>
-            <p>You can only book with one business at a time. Adding this service will clear your current basket.</p>
-            <div class="modal-buttons">
-                <button class="modal-btn primary" onclick="confirmBusinessSwitch()">Continue</button>
-                <button class="modal-btn secondary" onclick="cancelBusinessSwitch()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Empty Basket Confirmation Modal -->
-    <div class="modal hidden" id="emptyBasketModal">
-        <div class="modal-content">
-            <i class="fas fa-trash" style="font-size: 3rem; color: #EF4444; margin-bottom: 1rem;"></i>
-            <h3>Empty Basket</h3>
-            <p>Are you sure you want to remove all items from your basket? This action cannot be undone.</p>
-            <div class="modal-buttons">
-                <button class="modal-btn primary" onclick="confirmEmptyBasket()">Yes, Empty Basket</button>
-                <button class="modal-btn secondary" onclick="cancelEmptyBasket()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Basket page functionality
-        let sessionStartTime = Date.now();
-        let sessionDuration = 30 * 60 * 1000; // 30 minutes
-        let warningTime = 2 * 60 * 1000; // 2 minutes
-        let timerInterval = null;
-        let isSessionExpired = false;
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeBasketPage();
-            startSessionTimer();
-            loadBasketItems();
-        });
-
-        function initializeBasketPage() {
-            console.log('Initializing basket page...');
-            
-            // Check if basket is empty
-            const basket = getBasket();
-            if (basket.length === 0) {
-                showEmptyBasketState();
-            } else {
-                showBasketContent();
-            }
-        }
-
-        function startSessionTimer() {
-            sessionStartTime = Date.now();
-            updateTimer();
-            
-            timerInterval = setInterval(() => {
-                updateTimer();
-            }, 1000);
-        }
-
-        function updateTimer() {
-            const elapsed = Date.now() - sessionStartTime;
-            const remaining = sessionDuration - elapsed;
-            
-            if (remaining <= 0) {
-                handleSessionExpired();
-                return;
-            }
-            
-            const minutes = Math.floor(remaining / 60000);
-            const seconds = Math.floor((remaining % 60000) / 1000);
-            
-            const timerDisplay = document.getElementById('timerDisplay');
-            const timerScreenReader = document.getElementById('timerScreenReader');
-            const sessionTimer = document.getElementById('sessionTimer');
-            
-            if (timerDisplay) {
-                timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            }
-            
-            if (timerScreenReader) {
-                timerScreenReader.textContent = `${minutes} minutes and ${seconds} seconds remaining`;
-            }
-            
-            // Show warning at 2 minutes
-            if (remaining <= warningTime && remaining > 0) {
-                sessionTimer.classList.add('warning');
-            }
-        }
-
-        function handleSessionExpired() {
-            isSessionExpired = true;
-            clearInterval(timerInterval);
-            
-            // Clear basket
-            clearBasket();
-            
-            // Show session expired state
-            showSessionExpiredState();
-        }
-
-        function showSessionExpiredState() {
-            document.getElementById('basketContent').classList.add('hidden');
-            document.getElementById('emptyBasketState').classList.add('hidden');
-            document.getElementById('sessionExpiredState').classList.remove('hidden');
-            
-            const sessionTimer = document.getElementById('sessionTimer');
-            sessionTimer.classList.add('expired');
-            sessionTimer.innerHTML = '<i class="fas fa-clock"></i><span>Session Expired</span>';
-        }
-
-        function restartSession() {
-            isSessionExpired = false;
-            sessionStartTime = Date.now();
-            
-            // Reset timer display
-            const sessionTimer = document.getElementById('sessionTimer');
-            sessionTimer.classList.remove('expired', 'warning');
-            sessionTimer.innerHTML = `
-                <div>
-                    <i class="fas fa-clock"></i>
-                    <span>Session Time Remaining:</span>
-                </div>
-                <div class="timer-display" id="timerDisplay">30:00</div>
-                <div class="sr-only" id="timerScreenReader" aria-live="polite"></div>
-            `;
-            
-            // Hide session expired state
-            document.getElementById('sessionExpiredState').classList.add('hidden');
-            
-            // Show empty basket state
-            showEmptyBasketState();
-            
-            // Restart timer
-            startSessionTimer();
-        }
-
-        function loadBasketItems() {
-            const basket = getBasket();
-            const tableBody = document.getElementById('basketTableBody');
-            
-            if (!tableBody) return;
-            
-            if (basket.length === 0) {
-                showEmptyBasketState();
-                return;
-            }
-            
-            tableBody.innerHTML = '';
-            
-            basket.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>
-                        <div class="service-info">
-                            <div class="service-name">${item.name}</div>
-                            <div class="service-duration">${item.duration || '30'} minutes</div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="business-info">
-                            <i class="fas fa-store"></i>
-                            <div class="business-name">${item.business}</div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="date-time">
-                            <div class="booking-date">${item.date || 'Not selected'}</div>
-                            <div class="booking-time">${item.time || 'Not selected'}</div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="price-info">
-                            <div class="total-price">£${item.price}</div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="price-info">
-                            <div class="deposit-info">£${Math.round(item.price * 0.3)}</div>
-                        </div>
-                    </td>
-                    <td>
-                        <button class="remove-btn" onclick="removeBasketItem('${item.id}')">
-                            <i class="fas fa-trash"></i>
-                            Remove
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
                         </button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-            
-            updateBookingSummary();
-        }
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
 
-        function updateBookingSummary() {
-            const basket = getBasket();
-            let subtotal = 0;
-            
-            basket.forEach(item => {
-                subtotal += item.price;
-            });
-            
-            const deposit = Math.round(subtotal * 0.3);
-            const balance = subtotal - deposit;
-            
-            document.getElementById('subtotal').textContent = `£${subtotal}`;
-            document.getElementById('deposit').textContent = `£${deposit}`;
-            document.getElementById('balance').textContent = `£${balance}`;
-            document.getElementById('total').textContent = `£${deposit}`;
-        }
-
-        function removeBasketItem(itemId) {
-            removeFromBasket(itemId);
-            loadBasketItems();
-        }
-
-        function showEmptyBasketState() {
-            document.getElementById('basketContent').classList.add('hidden');
-            document.getElementById('emptyBasketState').classList.remove('hidden');
-            document.getElementById('sessionExpiredState').classList.add('hidden');
-        }
-
-        function showBasketContent() {
-            document.getElementById('basketContent').classList.remove('hidden');
-            document.getElementById('emptyBasketState').classList.add('hidden');
-            document.getElementById('sessionExpiredState').classList.add('hidden');
-        }
-
-        function proceedToCheckout() {
-            if (isSessionExpired) {
-                alert('Your session has expired. Please start again.');
-                return;
-            }
-            
-            const basket = getBasket();
-            if (basket.length === 0) {
-                alert('Your basket is empty.');
-                return;
-            }
-            
-            // Simulate checkout process
-            console.log('Proceeding to checkout...');
-            
-            // Clear basket after successful checkout
-            clearBasketAfterCheckout();
-            
-            // Redirect to booking confirmation
-            window.location.href = 'booking-confirmed.html';
-        }
-
-        function closeUnavailableSlotModal() {
-            document.getElementById('unavailableSlotModal').classList.add('hidden');
-        }
-
-        function showBusinessSwitchModal() {
-            document.getElementById('businessSwitchModal').classList.remove('hidden');
-        }
-
-        function confirmBusinessSwitch() {
-            clearBasket();
-            document.getElementById('businessSwitchModal').classList.add('hidden');
-            showEmptyBasketState();
-        }
-
-        function cancelBusinessSwitch() {
-            document.getElementById('businessSwitchModal').classList.add('hidden');
-        }
-
-        function showEmptyBasketModal() {
-            document.getElementById('emptyBasketModal').classList.remove('hidden');
-        }
-
-        function confirmEmptyBasket() {
-            clearBasket();
-            document.getElementById('emptyBasketModal').classList.add('hidden');
-            showEmptyBasketState();
-        }
-
-        function cancelEmptyBasket() {
-            document.getElementById('emptyBasketModal').classList.add('hidden');
-        }
-
-        // Listen for basket updates
-        window.addEventListener('basketUpdated', function(e) {
-            console.log('Basket updated:', e.detail);
-            
-            if (e.detail.action === 'removeUnavailable') {
-                showUnavailableSlotModal();
-            }
-            
-            loadBasketItems();
-        });
-
-        function showUnavailableSlotModal() {
-            document.getElementById('unavailableSlotModal').classList.remove('hidden');
-        }
-
-        // Override clearBasketWithConfirmation to show modal
-        window.clearBasketWithConfirmation = function() {
-            showEmptyBasketModal();
-        };
-    </script>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Session Timer Banner --><div><div><i></i><span>Session Time Remaining:</span></div><div>30:00</div><div aria-live="polite"></div></div><div><!-- Basket Header --><div><h1>Your Basket</h1><p>Review your selected services and complete your booking</p></div><!-- Basket Content --><div><!-- Basket Items Table --><div><table><thead><tr><th>Service</th><th>Business</th><th>Date & Time</th><th>Price</th><th>Deposit</th><th>Action</th></tr></thead><tbody><!-- Items will be populated dynamically --></tbody></table></div><!-- Booking Summary --><div><h3>Booking Summary</h3><div><span>Subtotal:</span><span>£0</span></div><div><span>Deposit (30%):</span><span>£0</span></div><div><span>Balance at Venue:</span><span>£0</span></div><div><span>Total:</span><span>£0</span></div><button onclick="proceedToCheckout()"><i></i> Proceed to Checkout </button></div><!-- Empty Basket Section --><div><button onclick="clearBasketWithConfirmation()"><i></i> Empty Basket </button></div></div><!-- Empty Basket State --><div><i></i><h2>Your basket is empty</h2><p>Add some services to get started with your booking</p><a href="index.html"><i></i> Continue Shopping </a></div><!-- Session Expired State --><div><i></i><h2>Session Expired</h2><p>Your basket has expired for security and accuracy. Please start again.</p><button onclick="restartSession()"><i></i> Start Fresh </button></div></div><!-- Modals --><!-- Unavailable Slot Modal --><div><div><i></i><h3>Slot No Longer Available</h3><p>That slot has just been booked by another customer.</p><div><button onclick="closeUnavailableSlotModal()">OK</button></div></div></div><!-- Business Switch Modal --><div><div><i></i><h3>Switch Business</h3><p>You can only book with one business at a time. Adding this service will clear your current basket.</p><div><button onclick="confirmBusinessSwitch()">Continue</button><button onclick="cancelBusinessSwitch()">Cancel</button></div></div></div><!-- Empty Basket Confirmation Modal --><div><div><i></i><h3>Empty Basket</h3><p>Are you sure you want to remove all items from your basket? This action cannot be undone.</p><div><button onclick="confirmEmptyBasket()">Yes, Empty Basket</button><button onclick="cancelEmptyBasket()">Cancel</button></div></div></div><script> // Basket page functionality let sessionStartTime = Date.now(); let sessionDuration = 30 * 60 * 1000; // 30 minutes let warningTime = 2 * 60 * 1000; // 2 minutes let timerInterval = null; let isSessionExpired = false; // Initialize page document.addEventListener('DOMContentLoaded', function() { initializeBasketPage(); startSessionTimer(); loadBasketItems(); }); function initializeBasketPage() { console.log('Initializing basket page...'); // Check if basket is empty const basket = getBasket(); if (basket.length === 0) { showEmptyBasketState(); } else { showBasketContent(); } } function startSessionTimer() { sessionStartTime = Date.now(); updateTimer(); timerInterval = setInterval(() => { updateTimer(); }, 1000); } function updateTimer() { const elapsed = Date.now() - sessionStartTime; const remaining = sessionDuration - elapsed; if (remaining <= 0) { handleSessionExpired(); return; } const minutes = Math.floor(remaining / 60000); const seconds = Math.floor((remaining % 60000) / 1000); const timerDisplay = document.getElementById('timerDisplay'); const timerScreenReader = document.getElementById('timerScreenReader'); const sessionTimer = document.getElementById('sessionTimer'); if (timerDisplay) { timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`; } if (timerScreenReader) { timerScreenReader.textContent = `${minutes} minutes and ${seconds} seconds remaining`; } // Show warning at 2 minutes if (remaining <= warningTime && remaining > 0) { sessionTimer.classList.add('warning'); } } function handleSessionExpired() { isSessionExpired = true; clearInterval(timerInterval); // Clear basket clearBasket(); // Show session expired state showSessionExpiredState(); } function showSessionExpiredState() { document.getElementById('basketContent').classList.add('hidden'); document.getElementById('emptyBasketState').classList.add('hidden'); document.getElementById('sessionExpiredState').classList.remove('hidden'); const sessionTimer = document.getElementById('sessionTimer'); sessionTimer.classList.add('expired'); sessionTimer.innerHTML = '<i></i><span>Session Expired</span>'; } function restartSession() { isSessionExpired = false; sessionStartTime = Date.now(); // Reset timer display const sessionTimer = document.getElementById('sessionTimer'); sessionTimer.classList.remove('expired', 'warning'); sessionTimer.innerHTML = ` <div><i></i><span>Session Time Remaining:</span></div><div>30:00</div><div aria-live="polite"></div> `; // Hide session expired state document.getElementById('sessionExpiredState').classList.add('hidden'); // Show empty basket state showEmptyBasketState(); // Restart timer startSessionTimer(); } function loadBasketItems() { const basket = getBasket(); const tableBody = document.getElementById('basketTableBody'); if (!tableBody) return; if (basket.length === 0) { showEmptyBasketState(); return; } tableBody.innerHTML = ''; basket.forEach(item => { const row = document.createElement('tr'); row.innerHTML = ` <td><div><div>${item.name}</div><div>${item.duration || '30'} minutes</div></div></td><td><div><i></i><div>${item.business}</div></div></td><td><div><div>${item.date || 'Not selected'}</div><div>${item.time || 'Not selected'}</div></div></td><td><div><div>£${item.price}</div></div></td><td><div><div>£${Math.round(item.price * 0.3)}</div></div></td><td><button onclick="removeBasketItem('${item.id}')"><i></i> Remove </button></td> `; tableBody.appendChild(row); }); updateBookingSummary(); } function updateBookingSummary() { const basket = getBasket(); let subtotal = 0; basket.forEach(item => { subtotal += item.price; }); const deposit = Math.round(subtotal * 0.3); const balance = subtotal - deposit; document.getElementById('subtotal').textContent = `£${subtotal}`; document.getElementById('deposit').textContent = `£${deposit}`; document.getElementById('balance').textContent = `£${balance}`; document.getElementById('total').textContent = `£${deposit}`; } function removeBasketItem(itemId) { removeFromBasket(itemId); loadBasketItems(); } function showEmptyBasketState() { document.getElementById('basketContent').classList.add('hidden'); document.getElementById('emptyBasketState').classList.remove('hidden'); document.getElementById('sessionExpiredState').classList.add('hidden'); } function showBasketContent() { document.getElementById('basketContent').classList.remove('hidden'); document.getElementById('emptyBasketState').classList.add('hidden'); document.getElementById('sessionExpiredState').classList.add('hidden'); } function proceedToCheckout() { if (isSessionExpired) { alert('Your session has expired. Please start again.'); return; } const basket = getBasket(); if (basket.length === 0) { alert('Your basket is empty.'); return; } // Simulate checkout process console.log('Proceeding to checkout...'); // Clear basket after successful checkout clearBasketAfterCheckout(); // Redirect to booking confirmation window.location.href = 'booking-confirmed.html'; } function closeUnavailableSlotModal() { document.getElementById('unavailableSlotModal').classList.add('hidden'); } function showBusinessSwitchModal() { document.getElementById('businessSwitchModal').classList.remove('hidden'); } function confirmBusinessSwitch() { clearBasket(); document.getElementById('businessSwitchModal').classList.add('hidden'); showEmptyBasketState(); } function cancelBusinessSwitch() { document.getElementById('businessSwitchModal').classList.add('hidden'); } function showEmptyBasketModal() { document.getElementById('emptyBasketModal').classList.remove('hidden'); } function confirmEmptyBasket() { clearBasket(); document.getElementById('emptyBasketModal').classList.add('hidden'); showEmptyBasketState(); } function cancelEmptyBasket() { document.getElementById('emptyBasketModal').classList.add('hidden'); } // Listen for basket updates window.addEventListener('basketUpdated', function(e) { console.log('Basket updated:', e.detail); if (e.detail.action === 'removeUnavailable') { showUnavailableSlotModal(); } loadBasketItems(); }); function showUnavailableSlotModal() { document.getElementById('unavailableSlotModal').classList.remove('hidden'); } // Override clearBasketWithConfirmation to show modal window.clearBasketWithConfirmation = function() { showEmptyBasketModal(); }; </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

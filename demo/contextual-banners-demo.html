@@ -1,723 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contextual Dashboard Banners Demo - BlkPages</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            color: #ffffff;
-            line-height: 1.6;
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        /* Header */
-        .header {
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+        }
+        
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #10B981, #059669);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .demo-title {
-            text-align: center;
-            padding: 3rem 0 2rem;
-        }
-        
-        .demo-title h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #10B981, #3B82F6, #8B5CF6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .demo-title p {
-            font-size: 1.2rem;
-            color: #cccccc;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        /* Demo Controls */
-        .demo-controls {
-            background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .controls-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .controls-header h2 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .controls-header p {
-            color: #cccccc;
-        }
-        
-        .control-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .control-btn {
-            background: linear-gradient(135deg, #3B82F6, #2563EB);
-            color: white;
-            border: none;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        
-        .control-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-        }
-        
-        .control-btn.warning {
-            background: linear-gradient(135deg, #F59E0B, #D97706);
-        }
-        
-        .control-btn.warning:hover {
-            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);
-        }
-        
-        .control-btn.danger {
-            background: linear-gradient(135deg, #EF4444, #DC2626);
-        }
-        
-        .control-btn.danger:hover {
-            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
-        }
-        
-        .control-btn.success {
-            background: linear-gradient(135deg, #10B981, #059669);
-        }
-        
-        .control-btn.success:hover {
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-        }
-        
-        .control-btn.purple {
-            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
-        }
-        
-        .control-btn.purple:hover {
-            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
-        }
-        
-        .clear-all-btn {
-            background: linear-gradient(135deg, #6B7280, #4B5563);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-        
-        .clear-all-btn:hover {
-            background: linear-gradient(135deg, #4B5563, #374151);
-        }
-        
-        /* Dashboard Demo */
-        .dashboard-demo {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .demo-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .demo-header h2 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .demo-header p {
-            color: #cccccc;
-        }
-        
-        /* Contextual Dashboard Banners */
-        .contextual-banners-container {
-            margin-bottom: 2rem;
-        }
-        
-        .contextual-banner {
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid;
-            transition: all 0.3s ease;
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .banner-content {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .banner-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-        
-        .banner-text {
-            flex: 1;
-        }
-        
-        .banner-text h3 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-        
-        .banner-text p {
-            margin: 0;
-            font-size: 0.95rem;
-            line-height: 1.4;
-        }
-        
-        .banner-actions {
+        .dropdown-item {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            flex-shrink: 0;
-        }
-        
-        .btn-dismiss {
-            background: none;
-            border: none;
-            color: #999;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0.25rem;
-            border-radius: 4px;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-dismiss:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-        
-        /* Banner Types */
-        .banner-waiting-list {
-            background: rgba(59, 130, 246, 0.1);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-        
-        .banner-waiting-list .banner-text h3 {
-            color: #3b82f6;
-        }
-        
-        .banner-waiting-list .banner-text p {
-            color: #e5e7eb;
-        }
-        
-        .banner-sms-credits {
-            background: rgba(245, 158, 11, 0.1);
-            border-color: rgba(245, 158, 11, 0.3);
-        }
-        
-        .banner-sms-credits .banner-text h3 {
-            color: #f59e0b;
-        }
-        
-        .banner-sms-credits .banner-text p {
-            color: #e5e7eb;
-        }
-        
-        .banner-payment-failure {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: rgba(239, 68, 68, 0.3);
-        }
-        
-        .banner-payment-failure .banner-text h3 {
-            color: #ef4444;
-        }
-        
-        .banner-payment-failure .banner-text p {
-            color: #e5e7eb;
-        }
-        
-        .banner-review-request {
-            background: rgba(16, 185, 129, 0.1);
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-        
-        .banner-review-request .banner-text h3 {
-            color: #10b981;
-        }
-        
-        .banner-review-request .banner-text p {
-            color: #e5e7eb;
-        }
-        
-        .banner-privacy-reminder {
-            background: rgba(139, 92, 246, 0.1);
-            border-color: rgba(139, 92, 246, 0.3);
-        }
-        
-        .banner-privacy-reminder .banner-text h3 {
-            color: #8b5cf6;
-        }
-        
-        .banner-privacy-reminder .banner-text p {
-            color: #e5e7eb;
-        }
-        
-        /* Button Styles */
-        .btn-accept {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s ease;
-        }
-        
-        .btn-accept:hover {
-            background: #059669;
-        }
-        
-        .btn-primary {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background: #2563eb;
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: #e5e7eb;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        /* Features Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        
-        .feature-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: center;
-        }
-        
-        .feature-icon {
-            width: 4rem;
-            height: 4rem;
-            background: linear-gradient(135deg, #10B981, #059669);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 1.5rem;
-            color: white;
-        }
-        
-        .feature-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-        
-        .feature-card p {
-            color: #cccccc;
-            line-height: 1.6;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .demo-title h1 {
-                font-size: 2rem;
-            }
-            
-            .banner-content {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-            
-            .banner-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .contextual-banner {
-                padding: 1rem;
-            }
-            
-            .banner-text h3 {
-                font-size: 1rem;
-            }
-            
-            .banner-text p {
-                font-size: 0.9rem;
-            }
-            
-            .control-buttons {
-                grid-template-columns: 1fr;
-            }
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">BlkPages</div>
-                <div>
-                    <a href="../index.html" style="color: #10B981; text-decoration: none; font-weight: 600;">
-                        <i class="fas fa-home"></i> Back to Home
-                    </a>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
     </header>
-
-    <div class="container">
-        <!-- Demo Title -->
-        <div class="demo-title">
-            <h1>Contextual Dashboard Banners</h1>
-            <p>Interactive demo showcasing smart notification banners for customer and business dashboards. SMS credits warnings appear only on business dashboards.</p>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Header --><div><!-- Demo Title --><div><h1>Contextual Dashboard Banners</h1><p>Interactive demo showcasing smart notification banners for customer and business dashboards. SMS credits warnings appear only on business dashboards.</p></div><!-- Demo Controls --><div><div><h2>Banner Controls</h2><p>Click buttons to show different banner types and test interactions</p></div><div><button onclick="showBanner('waitingListBanner')"><i></i> Waiting List Offer </button><button onclick="showBanner('smsCreditsBanner')"><i></i> Low SMS Credits (Business Only) </button><button onclick="showBanner('paymentFailureBanner')"><i></i> Payment Failed </button><button onclick="showBanner('reviewRequestBanner')"><i></i> Review Request </button><button onclick="showBanner('privacyReminderBanner')"><i></i> Privacy Reminder </button></div><button onclick="clearAllBanners()"><i></i> Clear All Banners </button></div><!-- Dashboard Demo --><div><div><h2>Live Banner Demo</h2><p>Banners appear below with smooth animations and interactive controls</p></div><!-- Contextual Dashboard Banners --><div><!-- Waiting List Offer Banner --><div><div><div>💬</div><div><h3>Waiting List Offer</h3><p>A slot opened at <strong>Royal Hair Studio</strong> for <strong>Haircut & Style</strong> on <strong>Friday, 15 Dec at 2:00 PM</strong>. This offer expires in <strong>1h 23m</strong>.</p></div><div><button onclick="acceptWaitingListOffer()">Accept Offer</button><button onclick="dismissBanner('waitingListBanner')">×</button></div></div></div><!-- Low SMS Credits Banner --><div><div><div>⚠️</div><div><h3>Low SMS Credits</h3><p>You have <strong>8 SMS credits</strong> remaining (16% of monthly allowance). Consider purchasing add-ons to avoid service interruptions.</p></div><div><button onclick="purchaseSMSCredits()">Buy Credits</button><button onclick="dismissBanner('smsCreditsBanner')">×</button></div></div></div><!-- Payment Failure Banner --><div><div><div>❌</div><div><h3>Payment Failed</h3><p>Your payment for <strong>£29.00</strong> failed on <strong>12 Dec 2024</strong>. Please update your payment method to avoid service interruption.</p></div><div><button onclick="updatePaymentMethod()">Update Payment</button><button onclick="dismissBanner('paymentFailureBanner')">×</button></div></div></div><!-- Review Request Banner --><div><div><div>💬</div><div><h3>Leave a Review</h3><p>How was your experience at <strong>Royal Hair Studio</strong>? Your feedback helps other customers and supports local businesses.</p></div><div><button onclick="writeReview()">Write Review</button><button onclick="dismissBanner('reviewRequestBanner')">×</button></div></div></div><!-- Privacy Reminder Banner --><div><div><div>🔐</div><div><h3>Privacy Reminder</h3><p>Your personal data is protected. You can download your data or delete your account anytime in <strong>Account Settings</strong>.</p></div><div><button onclick="openAccountSettings()">Account Settings</button><button onclick="dismissBanner('privacyReminderBanner')">×</button></div></div></div></div></div><!-- Features Grid --><div><div><div><i></i></div><h3>Smart Notifications</h3><p>Contextual banners appear based on user status, events, and system conditions. Each banner is tailored to the specific user type and situation.</p></div><div><div><i></i></div><h3>Responsive Design</h3><p>Banners adapt perfectly to desktop and mobile devices with optimized layouts, touch-friendly buttons, and appropriate sizing for all screen sizes.</p></div><div><div><i></i></div><h3>Visual Design</h3><p>Color-coded banners with clear icons, smooth animations, and consistent styling that matches the existing dashboard design language.</p></div><div><div><i></i></div><h3>Interactive Controls</h3><p>Dismissible banners with action buttons, smooth animations, and user-friendly interactions that enhance the overall dashboard experience.</p></div></div></div><script> // Banner Management Functions function showBanner(bannerId) { const banner = document.getElementById(bannerId); if (banner) { banner.style.display = 'block'; banner.style.animation = 'slideIn 0.3s ease-out'; } } function dismissBanner(bannerId) { const banner = document.getElementById(bannerId); if (banner) { banner.style.animation = 'slideOut 0.3s ease-in'; setTimeout(() => { banner.style.display = 'none'; }, 300); } } function clearAllBanners() { const banners = document.querySelectorAll('.contextual-banner'); banners.forEach(banner => { banner.style.animation = 'slideOut 0.3s ease-in'; setTimeout(() => { banner.style.display = 'none'; }, 300); }); } // Banner Action Functions function acceptWaitingListOffer() { console.log('Accepting waiting list offer...'); alert('✅ Waiting list offer accepted! Redirecting to booking...'); dismissBanner('waitingListBanner'); } function purchaseSMSCredits() { console.log('Opening SMS credits purchase...'); alert('💳 Opening SMS credits purchase page...'); dismissBanner('smsCreditsBanner'); } function updatePaymentMethod() { console.log('Opening payment method update...'); alert('💳 Opening payment method update...'); dismissBanner('paymentFailureBanner'); } function writeReview() { console.log('Opening review form...'); alert('⭐ Opening review form...'); dismissBanner('reviewRequestBanner'); } function openAccountSettings() { console.log('Opening account settings...'); alert('⚙️ Opening account settings...'); dismissBanner('privacyReminderBanner'); } // Add slideOut animation const style = document.createElement('style'); style.textContent = ` @keyframes slideOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } } `; document.head.appendChild(style); // Initialize demo document.addEventListener('DOMContentLoaded', function() { console.log('Contextual Banners Demo Loaded'); // Show welcome message setTimeout(() => { console.log('Demo ready! Click the control buttons to test different banner types.'); }, 1000); }); </script>
         </div>
-
-        <!-- Demo Controls -->
-        <div class="demo-controls">
-            <div class="controls-header">
-                <h2>Banner Controls</h2>
-                <p>Click buttons to show different banner types and test interactions</p>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
             </div>
-            
-            <div class="control-buttons">
-                <button class="control-btn" onclick="showBanner('waitingListBanner')">
-                    <i class="fas fa-clock"></i> Waiting List Offer
-                </button>
-                <button class="control-btn warning" onclick="showBanner('smsCreditsBanner')">
-                    <i class="fas fa-mobile-alt"></i> Low SMS Credits (Business Only)
-                </button>
-                <button class="control-btn danger" onclick="showBanner('paymentFailureBanner')">
-                    <i class="fas fa-credit-card"></i> Payment Failed
-                </button>
-                <button class="control-btn success" onclick="showBanner('reviewRequestBanner')">
-                    <i class="fas fa-star"></i> Review Request
-                </button>
-                <button class="control-btn purple" onclick="showBanner('privacyReminderBanner')">
-                    <i class="fas fa-shield-alt"></i> Privacy Reminder
-                </button>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
             </div>
-            
-            <button class="clear-all-btn" onclick="clearAllBanners()">
-                <i class="fas fa-trash"></i> Clear All Banners
-            </button>
-        </div>
-
-        <!-- Dashboard Demo -->
-        <div class="dashboard-demo">
-            <div class="demo-header">
-                <h2>Live Banner Demo</h2>
-                <p>Banners appear below with smooth animations and interactive controls</p>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
             </div>
-            
-            <!-- Contextual Dashboard Banners -->
-            <div id="contextualBanners" class="contextual-banners-container">
-                <!-- Waiting List Offer Banner -->
-                <div class="contextual-banner banner-waiting-list" id="waitingListBanner" style="display: none;">
-                    <div class="banner-content">
-                        <div class="banner-icon">💬</div>
-                        <div class="banner-text">
-                            <h3>Waiting List Offer</h3>
-                            <p>A slot opened at <strong>Royal Hair Studio</strong> for <strong>Haircut & Style</strong> on <strong>Friday, 15 Dec at 2:00 PM</strong>. This offer expires in <strong>1h 23m</strong>.</p>
-                        </div>
-                        <div class="banner-actions">
-                            <button class="btn-accept" onclick="acceptWaitingListOffer()">Accept Offer</button>
-                            <button class="btn-dismiss" onclick="dismissBanner('waitingListBanner')">×</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Low SMS Credits Banner -->
-                <div class="contextual-banner banner-sms-credits" id="smsCreditsBanner" style="display: none;">
-                    <div class="banner-content">
-                        <div class="banner-icon">⚠️</div>
-                        <div class="banner-text">
-                            <h3>Low SMS Credits</h3>
-                            <p>You have <strong>8 SMS credits</strong> remaining (16% of monthly allowance). Consider purchasing add-ons to avoid service interruptions.</p>
-                        </div>
-                        <div class="banner-actions">
-                            <button class="btn-primary" onclick="purchaseSMSCredits()">Buy Credits</button>
-                            <button class="btn-dismiss" onclick="dismissBanner('smsCreditsBanner')">×</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Payment Failure Banner -->
-                <div class="contextual-banner banner-payment-failure" id="paymentFailureBanner" style="display: none;">
-                    <div class="banner-content">
-                        <div class="banner-icon">❌</div>
-                        <div class="banner-text">
-                            <h3>Payment Failed</h3>
-                            <p>Your payment for <strong>£29.00</strong> failed on <strong>12 Dec 2024</strong>. Please update your payment method to avoid service interruption.</p>
-                        </div>
-                        <div class="banner-actions">
-                            <button class="btn-primary" onclick="updatePaymentMethod()">Update Payment</button>
-                            <button class="btn-dismiss" onclick="dismissBanner('paymentFailureBanner')">×</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Review Request Banner -->
-                <div class="contextual-banner banner-review-request" id="reviewRequestBanner" style="display: none;">
-                    <div class="banner-content">
-                        <div class="banner-icon">💬</div>
-                        <div class="banner-text">
-                            <h3>Leave a Review</h3>
-                            <p>How was your experience at <strong>Royal Hair Studio</strong>? Your feedback helps other customers and supports local businesses.</p>
-                        </div>
-                        <div class="banner-actions">
-                            <button class="btn-primary" onclick="writeReview()">Write Review</button>
-                            <button class="btn-dismiss" onclick="dismissBanner('reviewRequestBanner')">×</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Privacy Reminder Banner -->
-                <div class="contextual-banner banner-privacy-reminder" id="privacyReminderBanner" style="display: none;">
-                    <div class="banner-content">
-                        <div class="banner-icon">🔐</div>
-                        <div class="banner-text">
-                            <h3>Privacy Reminder</h3>
-                            <p>Your personal data is protected. You can download your data or delete your account anytime in <strong>Account Settings</strong>.</p>
-                        </div>
-                        <div class="banner-actions">
-                            <button class="btn-secondary" onclick="openAccountSettings()">Account Settings</button>
-                            <button class="btn-dismiss" onclick="dismissBanner('privacyReminderBanner')">×</button>
-                        </div>
-                    </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-
-        <!-- Features Grid -->
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-bell"></i>
-                </div>
-                <h3>Smart Notifications</h3>
-                <p>Contextual banners appear based on user status, events, and system conditions. Each banner is tailored to the specific user type and situation.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-mobile-alt"></i>
-                </div>
-                <h3>Responsive Design</h3>
-                <p>Banners adapt perfectly to desktop and mobile devices with optimized layouts, touch-friendly buttons, and appropriate sizing for all screen sizes.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-palette"></i>
-                </div>
-                <h3>Visual Design</h3>
-                <p>Color-coded banners with clear icons, smooth animations, and consistent styling that matches the existing dashboard design language.</p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-cog"></i>
-                </div>
-                <h3>Interactive Controls</h3>
-                <p>Dismissible banners with action buttons, smooth animations, and user-friendly interactions that enhance the overall dashboard experience.</p>
-            </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
         </div>
-    </div>
-
-    <script>
-        // Banner Management Functions
-        function showBanner(bannerId) {
-            const banner = document.getElementById(bannerId);
-            if (banner) {
-                banner.style.display = 'block';
-                banner.style.animation = 'slideIn 0.3s ease-out';
-            }
-        }
-        
-        function dismissBanner(bannerId) {
-            const banner = document.getElementById(bannerId);
-            if (banner) {
-                banner.style.animation = 'slideOut 0.3s ease-in';
-                setTimeout(() => {
-                    banner.style.display = 'none';
-                }, 300);
-            }
-        }
-        
-        function clearAllBanners() {
-            const banners = document.querySelectorAll('.contextual-banner');
-            banners.forEach(banner => {
-                banner.style.animation = 'slideOut 0.3s ease-in';
-                setTimeout(() => {
-                    banner.style.display = 'none';
-                }, 300);
-            });
-        }
-        
-        // Banner Action Functions
-        function acceptWaitingListOffer() {
-            console.log('Accepting waiting list offer...');
-            alert('✅ Waiting list offer accepted! Redirecting to booking...');
-            dismissBanner('waitingListBanner');
-        }
-        
-        function purchaseSMSCredits() {
-            console.log('Opening SMS credits purchase...');
-            alert('💳 Opening SMS credits purchase page...');
-            dismissBanner('smsCreditsBanner');
-        }
-        
-        function updatePaymentMethod() {
-            console.log('Opening payment method update...');
-            alert('💳 Opening payment method update...');
-            dismissBanner('paymentFailureBanner');
-        }
-        
-        function writeReview() {
-            console.log('Opening review form...');
-            alert('⭐ Opening review form...');
-            dismissBanner('reviewRequestBanner');
-        }
-        
-        function openAccountSettings() {
-            console.log('Opening account settings...');
-            alert('⚙️ Opening account settings...');
-            dismissBanner('privacyReminderBanner');
-        }
-        
-        // Add slideOut animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideOut {
-                from {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-                to {
-                    opacity: 0;
-                    transform: translateY(-10px);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Initialize demo
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Contextual Banners Demo Loaded');
-            
-            // Show welcome message
-            setTimeout(() => {
-                console.log('Demo ready! Click the control buttons to test different banner types.');
-            }, 1000);
-        });
-    </script>
+    </footer>
 </body>
 </html>

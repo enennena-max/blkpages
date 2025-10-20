@@ -1,405 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contact Engagement Analytics - BLKPAGES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .contact-engagement-dashboard {
-            padding: 24px;
-            color: #fff;
-            font-family: system-ui, Inter, sans-serif;
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .trend-section, .breakdown-section, .conversion-section {
-            margin-top: 24px;
-            background: #1e1e1e;
-            border-radius: 10px;
-            padding: 20px;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .conversion-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 12px;
-            margin-top: 16px;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .conversion-box {
-            background: #2b2b2b;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            text-align: center;
-            padding: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .conversion-box h4 {
-            color: #aaa;
-            font-size: 0.95rem;
-            margin-bottom: 4px;
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .conversion-box p {
-            font-size: 1.1rem;
-            font-weight: 600;
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .demo-controls {
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .btn {
-            background: #FF6384;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px;
-            font-weight: 600;
-        }
-        
-        .btn:hover {
-            background: #E55A7A;
-        }
-        
-        .btn-success {
-            background: #2ecc71;
-        }
-        
-        .btn-success:hover {
-            background: #27ae60;
-        }
-        
-        .btn-warning {
-            background: #f39c12;
-        }
-        
-        .btn-warning:hover {
-            background: #e67e22;
-        }
-        
-        .btn-danger {
-            background: #e74c3c;
-        }
-        
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-        
-        .btn-info {
-            background: #4BC0C0;
-        }
-        
-        .btn-info:hover {
-            background: #3BA8A8;
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="contact-engagement-dashboard">
-        <h2>Contact Engagement & Conversion Analytics</h2>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
 
-        <div class="trend-section">
-            <h3>Engagement Trend (30 Days)</h3>
-            <canvas id="trendChart" width="400" height="200"></canvas>
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
         </div>
-
-        <div class="breakdown-section">
-            <h3>Engagement Breakdown</h3>
-            <canvas id="breakdownChart" width="400" height="200"></canvas>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><h2>Contact Engagement & Conversion Analytics</h2><div><h3>Engagement Trend (30 Days)</h3><canvas width="400" height="200"></canvas></div><div><h3>Engagement Breakdown</h3><canvas width="400" height="200"></canvas></div><div><h3>Conversion Analysis</h3><div><div><h4>Bookings</h4><p>0</p></div><div><h4>Enquiries</h4><p>0</p></div><div><h4>Store Visits</h4><p>0</p></div><div><h4>Total Positive Outcomes</h4><p>0</p></div><div><h4>Overall Positive Rate</h4><p>0.0%</p></div></div></div><div><button onclick="simulateContactClick('phone')">Simulate Phone Click</button><button onclick="simulateContactClick('email')">Simulate Email Click</button><button onclick="simulateContactClick('form')">Simulate Form Click</button><button onclick="simulateContactClick('directions')">Simulate Directions Click</button><button onclick="simulateOutcome('booking')">Simulate Booking</button><button onclick="simulateOutcome('enquiry')">Simulate Enquiry</button><button onclick="simulateOutcome('visit')">Simulate Store Visit</button><button onclick="generateSampleData()">Generate Sample Data</button><button onclick="clearAllData()">Clear All Data</button></div></div><script> let analyticsData = { trend: [], breakdown: { phone: 0, email: 0, form: 0, directions: 0 }, conversions: { bookings: 0, enquiries: 0, visits: 0 }, totalPositiveOutcomes: 0, positiveRate: 0 }; let trendChart = null; let breakdownChart = null; // Load analytics data from localStorage function loadAnalyticsData() { const saved = localStorage.getItem('contactEngagementAnalytics'); if (saved) { analyticsData = JSON.parse(saved); } updateDisplay(); } // Save analytics data to localStorage function saveAnalyticsData() { localStorage.setItem('contactEngagementAnalytics', JSON.stringify(analyticsData)); } // Simulate contact click function simulateContactClick(contactType) { // Add to breakdown analyticsData.breakdown[contactType] += 1; // Add to trend data const today = new Date().toISOString().split('T')[0]; const existingDay = analyticsData.trend.find(t => t.date === today); if (existingDay) { existingDay.total += 1; } else { analyticsData.trend.push({ date: today, total: 1 }); } // Sort trend data by date analyticsData.trend.sort((a, b) => new Date(a.date) - new Date(b.date)); // Keep only last 30 days const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30); analyticsData.trend = analyticsData.trend.filter(t => new Date(t.date) >= thirtyDaysAgo); saveAnalyticsData(); updateDisplay(); } // Simulate outcome function simulateOutcome(outcomeType) { analyticsData.conversions[outcomeType] += 1; // Recalculate totals analyticsData.totalPositiveOutcomes = analyticsData.conversions.bookings + analyticsData.conversions.enquiries + analyticsData.conversions.visits; const totalClicks = Object.values(analyticsData.breakdown).reduce((a, b) => a + b, 0); analyticsData.positiveRate = totalClicks > 0 ? (analyticsData.totalPositiveOutcomes / totalClicks) * 100 : 0; saveAnalyticsData(); updateDisplay(); } // Generate sample data function generateSampleData() { // Generate random contact clicks const contactTypes = ['phone', 'email', 'form', 'directions']; for (let i = 0; i < 100; i++) { const randomType = contactTypes[Math.floor(Math.random() * contactTypes.length)]; simulateContactClick(randomType); } // Generate some outcomes const outcomes = ['booking', 'enquiry', 'visit']; for (let i = 0; i < 25; i++) { const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)]; simulateOutcome(randomOutcome); } updateDisplay(); } // Clear all data function clearAllData() { analyticsData = { trend: [], breakdown: { phone: 0, email: 0, form: 0, directions: 0 }, conversions: { bookings: 0, enquiries: 0, visits: 0 }, totalPositiveOutcomes: 0, positiveRate: 0 }; saveAnalyticsData(); updateDisplay(); } // Update display function updateDisplay() { document.getElementById('bookings').textContent = analyticsData.conversions.bookings; document.getElementById('enquiries').textContent = analyticsData.conversions.enquiries; document.getElementById('visits').textContent = analyticsData.conversions.visits; document.getElementById('totalPositiveOutcomes').textContent = analyticsData.totalPositiveOutcomes; document.getElementById('positiveRate').textContent = `${analyticsData.positiveRate.toFixed(1)}%`; updateTrendChart(); updateBreakdownChart(); } // Update trend chart function updateTrendChart() { const ctx = document.getElementById('trendChart').getContext('2d'); if (trendChart) { trendChart.destroy(); } // Prepare chart data const labels = analyticsData.trend.map(t => { const date = new Date(t.date); return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }); const data = analyticsData.trend.map(t => t.total); trendChart = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'Contact Engagement (Last 30 Days)', data: data, borderColor: '#FF6384', backgroundColor: 'rgba(255,99,132,0.25)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#ffffff' } }, y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#ffffff' } } } } }); } // Update breakdown chart function updateBreakdownChart() { const ctx = document.getElementById('breakdownChart').getContext('2d'); if (breakdownChart) { breakdownChart.destroy(); } breakdownChart = new Chart(ctx, { type: 'bar', data: { labels: ['Phone', 'Email', 'Form', 'Directions'], datasets: [{ label: 'Contact Method Clicks', data: [ analyticsData.breakdown.phone || 0, analyticsData.breakdown.email || 0, analyticsData.breakdown.form || 0, analyticsData.breakdown.directions || 0 ], backgroundColor: ['#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#ffffff' } }, y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' }, ticks: { color: '#ffffff' } } } } }); } // Initialize demo document.addEventListener('DOMContentLoaded', function() { loadAnalyticsData(); }); </script>
         </div>
-
-        <div class="conversion-section">
-            <h3>Conversion Analysis</h3>
-            <div class="conversion-grid">
-                <div class="conversion-box">
-                    <h4>Bookings</h4>
-                    <p id="bookings">0</p>
-                </div>
-                <div class="conversion-box">
-                    <h4>Enquiries</h4>
-                    <p id="enquiries">0</p>
-                </div>
-                <div class="conversion-box">
-                    <h4>Store Visits</h4>
-                    <p id="visits">0</p>
-                </div>
-                <div class="conversion-box">
-                    <h4>Total Positive Outcomes</h4>
-                    <p id="totalPositiveOutcomes">0</p>
-                </div>
-                <div class="conversion-box">
-                    <h4>Overall Positive Rate</h4>
-                    <p id="positiveRate">0.0%</p>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-        
-        <div class="demo-controls">
-            <button class="btn" onclick="simulateContactClick('phone')">Simulate Phone Click</button>
-            <button class="btn" onclick="simulateContactClick('email')">Simulate Email Click</button>
-            <button class="btn" onclick="simulateContactClick('form')">Simulate Form Click</button>
-            <button class="btn" onclick="simulateContactClick('directions')">Simulate Directions Click</button>
-            <button class="btn btn-success" onclick="simulateOutcome('booking')">Simulate Booking</button>
-            <button class="btn btn-warning" onclick="simulateOutcome('enquiry')">Simulate Enquiry</button>
-            <button class="btn btn-info" onclick="simulateOutcome('visit')">Simulate Store Visit</button>
-            <button class="btn btn-warning" onclick="generateSampleData()">Generate Sample Data</button>
-            <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
         </div>
-    </div>
-
-    <script>
-        let analyticsData = {
-            trend: [],
-            breakdown: {
-                phone: 0,
-                email: 0,
-                form: 0,
-                directions: 0
-            },
-            conversions: {
-                bookings: 0,
-                enquiries: 0,
-                visits: 0
-            },
-            totalPositiveOutcomes: 0,
-            positiveRate: 0
-        };
-        
-        let trendChart = null;
-        let breakdownChart = null;
-        
-        // Load analytics data from localStorage
-        function loadAnalyticsData() {
-            const saved = localStorage.getItem('contactEngagementAnalytics');
-            if (saved) {
-                analyticsData = JSON.parse(saved);
-            }
-            updateDisplay();
-        }
-        
-        // Save analytics data to localStorage
-        function saveAnalyticsData() {
-            localStorage.setItem('contactEngagementAnalytics', JSON.stringify(analyticsData));
-        }
-        
-        // Simulate contact click
-        function simulateContactClick(contactType) {
-            // Add to breakdown
-            analyticsData.breakdown[contactType] += 1;
-            
-            // Add to trend data
-            const today = new Date().toISOString().split('T')[0];
-            const existingDay = analyticsData.trend.find(t => t.date === today);
-            if (existingDay) {
-                existingDay.total += 1;
-            } else {
-                analyticsData.trend.push({ date: today, total: 1 });
-            }
-            
-            // Sort trend data by date
-            analyticsData.trend.sort((a, b) => new Date(a.date) - new Date(b.date));
-            
-            // Keep only last 30 days
-            const thirtyDaysAgo = new Date();
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            analyticsData.trend = analyticsData.trend.filter(t => new Date(t.date) >= thirtyDaysAgo);
-            
-            saveAnalyticsData();
-            updateDisplay();
-        }
-        
-        // Simulate outcome
-        function simulateOutcome(outcomeType) {
-            analyticsData.conversions[outcomeType] += 1;
-            
-            // Recalculate totals
-            analyticsData.totalPositiveOutcomes = 
-                analyticsData.conversions.bookings + 
-                analyticsData.conversions.enquiries + 
-                analyticsData.conversions.visits;
-            
-            const totalClicks = Object.values(analyticsData.breakdown).reduce((a, b) => a + b, 0);
-            analyticsData.positiveRate = totalClicks > 0 ? (analyticsData.totalPositiveOutcomes / totalClicks) * 100 : 0;
-            
-            saveAnalyticsData();
-            updateDisplay();
-        }
-        
-        // Generate sample data
-        function generateSampleData() {
-            // Generate random contact clicks
-            const contactTypes = ['phone', 'email', 'form', 'directions'];
-            for (let i = 0; i < 100; i++) {
-                const randomType = contactTypes[Math.floor(Math.random() * contactTypes.length)];
-                simulateContactClick(randomType);
-            }
-            
-            // Generate some outcomes
-            const outcomes = ['booking', 'enquiry', 'visit'];
-            for (let i = 0; i < 25; i++) {
-                const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)];
-                simulateOutcome(randomOutcome);
-            }
-            
-            updateDisplay();
-        }
-        
-        // Clear all data
-        function clearAllData() {
-            analyticsData = {
-                trend: [],
-                breakdown: {
-                    phone: 0,
-                    email: 0,
-                    form: 0,
-                    directions: 0
-                },
-                conversions: {
-                    bookings: 0,
-                    enquiries: 0,
-                    visits: 0
-                },
-                totalPositiveOutcomes: 0,
-                positiveRate: 0
-            };
-            saveAnalyticsData();
-            updateDisplay();
-        }
-        
-        // Update display
-        function updateDisplay() {
-            document.getElementById('bookings').textContent = analyticsData.conversions.bookings;
-            document.getElementById('enquiries').textContent = analyticsData.conversions.enquiries;
-            document.getElementById('visits').textContent = analyticsData.conversions.visits;
-            document.getElementById('totalPositiveOutcomes').textContent = analyticsData.totalPositiveOutcomes;
-            document.getElementById('positiveRate').textContent = `${analyticsData.positiveRate.toFixed(1)}%`;
-            
-            updateTrendChart();
-            updateBreakdownChart();
-        }
-        
-        // Update trend chart
-        function updateTrendChart() {
-            const ctx = document.getElementById('trendChart').getContext('2d');
-            
-            if (trendChart) {
-                trendChart.destroy();
-            }
-            
-            // Prepare chart data
-            const labels = analyticsData.trend.map(t => {
-                const date = new Date(t.date);
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            });
-            
-            const data = analyticsData.trend.map(t => t.total);
-            
-            trendChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Contact Engagement (Last 30 Days)',
-                        data: data,
-                        borderColor: '#FF6384',
-                        backgroundColor: 'rgba(255,99,132,0.25)',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: '#ffffff'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: '#ffffff'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Update breakdown chart
-        function updateBreakdownChart() {
-            const ctx = document.getElementById('breakdownChart').getContext('2d');
-            
-            if (breakdownChart) {
-                breakdownChart.destroy();
-            }
-            
-            breakdownChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Phone', 'Email', 'Form', 'Directions'],
-                    datasets: [{
-                        label: 'Contact Method Clicks',
-                        data: [
-                            analyticsData.breakdown.phone || 0,
-                            analyticsData.breakdown.email || 0,
-                            analyticsData.breakdown.form || 0,
-                            analyticsData.breakdown.directions || 0
-                        ],
-                        backgroundColor: ['#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: '#ffffff'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: '#ffffff'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Initialize demo
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAnalyticsData();
-        });
-    </script>
+    </footer>
 </body>
 </html>

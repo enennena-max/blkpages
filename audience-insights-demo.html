@@ -1,728 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Audience Insights Demo - BLKPAGES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #0a0a0a 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            padding: 2rem;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
         }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
         }
         
-        .header p {
-            color: #9CA3AF;
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .demo-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(30, 144, 255, 0.2);
-            border-radius: 12px;
-            padding: 2rem;
-            margin: 2rem 0;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .demo-section h2 {
-            color: #1E90FF;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .insights-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .insight-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(30, 144, 255, 0.2);
-            border-radius: 12px;
-            padding: 2rem;
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
         
-        .insight-box:hover {
-            transform: translateY(-5px);
-            border-color: rgba(30, 144, 255, 0.4);
-            box-shadow: 0 10px 30px rgba(30, 144, 255, 0.1);
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .insight-box::before {
-            content: '';
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 100%;
             right: 0;
-            height: 3px;
-            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .insight-box h3 {
-            color: #1E90FF;
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #1E90FF;
-            padding-bottom: 0.5rem;
-        }
-        
-        .borough-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .borough-item {
+        .dropdown-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.2s ease;
-        }
-        
-        .borough-item:last-child {
-            border-bottom: none;
-        }
-        
-        .borough-item:hover {
-            background-color: rgba(30, 144, 255, 0.1);
-            border-radius: 6px;
-            padding-left: 8px;
-            padding-right: 8px;
-        }
-        
-        .borough-name {
-            font-weight: 600;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
             color: #ffffff;
-            font-size: 1rem;
-        }
-        
-        .borough-count {
-            background: #1E90FF;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 16px;
-            font-weight: 600;
+            text-decoration: none;
             font-size: 0.9rem;
-        }
-        
-        .chart-container {
-            height: 300px;
-            position: relative;
-            margin-top: 16px;
-        }
-        
-        .no-data {
-            color: #9CA3AF;
-            font-style: italic;
-            text-align: center;
-            padding: 32px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            border: 1px dashed rgba(255, 255, 255, 0.2);
-        }
-        
-        .demo-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            margin: 2rem 0;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #1E90FF, #00BFFF);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
             transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(30, 144, 255, 0.3);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #28A745, #20C997);
-        }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, #FFC107, #FF8F00);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #DC2626, #B91C1C);
-        }
-        
-        .btn-secondary {
-            background: rgba(30, 144, 255, 0.1);
-            border: 1px solid #1E90FF;
-            color: #1E90FF;
-        }
-        
-        .btn-secondary:hover {
-            background: #1E90FF;
-            color: white;
-        }
-        
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(40, 167, 69, 0.2);
-            border: 1px solid rgba(40, 167, 69, 0.3);
-            color: #28A745;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-        }
-        
-        .status-indicator .pulse {
-            width: 8px;
-            height: 8px;
-            background: #28A745;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        
-        .last-updated {
-            text-align: center;
-            color: #9CA3AF;
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-        }
-        
-        /* Date Range Selector */
-        .range-selector {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            border: 1px solid rgba(30, 144, 255, 0.2);
-            flex-wrap: wrap;
-        }
-        
-        .range-selector label {
-            font-weight: 600;
-            color: #1E90FF;
-            font-size: 0.9rem;
-            white-space: nowrap;
-        }
-        
-        .range-select {
+        .dropdown-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border: 1px solid rgba(30, 144, 255, 0.3);
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 140px;
         }
         
-        .range-select:hover {
-            border-color: #1E90FF;
-            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1);
-        }
-        
-        .range-select:focus {
-            outline: none;
-            border-color: #1E90FF;
-            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
-        }
-        
-        .custom-range {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .date-input {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border: 1px solid rgba(30, 144, 255, 0.3);
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 140px;
-        }
-        
-        .date-input:hover {
-            border-color: #1E90FF;
-            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1);
-        }
-        
-        .date-input:focus {
-            outline: none;
-            border-color: #1E90FF;
-            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.2);
-        }
-        
-        .custom-range span {
-            color: #9CA3AF;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        
-        @media (max-width: 768px) {
-            .insights-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .demo-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                justify-content: center;
-            }
-            
-            .chart-container {
-                height: 250px;
-            }
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-users"></i> Audience Insights Demo</h1>
-            <p>Live demonstration of visitor analytics including top areas, device usage, and activity patterns</p>
-        </div>
-        
-        <div class="status-indicator">
-            <div class="pulse"></div>
-            <span>Live Audience Insights</span>
-        </div>
-        
-        <div class="last-updated" id="lastUpdated">
-            Last updated: Never
-        </div>
-        
-        <!-- Live Audience Insights Display -->
-        <div class="demo-section">
-            <h2><i class="fas fa-chart-pie"></i> Live Audience Insights</h2>
-            <p>Real-time visitor analytics that update automatically as you interact with the system</p>
-            
-            <!-- Date Range Selector -->
-            <div class="range-selector">
-                <label for="dateRange">Time Period:</label>
-                <select id="dateRange" class="range-select">
-                    <option value="7d">Last 7 Days</option>
-                    <option value="30d">Last 30 Days</option>
-                    <option value="custom">Custom Range</option>
-                </select>
-                
-                <div class="custom-range" id="customRange" style="display: none;">
-                    <input type="date" id="customFrom" class="date-input" placeholder="From date">
-                    <span>to</span>
-                    <input type="date" id="customTo" class="date-input" placeholder="To date">
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-            </div>
-            
-            <div class="insights-grid">
-                <!-- Top Visitor Areas by Borough -->
-                <div class="insight-box">
-                    <h3>Top Visitor Areas by Borough</h3>
-                    <ul class="borough-list" id="boroughList">
-                        <li class="no-data">No location data available</li>
-                    </ul>
-                </div>
-                
-                <!-- Device Usage -->
-                <div class="insight-box">
-                    <h3>Device Usage</h3>
-                    <div class="chart-container">
-                        <canvas id="deviceChart"></canvas>
-                    </div>
-                </div>
-                
-                <!-- Most Active Days & Times -->
-                <div class="insight-box">
-                    <h3>Most Active Days & Times</h3>
-                    <div class="chart-container">
-                        <canvas id="activityChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="demo-buttons">
-                <button onclick="simulateProfileView('mobile', 'Lewisham')" class="btn">
-                    <i class="fas fa-mobile-alt"></i> Simulate Mobile View (Lewisham)
-                </button>
-                <button onclick="simulateProfileView('desktop', 'Southwark')" class="btn btn-success">
-                    <i class="fas fa-desktop"></i> Simulate Desktop View (Southwark)
-                </button>
-                <button onclick="simulateProfileView('mobile', 'Camden')" class="btn btn-warning">
-                    <i class="fas fa-mobile-alt"></i> Simulate Mobile View (Camden)
-                </button>
-                <button onclick="simulateProfileView('desktop', 'Westminster')" class="btn btn-danger">
-                    <i class="fas fa-desktop"></i> Simulate Desktop View (Westminster)
-                </button>
-                <button onclick="generateSampleData()" class="btn btn-secondary">
-                    <i class="fas fa-database"></i> Generate Sample Data
-                </button>
-                <button onclick="clearAllData()" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Clear All Data
-                </button>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        const businessId = 'demo-business-123';
-        let insightsData = {
-            topBoroughs: [],
-            deviceUsage: { mobile: 0, desktop: 0 },
-            activePeriods: []
-        };
-        
-        let deviceChart = null;
-        let activityChart = null;
-        let dateRange = '7d';
-        let customFrom = '';
-        let customTo = '';
-        
-        // Load analytics data from localStorage
-        function loadInsightsData() {
-            const saved = localStorage.getItem('audienceInsightsData');
-            if (saved) {
-                insightsData = JSON.parse(saved);
-            }
-            updateDisplay();
-        }
-        
-        // Save analytics data to localStorage
-        function saveInsightsData() {
-            localStorage.setItem('audienceInsightsData', JSON.stringify(insightsData));
-        }
-        
-        // Simulate profile view with visitor context
-        function simulateProfileView(deviceType, borough) {
-            // Add to device usage
-            insightsData.deviceUsage[deviceType] = (insightsData.deviceUsage[deviceType] || 0) + 1;
-            
-            // Add to borough data
-            const existingBorough = insightsData.topBoroughs.find(b => b.borough === borough);
-            if (existingBorough) {
-                existingBorough.count += 1;
-            } else {
-                insightsData.topBoroughs.push({ borough, count: 1 });
-            }
-            
-            // Sort boroughs by count
-            insightsData.topBoroughs.sort((a, b) => b.count - a.count);
-            
-            // Add to active periods (simulate current time)
-            const now = new Date();
-            const dayOfWeek = now.getDay() + 1; // MongoDB dayOfWeek is 1-7
-            const hour = now.getHours();
-            
-            const existingPeriod = insightsData.activePeriods.find(p => 
-                p.dayOfWeek === dayOfWeek && p.hour === hour
-            );
-            if (existingPeriod) {
-                existingPeriod.count += 1;
-            } else {
-                insightsData.activePeriods.push({ dayOfWeek, hour, count: 1 });
-            }
-            
-            // Sort active periods by count
-            insightsData.activePeriods.sort((a, b) => b.count - a.count);
-            
-            saveInsightsData();
-            updateDisplay();
-            updateLastUpdated();
-        }
-        
-        // Generate sample data
-        function generateSampleData() {
-            const boroughs = ['Lewisham', 'Southwark', 'Camden', 'Westminster', 'Hackney', 'Tower Hamlets'];
-            const deviceTypes = ['mobile', 'desktop'];
-            
-            // Generate 50 random profile views
-            for (let i = 0; i < 50; i++) {
-                const deviceType = deviceTypes[Math.floor(Math.random() * deviceTypes.length)];
-                const borough = boroughs[Math.floor(Math.random() * boroughs.length)];
-                simulateProfileView(deviceType, borough);
-            }
-            
-            updateDisplay();
-            updateLastUpdated();
-        }
-        
-        // Clear all data
-        function clearAllData() {
-            insightsData = {
-                topBoroughs: [],
-                deviceUsage: { mobile: 0, desktop: 0 },
-                activePeriods: []
-            };
-            saveInsightsData();
-            updateDisplay();
-            updateLastUpdated();
-        }
-        
-        // Update display
-        function updateDisplay() {
-            updateBoroughList();
-            updateDeviceChart();
-            updateActivityChart();
-        }
-        
-        // Update borough list
-        function updateBoroughList() {
-            const boroughList = document.getElementById('boroughList');
-            if (insightsData.topBoroughs.length === 0) {
-                boroughList.innerHTML = '<li class="no-data">No location data available</li>';
-                return;
-            }
-            
-            const topBoroughs = insightsData.topBoroughs.slice(0, 5);
-            boroughList.innerHTML = topBoroughs.map(borough => `
-                <li class="borough-item">
-                    <span class="borough-name">${borough.borough}</span>
-                    <span class="borough-count">${borough.count}</span>
-                </li>
-            `).join('');
-        }
-        
-        // Update device chart
-        function updateDeviceChart() {
-            const ctx = document.getElementById('deviceChart').getContext('2d');
-            
-            if (deviceChart) {
-                deviceChart.destroy();
-            }
-            
-            deviceChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ['Mobile', 'Desktop'],
-                    datasets: [{
-                        data: [
-                            insightsData.deviceUsage.mobile || 0,
-                            insightsData.deviceUsage.desktop || 0
-                        ],
-                        backgroundColor: ['#36A2EB', '#FFCE56'],
-                        borderColor: ['#36A2EB', '#FFCE56'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: '#ffffff'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Update activity chart
-        function updateActivityChart() {
-            const ctx = document.getElementById('activityChart').getContext('2d');
-            
-            if (activityChart) {
-                activityChart.destroy();
-            }
-            
-            const topPeriods = insightsData.activePeriods.slice(0, 5);
-            
-            if (topPeriods.length === 0) {
-                // Show no data message
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                ctx.fillStyle = '#9CA3AF';
-                ctx.font = '16px Inter';
-                ctx.textAlign = 'center';
-                ctx.fillText('No activity data available', ctx.canvas.width / 2, ctx.canvas.height / 2);
-                return;
-            }
-            
-            const labels = topPeriods.map(p => {
-                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                return `${days[p.dayOfWeek - 1]}, ${p.hour}:00`;
-            });
-            
-            activityChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Profile Views',
-                        data: topPeriods.map(p => p.count),
-                        backgroundColor: '#4BC0C0',
-                        borderColor: '#4BC0C0',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#ffffff'
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: '#ffffff',
-                                stepSize: 1
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: '#ffffff'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Update last updated time
-        function updateLastUpdated() {
-            document.getElementById('lastUpdated').textContent = 
-                `Last updated: ${new Date().toLocaleTimeString()}`;
-        }
-        
-        // Handle date range changes
-        function handleDateRangeChange() {
-            const dateRangeSelect = document.getElementById('dateRange');
-            const customRangeDiv = document.getElementById('customRange');
-            const customFromInput = document.getElementById('customFrom');
-            const customToInput = document.getElementById('customTo');
-            
-            dateRange = dateRangeSelect.value;
-            
-            if (dateRange === 'custom') {
-                customRangeDiv.style.display = 'flex';
-                // Set default dates for custom range
-                const today = new Date();
-                const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-                customFromInput.value = weekAgo.toISOString().split('T')[0];
-                customToInput.value = today.toISOString().split('T')[0];
-                customFrom = customFromInput.value;
-                customTo = customToInput.value;
-            } else {
-                customRangeDiv.style.display = 'none';
-                customFrom = '';
-                customTo = '';
-            }
-            
-            // Filter data based on date range
-            filterDataByDateRange();
-        }
-        
-        // Filter data based on selected date range
-        function filterDataByDateRange() {
-            // In a real implementation, this would filter the data based on the date range
-            // For the demo, we'll just update the display
-            updateDisplay();
-            updateLastUpdated();
-        }
-        
-        // Initialize demo
-        document.addEventListener('DOMContentLoaded', function() {
-            loadInsightsData();
-            updateLastUpdated();
-            
-            // Set up date range selector
-            const dateRangeSelect = document.getElementById('dateRange');
-            const customFromInput = document.getElementById('customFrom');
-            const customToInput = document.getElementById('customTo');
-            
-            dateRangeSelect.addEventListener('change', handleDateRangeChange);
-            customFromInput.addEventListener('change', function() {
-                customFrom = this.value;
-                filterDataByDateRange();
-            });
-            customToInput.addEventListener('change', function() {
-                customTo = this.value;
-                filterDataByDateRange();
-            });
-        });
-    </script>
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><div><h1><i></i> Audience Insights Demo</h1><p>Live demonstration of visitor analytics including top areas, device usage, and activity patterns</p></div><div><div></div><span>Live Audience Insights</span></div><div> Last updated: Never </div><!-- Live Audience Insights Display --><div><h2><i></i> Live Audience Insights</h2><p>Real-time visitor analytics that update automatically as you interact with the system</p><!-- Date Range Selector --><div><label for="dateRange">Time Period:</label><select><option value="7d">Last 7 Days</option><option value="30d">Last 30 Days</option><option value="custom">Custom Range</option></select><div><input type="date" placeholder="From date"><span>to</span><input type="date" placeholder="To date"></div></div><div><!-- Top Visitor Areas by Borough --><div><h3>Top Visitor Areas by Borough</h3><ul><li>No location data available</li></ul></div><!-- Device Usage --><div><h3>Device Usage</h3><div><canvas></canvas></div></div><!-- Most Active Days & Times --><div><h3>Most Active Days & Times</h3><div><canvas></canvas></div></div></div><div><button onclick="simulateProfileView('mobile', 'Lewisham')"><i></i> Simulate Mobile View (Lewisham) </button><button onclick="simulateProfileView('desktop', 'Southwark')"><i></i> Simulate Desktop View (Southwark) </button><button onclick="simulateProfileView('mobile', 'Camden')"><i></i> Simulate Mobile View (Camden) </button><button onclick="simulateProfileView('desktop', 'Westminster')"><i></i> Simulate Desktop View (Westminster) </button><button onclick="generateSampleData()"><i></i> Generate Sample Data </button><button onclick="clearAllData()"><i></i> Clear All Data </button></div></div></div><script> const businessId = 'demo-business-123'; let insightsData = { topBoroughs: [], deviceUsage: { mobile: 0, desktop: 0 }, activePeriods: [] }; let deviceChart = null; let activityChart = null; let dateRange = '7d'; let customFrom = ''; let customTo = ''; // Load analytics data from localStorage function loadInsightsData() { const saved = localStorage.getItem('audienceInsightsData'); if (saved) { insightsData = JSON.parse(saved); } updateDisplay(); } // Save analytics data to localStorage function saveInsightsData() { localStorage.setItem('audienceInsightsData', JSON.stringify(insightsData)); } // Simulate profile view with visitor context function simulateProfileView(deviceType, borough) { // Add to device usage insightsData.deviceUsage[deviceType] = (insightsData.deviceUsage[deviceType] || 0) + 1; // Add to borough data const existingBorough = insightsData.topBoroughs.find(b => b.borough === borough); if (existingBorough) { existingBorough.count += 1; } else { insightsData.topBoroughs.push({ borough, count: 1 }); } // Sort boroughs by count insightsData.topBoroughs.sort((a, b) => b.count - a.count); // Add to active periods (simulate current time) const now = new Date(); const dayOfWeek = now.getDay() + 1; // MongoDB dayOfWeek is 1-7 const hour = now.getHours(); const existingPeriod = insightsData.activePeriods.find(p => p.dayOfWeek === dayOfWeek && p.hour === hour ); if (existingPeriod) { existingPeriod.count += 1; } else { insightsData.activePeriods.push({ dayOfWeek, hour, count: 1 }); } // Sort active periods by count insightsData.activePeriods.sort((a, b) => b.count - a.count); saveInsightsData(); updateDisplay(); updateLastUpdated(); } // Generate sample data function generateSampleData() { const boroughs = ['Lewisham', 'Southwark', 'Camden', 'Westminster', 'Hackney', 'Tower Hamlets']; const deviceTypes = ['mobile', 'desktop']; // Generate 50 random profile views for (let i = 0; i < 50; i++) { const deviceType = deviceTypes[Math.floor(Math.random() * deviceTypes.length)]; const borough = boroughs[Math.floor(Math.random() * boroughs.length)]; simulateProfileView(deviceType, borough); } updateDisplay(); updateLastUpdated(); } // Clear all data function clearAllData() { insightsData = { topBoroughs: [], deviceUsage: { mobile: 0, desktop: 0 }, activePeriods: [] }; saveInsightsData(); updateDisplay(); updateLastUpdated(); } // Update display function updateDisplay() { updateBoroughList(); updateDeviceChart(); updateActivityChart(); } // Update borough list function updateBoroughList() { const boroughList = document.getElementById('boroughList'); if (insightsData.topBoroughs.length === 0) { boroughList.innerHTML = '<li>No location data available</li>'; return; } const topBoroughs = insightsData.topBoroughs.slice(0, 5); boroughList.innerHTML = topBoroughs.map(borough => ` <li><span>${borough.borough}</span><span>${borough.count}</span></li> `).join(''); } // Update device chart function updateDeviceChart() { const ctx = document.getElementById('deviceChart').getContext('2d'); if (deviceChart) { deviceChart.destroy(); } deviceChart = new Chart(ctx, { type: 'pie', data: { labels: ['Mobile', 'Desktop'], datasets: [{ data: [ insightsData.deviceUsage.mobile || 0, insightsData.deviceUsage.desktop || 0 ], backgroundColor: ['#36A2EB', '#FFCE56'], borderColor: ['#36A2EB', '#FFCE56'], borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#ffffff' } } } } }); } // Update activity chart function updateActivityChart() { const ctx = document.getElementById('activityChart').getContext('2d'); if (activityChart) { activityChart.destroy(); } const topPeriods = insightsData.activePeriods.slice(0, 5); if (topPeriods.length === 0) { // Show no data message ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); ctx.fillStyle = '#9CA3AF'; ctx.font = '16px Inter'; ctx.textAlign = 'center'; ctx.fillText('No activity data available', ctx.canvas.width / 2, ctx.canvas.height / 2); return; } const labels = topPeriods.map(p => { const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; return `${days[p.dayOfWeek - 1]}, ${p.hour}:00`; }); activityChart = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ label: 'Profile Views', data: topPeriods.map(p => p.count), backgroundColor: '#4BC0C0', borderColor: '#4BC0C0', borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#ffffff' } } }, scales: { y: { beginAtZero: true, ticks: { color: '#ffffff', stepSize: 1 }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }, x: { ticks: { color: '#ffffff' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } } } } }); } // Update last updated time function updateLastUpdated() { document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`; } // Handle date range changes function handleDateRangeChange() { const dateRangeSelect = document.getElementById('dateRange'); const customRangeDiv = document.getElementById('customRange'); const customFromInput = document.getElementById('customFrom'); const customToInput = document.getElementById('customTo'); dateRange = dateRangeSelect.value; if (dateRange === 'custom') { customRangeDiv.style.display = 'flex'; // Set default dates for custom range const today = new Date(); const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000); customFromInput.value = weekAgo.toISOString().split('T')[0]; customToInput.value = today.toISOString().split('T')[0]; customFrom = customFromInput.value; customTo = customToInput.value; } else { customRangeDiv.style.display = 'none'; customFrom = ''; customTo = ''; } // Filter data based on date range filterDataByDateRange(); } // Filter data based on selected date range function filterDataByDateRange() { // In a real implementation, this would filter the data based on the date range // For the demo, we'll just update the display updateDisplay(); updateLastUpdated(); } // Initialize demo document.addEventListener('DOMContentLoaded', function() { loadInsightsData(); updateLastUpdated(); // Set up date range selector const dateRangeSelect = document.getElementById('dateRange'); const customFromInput = document.getElementById('customFrom'); const customToInput = document.getElementById('customTo'); dateRangeSelect.addEventListener('change', handleDateRangeChange); customFromInput.addEventListener('change', function() { customFrom = this.value; filterDataByDateRange(); }); customToInput.addEventListener('change', function() { customTo = this.value; filterDataByDateRange(); }); }); </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

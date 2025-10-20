@@ -1,451 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Payout Flow Demo - Black Pages</title>
-    <link rel="stylesheet" href="css/payout-flow.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .demo-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .demo-header {
-            text-align: center;
-            margin-bottom: 40px;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .demo-header h1 {
-            color: #fff;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .demo-header p {
-            color: #999;
-            font-size: 1.1rem;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .demo-section {
-            background: #1a1a1a;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid #333;
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
         }
-        
-        .demo-section h2 {
-            color: #fff;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
         }
-        
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
         }
-        
-        .feature-card {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 20px;
-            border: 1px solid #333;
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
         }
         
-        .feature-card:hover {
-            border-color: #059669;
-            transform: translateY(-2px);
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .feature-card h3 {
-            color: #fff;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .feature-card p {
-            color: #ccc;
-            margin: 0;
-            line-height: 1.5;
-        }
-        
-        .test-controls {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .test-controls h3 {
-            color: #fff;
-            margin-bottom: 15px;
-        }
-        
-        .test-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .btn-test {
-            background: #059669;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-test:hover {
-            background: #047857;
-        }
-        
-        .btn-test.warning {
-            background: #f59e0b;
-            color: #000;
-        }
-        
-        .btn-test.warning:hover {
-            background: #d97706;
-        }
-        
-        .btn-test.danger {
-            background: #ef4444;
-        }
-        
-        .btn-test.danger:hover {
-            background: #dc2626;
-        }
-        
-        .payout-examples {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        .payout-examples h4 {
-            color: #fff;
-            margin-bottom: 15px;
-        }
-        
-        .example-list {
-            color: #ccc;
-            line-height: 1.6;
-        }
-        
-        .example-list ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-        
-        .example-list li {
-            margin-bottom: 8px;
-        }
-        
-        .integration-info {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        .integration-info h4 {
-            color: #fff;
-            margin-bottom: 15px;
-        }
-        
-        .integration-steps {
-            color: #ccc;
-            line-height: 1.6;
-        }
-        
-        .integration-steps ol {
-            margin: 0;
-            padding-left: 20px;
-        }
-        
-        .integration-steps li {
-            margin-bottom: 8px;
-        }
-        
-        .code-block {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 6px;
-            padding: 15px;
-            margin: 10px 0;
-            font-family: 'Courier New', monospace;
-            color: #4ade80;
-            font-size: 0.9rem;
-            overflow-x: auto;
-        }
-        
-        .notification-examples {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        .notification-examples h4 {
-            color: #fff;
-            margin-bottom: 15px;
-        }
-        
-        .notification-example {
-            background: #1a1a1a;
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid #059669;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .notification-example h5 {
-            color: #059669;
-            margin-bottom: 8px;
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .notification-example p {
-            color: #ccc;
-            margin: 0;
-            line-height: 1.5;
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="demo-container">
-        <!-- Header -->
-        <div class="demo-header">
-            <h1>Payout Flow Demo</h1>
-            <p>Test the comprehensive payout system for business earnings</p>
-        </div>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
 
-        <!-- Features Overview -->
-        <div class="demo-section">
-            <h2>💰 Payout System Features</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3><i class="fas fa-history"></i> Payout History</h3>
-                    <p>Complete payout history with date, amount, number of bookings, and status tracking for all business earnings.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><i class="fas fa-envelope"></i> Email Notifications</h3>
-                    <p>Automatic email notifications when payouts are processed with detailed information and arrival timelines.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><i class="fas fa-chart-line"></i> Analytics Dashboard</h3>
-                    <p>Comprehensive analytics showing total earnings, pending amounts, and payout trends over time.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><i class="fas fa-download"></i> Receipt Generation</h3>
-                    <p>Automatic receipt generation for all payouts with downloadable PDF and HTML formats for record keeping.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><i class="fas fa-filter"></i> Advanced Filtering</h3>
-                    <p>Filter payouts by date range, status, amount, and other criteria for easy management and reporting.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><i class="fas fa-mobile-alt"></i> Mobile Responsive</h3>
-                    <p>Fully responsive design that works perfectly on all devices with touch-friendly interfaces.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Test Controls -->
-        <div class="demo-section">
-            <h2>🧪 Test Payout Scenarios</h2>
-            <div class="test-controls">
-                <h3>Simulate Payout Events</h3>
-                <div class="test-buttons">
-                    <button class="btn-test" onclick="testPayoutProcessing()">
-                        <i class="fas fa-cog"></i> Test Payout Processing
-                    </button>
-                    <button class="btn-test warning" onclick="testPayoutCompleted()">
-                        <i class="fas fa-check"></i> Test Payout Completed
-                    </button>
-                    <button class="btn-test danger" onclick="testPayoutFailed()">
-                        <i class="fas fa-times"></i> Test Payout Failed
-                    </button>
-                    <button class="btn-test" onclick="viewBusinessDashboard()">
-                        <i class="fas fa-chart-line"></i> View Business Dashboard
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Payout Examples -->
-        <div class="demo-section">
-            <h2>📋 Payout History Examples</h2>
-            <div class="payout-examples">
-                <h4>Sample Payout Records</h4>
-                <div class="example-list">
-                    <ul>
-                        <li><strong>Payout PAYOUT-2024-001:</strong> £1,250.00 for 28 bookings (Paid)</li>
-                        <li><strong>Payout PAYOUT-2024-002:</strong> £980.50 for 22 bookings (Paid)</li>
-                        <li><strong>Payout PAYOUT-2024-003:</strong> £750.25 for 17 bookings (Paid)</li>
-                        <li><strong>Payout PAYOUT-2024-004:</strong> £2,100.75 for 45 bookings (Pending)</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Email Notifications -->
-        <div class="demo-section">
-            <h2>📧 Email Notification Examples</h2>
-            <div class="notification-examples">
-                <h4>Payout Notification Email</h4>
-                <div class="notification-example">
-                    <h5>Subject: Payout Notification - PAYOUT-2024-001</h5>
-                    <p><strong>💰 A payout of £1,250.00 has been sent to your account for 28 bookings. Funds typically arrive in 2–3 business days.</strong></p>
-                    <p>Payout Details:<br>
-                    • Amount: £1,250.00<br>
-                    • Bookings: 28<br>
-                    • Reference: PAYOUT-2024-001<br>
-                    • Status: Processed<br>
-                    • Expected Arrival: 2-3 business days</p>
-                </div>
-                
-                <div class="notification-example">
-                    <h5>Subject: Payout Completed - PAYOUT-2024-001</h5>
-                    <p><strong>✅ Your payout of £1,250.00 has been successfully transferred to your account.</strong></p>
-                    <p>Transaction Details:<br>
-                    • Amount: £1,250.00<br>
-                    • Bookings: 28<br>
-                    • Reference: PAYOUT-2024-001<br>
-                    • Completed: January 15, 2024 at 10:30 AM<br>
-                    • Method: Bank Transfer</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Integration Information -->
-        <div class="demo-section">
-            <h2>🔧 Integration & Implementation</h2>
-            <div class="integration-info">
-                <h4>Payout System Implementation</h4>
-                <div class="integration-steps">
-                    <ol>
-                        <li>Set up Stripe Connect for business payouts</li>
-                        <li>Configure payout schedules and thresholds</li>
-                        <li>Implement payout history tracking</li>
-                        <li>Set up email notification system</li>
-                        <li>Create business dashboard integration</li>
-                        <li>Implement receipt generation system</li>
-                    </ol>
-                    
-                    <div class="code-block">
-// Payout System Implementation
-document.addEventListener('payoutProcessed', (e) => {
-    payoutFlow.handlePayoutProcessed(e.detail);
-});
-
-document.addEventListener('payoutCompleted', (e) => {
-    payoutFlow.handlePayoutCompleted(e.detail);
-});
-
-// Send payout notification
-await payoutFlow.sendPayoutNotification(payoutData);
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
                     </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><!-- Header --><div><h1>Payout Flow Demo</h1><p>Test the comprehensive payout system for business earnings</p></div><!-- Features Overview --><div><h2>💰 Payout System Features</h2><div><div><h3><i></i> Payout History</h3><p>Complete payout history with date, amount, number of bookings, and status tracking for all business earnings.</p></div><div><h3><i></i> Email Notifications</h3><p>Automatic email notifications when payouts are processed with detailed information and arrival timelines.</p></div><div><h3><i></i> Analytics Dashboard</h3><p>Comprehensive analytics showing total earnings, pending amounts, and payout trends over time.</p></div><div><h3><i></i> Receipt Generation</h3><p>Automatic receipt generation for all payouts with downloadable PDF and HTML formats for record keeping.</p></div><div><h3><i></i> Advanced Filtering</h3><p>Filter payouts by date range, status, amount, and other criteria for easy management and reporting.</p></div><div><h3><i></i> Mobile Responsive</h3><p>Fully responsive design that works perfectly on all devices with touch-friendly interfaces.</p></div></div></div><!-- Test Controls --><div><h2>🧪 Test Payout Scenarios</h2><div><h3>Simulate Payout Events</h3><div><button onclick="testPayoutProcessing()"><i></i> Test Payout Processing </button><button onclick="testPayoutCompleted()"><i></i> Test Payout Completed </button><button onclick="testPayoutFailed()"><i></i> Test Payout Failed </button><button onclick="viewBusinessDashboard()"><i></i> View Business Dashboard </button></div></div></div><!-- Payout Examples --><div><h2>📋 Payout History Examples</h2><div><h4>Sample Payout Records</h4><div><ul><li><strong>Payout PAYOUT-2024-001:</strong> £1,250.00 for 28 bookings (Paid)</li><li><strong>Payout PAYOUT-2024-002:</strong> £980.50 for 22 bookings (Paid)</li><li><strong>Payout PAYOUT-2024-003:</strong> £750.25 for 17 bookings (Paid)</li><li><strong>Payout PAYOUT-2024-004:</strong> £2,100.75 for 45 bookings (Pending)</li></ul></div></div></div><!-- Email Notifications --><div><h2>📧 Email Notification Examples</h2><div><h4>Payout Notification Email</h4><div><h5>Subject: Payout Notification - PAYOUT-2024-001</h5><p><strong>💰 A payout of £1,250.00 has been sent to your account for 28 bookings. Funds typically arrive in 2–3 business days.</strong></p><p>Payout Details:<br> • Amount: £1,250.00<br> • Bookings: 28<br> • Reference: PAYOUT-2024-001<br> • Status: Processed<br> • Expected Arrival: 2-3 business days</p></div><div><h5>Subject: Payout Completed - PAYOUT-2024-001</h5><p><strong>✅ Your payout of £1,250.00 has been successfully transferred to your account.</strong></p><p>Transaction Details:<br> • Amount: £1,250.00<br> • Bookings: 28<br> • Reference: PAYOUT-2024-001<br> • Completed: January 15, 2024 at 10:30 AM<br> • Method: Bank Transfer</p></div></div></div><!-- Integration Information --><div><h2>🔧 Integration & Implementation</h2><div><h4>Payout System Implementation</h4><div><ol><li>Set up Stripe Connect for business payouts</li><li>Configure payout schedules and thresholds</li><li>Implement payout history tracking</li><li>Set up email notification system</li><li>Create business dashboard integration</li><li>Implement receipt generation system</li></ol><div> // Payout System Implementation document.addEventListener('payoutProcessed', (e) => { payoutFlow.handlePayoutProcessed(e.detail); }); document.addEventListener('payoutCompleted', (e) => { payoutFlow.handlePayoutCompleted(e.detail); }); // Send payout notification await payoutFlow.sendPayoutNotification(payoutData); </div></div></div></div><!-- Business Dashboard Features --><div><h2>📊 Business Dashboard Features</h2><div><div><h3><i></i> Payout Statistics</h3><p>Real-time statistics showing total earnings, pending amounts, completed payouts, and booking counts.</p></div><div><h3><i></i> Advanced Filtering</h3><p>Advanced filtering options by date range, status, amount, and other criteria for easy payout management.</p></div><div><h3><i></i> Receipt Management</h3><p>Download receipts for all payouts with professional formatting and complete transaction details.</p></div><div><h3><i></i> Notification Center</h3><p>Centralized notification system for payout updates, processing status, and completion confirmations.</p></div></div></div><!-- Payout Timeline --><div><h2>⏰ Payout Timeline</h2><div><h4>Typical Payout Process</h4><div><ul><li><strong>Day 1:</strong> Payout initiated automatically based on business settings</li><li><strong>Day 1:</strong> Email notification sent to business owner</li><li><strong>Day 1-2:</strong> Payout processed by payment provider</li><li><strong>Day 2-3:</strong> Funds transferred to business bank account</li><li><strong>Day 3:</strong> Completion notification sent to business owner</li></ul></div></div></div></div><!-- Scripts --><script src="js/payout-flow.js"></script><script> // Test functions function testPayoutProcessing() { payoutFlow.testPayoutProcessing(); } function testPayoutCompleted() { payoutFlow.testPayoutCompleted(); } function testPayoutFailed() { const payoutData = { id: 'test_payout_' + Date.now(), businessId: 'biz_123', amount: 1500.00, currency: 'GBP', bookingCount: 25, status: 'failed', method: 'bank_transfer', reference: 'TEST-PAYOUT-' + Date.now(), date: new Date().toISOString().split('T')[0], businessEmail: 'business@example.com' }; payoutFlow.handlePayoutFailed(payoutData); } function viewBusinessDashboard() { window.open('business-dashboard-payouts.html', '_blank'); } </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-
-        <!-- Business Dashboard Features -->
-        <div class="demo-section">
-            <h2>📊 Business Dashboard Features</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3><i class="fas fa-chart-bar"></i> Payout Statistics</h3>
-                    <p>Real-time statistics showing total earnings, pending amounts, completed payouts, and booking counts.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><i class="fas fa-filter"></i> Advanced Filtering</h3>
-                    <p>Advanced filtering options by date range, status, amount, and other criteria for easy payout management.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><i class="fas fa-download"></i> Receipt Management</h3>
-                    <p>Download receipts for all payouts with professional formatting and complete transaction details.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><i class="fas fa-bell"></i> Notification Center</h3>
-                    <p>Centralized notification system for payout updates, processing status, and completion confirmations.</p>
-                </div>
-            </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
         </div>
-
-        <!-- Payout Timeline -->
-        <div class="demo-section">
-            <h2>⏰ Payout Timeline</h2>
-            <div class="payout-examples">
-                <h4>Typical Payout Process</h4>
-                <div class="example-list">
-                    <ul>
-                        <li><strong>Day 1:</strong> Payout initiated automatically based on business settings</li>
-                        <li><strong>Day 1:</strong> Email notification sent to business owner</li>
-                        <li><strong>Day 1-2:</strong> Payout processed by payment provider</li>
-                        <li><strong>Day 2-3:</strong> Funds transferred to business bank account</li>
-                        <li><strong>Day 3:</strong> Completion notification sent to business owner</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="js/payout-flow.js"></script>
-    <script>
-        // Test functions
-        function testPayoutProcessing() {
-            payoutFlow.testPayoutProcessing();
-        }
-
-        function testPayoutCompleted() {
-            payoutFlow.testPayoutCompleted();
-        }
-
-        function testPayoutFailed() {
-            const payoutData = {
-                id: 'test_payout_' + Date.now(),
-                businessId: 'biz_123',
-                amount: 1500.00,
-                currency: 'GBP',
-                bookingCount: 25,
-                status: 'failed',
-                method: 'bank_transfer',
-                reference: 'TEST-PAYOUT-' + Date.now(),
-                date: new Date().toISOString().split('T')[0],
-                businessEmail: 'business@example.com'
-            };
-            
-            payoutFlow.handlePayoutFailed(payoutData);
-        }
-
-        function viewBusinessDashboard() {
-            window.open('business-dashboard-payouts.html', '_blank');
-        }
-    </script>
+    </footer>
 </body>
 </html>

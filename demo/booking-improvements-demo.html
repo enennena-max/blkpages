@@ -1,499 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Booking Improvements Demo - BlkPages</title>
-    <script src="https://cdn.tailwindcss.com?v=2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 50%, #121212 100%);
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .demo-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .demo-header {
-            text-align: center;
-            margin-bottom: 3rem;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .demo-header h1 {
-            color: #FF007F;
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .demo-header p {
-            color: #cccccc;
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .demo-section {
-            background: #1a1a1a;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid #333;
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
         }
-        
-        .demo-section h2 {
-            color: #FF007F;
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
         }
-        
-        .demo-section p {
-            color: #cccccc;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
         }
-        
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
         }
-        
-        .feature-card {
-            background: #222;
-            border-radius: 8px;
-            padding: 1.5rem;
-            border: 1px solid #444;
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
         }
         
-        .feature-card:hover {
-            border-color: #FF007F;
-            transform: translateY(-2px);
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .feature-card h3 {
-            color: #FF007F;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .feature-card p {
-            color: #cccccc;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-        
-        .feature-list {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .feature-list li {
-            color: #cccccc;
-            margin-bottom: 0.5rem;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-        
-        .feature-list li::before {
-            content: "✓";
-            color: #FF007F;
-            font-weight: bold;
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
             position: absolute;
-            left: 0;
-        }
-        
-        .demo-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-top: 2rem;
-        }
-        
-        .btn-demo {
-            background: linear-gradient(90deg, #FF007F, #C20056);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .btn-demo:hover {
-            background: linear-gradient(90deg, #e6006b, #a0004a);
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: #FF007F;
-            border: 2px solid #FF007F;
-            padding: 10px 24px;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .btn-secondary:hover {
-            background: #FF007F;
-            color: white;
-        }
-        
-        .screenshot {
-            background: #333;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-            margin: 1rem 0;
-            border: 2px dashed #555;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .screenshot img {
-            max-width: 100%;
-            border-radius: 4px;
-        }
-        
-        .code-example {
-            background: #111;
-            border-radius: 6px;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-left: 4px solid #FF007F;
-            font-family: 'Courier New', monospace;
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
             font-size: 0.9rem;
-            overflow-x: auto;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .highlight {
-            background: rgba(255, 0, 127, 0.1);
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            color: #FF007F;
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        @media (max-width: 768px) {
-            .demo-container {
-                padding: 1rem;
-            }
-            
-            .demo-buttons {
-                flex-direction: column;
-            }
-            
-            .btn-demo, .btn-secondary {
-                width: 100%;
-                justify-content: center;
-            }
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="demo-container">
-        <div class="demo-header">
-            <h1>🚀 Seamless Booking Journey Demo</h1>
-            <p>Experience the complete booking flow with account choice, payment integration, and confirmation system. This demo showcases all the visual and structural improvements made to the booking process.</p>
-        </div>
-        
-        <!-- Overview Section -->
-        <div class="demo-section">
-            <h2><i class="fas fa-info-circle"></i> Overview</h2>
-            <p>The Seamless Booking Journey represents a complete overhaul of the booking experience, focusing on clarity, user-friendliness, and professional presentation. The system now provides a smooth, intuitive flow from service selection to payment confirmation.</p>
-            
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>🎯 Account Choice</h3>
-                    <p>Clear sign-in options with styled buttons</p>
-                    <ul class="feature-list">
-                        <li>Sign In button</li>
-                        <li>Sign Up button</li>
-                        <li>Continue as Guest option</li>
-                        <li>Professional styling with hover effects</li>
-                    </ul>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-                
-                <div class="feature-card">
-                    <h3>💳 Payment Integration</h3>
-                    <p>Secure Stripe integration with clear summary</p>
-                    <ul class="feature-list">
-                        <li>Payment summary display</li>
-                        <li>Stripe card form</li>
-                        <li>Deposit calculation (30%)</li>
-                        <li>Error handling and validation</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>✅ Confirmation System</h3>
-                    <p>Professional booking confirmation page</p>
-                    <ul class="feature-list">
-                        <li>Success message with icon</li>
-                        <li>Complete booking details</li>
-                        <li>Payment breakdown</li>
-                        <li>Action buttons for next steps</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Key Features Section -->
-        <div class="demo-section">
-            <h2><i class="fas fa-star"></i> Key Features</h2>
-            
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>🔐 Account Choice Section</h3>
-                    <p>Moved above customer details for better visibility</p>
-                    <div class="code-example">
-                        <div class="highlight">Account Choice Component</div>
-                        • Styled card with clear messaging
-                        • Three prominent buttons (Sign In/Sign Up/Guest)
-                        • Professional gradient styling
-                        • Mobile-responsive design
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
                     </div>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>💳 Payment Summary</h3>
-                    <p>Clear display of booking details and costs</p>
-                    <div class="code-example">
-                        <div class="highlight">Payment Summary Display</div>
-                        • Service details
-                        • Date and time
-                        • Total amount
-                        • Deposit breakdown
-                        • Professional styling
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
                     </div>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🔒 Stripe Integration</h3>
-                    <p>Secure payment processing with proper validation</p>
-                    <div class="code-example">
-                        <div class="highlight">Stripe Form Features</div>
-                        • Card details form
-                        • Name on card field
-                        • Expiry and CVC fields
-                        • Loading states
-                        • Error handling
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
                     </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
                 </div>
-                
-                <div class="feature-card">
-                    <h3>🎉 Confirmation Page</h3>
-                    <p>Professional success experience</p>
-                    <div class="code-example">
-                        <div class="highlight">Confirmation Features</div>
-                        • Success icon and message
-                        • Complete booking details
-                        • Payment breakdown
-                        • Navigation options
-                        • Email confirmation notice
-                    </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
                 </div>
             </div>
-        </div>
-        
-        <!-- Technical Implementation -->
-        <div class="demo-section">
-            <h2><i class="fas fa-code"></i> Technical Implementation</h2>
-            <p>The booking improvements are built with modern web technologies and best practices:</p>
-            
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>🎨 CSS Features</h3>
-                    <ul class="feature-list">
-                        <li>Gradient buttons with hover effects</li>
-                        <li>Responsive design for mobile and desktop</li>
-                        <li>Professional color scheme with pink accents</li>
-                        <li>Smooth transitions and animations</li>
-                        <li>Accessible contrast ratios</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>⚡ JavaScript Functionality</h3>
-                    <ul class="feature-list">
-                        <li>Button handlers for all account options</li>
-                        <li>Booking data loading from localStorage</li>
-                        <li>Stripe integration with error handling</li>
-                        <li>Form validation and user feedback</li>
-                        <li>SessionStorage data persistence</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>📱 User Experience</h3>
-                    <ul class="feature-list">
-                        <li>Intuitive booking flow</li>
-                        <li>Clear visual feedback</li>
-                        <li>Mobile-responsive design</li>
-                        <li>Professional presentation</li>
-                        <li>Seamless navigation</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Demo Buttons -->
-        <div class="demo-section">
-            <h2><i class="fas fa-play"></i> Try the Demo</h2>
-            <p>Experience the complete booking journey with all the improvements:</p>
-            
-            <div class="demo-buttons">
-                <a href="../business-profile.html" class="btn-demo">
-                    <i class="fas fa-play"></i> Start Booking Demo
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
                 </a>
-                <a href="../payment.html" class="btn-secondary">
-                    <i class="fas fa-credit-card"></i> Payment Page
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
                 </a>
-                <a href="../booking-confirmed.html" class="btn-secondary">
-                    <i class="fas fa-check-circle"></i> Confirmation Page
-                </a>
-                <a href="../demo-hub.html" class="btn-secondary">
-                    <i class="fas fa-home"></i> Back to Demo Hub
-                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
-        
-        <!-- User Flow -->
-        <div class="demo-section">
-            <h2><i class="fas fa-route"></i> Complete User Flow</h2>
-            <p>Follow this step-by-step process to experience the full booking journey:</p>
-            
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>1️⃣ Service Selection</h3>
-                    <p>Choose services with visual feedback</p>
-                    <ul class="feature-list">
-                        <li>Click service cards to select</li>
-                        <li>Pink border indicates selection</li>
-                        <li>Booking section appears automatically</li>
-                        <li>SessionStorage saves selections</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>2️⃣ Date & Time</h3>
-                    <p>Select appointment date and time</p>
-                    <ul class="feature-list">
-                        <li>Interactive calendar with available dates</li>
-                        <li>Time slots load dynamically</li>
-                        <li>Visual selection feedback</li>
-                        <li>Data persists across page reloads</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>3️⃣ Account Choice</h3>
-                    <p>Choose how to proceed with booking</p>
-                    <ul class="feature-list">
-                        <li>Sign In for existing users</li>
-                        <li>Sign Up for new accounts</li>
-                        <li>Continue as Guest option</li>
-                        <li>Clear visual presentation</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>4️⃣ Customer Details</h3>
-                    <p>Fill in contact information</p>
-                    <ul class="feature-list">
-                        <li>Name, email, phone, postcode</li>
-                        <li>Inline validation with error messages</li>
-                        <li>Terms and conditions checkbox</li>
-                        <li>Form data persistence</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>5️⃣ Payment Processing</h3>
-                    <p>Secure payment with Stripe</p>
-                    <ul class="feature-list">
-                        <li>Clear payment summary</li>
-                        <li>Stripe card form</li>
-                        <li>30% deposit calculation</li>
-                        <li>Professional styling</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>6️⃣ Confirmation</h3>
-                    <p>Booking confirmed with details</p>
-                    <ul class="feature-list">
-                        <li>Success message and icon</li>
-                        <li>Complete booking details</li>
-                        <li>Payment breakdown</li>
-                        <li>Next step options</li>
-                    </ul>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><div><h1>🚀 Seamless Booking Journey Demo</h1><p>Experience the complete booking flow with account choice, payment integration, and confirmation system. This demo showcases all the visual and structural improvements made to the booking process.</p></div><!-- Overview Section --><div><h2><i></i> Overview</h2><p>The Seamless Booking Journey represents a complete overhaul of the booking experience, focusing on clarity, user-friendliness, and professional presentation. The system now provides a smooth, intuitive flow from service selection to payment confirmation.</p><div><div><h3>🎯 Account Choice</h3><p>Clear sign-in options with styled buttons</p><ul><li>Sign In button</li><li>Sign Up button</li><li>Continue as Guest option</li><li>Professional styling with hover effects</li></ul></div><div><h3>💳 Payment Integration</h3><p>Secure Stripe integration with clear summary</p><ul><li>Payment summary display</li><li>Stripe card form</li><li>Deposit calculation (30%)</li><li>Error handling and validation</li></ul></div><div><h3>✅ Confirmation System</h3><p>Professional booking confirmation page</p><ul><li>Success message with icon</li><li>Complete booking details</li><li>Payment breakdown</li><li>Action buttons for next steps</li></ul></div></div></div><!-- Key Features Section --><div><h2><i></i> Key Features</h2><div><div><h3>🔐 Account Choice Section</h3><p>Moved above customer details for better visibility</p><div><div>Account Choice Component</div> • Styled card with clear messaging • Three prominent buttons (Sign In/Sign Up/Guest) • Professional gradient styling • Mobile-responsive design </div></div><div><h3>💳 Payment Summary</h3><p>Clear display of booking details and costs</p><div><div>Payment Summary Display</div> • Service details • Date and time • Total amount • Deposit breakdown • Professional styling </div></div><div><h3>🔒 Stripe Integration</h3><p>Secure payment processing with proper validation</p><div><div>Stripe Form Features</div> • Card details form • Name on card field • Expiry and CVC fields • Loading states • Error handling </div></div><div><h3>🎉 Confirmation Page</h3><p>Professional success experience</p><div><div>Confirmation Features</div> • Success icon and message • Complete booking details • Payment breakdown • Navigation options • Email confirmation notice </div></div></div></div><!-- Technical Implementation --><div><h2><i></i> Technical Implementation</h2><p>The booking improvements are built with modern web technologies and best practices:</p><div><div><h3>🎨 CSS Features</h3><ul><li>Gradient buttons with hover effects</li><li>Responsive design for mobile and desktop</li><li>Professional color scheme with pink accents</li><li>Smooth transitions and animations</li><li>Accessible contrast ratios</li></ul></div><div><h3>⚡ JavaScript Functionality</h3><ul><li>Button handlers for all account options</li><li>Booking data loading from localStorage</li><li>Stripe integration with error handling</li><li>Form validation and user feedback</li><li>SessionStorage data persistence</li></ul></div><div><h3>📱 User Experience</h3><ul><li>Intuitive booking flow</li><li>Clear visual feedback</li><li>Mobile-responsive design</li><li>Professional presentation</li><li>Seamless navigation</li></ul></div></div></div><!-- Demo Buttons --><div><h2><i></i> Try the Demo</h2><p>Experience the complete booking journey with all the improvements:</p><div><a href="../business-profile.html"><i></i> Start Booking Demo </a><a href="../payment.html"><i></i> Payment Page </a><a href="../booking-confirmed.html"><i></i> Confirmation Page </a><a href="../demo-hub.html"><i></i> Back to Demo Hub </a></div></div><!-- User Flow --><div><h2><i></i> Complete User Flow</h2><p>Follow this step-by-step process to experience the full booking journey:</p><div><div><h3>1️⃣ Service Selection</h3><p>Choose services with visual feedback</p><ul><li>Click service cards to select</li><li>Pink border indicates selection</li><li>Booking section appears automatically</li><li>SessionStorage saves selections</li></ul></div><div><h3>2️⃣ Date & Time</h3><p>Select appointment date and time</p><ul><li>Interactive calendar with available dates</li><li>Time slots load dynamically</li><li>Visual selection feedback</li><li>Data persists across page reloads</li></ul></div><div><h3>3️⃣ Account Choice</h3><p>Choose how to proceed with booking</p><ul><li>Sign In for existing users</li><li>Sign Up for new accounts</li><li>Continue as Guest option</li><li>Clear visual presentation</li></ul></div><div><h3>4️⃣ Customer Details</h3><p>Fill in contact information</p><ul><li>Name, email, phone, postcode</li><li>Inline validation with error messages</li><li>Terms and conditions checkbox</li><li>Form data persistence</li></ul></div><div><h3>5️⃣ Payment Processing</h3><p>Secure payment with Stripe</p><ul><li>Clear payment summary</li><li>Stripe card form</li><li>30% deposit calculation</li><li>Professional styling</li></ul></div><div><h3>6️⃣ Confirmation</h3><p>Booking confirmed with details</p><ul><li>Success message and icon</li><li>Complete booking details</li><li>Payment breakdown</li><li>Next step options</li></ul></div></div></div><!-- Benefits --><div><h2><i></i> Benefits</h2><p>The booking improvements provide significant benefits for both customers and businesses:</p><div><div><h3>👥 For Customers</h3><ul><li>Clear, intuitive booking process</li><li>Professional presentation</li><li>Mobile-friendly experience</li><li>Secure payment processing</li><li>Clear confirmation details</li></ul></div><div><h3>🏢 For Businesses</h3><ul><li>Professional booking experience</li><li>Secure payment processing</li><li>Clear customer information</li><li>Reduced booking abandonment</li><li>Better conversion rates</li></ul></div><div><h3>🔧 For Developers</h3><ul><li>Clean, maintainable code</li><li>Responsive design patterns</li><li>Proper error handling</li><li>SessionStorage integration</li><li>Stripe best practices</li></ul></div></div></div></div>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-        
-        <!-- Benefits -->
-        <div class="demo-section">
-            <h2><i class="fas fa-trophy"></i> Benefits</h2>
-            <p>The booking improvements provide significant benefits for both customers and businesses:</p>
-            
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>👥 For Customers</h3>
-                    <ul class="feature-list">
-                        <li>Clear, intuitive booking process</li>
-                        <li>Professional presentation</li>
-                        <li>Mobile-friendly experience</li>
-                        <li>Secure payment processing</li>
-                        <li>Clear confirmation details</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🏢 For Businesses</h3>
-                    <ul class="feature-list">
-                        <li>Professional booking experience</li>
-                        <li>Secure payment processing</li>
-                        <li>Clear customer information</li>
-                        <li>Reduced booking abandonment</li>
-                        <li>Better conversion rates</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🔧 For Developers</h3>
-                    <ul class="feature-list">
-                        <li>Clean, maintainable code</li>
-                        <li>Responsive design patterns</li>
-                        <li>Proper error handling</li>
-                        <li>SessionStorage integration</li>
-                        <li>Stripe best practices</li>
-                    </ul>
-                </div>
-            </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
         </div>
-    </div>
+    </footer>
 </body>
 </html>

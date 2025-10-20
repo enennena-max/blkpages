@@ -1,428 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BlkPages Booking Functionality Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #121212;
-            color: white;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
         }
-        .test-container {
-            max-width: 800px;
-            margin: 0 auto;
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .test-section {
-            background: #1A1A1A;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 10px;
+        
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
+        }
+        
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+        }
+        
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .test-button {
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin: 10px;
-            font-weight: 600;
-        }
-        .test-button:hover {
-            transform: translateY(-2px);
-        }
-        .test-result {
-            background: #2A2A2A;
-            padding: 15px;
-            margin: 10px 0;
             border-radius: 8px;
-            border-left: 4px solid #4ADE80;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
-        .test-error {
-            border-left-color: #FF3CAC;
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .device-info {
-            background: #333;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="test-container">
-        <h1>🔧 BlkPages Booking Functionality Test</h1>
-        
-        <div class="device-info">
-            <h3>Device Information</h3>
-            <p><strong>User Agent:</strong> <span id="userAgent"></span></p>
-            <p><strong>Screen Size:</strong> <span id="screenSize"></span></p>
-            <p><strong>Touch Support:</strong> <span id="touchSupport"></span></p>
-            <p><strong>Device Type:</strong> <span id="deviceType"></span></p>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
         </div>
-
-        <div class="test-section">
-            <h2>📱 Mobile Responsiveness Tests</h2>
-            <button class="test-button" onclick="testMobileLayout()">Test Mobile Layout</button>
-            <button class="test-button" onclick="testTouchTargets()">Test Touch Targets</button>
-            <button class="test-button" onclick="testViewport()">Test Viewport</button>
-            <div id="mobileResults"></div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><h1>🔧 BlkPages Booking Functionality Test</h1><div><h3>Device Information</h3><p><strong>User Agent:</strong><span></span></p><p><strong>Screen Size:</strong><span></span></p><p><strong>Touch Support:</strong><span></span></p><p><strong>Device Type:</strong><span></span></p></div><div><h2>📱 Mobile Responsiveness Tests</h2><button onclick="testMobileLayout()">Test Mobile Layout</button><button onclick="testTouchTargets()">Test Touch Targets</button><button onclick="testViewport()">Test Viewport</button><div></div></div><div><h2>🖱️ Desktop Functionality Tests</h2><button onclick="testDesktopLayout()">Test Desktop Layout</button><button onclick="testHoverEffects()">Test Hover Effects</button><button onclick="testGridLayout()">Test Grid Layout</button><div></div></div><div><h2>📋 Booking Flow Tests</h2><button onclick="testBookingFlow()">Test Complete Booking Flow</button><button onclick="testFormValidation()">Test Form Validation</button><button onclick="testPopupFunctionality()">Test Popup Functionality</button><div></div></div><div><h2>🎯 Cross-Platform Tests</h2><button onclick="testCrossPlatform()">Run All Cross-Platform Tests</button><div></div></div></div><script> // Initialize device information document.getElementById('userAgent').textContent = navigator.userAgent; document.getElementById('screenSize').textContent = `${window.innerWidth}x${window.innerHeight}`; document.getElementById('touchSupport').textContent = 'ontouchstart' in window ? 'Yes' : 'No'; document.getElementById('deviceType').textContent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop'; function addResult(containerId, message, isError = false) { const container = document.getElementById(containerId); const result = document.createElement('div'); result.className = `test-result ${isError ? 'test-error' : ''}`; result.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${message}`; container.appendChild(result); } function testMobileLayout() { const results = []; // Test viewport meta tag const viewport = document.querySelector('meta[name="viewport"]'); if (viewport) { results.push('✅ Viewport meta tag present'); } else { results.push('❌ Viewport meta tag missing'); } // Test responsive CSS const mediaQueries = window.matchMedia('(max-width: 768px)'); if (mediaQueries.matches) { results.push('✅ Mobile media query active'); } else { results.push('ℹ️ Desktop view (resize window to test mobile)'); } // Test touch targets const buttons = document.querySelectorAll('button'); let touchTargetIssues = 0; buttons.forEach(button => { const rect = button.getBoundingClientRect(); if (rect.height < 44) { touchTargetIssues++; } }); if (touchTargetIssues === 0) { results.push('✅ All touch targets meet minimum 44px height'); } else { results.push(`⚠️ ${touchTargetIssues} buttons below 44px minimum`); } results.forEach(result => addResult('mobileResults', result)); } function testDesktopLayout() { const results = []; // Test grid layout const gridElements = document.querySelectorAll('[style*="grid"]'); if (gridElements.length > 0) { results.push('✅ Grid layout elements found'); } else { results.push('❌ No grid layout elements found'); } // Test hover effects const hoverElements = document.querySelectorAll('[style*="hover"]'); if (hoverElements.length > 0) { results.push('✅ Hover effects present'); } else { results.push('ℹ️ Hover effects may be in CSS classes'); } // Test sidebar layout const sidebar = document.querySelector('.content-sidebar'); if (sidebar) { results.push('✅ Sidebar element found'); } else { results.push('❌ Sidebar element not found'); } results.forEach(result => addResult('desktopResults', result)); } function testTouchTargets() { const results = []; const buttons = document.querySelectorAll('button'); buttons.forEach((button, index) => { const rect = button.getBoundingClientRect(); const height = rect.height; const width = rect.width; if (height >= 44 && width >= 44) { results.push(`✅ Button ${index + 1}: ${height}x${width}px (Good)`); } else { results.push(`❌ Button ${index + 1}: ${height}x${width}px (Too small)`); } }); results.forEach(result => addResult('mobileResults', result)); } function testViewport() { const results = []; results.push(`📱 Current viewport: ${window.innerWidth}x${window.innerHeight}`); results.push(`📐 Device pixel ratio: ${window.devicePixelRatio}`); results.push(`🖱️ Touch support: ${'ontouchstart' in window ? 'Yes' : 'No'}`); results.push(`📱 Mobile detection: ${/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'Yes' : 'No'}`); results.forEach(result => addResult('mobileResults', result)); } function testHoverEffects() { const results = []; // Test if hover effects are defined const styleSheets = document.styleSheets; let hoverRules = 0; try { for (let sheet of styleSheets) { if (sheet.cssRules) { for (let rule of sheet.cssRules) { if (rule.selectorText && rule.selectorText.includes(':hover')) { hoverRules++; } } } } } catch (e) { results.push('ℹ️ Cannot access external stylesheets (CORS)'); } if (hoverRules > 0) { results.push(`✅ Found ${hoverRules} hover effect rules`); } else { results.push('ℹ️ Hover effects may be inline or in external CSS'); } results.forEach(result => addResult('desktopResults', result)); } function testGridLayout() { const results = []; // Test CSS Grid support const testElement = document.createElement('div'); testElement.style.display = 'grid'; if (testElement.style.display === 'grid') { results.push('✅ CSS Grid supported'); } else { results.push('❌ CSS Grid not supported'); } // Test flexbox support testElement.style.display = 'flex'; if (testElement.style.display === 'flex') { results.push('✅ Flexbox supported'); } else { results.push('❌ Flexbox not supported'); } results.forEach(result => addResult('desktopResults', result)); } function testBookingFlow() { const results = []; // Test if booking functions exist if (typeof bookAppointment === 'function') { results.push('✅ bookAppointment function exists'); } else { results.push('❌ bookAppointment function missing'); } if (typeof completeBooking === 'function') { results.push('✅ completeBooking function exists'); } else { results.push('❌ completeBooking function missing'); } if (typeof showBookingPopup === 'function') { results.push('✅ showBookingPopup function exists'); } else { results.push('❌ showBookingPopup function missing'); } // Test form elements const requiredInputs = ['fullName', 'email', 'phone']; requiredInputs.forEach(inputId => { const input = document.getElementById(inputId); if (input) { results.push(`✅ ${inputId} input found`); } else { results.push(`❌ ${inputId} input missing`); } }); results.forEach(result => addResult('bookingResults', result)); } function testFormValidation() { const results = []; // Test email validation const emailInput = document.getElementById('email'); if (emailInput) { emailInput.value = 'test@example.com'; const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value); if (isValid) { results.push('✅ Email validation working'); } else { results.push('❌ Email validation failed'); } } // Test required fields const requiredFields = ['fullName', 'email', 'phone']; let allFieldsPresent = true; requiredFields.forEach(fieldId => { if (!document.getElementById(fieldId)) { allFieldsPresent = false; } }); if (allFieldsPresent) { results.push('✅ All required form fields present'); } else { results.push('❌ Some required form fields missing'); } results.forEach(result => addResult('bookingResults', result)); } function testPopupFunctionality() { const results = []; // Test popup creation try { const testPopup = document.createElement('div'); testPopup.id = 'test-popup'; testPopup.style.cssText = ` position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1000; `; document.body.appendChild(testPopup); if (document.getElementById('test-popup')) { results.push('✅ Popup creation working'); } else { results.push('❌ Popup creation failed'); } // Clean up testPopup.remove(); } catch (e) { results.push('❌ Popup creation error: ' + e.message); } // Test scroll functionality try { window.scrollTo({ top: 0, behavior: 'smooth' }); results.push('✅ Smooth scrolling supported'); } catch (e) { results.push('❌ Smooth scrolling not supported'); } results.forEach(result => addResult('bookingResults', result)); } function testCrossPlatform() { const results = []; // Test responsive design const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); const isSmallScreen = window.innerWidth <= 768; if (isMobile || isSmallScreen) { results.push('📱 Mobile/Tablet detected'); } else { results.push('🖥️ Desktop detected'); } // Test touch vs mouse events if ('ontouchstart' in window) { results.push('✅ Touch events supported'); } else { results.push('ℹ️ Mouse events only'); } // Test viewport scaling const viewport = document.querySelector('meta[name="viewport"]'); if (viewport) { results.push('✅ Viewport meta tag configured'); } else { results.push('❌ Viewport meta tag missing'); } // Test CSS Grid and Flexbox const testDiv = document.createElement('div'); testDiv.style.display = 'grid'; const gridSupported = testDiv.style.display === 'grid'; testDiv.style.display = 'flex'; const flexSupported = testDiv.style.display === 'flex'; if (gridSupported && flexSupported) { results.push('✅ Modern CSS layout supported'); } else { results.push('⚠️ Limited CSS layout support'); } results.forEach(result => addResult('crossPlatformResults', result)); } // Auto-run basic tests on load window.addEventListener('load', () => { addResult('crossPlatformResults', '🚀 Test suite loaded successfully'); testCrossPlatform(); }); </script>
         </div>
-
-        <div class="test-section">
-            <h2>🖱️ Desktop Functionality Tests</h2>
-            <button class="test-button" onclick="testDesktopLayout()">Test Desktop Layout</button>
-            <button class="test-button" onclick="testHoverEffects()">Test Hover Effects</button>
-            <button class="test-button" onclick="testGridLayout()">Test Grid Layout</button>
-            <div id="desktopResults"></div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
         </div>
-
-        <div class="test-section">
-            <h2>📋 Booking Flow Tests</h2>
-            <button class="test-button" onclick="testBookingFlow()">Test Complete Booking Flow</button>
-            <button class="test-button" onclick="testFormValidation()">Test Form Validation</button>
-            <button class="test-button" onclick="testPopupFunctionality()">Test Popup Functionality</button>
-            <div id="bookingResults"></div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
         </div>
-
-        <div class="test-section">
-            <h2>🎯 Cross-Platform Tests</h2>
-            <button class="test-button" onclick="testCrossPlatform()">Run All Cross-Platform Tests</button>
-            <div id="crossPlatformResults"></div>
-        </div>
-    </div>
-
-    <script>
-        // Initialize device information
-        document.getElementById('userAgent').textContent = navigator.userAgent;
-        document.getElementById('screenSize').textContent = `${window.innerWidth}x${window.innerHeight}`;
-        document.getElementById('touchSupport').textContent = 'ontouchstart' in window ? 'Yes' : 'No';
-        document.getElementById('deviceType').textContent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop';
-
-        function addResult(containerId, message, isError = false) {
-            const container = document.getElementById(containerId);
-            const result = document.createElement('div');
-            result.className = `test-result ${isError ? 'test-error' : ''}`;
-            result.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong> - ${message}`;
-            container.appendChild(result);
-        }
-
-        function testMobileLayout() {
-            const results = [];
-            
-            // Test viewport meta tag
-            const viewport = document.querySelector('meta[name="viewport"]');
-            if (viewport) {
-                results.push('✅ Viewport meta tag present');
-            } else {
-                results.push('❌ Viewport meta tag missing');
-            }
-
-            // Test responsive CSS
-            const mediaQueries = window.matchMedia('(max-width: 768px)');
-            if (mediaQueries.matches) {
-                results.push('✅ Mobile media query active');
-            } else {
-                results.push('ℹ️ Desktop view (resize window to test mobile)');
-            }
-
-            // Test touch targets
-            const buttons = document.querySelectorAll('button');
-            let touchTargetIssues = 0;
-            buttons.forEach(button => {
-                const rect = button.getBoundingClientRect();
-                if (rect.height < 44) {
-                    touchTargetIssues++;
-                }
-            });
-
-            if (touchTargetIssues === 0) {
-                results.push('✅ All touch targets meet minimum 44px height');
-            } else {
-                results.push(`⚠️ ${touchTargetIssues} buttons below 44px minimum`);
-            }
-
-            results.forEach(result => addResult('mobileResults', result));
-        }
-
-        function testDesktopLayout() {
-            const results = [];
-
-            // Test grid layout
-            const gridElements = document.querySelectorAll('[style*="grid"]');
-            if (gridElements.length > 0) {
-                results.push('✅ Grid layout elements found');
-            } else {
-                results.push('❌ No grid layout elements found');
-            }
-
-            // Test hover effects
-            const hoverElements = document.querySelectorAll('[style*="hover"]');
-            if (hoverElements.length > 0) {
-                results.push('✅ Hover effects present');
-            } else {
-                results.push('ℹ️ Hover effects may be in CSS classes');
-            }
-
-            // Test sidebar layout
-            const sidebar = document.querySelector('.content-sidebar');
-            if (sidebar) {
-                results.push('✅ Sidebar element found');
-            } else {
-                results.push('❌ Sidebar element not found');
-            }
-
-            results.forEach(result => addResult('desktopResults', result));
-        }
-
-        function testTouchTargets() {
-            const results = [];
-            const buttons = document.querySelectorAll('button');
-            
-            buttons.forEach((button, index) => {
-                const rect = button.getBoundingClientRect();
-                const height = rect.height;
-                const width = rect.width;
-                
-                if (height >= 44 && width >= 44) {
-                    results.push(`✅ Button ${index + 1}: ${height}x${width}px (Good)`);
-                } else {
-                    results.push(`❌ Button ${index + 1}: ${height}x${width}px (Too small)`);
-                }
-            });
-
-            results.forEach(result => addResult('mobileResults', result));
-        }
-
-        function testViewport() {
-            const results = [];
-            
-            results.push(`📱 Current viewport: ${window.innerWidth}x${window.innerHeight}`);
-            results.push(`📐 Device pixel ratio: ${window.devicePixelRatio}`);
-            results.push(`🖱️ Touch support: ${'ontouchstart' in window ? 'Yes' : 'No'}`);
-            results.push(`📱 Mobile detection: ${/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? 'Yes' : 'No'}`);
-
-            results.forEach(result => addResult('mobileResults', result));
-        }
-
-        function testHoverEffects() {
-            const results = [];
-            
-            // Test if hover effects are defined
-            const styleSheets = document.styleSheets;
-            let hoverRules = 0;
-            
-            try {
-                for (let sheet of styleSheets) {
-                    if (sheet.cssRules) {
-                        for (let rule of sheet.cssRules) {
-                            if (rule.selectorText && rule.selectorText.includes(':hover')) {
-                                hoverRules++;
-                            }
-                        }
-                    }
-                }
-            } catch (e) {
-                results.push('ℹ️ Cannot access external stylesheets (CORS)');
-            }
-
-            if (hoverRules > 0) {
-                results.push(`✅ Found ${hoverRules} hover effect rules`);
-            } else {
-                results.push('ℹ️ Hover effects may be inline or in external CSS');
-            }
-
-            results.forEach(result => addResult('desktopResults', result));
-        }
-
-        function testGridLayout() {
-            const results = [];
-            
-            // Test CSS Grid support
-            const testElement = document.createElement('div');
-            testElement.style.display = 'grid';
-            
-            if (testElement.style.display === 'grid') {
-                results.push('✅ CSS Grid supported');
-            } else {
-                results.push('❌ CSS Grid not supported');
-            }
-
-            // Test flexbox support
-            testElement.style.display = 'flex';
-            if (testElement.style.display === 'flex') {
-                results.push('✅ Flexbox supported');
-            } else {
-                results.push('❌ Flexbox not supported');
-            }
-
-            results.forEach(result => addResult('desktopResults', result));
-        }
-
-        function testBookingFlow() {
-            const results = [];
-            
-            // Test if booking functions exist
-            if (typeof bookAppointment === 'function') {
-                results.push('✅ bookAppointment function exists');
-            } else {
-                results.push('❌ bookAppointment function missing');
-            }
-
-            if (typeof completeBooking === 'function') {
-                results.push('✅ completeBooking function exists');
-            } else {
-                results.push('❌ completeBooking function missing');
-            }
-
-            if (typeof showBookingPopup === 'function') {
-                results.push('✅ showBookingPopup function exists');
-            } else {
-                results.push('❌ showBookingPopup function missing');
-            }
-
-            // Test form elements
-            const requiredInputs = ['fullName', 'email', 'phone'];
-            requiredInputs.forEach(inputId => {
-                const input = document.getElementById(inputId);
-                if (input) {
-                    results.push(`✅ ${inputId} input found`);
-                } else {
-                    results.push(`❌ ${inputId} input missing`);
-                }
-            });
-
-            results.forEach(result => addResult('bookingResults', result));
-        }
-
-        function testFormValidation() {
-            const results = [];
-            
-            // Test email validation
-            const emailInput = document.getElementById('email');
-            if (emailInput) {
-                emailInput.value = 'test@example.com';
-                const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
-                if (isValid) {
-                    results.push('✅ Email validation working');
-                } else {
-                    results.push('❌ Email validation failed');
-                }
-            }
-
-            // Test required fields
-            const requiredFields = ['fullName', 'email', 'phone'];
-            let allFieldsPresent = true;
-            requiredFields.forEach(fieldId => {
-                if (!document.getElementById(fieldId)) {
-                    allFieldsPresent = false;
-                }
-            });
-
-            if (allFieldsPresent) {
-                results.push('✅ All required form fields present');
-            } else {
-                results.push('❌ Some required form fields missing');
-            }
-
-            results.forEach(result => addResult('bookingResults', result));
-        }
-
-        function testPopupFunctionality() {
-            const results = [];
-            
-            // Test popup creation
-            try {
-                const testPopup = document.createElement('div');
-                testPopup.id = 'test-popup';
-                testPopup.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.7);
-                    z-index: 1000;
-                `;
-                document.body.appendChild(testPopup);
-                
-                if (document.getElementById('test-popup')) {
-                    results.push('✅ Popup creation working');
-                } else {
-                    results.push('❌ Popup creation failed');
-                }
-                
-                // Clean up
-                testPopup.remove();
-            } catch (e) {
-                results.push('❌ Popup creation error: ' + e.message);
-            }
-
-            // Test scroll functionality
-            try {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                results.push('✅ Smooth scrolling supported');
-            } catch (e) {
-                results.push('❌ Smooth scrolling not supported');
-            }
-
-            results.forEach(result => addResult('bookingResults', result));
-        }
-
-        function testCrossPlatform() {
-            const results = [];
-            
-            // Test responsive design
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            const isSmallScreen = window.innerWidth <= 768;
-            
-            if (isMobile || isSmallScreen) {
-                results.push('📱 Mobile/Tablet detected');
-            } else {
-                results.push('🖥️ Desktop detected');
-            }
-
-            // Test touch vs mouse events
-            if ('ontouchstart' in window) {
-                results.push('✅ Touch events supported');
-            } else {
-                results.push('ℹ️ Mouse events only');
-            }
-
-            // Test viewport scaling
-            const viewport = document.querySelector('meta[name="viewport"]');
-            if (viewport) {
-                results.push('✅ Viewport meta tag configured');
-            } else {
-                results.push('❌ Viewport meta tag missing');
-            }
-
-            // Test CSS Grid and Flexbox
-            const testDiv = document.createElement('div');
-            testDiv.style.display = 'grid';
-            const gridSupported = testDiv.style.display === 'grid';
-            testDiv.style.display = 'flex';
-            const flexSupported = testDiv.style.display === 'flex';
-
-            if (gridSupported && flexSupported) {
-                results.push('✅ Modern CSS layout supported');
-            } else {
-                results.push('⚠️ Limited CSS layout support');
-            }
-
-            results.forEach(result => addResult('crossPlatformResults', result));
-        }
-
-        // Auto-run basic tests on load
-        window.addEventListener('load', () => {
-            addResult('crossPlatformResults', '🚀 Test suite loaded successfully');
-            testCrossPlatform();
-        });
-    </script>
+    </footer>
 </body>
 </html>

@@ -1,526 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Business Dashboard - Error Management | Black Pages</title>
-    <link rel="stylesheet" href="css/payment-error-handling.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 20px 0;
-            border-bottom: 1px solid #333;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .dashboard-title {
-            color: #fff;
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .dashboard-subtitle {
-            color: #999;
-            font-size: 1rem;
-            margin: 5px 0 0 0;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .dashboard-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
         }
-        
-        .stat-card {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 20px;
-            border: 1px solid #333;
-            text-align: center;
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
         }
-        
-        .stat-value {
-            color: #fff;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 5px;
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
         }
-        
-        .stat-label {
-            color: #999;
-            font-size: 0.9rem;
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
         }
-        
-        .stat-card.success .stat-value {
-            color: #4ade80;
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
         }
-        
-        .stat-card.failures .stat-value {
-            color: #ef4444;
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
         }
-        
-        .stat-card.abandonments .stat-value {
-            color: #f59e0b;
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
         }
-        
-        .stat-card.disputes .stat-value {
-            color: #f59e0b;
-        }
-        
-        .error-alerts {
-            background: #1a1a1a;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-            border: 1px solid #333;
-        }
-        
-        .error-alerts h2 {
-            color: #fff;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .error-alerts h2 i {
-            color: #ef4444;
-        }
-        
-        .alert-item {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid #333;
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
         }
         
-        .alert-item:hover {
-            border-color: #ef4444;
-            transform: translateY(-2px);
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .alert-item.dispute {
-            border-color: #f59e0b;
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .alert-item.chargeback {
-            border-color: #dc2626;
-        }
-        
-        .alert-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .alert-title {
-            color: #fff;
-            font-size: 1.1rem;
-            font-weight: 600;
+        .dropdown-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-        
-        .alert-date {
-            color: #999;
-            font-size: 0.8rem;
-        }
-        
-        .alert-content {
-            color: #ccc;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-        
-        .alert-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .btn-view-details {
-            background: #3b82f6;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
             font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .btn-view-details:hover {
-            background: #2563eb;
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .btn-provide-evidence {
-            background: #f59e0b;
-            color: #000;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-provide-evidence:hover {
-            background: #d97706;
-        }
-        
-        .btn-dismiss {
-            background: #6b7280;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-dismiss:hover {
-            background: #4b5563;
-        }
-        
-        .test-controls {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .test-controls h3 {
-            color: #fff;
-            margin-bottom: 15px;
-        }
-        
-        .test-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .btn-test {
-            background: #3b82f6;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-test:hover {
-            background: #2563eb;
-        }
-        
-        .btn-test.danger {
-            background: #ef4444;
-        }
-        
-        .btn-test.danger:hover {
-            background: #dc2626;
-        }
-        
-        .btn-test.warning {
-            background: #f59e0b;
-            color: #000;
-        }
-        
-        .btn-test.warning:hover {
-            background: #d97706;
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="dashboard-container">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header">
-            <div>
-                <h1 class="dashboard-title">Error Management Dashboard</h1>
-                <p class="dashboard-subtitle">Monitor payment failures, disputes, and chargebacks</p>
-            </div>
-        </div>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
 
-        <!-- Dashboard Stats -->
-        <div class="dashboard-stats">
-            <div class="stat-card success">
-                <div class="stat-value">94.2%</div>
-                <div class="stat-label">Success Rate</div>
-            </div>
-            <div class="stat-card failures">
-                <div class="stat-value">12</div>
-                <div class="stat-label">Payment Failures</div>
-            </div>
-            <div class="stat-card abandonments">
-                <div class="stat-value">8</div>
-                <div class="stat-label">Abandoned Payments</div>
-            </div>
-            <div class="stat-card disputes">
-                <div class="stat-value">3</div>
-                <div class="stat-label">Active Disputes</div>
-            </div>
-        </div>
-
-        <!-- Test Controls -->
-        <div class="test-controls">
-            <h3>🧪 Test Error Scenarios</h3>
-            <div class="test-buttons">
-                <button class="btn-test danger" onclick="testPaymentFailure()">
-                    <i class="fas fa-exclamation-triangle"></i> Test Payment Failure
-                </button>
-                <button class="btn-test warning" onclick="testPaymentAbandonment()">
-                    <i class="fas fa-clock"></i> Test Payment Abandonment
-                </button>
-                <button class="btn-test warning" onclick="testDispute()">
-                    <i class="fas fa-exclamation-circle"></i> Test Dispute
-                </button>
-                <button class="btn-test danger" onclick="testChargeback()">
-                    <i class="fas fa-ban"></i> Test Chargeback
-                </button>
-            </div>
-        </div>
-
-        <!-- Error Alerts -->
-        <div class="error-alerts">
-            <h2><i class="fas fa-exclamation-triangle"></i> Active Alerts</h2>
-            
-            <!-- Dispute Alert -->
-            <div class="alert-item dispute">
-                <div class="alert-header">
-                    <div class="alert-title">
-                        <i class="fas fa-exclamation-circle"></i>
-                        Payment Dispute
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
                     </div>
-                    <div class="alert-date">2 hours ago</div>
-                </div>
-                <div class="alert-content">
-                    <strong>⚠️ A payment dispute has been raised for booking #BOOK_ABC123.</strong><br>
-                    Customer: Sarah Johnson<br>
-                    Amount: £45.00<br>
-                    Reason: Service not as described<br>
-                    <strong>Action Required:</strong> Please provide supporting evidence within 7 days.
-                </div>
-                <div class="alert-actions">
-                    <button class="btn-view-details" onclick="viewDisputeDetails('BOOK_ABC123')">
-                        <i class="fas fa-eye"></i> View Details
-                    </button>
-                    <button class="btn-provide-evidence" onclick="provideEvidence('BOOK_ABC123')">
-                        <i class="fas fa-file-upload"></i> Provide Evidence
-                    </button>
-                    <button class="btn-dismiss" onclick="dismissAlert('dispute_1')">
-                        <i class="fas fa-times"></i> Dismiss
-                    </button>
-                </div>
-            </div>
-
-            <!-- Chargeback Alert -->
-            <div class="alert-item chargeback">
-                <div class="alert-header">
-                    <div class="alert-title">
-                        <i class="fas fa-ban"></i>
-                        Chargeback Raised
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
                     </div>
-                    <div class="alert-date">1 day ago</div>
-                </div>
-                <div class="alert-content">
-                    <strong>⚠️ A chargeback has been raised for booking #BOOK_DEF456.</strong><br>
-                    Customer: Michael Brown<br>
-                    Amount: £120.00<br>
-                    Reason: Fraudulent transaction<br>
-                    <strong>Action Required:</strong> Please provide supporting evidence within 7 days.
-                </div>
-                <div class="alert-actions">
-                    <button class="btn-view-details" onclick="viewChargebackDetails('BOOK_DEF456')">
-                        <i class="fas fa-eye"></i> View Details
-                    </button>
-                    <button class="btn-provide-evidence" onclick="provideEvidence('BOOK_DEF456')">
-                        <i class="fas fa-file-upload"></i> Provide Evidence
-                    </button>
-                    <button class="btn-dismiss" onclick="dismissAlert('chargeback_1')">
-                        <i class="fas fa-times"></i> Dismiss
-                    </button>
-                </div>
-            </div>
-
-            <!-- Payment Failure Alert -->
-            <div class="alert-item">
-                <div class="alert-header">
-                    <div class="alert-title">
-                        <i class="fas fa-credit-card"></i>
-                        Payment Failure
-                    </div>
-                    <div class="alert-date">3 hours ago</div>
-                </div>
-                <div class="alert-content">
-                    <strong>❌ Payment failed for booking #BOOK_GHI789.</strong><br>
-                    Customer: Emma Wilson<br>
-                    Amount: £80.00<br>
-                    Error: Card declined<br>
-                    <strong>Action Required:</strong> Customer will need to retry payment.
-                </div>
-                <div class="alert-actions">
-                    <button class="btn-view-details" onclick="viewPaymentFailure('BOOK_GHI789')">
-                        <i class="fas fa-eye"></i> View Details
-                    </button>
-                    <button class="btn-dismiss" onclick="dismissAlert('failure_1')">
-                        <i class="fas fa-times"></i> Dismiss
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Error Statistics -->
-        <div class="error-alerts">
-            <h2><i class="fas fa-chart-bar"></i> Error Statistics</h2>
-            <div class="error-stats">
-                <div class="error-stat-card failures">
-                    <div class="error-stat-value">12</div>
-                    <div class="error-stat-label">Payment Failures (Last 30 days)</div>
-                </div>
-                <div class="error-stat-card abandonments">
-                    <div class="error-stat-value">8</div>
-                    <div class="error-stat-label">Abandoned Payments (Last 30 days)</div>
-                </div>
-                <div class="error-stat-card disputes">
-                    <div class="error-stat-value">3</div>
-                    <div class="error-stat-label">Active Disputes</div>
-                </div>
-                <div class="error-stat-card chargebacks">
-                    <div class="error-stat-value">1</div>
-                    <div class="error-stat-label">Chargebacks (Last 30 days)</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="js/payment-error-handling.js"></script>
-    <script>
-        // Test functions
-        function testPaymentFailure() {
-            paymentErrorHandling.testPaymentFailure();
-        }
-
-        function testPaymentAbandonment() {
-            paymentErrorHandling.testPaymentAbandonment();
-        }
-
-        function testDispute() {
-            paymentErrorHandling.testDispute();
-        }
-
-        function testChargeback() {
-            paymentErrorHandling.testChargeback();
-        }
-
-        // Alert management functions
-        function viewDisputeDetails(bookingId) {
-            alert(`Viewing dispute details for booking ${bookingId}`);
-        }
-
-        function viewChargebackDetails(bookingId) {
-            alert(`Viewing chargeback details for booking ${bookingId}`);
-        }
-
-        function viewPaymentFailure(bookingId) {
-            alert(`Viewing payment failure details for booking ${bookingId}`);
-        }
-
-        function provideEvidence(bookingId) {
-            alert(`Opening evidence upload form for booking ${bookingId}`);
-        }
-
-        function dismissAlert(alertId) {
-            const alertElement = document.querySelector(`[data-alert-id="${alertId}"]`);
-            if (alertElement) {
-                alertElement.style.display = 'none';
-            }
-        }
-
-        // Listen for business notifications
-        document.addEventListener('businessNotification', (e) => {
-            const { type, data } = e.detail;
-            console.log('Business notification received:', type, data);
-            
-            // Update dashboard with new notification
-            if (type === 'dispute' || type === 'chargeback') {
-                // Add new alert to the alerts section
-                addNewAlert(type, data);
-            }
-        });
-
-        function addNewAlert(type, data) {
-            const alertsContainer = document.querySelector('.error-alerts');
-            const alertHTML = createAlertHTML(type, data);
-            alertsContainer.insertAdjacentHTML('beforeend', alertHTML);
-        }
-
-        function createAlertHTML(type, data) {
-            const isDispute = type === 'dispute';
-            const icon = isDispute ? 'exclamation-circle' : 'ban';
-            const title = isDispute ? 'Payment Dispute' : 'Chargeback Raised';
-            const alertClass = isDispute ? 'dispute' : 'chargeback';
-            
-            return `
-                <div class="alert-item ${alertClass}">
-                    <div class="alert-header">
-                        <div class="alert-title">
-                            <i class="fas fa-${icon}"></i>
-                            ${title}
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
                         </div>
-                        <div class="alert-date">Just now</div>
                     </div>
-                    <div class="alert-content">
-                        <strong>⚠️ A ${type} has been raised for booking #${data.bookingId}.</strong><br>
-                        Customer: ${data.customerName || 'Unknown'}<br>
-                        Amount: £${data.amount.toFixed(2)}<br>
-                        Reason: ${data.reason || 'Unknown'}<br>
-                        <strong>Action Required:</strong> Please provide supporting evidence within 7 days.
-                    </div>
-                    <div class="alert-actions">
-                        <button class="btn-view-details" onclick="view${type.charAt(0).toUpperCase() + type.slice(1)}Details('${data.bookingId}')">
-                            <i class="fas fa-eye"></i> View Details
-                        </button>
-                        <button class="btn-provide-evidence" onclick="provideEvidence('${data.bookingId}')">
-                            <i class="fas fa-file-upload"></i> Provide Evidence
-                        </button>
-                        <button class="btn-dismiss" onclick="dismissAlert('${type}_${data.bookingId}')">
-                            <i class="fas fa-times"></i> Dismiss
-                        </button>
-                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
                 </div>
-            `;
-        }
-    </script>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><!-- Dashboard Header --><div><div><h1>Error Management Dashboard</h1><p>Monitor payment failures, disputes, and chargebacks</p></div></div><!-- Dashboard Stats --><div><div><div>94.2%</div><div>Success Rate</div></div><div><div>12</div><div>Payment Failures</div></div><div><div>8</div><div>Abandoned Payments</div></div><div><div>3</div><div>Active Disputes</div></div></div><!-- Test Controls --><div><h3>🧪 Test Error Scenarios</h3><div><button onclick="testPaymentFailure()"><i></i> Test Payment Failure </button><button onclick="testPaymentAbandonment()"><i></i> Test Payment Abandonment </button><button onclick="testDispute()"><i></i> Test Dispute </button><button onclick="testChargeback()"><i></i> Test Chargeback </button></div></div><!-- Error Alerts --><div><h2><i></i> Active Alerts</h2><!-- Dispute Alert --><div><div><div><i></i> Payment Dispute </div><div>2 hours ago</div></div><div><strong>⚠️ A payment dispute has been raised for booking #BOOK_ABC123.</strong><br> Customer: Sarah Johnson<br> Amount: £45.00<br> Reason: Service not as described<br><strong>Action Required:</strong> Please provide supporting evidence within 7 days. </div><div><button onclick="viewDisputeDetails('BOOK_ABC123')"><i></i> View Details </button><button onclick="provideEvidence('BOOK_ABC123')"><i></i> Provide Evidence </button><button onclick="dismissAlert('dispute_1')"><i></i> Dismiss </button></div></div><!-- Chargeback Alert --><div><div><div><i></i> Chargeback Raised </div><div>1 day ago</div></div><div><strong>⚠️ A chargeback has been raised for booking #BOOK_DEF456.</strong><br> Customer: Michael Brown<br> Amount: £120.00<br> Reason: Fraudulent transaction<br><strong>Action Required:</strong> Please provide supporting evidence within 7 days. </div><div><button onclick="viewChargebackDetails('BOOK_DEF456')"><i></i> View Details </button><button onclick="provideEvidence('BOOK_DEF456')"><i></i> Provide Evidence </button><button onclick="dismissAlert('chargeback_1')"><i></i> Dismiss </button></div></div><!-- Payment Failure Alert --><div><div><div><i></i> Payment Failure </div><div>3 hours ago</div></div><div><strong>❌ Payment failed for booking #BOOK_GHI789.</strong><br> Customer: Emma Wilson<br> Amount: £80.00<br> Error: Card declined<br><strong>Action Required:</strong> Customer will need to retry payment. </div><div><button onclick="viewPaymentFailure('BOOK_GHI789')"><i></i> View Details </button><button onclick="dismissAlert('failure_1')"><i></i> Dismiss </button></div></div></div><!-- Error Statistics --><div><h2><i></i> Error Statistics</h2><div><div><div>12</div><div>Payment Failures (Last 30 days)</div></div><div><div>8</div><div>Abandoned Payments (Last 30 days)</div></div><div><div>3</div><div>Active Disputes</div></div><div><div>1</div><div>Chargebacks (Last 30 days)</div></div></div></div></div><!-- Scripts --><script src="js/payment-error-handling.js"></script><script> // Test functions function testPaymentFailure() { paymentErrorHandling.testPaymentFailure(); } function testPaymentAbandonment() { paymentErrorHandling.testPaymentAbandonment(); } function testDispute() { paymentErrorHandling.testDispute(); } function testChargeback() { paymentErrorHandling.testChargeback(); } // Alert management functions function viewDisputeDetails(bookingId) { alert(`Viewing dispute details for booking ${bookingId}`); } function viewChargebackDetails(bookingId) { alert(`Viewing chargeback details for booking ${bookingId}`); } function viewPaymentFailure(bookingId) { alert(`Viewing payment failure details for booking ${bookingId}`); } function provideEvidence(bookingId) { alert(`Opening evidence upload form for booking ${bookingId}`); } function dismissAlert(alertId) { const alertElement = document.querySelector(`[data-alert-id="${alertId}"]`); if (alertElement) { alertElement.style.display = 'none'; } } // Listen for business notifications document.addEventListener('businessNotification', (e) => { const { type, data } = e.detail; console.log('Business notification received:', type, data); // Update dashboard with new notification if (type === 'dispute' || type === 'chargeback') { // Add new alert to the alerts section addNewAlert(type, data); } }); function addNewAlert(type, data) { const alertsContainer = document.querySelector('.error-alerts'); const alertHTML = createAlertHTML(type, data); alertsContainer.insertAdjacentHTML('beforeend', alertHTML); } function createAlertHTML(type, data) { const isDispute = type === 'dispute'; const icon = isDispute ? 'exclamation-circle' : 'ban'; const title = isDispute ? 'Payment Dispute' : 'Chargeback Raised'; const alertClass = isDispute ? 'dispute' : 'chargeback'; return ` <div><div><div><i></i> ${title} </div><div>Just now</div></div><div><strong>⚠️ A ${type} has been raised for booking #${data.bookingId}.</strong><br> Customer: ${data.customerName || 'Unknown'}<br> Amount: £${data.amount.toFixed(2)}<br> Reason: ${data.reason || 'Unknown'}<br><strong>Action Required:</strong> Please provide supporting evidence within 7 days. </div><div><button onclick="view${type.charAt(0).toUpperCase() + type.slice(1)}Details('${data.bookingId}')"><i></i> View Details </button><button onclick="provideEvidence('${data.bookingId}')"><i></i> Provide Evidence </button><button onclick="dismissAlert('${type}_${data.bookingId}')"><i></i> Dismiss </button></div></div> `; } </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

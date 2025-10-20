@@ -1,246 +1,430 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Browse Demo - BlkPages</title>
-    <link href="css/output.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=2">
-    <script src="business-manager.js"></script>
-</head>
-<body class="bg-charcoal text-white font-inter">
-    <div class="max-w-7xl mx-auto px-4 py-8">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-white mb-4">Interactive Browse Demo</h1>
-            <p class="text-light-grey text-lg">8 Business Placeholders with Interactive Features</p>
-        </div>
-        
-        <!-- Interactive Features Demo -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <div class="bg-dark-grey rounded-lg p-6 border border-white/10">
-                <h3 class="text-xl font-semibold text-white mb-4">🎯 Interactive Features</h3>
-                <ul class="space-y-2 text-light-grey">
-                    <li><i class="fas fa-check text-gold mr-2"></i>Pagination (6 per page)</li>
-                    <li><i class="fas fa-check text-gold mr-2"></i>Tier-based filtering</li>
-                    <li><i class="fas fa-check text-gold mr-2"></i>Book Now buttons</li>
-                    <li><i class="fas fa-check text-gold mr-2"></i>Call & Email buttons</li>
-                    <li><i class="fas fa-check text-gold mr-2"></i>View Profile links</li>
-                </ul>
-            </div>
-            
-            <div class="bg-dark-grey rounded-lg p-6 border border-white/10">
-                <h3 class="text-xl font-semibold text-white mb-4">📊 Business Tiers</h3>
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-white">Professional</span>
-                        <span class="px-2 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white">3</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-white">Starter</span>
-                        <span class="px-2 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-cyan-500 text-white">3</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-white">Basic/Free</span>
-                        <span class="px-2 py-1 rounded-full text-xs font-bold bg-gray-500 text-white">2</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-dark-grey rounded-lg p-6 border border-white/10">
-                <h3 class="text-xl font-semibold text-white mb-4">🔧 Test Controls</h3>
-                <div class="space-y-3">
-                    <button onclick="testPagination()" class="w-full py-2 px-4 rounded-lg bg-gold text-black font-semibold hover:bg-gold-dark transition-all duration-300">
-                        Test Pagination
-                    </button>
-                    <button onclick="testTierFilter()" class="w-full py-2 px-4 rounded-lg border border-gold/30 text-gold hover:bg-gold/10 transition-all duration-300">
-                        Test Tier Filter
-                    </button>
-                    <button onclick="testInteractiveButtons()" class="w-full py-2 px-4 rounded-lg border border-white/20 text-white hover:bg-white/10 transition-all duration-300">
-                        Test Interactive Buttons
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Business Display -->
-        <div class="bg-dark-grey rounded-lg p-6 border border-white/10">
-            <h2 class="text-2xl font-semibold text-white mb-6">Business Listings</h2>
-            <div id="businessDisplay" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Businesses will be loaded here -->
-            </div>
-            
-            <!-- Pagination -->
-            <div id="paginationDisplay" class="mt-8">
-                <!-- Pagination will be shown here -->
-            </div>
-        </div>
-        
-        <!-- Test Results -->
-        <div id="testResults" class="mt-8 bg-dark-grey rounded-lg p-6 border border-white/10 hidden">
-            <h3 class="text-xl font-semibold text-white mb-4">Test Results</h3>
-            <div id="testOutput" class="text-light-grey"></div>
-        </div>
-    </div>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BlkPages — Find Local Businesses</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  /* Base Styles */
+  body{background:#000;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto; padding-bottom: 50px;}
+  
+  /* Glassmorphism Effect for Search Bar */
+  .glass{background:rgba(26,26,26,.65);backdrop-filter:blur(12px);border:1px solid rgba(250,204,21,.15)}
+  
+  /* Top Scroll Progress Bar */
+  #progress{position:fixed;top:0;left:0;height:3px;background:#facc15;width:0;z-index:50}
 
-    <script>
-        // Initialize business manager
-        const businessManager = new BusinessManager();
-        let currentPage = 1;
-        const businessesPerPage = 6;
-        let allBusinesses = [];
+  /* Primary Search CTA - Gold Gradient */
+  .search-cta-btn {
+    background:linear-gradient(180deg,#facc15,#f5c51a);
+    color:#000; 
+    transition: transform 0.1s ease, filter 0.1s ease;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+  }
+  .search-cta-btn:hover{filter:brightness(1.03);transform:translateY(-1px)}
+  .search-cta-btn:active{transform:translateY(0);filter:brightness(1)}
+
+  /* Secondary/Subtle CTA Buttons (cta-btn) */
+  .cta-btn {
+    border-radius: 8px !important;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background: none;
+    border: 1px solid #3a3a3a;
+    color: #facc15;
+  }
+  
+  .cta-btn:hover {
+    transform: scale(1.03);
+    opacity: 0.9;
+    border-color: #facc15;
+    color: #facc15;
+  }
+
+  /* Outline Icons (for star, etc.) */
+  .section-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #FFD700;
+    fill: none;
+    vertical-align: middle;
+  }
+
+  /* Sort / Filter Bar Styling */
+  .sort-filter-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.9rem;
+  }
+  
+  .sort-filter-bar label {
+    color: #9ca3af;
+  }
+  
+  .sort-filter-bar select,
+  .sort-filter-bar button {
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    color: #fff;
+    border: 1px solid #333;
+    padding: 8px 12px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23facc15' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+  }
+  
+  .sort-filter-bar select:hover,
+  .sort-filter-bar button:hover {
+    background-color: #facc15;
+    color: #000;
+    border-color: #facc15;
+  }
+  
+  /* ================================================= */
+  /* === NEW OVERRIDE STYLES (Consolidated & Prioritized) === */
+  /* ================================================= */
+
+  /* HERO TAGLINE */
+  .hero-tagline,
+  .hero-subtitle {
+    font-weight: 500 !important;
+    font-size: 1.2rem !important;
+    letter-spacing: 0.5px;
+    color: #ccc !important;
+  }
+  
+  /* SEARCH BAR CLEANUP (Reinforcement) */
+  .search-bar input,
+  .search-bar select {
+    background-image: none !important;
+    padding-left: 16px !important;
+  }
+
+  /* SECTION HEADINGS */
+  .featured-section h2,
+  .local-section h2,
+  .featured-listings-title,
+  .local-businesses-title {
+    color: #FFD700 !important;
+    font-weight: 600 !important;
+    margin-bottom: 8px;
+  }
+  
+  .featured-section {
+    margin-top: 40px;
+  }
+
+
+  /* FEATURED LISTINGS SCROLL LAYOUT (Horizontal Scroll & Card Sizing) */
+  .featured-listings {
+    display: block !important;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    white-space: nowrap !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 12px 8px 12px;
+  }
+  .featured-listings::-webkit-scrollbar { display: none; }
+  .featured-listings { scrollbar-width: none; }
+
+  /* Card Styles: Smaller, neater cards for featured & local */
+  .featured-card,
+  .business-card,
+  .card {
+    /* REMOVED: display: inline-flex !important; to fix grid layout issue */
+    flex-direction: column;
+    justify-content: space-between;
+    
+    width: 100%; /* Default to 100% width for grid/block layouts */
+    min-height: 320px !important;
+    padding: 14px 14px 18px;
+    
+    border-radius: 12px;
+    background-color: #111 !important; /* Darker background */
+    border: 1px solid #232323;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.05);
+    
+    vertical-align: top;
+    white-space: normal;
+    transition: all 0.3s ease;
+    scroll-snap-align: start;
+    
+    /* Ensure local cards use flex to properly stack content in the grid */
+    display: flex !important; 
+    margin-right: 0; /* Clear horizontal margin for grid */
+  }
+  
+  /* Specific styling for cards inside the horizontal scroll container */
+  .featured-listings .featured-card {
+    display: inline-flex !important; /* Re-apply inline-flex for horizontal scroll */
+    width: 260px !important; /* Re-apply fixed width for horizontal scroll */
+    margin-right: 14px; /* Re-apply spacing for horizontal scroll */
+  }
+
+
+  
+  .featured-card:hover,
+  .business-card:hover,
+  .card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.4) !important;
+    border-color: rgba(250,204,21,.35);
+  }
+  
+  .featured-card:active,
+  .business-card:active,
+  .card:active {
+    transform: scale(0.985);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.7) inset;
+  }
+
+
+  /* Image / Placeholder Area Cleanup */
+  .business-card .overlay-text,
+  .business-card .category-label,
+  .business-card .category-title,
+  .business-card [class*="overlay"],
+  .business-card [class*="category-"],
+  .business-card .image-title {
+    display: none !important;
+  }
+  .business-card-image,
+  .business-card .image,
+  .business-card .card-media,
+  .business-card .image-placeholder,
+  .featured-card .image,
+  .featured-card .card-media {
+    width: 100%;
+    height: 140px !important; /* New fixed height */
+    object-fit: cover;
+    border-radius: 10px 10px 0 0; /* New border radius */
+    background-color: #222;
+  }
+  .business-card .relative {
+      margin: -14px -14px 14px; /* Adjust image container margin to fit new padding */
+  }
+
+
+  /* BOOK NOW BUTTON */
+  button.book-now-btn,
+  a.book-now-btn,
+  .featured-card .book-now-btn,
+  .business-card .book-now-btn {
+    background-color: #FFD700 !important;
+    color: #000 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    padding: 10px 20px !important;
+    text-align: center;
+    display: inline-block;
+    box-shadow: 0 0 0 rgba(255, 215, 0, 0);
+    transition: all 0.3s ease;
+  }
+  button.book-now-btn:hover,
+  a.book-now-btn:hover,
+  .featured-card .book-now-btn:hover,
+  .business-card .book-now-btn:hover {
+    background-color: #FFD700 !important;
+    color: #000 !important;
+    transform: scale(1.03) !important;
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.6) !important;
+  }
+  button.book-now-btn:active,
+  a.book-now-btn:active {
+    transform: scale(0.98) !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.7) inset !important;
+  }
+
+  /* CTA ALIGNMENT */
+  .card-cta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    gap: 6px;
+  }
+  .card-cta-row .cta-btn {
+    flex: 1;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  /* TEXT LAYOUT */
+  .business-info {
+    margin-top: 4px;
+    flex-grow: 1; /* Ensures text area takes available space for better justification */
+  }
+  .business-name {
+      margin-bottom: 6px;
+  }
+  .business-card .description {
+    display: block;
+    margin: 6px 0 2px;
+    color: #ddd;
+    font-size: 0.95rem;
+  }
+  .business-card .address {
+    display: block;
+    color: #cfcfcf;
+    line-height: 1.35;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+</style>
+</head>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+        </div>
         
-        // Load and display businesses
-        function loadBusinesses() {
-            allBusinesses = businessManager.getBusinesses();
-            displayBusinesses();
-        }
-        
-        function displayBusinesses() {
-            const startIndex = (currentPage - 1) * businessesPerPage;
-            const endIndex = startIndex + businessesPerPage;
-            const businessesToShow = allBusinesses.slice(startIndex, endIndex);
-            const totalPages = Math.ceil(allBusinesses.length / businessesPerPage);
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+            </div>
             
-            const businessHTML = businessesToShow.map(business => {
-                const tier = business.subscription === 'professional' ? 'Professional' : 
-                           business.subscription === 'starter' ? 'Starter' : 'Basic';
-                const tierColor = business.subscription === 'professional' ? 'purple' : 
-                                 business.subscription === 'starter' ? 'blue' : 'gray';
-                
-                return `
-                    <div class="bg-charcoal rounded-lg p-4 border border-white/10 hover:border-gold/30 transition-all duration-300">
-                        <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-lg font-semibold text-white">${business.name}</h3>
-                            <span class="px-2 py-1 rounded-full text-xs font-bold bg-${tierColor}-500/20 text-${tierColor}-400 border border-${tierColor}-500/30">
-                                ${tier}
-                            </span>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><div><h1>Interactive Browse Demo</h1><p>8 Business Placeholders with Interactive Features</p></div><!-- Interactive Features Demo --><div><div><h3>🎯 Interactive Features</h3><ul><li><i></i>Pagination (6 per page)</li><li><i></i>Tier-based filtering</li><li><i></i>Book Now buttons</li><li><i></i>Call & Email buttons</li><li><i></i>View Profile links</li></ul></div><div><h3>📊 Business Tiers</h3><div><div><span>Professional</span><span>3</span></div><div><span>Starter</span><span>3</span></div><div><span>Basic/Free</span><span>2</span></div></div></div><div><h3>🔧 Test Controls</h3><div><button onclick="testPagination()"> Test Pagination </button><button onclick="testTierFilter()"> Test Tier Filter </button><button onclick="testInteractiveButtons()"> Test Interactive Buttons </button></div></div></div><!-- Business Display --><div><h2>Business Listings</h2><div><!-- Businesses will be loaded here --></div><!-- Pagination --><div><!-- Pagination will be shown here --></div></div><!-- Test Results --><div><h3>Test Results</h3><div></div></div></div><script> // Initialize business manager const businessManager = new BusinessManager(); let currentPage = 1; const businessesPerPage = 6; let allBusinesses = []; // Load and display businesses function loadBusinesses() { allBusinesses = businessManager.getBusinesses(); displayBusinesses(); } function displayBusinesses() { const startIndex = (currentPage - 1) * businessesPerPage; const endIndex = startIndex + businessesPerPage; const businessesToShow = allBusinesses.slice(startIndex, endIndex); const totalPages = Math.ceil(allBusinesses.length / businessesPerPage); const businessHTML = businessesToShow.map(business => { const tier = business.subscription === 'professional' ? 'Professional' : business.subscription === 'starter' ? 'Starter' : 'Basic'; const tierColor = business.subscription === 'professional' ? 'purple' : business.subscription === 'starter' ? 'blue' : 'gray'; return ` <div><div><h3>${business.name}</h3><span> ${tier} </span></div><p>${business.category} • ${business.location}</p><div><span>${business.rating || 0} ⭐</span><span>(${business.reviews || 0} reviews)</span></div><div><button onclick="testBookNow('${business.name}')"><i></i>Book Now </button><div><button onclick="testViewProfile('${business.name}')"><i></i>View </button> ${business.phone ? ` <button onclick="testCall('${business.phone}')"><i></i>Call </button> ` : ''} </div></div></div> `; }).join(''); document.getElementById('businessDisplay').innerHTML = businessHTML; // Display pagination if (totalPages > 1) { let paginationHTML = ` <div><button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><i></i></button> `; for (let i = 1; i <= totalPages; i++) { paginationHTML += ` <button onclick="goToPage(${i})"> ${i} </button> `; } paginationHTML += ` <button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><i></i></button></div><div> Showing ${((currentPage - 1) * businessesPerPage) + 1}-${Math.min(currentPage * businessesPerPage, allBusinesses.length)} of ${allBusinesses.length} businesses </div> `; document.getElementById('paginationDisplay').innerHTML = paginationHTML; } else { document.getElementById('paginationDisplay').innerHTML = ''; } } function goToPage(page) { const totalPages = Math.ceil(allBusinesses.length / businessesPerPage); if (page >= 1 && page <= totalPages) { currentPage = page; displayBusinesses(); } } // Test functions function testPagination() { showTestResult('Pagination Test', `Current page: ${currentPage}, Total pages: ${Math.ceil(allBusinesses.length / businessesPerPage)}, Businesses per page: ${businessesPerPage}`); } function testTierFilter() { const professional = allBusinesses.filter(b => b.subscription === 'professional').length; const starter = allBusinesses.filter(b => b.subscription === 'starter').length; const free = allBusinesses.filter(b => b.subscription === 'free').length; showTestResult('Tier Filter Test', `Professional: ${professional}, Starter: ${starter}, Free: ${free}`); } function testInteractiveButtons() { showTestResult('Interactive Buttons Test', 'All buttons are functional: Book Now, View Profile, Call, Email'); } function testBookNow(businessName) { showTestResult('Book Now Test', `Clicked Book Now for: ${businessName}`); } function testViewProfile(businessName) { showTestResult('View Profile Test', `Clicked View Profile for: ${businessName}`); } function testCall(phoneNumber) { showTestResult('Call Test', `Would call: ${phoneNumber}`); } function showTestResult(title, message) { document.getElementById('testResults').classList.remove('hidden'); document.getElementById('testOutput').innerHTML = ` <div><strong>${title}:</strong> ${message} </div> `; } // Initialize loadBusinesses(); </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+    </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
                         </div>
-                        <p class="text-light-grey text-sm mb-2">${business.category} • ${business.location}</p>
-                        <div class="flex items-center mb-3">
-                            <span class="text-gold text-sm">${business.rating || 0} ⭐</span>
-                            <span class="text-light-grey text-sm ml-2">(${business.reviews || 0} reviews)</span>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
                         </div>
-                        <div class="space-y-2">
-                            <button onclick="testBookNow('${business.name}')" 
-                                    class="w-full py-2 px-3 rounded-lg bg-gold text-black font-semibold hover:bg-gold-dark transition-all duration-300 text-sm">
-                                <i class="fas fa-calendar-plus mr-1"></i>Book Now
-                            </button>
-                            <div class="flex space-x-2">
-                                <button onclick="testViewProfile('${business.name}')" 
-                                        class="flex-1 py-1 px-2 rounded-lg border border-gold/30 text-gold hover:bg-gold/10 transition-all duration-300 text-xs">
-                                    <i class="fas fa-eye mr-1"></i>View
-                                </button>
-                                ${business.phone ? `
-                                <button onclick="testCall('${business.phone}')" 
-                                        class="flex-1 py-1 px-2 rounded-lg border border-white/20 text-white hover:bg-white/10 transition-all duration-300 text-xs">
-                                    <i class="fas fa-phone mr-1"></i>Call
-                                </button>
-                                ` : ''}
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                             </div>
                         </div>
                     </div>
-                `;
-            }).join('');
-            
-            document.getElementById('businessDisplay').innerHTML = businessHTML;
-            
-            // Display pagination
-            if (totalPages > 1) {
-                let paginationHTML = `
-                    <div class="flex justify-center items-center space-x-2">
-                        <button onclick="goToPage(${currentPage - 1})" 
-                                ${currentPage === 1 ? 'disabled' : ''}
-                                class="px-3 py-2 rounded-lg border border-white/20 text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                `;
-                
-                for (let i = 1; i <= totalPages; i++) {
-                    paginationHTML += `
-                        <button onclick="goToPage(${i})" 
-                                class="px-3 py-2 rounded-lg border transition-all duration-300 ${
-                                    i === currentPage 
-                                        ? 'bg-gold text-black border-gold' 
-                                        : 'border-white/20 text-white hover:bg-white/10'
-                                }">
-                            ${i}
-                        </button>
-                    `;
-                }
-                
-                paginationHTML += `
-                        <button onclick="goToPage(${currentPage + 1})" 
-                                ${currentPage === totalPages ? 'disabled' : ''}
-                                class="px-3 py-2 rounded-lg border border-white/20 text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
                     </div>
-                    <div class="mt-4 text-center text-light-grey text-sm">
-                        Showing ${((currentPage - 1) * businessesPerPage) + 1}-${Math.min(currentPage * businessesPerPage, allBusinesses.length)} of ${allBusinesses.length} businesses
-                    </div>
-                `;
-                
-                document.getElementById('paginationDisplay').innerHTML = paginationHTML;
-            } else {
-                document.getElementById('paginationDisplay').innerHTML = '';
-            }
-        }
-        
-        function goToPage(page) {
-            const totalPages = Math.ceil(allBusinesses.length / businessesPerPage);
-            if (page >= 1 && page <= totalPages) {
-                currentPage = page;
-                displayBusinesses();
-            }
-        }
-        
-        // Test functions
-        function testPagination() {
-            showTestResult('Pagination Test', `Current page: ${currentPage}, Total pages: ${Math.ceil(allBusinesses.length / businessesPerPage)}, Businesses per page: ${businessesPerPage}`);
-        }
-        
-        function testTierFilter() {
-            const professional = allBusinesses.filter(b => b.subscription === 'professional').length;
-            const starter = allBusinesses.filter(b => b.subscription === 'starter').length;
-            const free = allBusinesses.filter(b => b.subscription === 'free').length;
-            showTestResult('Tier Filter Test', `Professional: ${professional}, Starter: ${starter}, Free: ${free}`);
-        }
-        
-        function testInteractiveButtons() {
-            showTestResult('Interactive Buttons Test', 'All buttons are functional: Book Now, View Profile, Call, Email');
-        }
-        
-        function testBookNow(businessName) {
-            showTestResult('Book Now Test', `Clicked Book Now for: ${businessName}`);
-        }
-        
-        function testViewProfile(businessName) {
-            showTestResult('View Profile Test', `Clicked View Profile for: ${businessName}`);
-        }
-        
-        function testCall(phoneNumber) {
-            showTestResult('Call Test', `Would call: ${phoneNumber}`);
-        }
-        
-        function showTestResult(title, message) {
-            document.getElementById('testResults').classList.remove('hidden');
-            document.getElementById('testOutput').innerHTML = `
-                <div class="mb-2">
-                    <strong class="text-white">${title}:</strong> ${message}
-                </div>
-            `;
-        }
-        
-        // Initialize
-        loadBusinesses();
-    </script>
+    </footer>
 </body>
 </html>
-
-
-
-
-
-
-

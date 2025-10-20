@@ -1,278 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Backend API Test - BlkPages</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .neon-pink { color: #ff6b9d; }
-        .neon-purple { color: #c44569; }
-        .neon-green { color: #00d4aa; }
-        .neon-blue { color: #00a8ff; }
-        .bg-neon-pink { background-color: #ff6b9d; }
-        .bg-neon-purple { background-color: #c44569; }
-        .bg-neon-green { background-color: #00d4aa; }
-        .bg-neon-blue { background-color: #00a8ff; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
+        }
+        
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+        }
+        
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
-<body class="bg-black text-white min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-black border-b border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <a href="index.html" class="text-2xl font-bold neon-pink">BlkPages</a>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <a href="index.html" class="text-white hover:neon-pink transition-colors">Home</a>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
                 </div>
             </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
         </div>
-    </nav>
-
+    </header>
+    
     <!-- Main Content -->
-    <div class="max-w-4xl mx-auto px-4 py-8">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold mb-4">
-                <span class="neon-pink">Backend</span> 
-                <span class="neon-purple">API</span> 
-                <span class="neon-green">Test</span>
-            </h1>
-            <p class="text-gray-300 text-lg">Test the BlkPages booking API endpoints</p>
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Navigation --><!-- Main Content --><div><div><h1><span>Backend</span><span>API</span><span>Test</span></h1><p>Test the BlkPages booking API endpoints</p></div><!-- API Status --><div><h2>API Status</h2><div><button><i></i>Check API Status </button><div></div></div></div><!-- Test Forms --><div><!-- Generate Booking Link Test --><div><h2>Generate Booking Link</h2><form><div><label>Business ID</label><input type="text" value="123" required></div><div><label>Service ID</label><input type="text" value="haircut" required></div><div><label>Slot Date & Time</label><input type="datetime-local" required></div><div><label>Customer Phone</label><input type="tel" value="+447712345678" required></div><div><label>Customer Name</label><input type="text" value="Test Customer" required></div><div><input type="checkbox"><label for="sendWhatsApp">Send WhatsApp Message</label></div><button type="submit"><i></i>Generate Booking Link </button></form><div><h3>Result:</h3><pre></pre></div></div><!-- Test Booking Confirmation --><div><h2>Test Booking Confirmation</h2><form><div><label>Booking Token</label><input type="text" placeholder="Enter booking token from above" required></div><div><label>Customer Email</label><input type="email" value="test@example.com" required></div><div><label>Special Requests</label><textarea rows="3">Please use organic products</textarea></div><button type="submit"><i></i>Confirm Booking </button></form><div><h3>Result:</h3><pre></pre></div></div></div><!-- API Endpoints Info --><div><h2>Available API Endpoints</h2><div><div><div><span>POST</span><code>/api/generate-booking-link</code></div><div><span>GET</span><code>/api/booking/:token</code></div><div><span>POST</span><code>/api/booking/:token/confirm</code></div></div><div><div><span>POST</span><code>/api/booking/:token/cancel</code></div><div><span>GET</span><code>/api/business/:id/bookings</code></div></div></div></div><!-- Deployment Instructions --><div><h2>Deployment Options</h2><div><div><h3>Option 1: Netlify Functions</h3><p>Deploy as serverless functions with automatic scaling</p><a href="https://netlify.com" target="_blank">Deploy to Netlify →</a></div><div><h3>Option 2: Vercel</h3><p>Deploy with zero configuration and global CDN</p><a href="https://vercel.com" target="_blank">Deploy to Vercel →</a></div><div><h3>Option 3: Railway</h3><p>Deploy with database and environment management</p><a href="https://railway.app" target="_blank">Deploy to Railway →</a></div></div></div></div><script> // Set default date to tomorrow const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1); document.getElementById('slotDateTime').value = tomorrow.toISOString().slice(0, 16); // API Base URL - Change this to your deployed backend URL const API_BASE_URL = 'http://localhost:3001'; // Change to your deployed URL // Check API Status document.getElementById('checkStatus').addEventListener('click', async () => { const statusResult = document.getElementById('statusResult'); statusResult.innerHTML = '<i></i>Checking...'; try { const response = await fetch(`${API_BASE_URL}/api/health`); if (response.ok) { statusResult.innerHTML = '<i></i>API is running!'; } else { statusResult.innerHTML = '<i></i>API responded with error'; } } catch (error) { statusResult.innerHTML = '<i></i>API is not accessible'; console.error('API Status Error:', error); } }); // Generate Booking Link document.getElementById('bookingLinkForm').addEventListener('submit', async (e) => { e.preventDefault(); const formData = { businessId: document.getElementById('businessId').value, serviceId: document.getElementById('serviceId').value, slotDateTime: document.getElementById('slotDateTime').value, customerPhone: document.getElementById('customerPhone').value, customerName: document.getElementById('customerName').value, sendWhatsApp: document.getElementById('sendWhatsApp').checked }; try { const response = await fetch(`${API_BASE_URL}/api/generate-booking-link`, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify(formData) }); const result = await response.json(); document.getElementById('bookingLinkResult').classList.remove('hidden'); document.getElementById('bookingLinkOutput').textContent = JSON.stringify(result, null, 2); // Auto-fill the booking token for confirmation test if (result.bookingLink) { const token = result.bookingLink.split('token=')[1]?.split('&')[0]; if (token) { document.getElementById('bookingToken').value = token; } } } catch (error) { document.getElementById('bookingLinkResult').classList.remove('hidden'); document.getElementById('bookingLinkOutput').textContent = `Error: ${error.message}`; } }); // Confirm Booking document.getElementById('confirmBookingForm').addEventListener('submit', async (e) => { e.preventDefault(); const formData = { customerName: document.getElementById('customerName').value, customerEmail: document.getElementById('customerEmail').value, specialRequests: document.getElementById('specialRequests').value }; const token = document.getElementById('bookingToken').value; try { const response = await fetch(`${API_BASE_URL}/api/booking/${token}/confirm`, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify(formData) }); const result = await response.json(); document.getElementById('confirmResult').classList.remove('hidden'); document.getElementById('confirmOutput').textContent = JSON.stringify(result, null, 2); } catch (error) { document.getElementById('confirmResult').classList.remove('hidden'); document.getElementById('confirmOutput').textContent = `Error: ${error.message}`; } }); </script>
         </div>
-
-        <!-- API Status -->
-        <div class="bg-gray-900 rounded-lg p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 neon-blue">API Status</h2>
-            <div class="flex items-center space-x-4">
-                <button id="checkStatus" class="bg-neon-blue text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
-                    <i class="fas fa-heartbeat mr-2"></i>Check API Status
-                </button>
-                <div id="statusResult" class="text-lg"></div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
             </div>
-        </div>
-
-        <!-- Test Forms -->
-        <div class="grid md:grid-cols-2 gap-8">
-            <!-- Generate Booking Link Test -->
-            <div class="bg-gray-900 rounded-lg p-6">
-                <h2 class="text-2xl font-bold mb-4 neon-pink">Generate Booking Link</h2>
-                <form id="bookingLinkForm" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Business ID</label>
-                        <input type="text" id="businessId" value="123" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Service ID</label>
-                        <input type="text" id="serviceId" value="haircut" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Slot Date & Time</label>
-                        <input type="datetime-local" id="slotDateTime" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Customer Phone</label>
-                        <input type="tel" id="customerPhone" value="+447712345678" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Customer Name</label>
-                        <input type="text" id="customerName" value="Test Customer" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
-                    </div>
-                    <div class="flex items-center">
-                        <input type="checkbox" id="sendWhatsApp" class="mr-2">
-                        <label for="sendWhatsApp" class="text-sm">Send WhatsApp Message</label>
-                    </div>
-                    <button type="submit" class="w-full bg-neon-pink text-white py-2 px-4 rounded-lg hover:bg-pink-600 transition-colors">
-                        <i class="fas fa-link mr-2"></i>Generate Booking Link
-                    </button>
-                </form>
-                <div id="bookingLinkResult" class="mt-4 p-4 bg-gray-800 rounded-lg hidden">
-                    <h3 class="font-bold mb-2">Result:</h3>
-                    <pre id="bookingLinkOutput" class="text-sm text-gray-300"></pre>
-                </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
             </div>
-
-            <!-- Test Booking Confirmation -->
-            <div class="bg-gray-900 rounded-lg p-6">
-                <h2 class="text-2xl font-bold mb-4 neon-green">Test Booking Confirmation</h2>
-                <form id="confirmBookingForm" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Booking Token</label>
-                        <input type="text" id="bookingToken" placeholder="Enter booking token from above" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Customer Email</label>
-                        <input type="email" id="customerEmail" value="test@example.com" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Special Requests</label>
-                        <textarea id="specialRequests" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" rows="3">Please use organic products</textarea>
-                    </div>
-                    <button type="submit" class="w-full bg-neon-green text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors">
-                        <i class="fas fa-check mr-2"></i>Confirm Booking
-                    </button>
-                </form>
-                <div id="confirmResult" class="mt-4 p-4 bg-gray-800 rounded-lg hidden">
-                    <h3 class="font-bold mb-2">Result:</h3>
-                    <pre id="confirmOutput" class="text-sm text-gray-300"></pre>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-
-        <!-- API Endpoints Info -->
-        <div class="bg-gray-900 rounded-lg p-6 mt-8">
-            <h2 class="text-2xl font-bold mb-4 neon-purple">Available API Endpoints</h2>
-            <div class="grid md:grid-cols-2 gap-4">
-                <div class="space-y-2">
-                    <div class="flex items-center space-x-2">
-                        <span class="bg-green-600 text-white px-2 py-1 rounded text-sm">POST</span>
-                        <code class="text-sm">/api/generate-booking-link</code>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-sm">GET</span>
-                        <code class="text-sm">/api/booking/:token</code>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="bg-green-600 text-white px-2 py-1 rounded text-sm">POST</span>
-                        <code class="text-sm">/api/booking/:token/confirm</code>
-                    </div>
-                </div>
-                <div class="space-y-2">
-                    <div class="flex items-center space-x-2">
-                        <span class="bg-red-600 text-white px-2 py-1 rounded text-sm">POST</span>
-                        <code class="text-sm">/api/booking/:token/cancel</code>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-sm">GET</span>
-                        <code class="text-sm">/api/business/:id/bookings</code>
-                    </div>
-                </div>
-            </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
         </div>
-
-        <!-- Deployment Instructions -->
-        <div class="bg-gray-900 rounded-lg p-6 mt-8">
-            <h2 class="text-2xl font-bold mb-4 neon-blue">Deployment Options</h2>
-            <div class="space-y-4">
-                <div class="border-l-4 border-neon-blue pl-4">
-                    <h3 class="font-bold text-lg">Option 1: Netlify Functions</h3>
-                    <p class="text-gray-300">Deploy as serverless functions with automatic scaling</p>
-                    <a href="https://netlify.com" target="_blank" class="text-neon-blue hover:underline">Deploy to Netlify →</a>
-                </div>
-                <div class="border-l-4 border-neon-green pl-4">
-                    <h3 class="font-bold text-lg">Option 2: Vercel</h3>
-                    <p class="text-gray-300">Deploy with zero configuration and global CDN</p>
-                    <a href="https://vercel.com" target="_blank" class="text-neon-green hover:underline">Deploy to Vercel →</a>
-                </div>
-                <div class="border-l-4 border-neon-purple pl-4">
-                    <h3 class="font-bold text-lg">Option 3: Railway</h3>
-                    <p class="text-gray-300">Deploy with database and environment management</p>
-                    <a href="https://railway.app" target="_blank" class="text-neon-purple hover:underline">Deploy to Railway →</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Set default date to tomorrow
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        document.getElementById('slotDateTime').value = tomorrow.toISOString().slice(0, 16);
-
-        // API Base URL - Change this to your deployed backend URL
-        const API_BASE_URL = 'http://localhost:3001'; // Change to your deployed URL
-
-        // Check API Status
-        document.getElementById('checkStatus').addEventListener('click', async () => {
-            const statusResult = document.getElementById('statusResult');
-            statusResult.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Checking...';
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/health`);
-                if (response.ok) {
-                    statusResult.innerHTML = '<i class="fas fa-check-circle text-green-500 mr-2"></i>API is running!';
-                } else {
-                    statusResult.innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>API responded with error';
-                }
-            } catch (error) {
-                statusResult.innerHTML = '<i class="fas fa-times-circle text-red-500 mr-2"></i>API is not accessible';
-                console.error('API Status Error:', error);
-            }
-        });
-
-        // Generate Booking Link
-        document.getElementById('bookingLinkForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = {
-                businessId: document.getElementById('businessId').value,
-                serviceId: document.getElementById('serviceId').value,
-                slotDateTime: document.getElementById('slotDateTime').value,
-                customerPhone: document.getElementById('customerPhone').value,
-                customerName: document.getElementById('customerName').value,
-                sendWhatsApp: document.getElementById('sendWhatsApp').checked
-            };
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/generate-booking-link`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const result = await response.json();
-                
-                document.getElementById('bookingLinkResult').classList.remove('hidden');
-                document.getElementById('bookingLinkOutput').textContent = JSON.stringify(result, null, 2);
-                
-                // Auto-fill the booking token for confirmation test
-                if (result.bookingLink) {
-                    const token = result.bookingLink.split('token=')[1]?.split('&')[0];
-                    if (token) {
-                        document.getElementById('bookingToken').value = token;
-                    }
-                }
-            } catch (error) {
-                document.getElementById('bookingLinkResult').classList.remove('hidden');
-                document.getElementById('bookingLinkOutput').textContent = `Error: ${error.message}`;
-            }
-        });
-
-        // Confirm Booking
-        document.getElementById('confirmBookingForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = {
-                customerName: document.getElementById('customerName').value,
-                customerEmail: document.getElementById('customerEmail').value,
-                specialRequests: document.getElementById('specialRequests').value
-            };
-
-            const token = document.getElementById('bookingToken').value;
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/booking/${token}/confirm`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const result = await response.json();
-                
-                document.getElementById('confirmResult').classList.remove('hidden');
-                document.getElementById('confirmOutput').textContent = JSON.stringify(result, null, 2);
-            } catch (error) {
-                document.getElementById('confirmResult').classList.remove('hidden');
-                document.getElementById('confirmOutput').textContent = `Error: ${error.message}`;
-            }
-        });
-    </script>
+    </footer>
 </body>
 </html>
-

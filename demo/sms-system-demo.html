@@ -1,916 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SMS System Demo - BlkPages</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- SMS System -->
-    <script src="../backend/sms-credit-system.js"></script>
-    <script src="../backend/verified-business-numbers.js"></script>
-    <script src="../backend/verified-customer-numbers.js"></script>
-    <script src="../backend/sms-messaging-system.js"></script>
-    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            color: #ffffff;
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        /* Header */
-        .header {
-            background: rgba(0, 0, 0, 0.95);
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+        }
+        
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .header-content {
+        .dropdown-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-        
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
             color: #ffffff;
             text-decoration: none;
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .demo-badge {
-            background: linear-gradient(135deg, #10B981, #059669);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
             font-size: 0.9rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        /* Main Content */
-        .main-content {
-            padding: 2rem 0;
-        }
-        
-        .demo-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .demo-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .demo-subtitle {
-            color: #cccccc;
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .demo-description {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .demo-description h3 {
-            color: #10B981;
-            margin-bottom: 1rem;
-        }
-        
-        .demo-description p {
-            color: #cccccc;
-            line-height: 1.6;
-        }
-        
-        /* Demo Sections */
-        .demo-sections {
-            display: grid;
-            gap: 2rem;
-        }
-        
-        .demo-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #ffffff;
-        }
-        
-        .demo-btn {
-            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .demo-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-        }
-        
-        .demo-btn.success {
-            background: linear-gradient(135deg, #10B981, #059669);
-        }
-        
-        .demo-btn.warning {
-            background: linear-gradient(135deg, #F59E0B, #D97706);
-        }
-        
-        .demo-btn.danger {
-            background: linear-gradient(135deg, #EF4444, #DC2626);
-        }
-        
-        /* SMS Credit Demo */
-        .credit-demo {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .credit-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 1.5rem;
-        }
-        
-        .credit-card h4 {
-            color: #ffffff;
-            margin-bottom: 1rem;
-        }
-        
-        .credit-progress {
-            margin-bottom: 1rem;
-        }
-        
-        .credit-progress-bar {
-            width: 100%;
-            height: 8px;
+        .dropdown-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 0.5rem;
         }
         
-        .credit-progress-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        
-        .credit-progress-fill.low {
-            background: linear-gradient(90deg, #10B981, #059669);
-        }
-        
-        .credit-progress-fill.warning {
-            background: linear-gradient(90deg, #F59E0B, #D97706);
-        }
-        
-        .credit-progress-fill.critical {
-            background: linear-gradient(90deg, #EF4444, #DC2626);
-        }
-        
-        .credit-stats {
-            display: flex;
-            justify-content: space-between;
-            color: #cccccc;
-            font-size: 0.9rem;
-        }
-        
-        /* Phone Verification Demo */
-        .phone-verification-demo {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .phone-demo-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 1.5rem;
-        }
-        
-        .phone-demo-card h4 {
-            color: #ffffff;
-            margin-bottom: 1rem;
-        }
-        
-        .phone-input-group {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .phone-input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            padding: 0.75rem;
-            color: #ffffff;
-            font-size: 0.9rem;
-        }
-        
-        .phone-input::placeholder {
-            color: #cccccc;
-        }
-        
-        .verify-btn {
-            background: linear-gradient(135deg, #10B981, #059669);
-            color: white;
-            border: none;
-            padding: 0.75rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        
-        .verify-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-        
-        .verify-btn:disabled {
-            background: #6B7280;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .verification-code {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .code-input-group {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .code-input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            padding: 0.75rem;
-            color: #ffffff;
-            text-align: center;
-            font-size: 1.2rem;
-            letter-spacing: 0.2em;
-        }
-        
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-top: 1rem;
-        }
-        
-        .status-badge.verified {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #10B981;
-        }
-        
-        .status-badge.unverified {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            color: #F59E0B;
-        }
-        
-        /* SMS Messaging Demo */
-        .sms-messaging-demo {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .sms-demo-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 1.5rem;
-        }
-        
-        .sms-demo-card h4 {
-            color: #ffffff;
-            margin-bottom: 1rem;
-        }
-        
-        .sms-message {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: #cccccc;
-        }
-        
-        .sms-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .sms-stat {
-            text-align: center;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 6px;
-        }
-        
-        .sms-stat .number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #10B981;
-        }
-        
-        .sms-stat .label {
-            font-size: 0.8rem;
-            color: #cccccc;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .credit-demo,
-            .phone-verification-demo,
-            .sms-messaging-demo {
-                grid-template-columns: 1fr;
-            }
-            
-            .phone-input-group,
-            .code-input-group {
-                flex-direction: column;
-            }
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <a href="../demo-hub.html" class="logo">BlkPages Demo</a>
-                <div class="demo-badge">
-                    <i class="fas fa-mobile-alt"></i>
-                    <span>SMS System Demo</span>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-            </div>
-        </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="demo-header">
-                <h1 class="demo-title">SMS Messaging System Demo</h1>
-                <p class="demo-subtitle">Complete SMS credit management, phone verification, and messaging system</p>
-                
-                <div class="demo-description">
-                    <h3>🚀 What This Demo Shows</h3>
-                    <p>This comprehensive demo showcases the complete SMS messaging system for BlkPages, including SMS credit management, phone number verification, promotional messaging, and admin controls. The system is GDPR-compliant with encrypted phone numbers and comprehensive audit logging.</p>
-                </div>
-            </div>
-
-            <!-- SMS Credit System Demo -->
-            <div class="demo-section">
-                <div class="section-header">
-                    <h2 class="section-title">SMS Credit System</h2>
-                    <button class="demo-btn" onclick="demoSMSCredits()">
-                        <i class="fas fa-play"></i> Demo Credits
-                    </button>
-                </div>
-                
-                <div class="credit-demo">
-                    <div class="credit-card">
-                        <h4>Business A - Low Credits</h4>
-                        <div class="credit-progress">
-                            <div class="credit-progress-bar">
-                                <div class="credit-progress-fill warning" style="width: 80%"></div>
-                            </div>
-                            <div class="credit-stats">
-                                <span>40 of 50 SMS used</span>
-                                <span>80% usage</span>
-                            </div>
-                        </div>
-                        <button class="demo-btn warning" onclick="demoLowCredits()">
-                            <i class="fas fa-exclamation-triangle"></i> Trigger Warning
-                        </button>
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
                     </div>
                     
-                    <div class="credit-card">
-                        <h4>Business B - Critical Credits</h4>
-                        <div class="credit-progress">
-                            <div class="credit-progress-bar">
-                                <div class="credit-progress-fill critical" style="width: 100%"></div>
-                            </div>
-                            <div class="credit-stats">
-                                <span>50 of 50 SMS used</span>
-                                <span>100% usage</span>
-                            </div>
-                        </div>
-                        <button class="demo-btn danger" onclick="demoCriticalCredits()">
-                            <i class="fas fa-exclamation-circle"></i> Trigger Critical
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
                         </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
                     </div>
                     
-                    <div class="credit-card">
-                        <h4>Business C - Add Credits</h4>
-                        <div class="credit-progress">
-                            <div class="credit-progress-bar">
-                                <div class="credit-progress-fill low" style="width: 30%"></div>
-                            </div>
-                            <div class="credit-stats">
-                                <span>15 of 50 SMS used</span>
-                                <span>30% usage</span>
-                            </div>
-                        </div>
-                        <button class="demo-btn success" onclick="demoAddCredits()">
-                            <i class="fas fa-plus"></i> Add Credits
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
                         </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Phone Verification Demo -->
-            <div class="demo-section">
-                <div class="section-header">
-                    <h2 class="section-title">Phone Number Verification</h2>
-                    <button class="demo-btn" onclick="demoPhoneVerification()">
-                        <i class="fas fa-mobile-alt"></i> Demo Verification
-                    </button>
-                </div>
-                
-                <div class="phone-verification-demo">
-                    <div class="phone-demo-card">
-                        <h4>Business Phone Verification</h4>
-                        <div class="phone-input-group">
-                            <input type="tel" class="phone-input" placeholder="+44 7700 900000" id="businessPhone">
-                            <button class="verify-btn" onclick="verifyBusinessPhone()">
-                                <i class="fas fa-paper-plane"></i> Send Code
-                            </button>
-                        </div>
-                        <div class="verification-code" id="businessVerificationCode" style="display: none;">
-                            <div class="code-input-group">
-                                <input type="text" class="code-input" placeholder="123456" maxlength="6" id="businessCode">
-                                <button class="verify-btn" onclick="verifyBusinessCode()">
-                                    <i class="fas fa-check"></i> Verify
-                                </button>
-                            </div>
-                        </div>
-                        <div class="status-badge unverified" id="businessStatus">
-                            <i class="fas fa-exclamation-triangle"></i> Unverified
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
                         </div>
                     </div>
                     
-                    <div class="phone-demo-card">
-                        <h4>Customer Phone Verification</h4>
-                        <div class="phone-input-group">
-                            <input type="tel" class="phone-input" placeholder="+44 7700 900001" id="customerPhone">
-                            <button class="verify-btn" onclick="verifyCustomerPhone()">
-                                <i class="fas fa-paper-plane"></i> Send Code
-                            </button>
-                        </div>
-                        <div class="verification-code" id="customerVerificationCode" style="display: none;">
-                            <div class="code-input-group">
-                                <input type="text" class="code-input" placeholder="123456" maxlength="6" id="customerCode">
-                                <button class="verify-btn" onclick="verifyCustomerCode()">
-                                    <i class="fas fa-check"></i> Verify
-                                </button>
-                            </div>
-                        </div>
-                        <div class="status-badge unverified" id="customerStatus">
-                            <i class="fas fa-exclamation-triangle"></i> Unverified
-                        </div>
-                    </div>
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
                 </div>
-            </div>
 
-            <!-- SMS Messaging Demo -->
-            <div class="demo-section">
-                <div class="section-header">
-                    <h2 class="section-title">SMS Messaging System</h2>
-                    <button class="demo-btn" onclick="demoSMSMessaging()">
-                        <i class="fas fa-comment"></i> Demo Messaging
-                    </button>
-                </div>
-                
-                <div class="sms-messaging-demo">
-                    <div class="sms-demo-card">
-                        <h4>Booking Confirmation SMS</h4>
-                        <div class="sms-message">
-                            Booking confirmed! Hair Cut on 15 Dec at 2:00 PM. Reference: BP-123456. Reply STOP to opt out.
-                        </div>
-                        <button class="demo-btn success" onclick="demoBookingSMS()">
-                            <i class="fas fa-calendar-check"></i> Send Booking SMS
-                        </button>
-                    </div>
-                    
-                    <div class="sms-demo-card">
-                        <h4>Promotional SMS</h4>
-                        <div class="sms-message">
-                            🎉 Special offer! 20% off all services this weekend. Book now: blkpages.co.uk/book. Reply STOP to opt out.
-                        </div>
-                        <button class="demo-btn warning" onclick="demoPromotionalSMS()">
-                            <i class="fas fa-bullhorn"></i> Send Promo SMS
-                        </button>
-                    </div>
-                    
-                    <div class="sms-demo-card">
-                        <h4>SMS Analytics</h4>
-                        <div class="sms-stats">
-                            <div class="sms-stat">
-                                <div class="number">127</div>
-                                <div class="label">Total Sent</div>
-                            </div>
-                            <div class="sms-stat">
-                                <div class="number">98%</div>
-                                <div class="label">Delivery Rate</div>
-                            </div>
-                            <div class="sms-stat">
-                                <div class="number">45</div>
-                                <div class="label">Booking SMS</div>
-                            </div>
-                            <div class="sms-stat">
-                                <div class="number">82</div>
-                                <div class="label">Promo SMS</div>
-                            </div>
-                        </div>
-                        <button class="demo-btn" onclick="demoSMSAnalytics()">
-                            <i class="fas fa-chart-bar"></i> View Analytics
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Admin Controls Demo -->
-            <div class="demo-section">
-                <div class="section-header">
-                    <h2 class="section-title">Admin Controls</h2>
-                    <button class="demo-btn" onclick="demoAdminControls()">
-                        <i class="fas fa-cog"></i> Demo Admin
-                    </button>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                    <button class="demo-btn" onclick="demoAdminDashboard()">
-                        <i class="fas fa-tachometer-alt"></i> Admin Dashboard
-                    </button>
-                    <button class="demo-btn" onclick="demoAuditLogs()">
-                        <i class="fas fa-list"></i> Audit Logs
-                    </button>
-                    <button class="demo-btn" onclick="demoEmailTemplates()">
-                        <i class="fas fa-envelope"></i> Email Templates
-                    </button>
-                    <button class="demo-btn" onclick="demoGDPRCompliance()">
-                        <i class="fas fa-shield-alt"></i> GDPR Compliance
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     </button>
                 </div>
             </div>
-        </main>
-    </div>
-
-    <script>
-        // ==================== SMS SYSTEM DEMO ====================
-        
-        /**
-         * Demo SMS credits system
-         */
-        function demoSMSCredits() {
-            showNotification('SMS Credit System Demo Started', 'success');
-            console.log('SMS Credit System Demo:', {
-                monthlyAllowance: 50,
-                addonPrice: 3,
-                warningThreshold: 80,
-                criticalThreshold: 100
-            });
-        }
-
-        /**
-         * Demo low credits warning
-         */
-        function demoLowCredits() {
-            showNotification('Low Credits Warning: 80% of SMS credits used', 'warning');
-            console.log('Low Credits Warning:', {
-                business: 'Business A',
-                usage: '80%',
-                remaining: 10,
-                warningSent: true
-            });
-        }
-
-        /**
-         * Demo critical credits
-         */
-        function demoCriticalCredits() {
-            showNotification('Critical: All SMS credits used - notifications paused', 'error');
-            console.log('Critical Credits:', {
-                business: 'Business B',
-                usage: '100%',
-                remaining: 0,
-                notificationsPaused: true
-            });
-        }
-
-        /**
-         * Demo adding credits
-         */
-        function demoAddCredits() {
-            showNotification('50 SMS credits added successfully!', 'success');
-            console.log('Credits Added:', {
-                business: 'Business C',
-                creditsAdded: 50,
-                newTotal: 100,
-                cost: 3
-            });
-        }
-
-        /**
-         * Demo phone verification
-         */
-        function demoPhoneVerification() {
-            showNotification('Phone Verification Demo Started', 'success');
-            console.log('Phone Verification Demo:', {
-                businessVerification: 'Available',
-                customerVerification: 'Available',
-                encryption: 'AES-256',
-                privacy: 'GDPR Compliant'
-            });
-        }
-
-        /**
-         * Verify business phone
-         */
-        function verifyBusinessPhone() {
-            const phone = document.getElementById('businessPhone').value;
-            if (!phone) {
-                showNotification('Please enter a phone number', 'error');
-                return;
-            }
-            
-            showNotification('Verification code sent to business phone', 'success');
-            document.getElementById('businessVerificationCode').style.display = 'block';
-            document.getElementById('businessPhone').disabled = true;
-        }
-
-        /**
-         * Verify business code
-         */
-        function verifyBusinessCode() {
-            const code = document.getElementById('businessCode').value;
-            if (!code) {
-                showNotification('Please enter verification code', 'error');
-                return;
-            }
-            
-            showNotification('Business phone verified successfully!', 'success');
-            document.getElementById('businessStatus').className = 'status-badge verified';
-            document.getElementById('businessStatus').innerHTML = '<i class="fas fa-check"></i> Verified';
-        }
-
-        /**
-         * Verify customer phone
-         */
-        function verifyCustomerPhone() {
-            const phone = document.getElementById('customerPhone').value;
-            if (!phone) {
-                showNotification('Please enter a phone number', 'error');
-                return;
-            }
-            
-            showNotification('Verification code sent to customer phone', 'success');
-            document.getElementById('customerVerificationCode').style.display = 'block';
-            document.getElementById('customerPhone').disabled = true;
-        }
-
-        /**
-         * Verify customer code
-         */
-        function verifyCustomerCode() {
-            const code = document.getElementById('customerCode').value;
-            if (!code) {
-                showNotification('Please enter verification code', 'error');
-                return;
-            }
-            
-            showNotification('Customer phone verified successfully!', 'success');
-            document.getElementById('customerStatus').className = 'status-badge verified';
-            document.getElementById('customerStatus').innerHTML = '<i class="fas fa-check"></i> Verified';
-        }
-
-        /**
-         * Demo SMS messaging
-         */
-        function demoSMSMessaging() {
-            showNotification('SMS Messaging System Demo Started', 'success');
-            console.log('SMS Messaging Demo:', {
-                provider: 'Twilio',
-                encryption: 'End-to-end',
-                deliveryTracking: 'Enabled',
-                auditLogging: 'Comprehensive'
-            });
-        }
-
-        /**
-         * Demo booking SMS
-         */
-        function demoBookingSMS() {
-            showNotification('Booking confirmation SMS sent!', 'success');
-            console.log('Booking SMS Sent:', {
-                type: 'booking_confirmation',
-                recipient: 'Customer',
-                message: 'Booking confirmed! Hair Cut on 15 Dec at 2:00 PM. Reference: BP-123456.',
-                creditsUsed: 1
-            });
-        }
-
-        /**
-         * Demo promotional SMS
-         */
-        function demoPromotionalSMS() {
-            showNotification('Promotional SMS sent to customer list!', 'success');
-            console.log('Promotional SMS Sent:', {
-                type: 'promotional',
-                recipients: 'Customer List',
-                message: 'Special offer! 20% off all services this weekend.',
-                creditsUsed: 1
-            });
-        }
-
-        /**
-         * Demo SMS analytics
-         */
-        function demoSMSAnalytics() {
-            showNotification('SMS Analytics Dashboard Opened', 'success');
-            console.log('SMS Analytics:', {
-                totalSent: 127,
-                deliveryRate: '98%',
-                bookingSMS: 45,
-                promotionalSMS: 82,
-                averageDeliveryTime: '2.3 seconds'
-            });
-        }
-
-        /**
-         * Demo admin controls
-         */
-        function demoAdminControls() {
-            showNotification('Admin Controls Demo Started', 'success');
-            console.log('Admin Controls Demo:', {
-                dashboard: 'Available',
-                auditLogs: 'Available',
-                emailTemplates: 'Available',
-                gdprCompliance: 'Enabled'
-            });
-        }
-
-        /**
-         * Demo admin dashboard
-         */
-        function demoAdminDashboard() {
-            showNotification('Opening Admin SMS Dashboard...', 'success');
-            window.open('../admin/sms-dashboard.html', '_blank');
-        }
-
-        /**
-         * Demo audit logs
-         */
-        function demoAuditLogs() {
-            showNotification('Audit Logs Demo Started', 'success');
-            console.log('Audit Logs:', [
-                'credits_deducted - Business A - 1 SMS sent',
-                'low_credit_warning_sent - Business B - 80% usage',
-                'addon_purchased - Business C - 50 credits added',
-                'sms_failed - Business D - Invalid number',
-                'verification_successful - Business E - Phone verified'
-            ]);
-        }
-
-        /**
-         * Demo email templates
-         */
-        function demoEmailTemplates() {
-            showNotification('Email Templates Demo Started', 'success');
-            console.log('Email Templates:', {
-                lowCreditWarning: 'Available',
-                creditsDepleted: 'Available',
-                addonConfirmation: 'Available',
-                branding: 'BlkPages'
-            });
-        }
-
-        /**
-         * Demo GDPR compliance
-         */
-        function demoGDPRCompliance() {
-            showNotification('GDPR Compliance Demo Started', 'success');
-            console.log('GDPR Compliance:', {
-                phoneEncryption: 'AES-256',
-                dataMinimization: 'Enabled',
-                auditLogging: 'Comprehensive',
-                privacyControls: 'Customer Opt-out Available',
-                dataRetention: 'Configurable'
-            });
-        }
-
-        /**
-         * Show notification
-         */
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : type === 'warning' ? '#F59E0B' : '#3B82F6'};
-                color: white;
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-                z-index: 1000;
-                font-weight: 500;
-                max-width: 300px;
-            `;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-
-        /**
-         * Initialize demo on page load
-         */
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('SMS System Demo Initialized');
-            showNotification('SMS System Demo Ready', 'success');
-        });
-    </script>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><!-- Header --><!-- Main Content --><main><div><h1>SMS Messaging System Demo</h1><p>Complete SMS credit management, phone verification, and messaging system</p><div><h3>🚀 What This Demo Shows</h3><p>This comprehensive demo showcases the complete SMS messaging system for BlkPages, including SMS credit management, phone number verification, promotional messaging, and admin controls. The system is GDPR-compliant with encrypted phone numbers and comprehensive audit logging.</p></div></div><!-- SMS Credit System Demo --><div><div><h2>SMS Credit System</h2><button onclick="demoSMSCredits()"><i></i> Demo Credits </button></div><div><div><h4>Business A - Low Credits</h4><div><div><div></div></div><div><span>40 of 50 SMS used</span><span>80% usage</span></div></div><button onclick="demoLowCredits()"><i></i> Trigger Warning </button></div><div><h4>Business B - Critical Credits</h4><div><div><div></div></div><div><span>50 of 50 SMS used</span><span>100% usage</span></div></div><button onclick="demoCriticalCredits()"><i></i> Trigger Critical </button></div><div><h4>Business C - Add Credits</h4><div><div><div></div></div><div><span>15 of 50 SMS used</span><span>30% usage</span></div></div><button onclick="demoAddCredits()"><i></i> Add Credits </button></div></div></div><!-- Phone Verification Demo --><div><div><h2>Phone Number Verification</h2><button onclick="demoPhoneVerification()"><i></i> Demo Verification </button></div><div><div><h4>Business Phone Verification</h4><div><input type="tel" placeholder="+44 7700 900000"><button onclick="verifyBusinessPhone()"><i></i> Send Code </button></div><div><div><input type="text" placeholder="123456" maxlength="6"><button onclick="verifyBusinessCode()"><i></i> Verify </button></div></div><div><i></i> Unverified </div></div><div><h4>Customer Phone Verification</h4><div><input type="tel" placeholder="+44 7700 900001"><button onclick="verifyCustomerPhone()"><i></i> Send Code </button></div><div><div><input type="text" placeholder="123456" maxlength="6"><button onclick="verifyCustomerCode()"><i></i> Verify </button></div></div><div><i></i> Unverified </div></div></div></div><!-- SMS Messaging Demo --><div><div><h2>SMS Messaging System</h2><button onclick="demoSMSMessaging()"><i></i> Demo Messaging </button></div><div><div><h4>Booking Confirmation SMS</h4><div> Booking confirmed! Hair Cut on 15 Dec at 2:00 PM. Reference: BP-123456. Reply STOP to opt out. </div><button onclick="demoBookingSMS()"><i></i> Send Booking SMS </button></div><div><h4>Promotional SMS</h4><div> 🎉 Special offer! 20% off all services this weekend. Book now: blkpages.co.uk/book. Reply STOP to opt out. </div><button onclick="demoPromotionalSMS()"><i></i> Send Promo SMS </button></div><div><h4>SMS Analytics</h4><div><div><div>127</div><div>Total Sent</div></div><div><div>98%</div><div>Delivery Rate</div></div><div><div>45</div><div>Booking SMS</div></div><div><div>82</div><div>Promo SMS</div></div></div><button onclick="demoSMSAnalytics()"><i></i> View Analytics </button></div></div></div><!-- Admin Controls Demo --><div><div><h2>Admin Controls</h2><button onclick="demoAdminControls()"><i></i> Demo Admin </button></div><div><button onclick="demoAdminDashboard()"><i></i> Admin Dashboard </button><button onclick="demoAuditLogs()"><i></i> Audit Logs </button><button onclick="demoEmailTemplates()"><i></i> Email Templates </button><button onclick="demoGDPRCompliance()"><i></i> GDPR Compliance </button></div></div></main></div><script> // ==================== SMS SYSTEM DEMO ==================== /** * Demo SMS credits system */ function demoSMSCredits() { showNotification('SMS Credit System Demo Started', 'success'); console.log('SMS Credit System Demo:', { monthlyAllowance: 50, addonPrice: 3, warningThreshold: 80, criticalThreshold: 100 }); } /** * Demo low credits warning */ function demoLowCredits() { showNotification('Low Credits Warning: 80% of SMS credits used', 'warning'); console.log('Low Credits Warning:', { business: 'Business A', usage: '80%', remaining: 10, warningSent: true }); } /** * Demo critical credits */ function demoCriticalCredits() { showNotification('Critical: All SMS credits used - notifications paused', 'error'); console.log('Critical Credits:', { business: 'Business B', usage: '100%', remaining: 0, notificationsPaused: true }); } /** * Demo adding credits */ function demoAddCredits() { showNotification('50 SMS credits added successfully!', 'success'); console.log('Credits Added:', { business: 'Business C', creditsAdded: 50, newTotal: 100, cost: 3 }); } /** * Demo phone verification */ function demoPhoneVerification() { showNotification('Phone Verification Demo Started', 'success'); console.log('Phone Verification Demo:', { businessVerification: 'Available', customerVerification: 'Available', encryption: 'AES-256', privacy: 'GDPR Compliant' }); } /** * Verify business phone */ function verifyBusinessPhone() { const phone = document.getElementById('businessPhone').value; if (!phone) { showNotification('Please enter a phone number', 'error'); return; } showNotification('Verification code sent to business phone', 'success'); document.getElementById('businessVerificationCode').style.display = 'block'; document.getElementById('businessPhone').disabled = true; } /** * Verify business code */ function verifyBusinessCode() { const code = document.getElementById('businessCode').value; if (!code) { showNotification('Please enter verification code', 'error'); return; } showNotification('Business phone verified successfully!', 'success'); document.getElementById('businessStatus').className = 'status-badge verified'; document.getElementById('businessStatus').innerHTML = '<i></i> Verified'; } /** * Verify customer phone */ function verifyCustomerPhone() { const phone = document.getElementById('customerPhone').value; if (!phone) { showNotification('Please enter a phone number', 'error'); return; } showNotification('Verification code sent to customer phone', 'success'); document.getElementById('customerVerificationCode').style.display = 'block'; document.getElementById('customerPhone').disabled = true; } /** * Verify customer code */ function verifyCustomerCode() { const code = document.getElementById('customerCode').value; if (!code) { showNotification('Please enter verification code', 'error'); return; } showNotification('Customer phone verified successfully!', 'success'); document.getElementById('customerStatus').className = 'status-badge verified'; document.getElementById('customerStatus').innerHTML = '<i></i> Verified'; } /** * Demo SMS messaging */ function demoSMSMessaging() { showNotification('SMS Messaging System Demo Started', 'success'); console.log('SMS Messaging Demo:', { provider: 'Twilio', encryption: 'End-to-end', deliveryTracking: 'Enabled', auditLogging: 'Comprehensive' }); } /** * Demo booking SMS */ function demoBookingSMS() { showNotification('Booking confirmation SMS sent!', 'success'); console.log('Booking SMS Sent:', { type: 'booking_confirmation', recipient: 'Customer', message: 'Booking confirmed! Hair Cut on 15 Dec at 2:00 PM. Reference: BP-123456.', creditsUsed: 1 }); } /** * Demo promotional SMS */ function demoPromotionalSMS() { showNotification('Promotional SMS sent to customer list!', 'success'); console.log('Promotional SMS Sent:', { type: 'promotional', recipients: 'Customer List', message: 'Special offer! 20% off all services this weekend.', creditsUsed: 1 }); } /** * Demo SMS analytics */ function demoSMSAnalytics() { showNotification('SMS Analytics Dashboard Opened', 'success'); console.log('SMS Analytics:', { totalSent: 127, deliveryRate: '98%', bookingSMS: 45, promotionalSMS: 82, averageDeliveryTime: '2.3 seconds' }); } /** * Demo admin controls */ function demoAdminControls() { showNotification('Admin Controls Demo Started', 'success'); console.log('Admin Controls Demo:', { dashboard: 'Available', auditLogs: 'Available', emailTemplates: 'Available', gdprCompliance: 'Enabled' }); } /** * Demo admin dashboard */ function demoAdminDashboard() { showNotification('Opening Admin SMS Dashboard...', 'success'); window.open('../admin/sms-dashboard.html', '_blank'); } /** * Demo audit logs */ function demoAuditLogs() { showNotification('Audit Logs Demo Started', 'success'); console.log('Audit Logs:', [ 'credits_deducted - Business A - 1 SMS sent', 'low_credit_warning_sent - Business B - 80% usage', 'addon_purchased - Business C - 50 credits added', 'sms_failed - Business D - Invalid number', 'verification_successful - Business E - Phone verified' ]); } /** * Demo email templates */ function demoEmailTemplates() { showNotification('Email Templates Demo Started', 'success'); console.log('Email Templates:', { lowCreditWarning: 'Available', creditsDepleted: 'Available', addonConfirmation: 'Available', branding: 'BlkPages' }); } /** * Demo GDPR compliance */ function demoGDPRCompliance() { showNotification('GDPR Compliance Demo Started', 'success'); console.log('GDPR Compliance:', { phoneEncryption: 'AES-256', dataMinimization: 'Enabled', auditLogging: 'Comprehensive', privacyControls: 'Customer Opt-out Available', dataRetention: 'Configurable' }); } /** * Show notification */ function showNotification(message, type = 'info') { const notification = document.createElement('div'); notification.style.cssText = ` position: fixed; top: 20px; right: 20px; background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : type === 'warning' ? '#F59E0B' : '#3B82F6'}; color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); z-index: 1000; font-weight: 500; max-width: 300px; `; notification.textContent = message; document.body.appendChild(notification); setTimeout(() => { notification.remove(); }, 3000); } /** * Initialize demo on page load */ document.addEventListener('DOMContentLoaded', function() { console.log('SMS System Demo Initialized'); showNotification('SMS System Demo Ready', 'success'); }); </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

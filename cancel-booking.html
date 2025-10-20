@@ -1,495 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cancel Booking - BlkPages</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            color: #ffffff;
-            line-height: 1.6;
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
         }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
         
-        .booking-card {
-            background: #1A1A1A;
-            border: 1px solid #374151;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .booking-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .business-info h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .business-category {
-            color: #9CA3AF;
-            font-size: 0.9rem;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .booking-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
         }
-        
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #374151;
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
         }
-        
-        .detail-label {
-            color: #9CA3AF;
-            font-size: 0.9rem;
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
         }
-        
-        .detail-value {
-            color: #ffffff;
-            font-weight: 500;
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
         }
-        
-        .cancellation-policy {
-            background: rgba(255, 60, 172, 0.1);
-            border: 1px solid rgba(255, 60, 172, 0.3);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
         }
-        
-        .cancellation-policy h4 {
-            color: #FF3CAC;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
         }
-        
-        .cancellation-policy h4::before {
-            content: "📋";
-            font-size: 1.2rem;
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
         }
-        
-        .policy-content {
-            color: #e5e7eb;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            white-space: pre-line;
-        }
-        
-        .refund-info {
-            background: #1A1A1A;
-            border: 1px solid #374151;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .refund-info h4 {
-            color: #ffffff;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        
-        .refund-amount {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #10B981;
-            margin-bottom: 0.5rem;
-        }
-        
-        .refund-details {
-            color: #9CA3AF;
-            font-size: 0.9rem;
-        }
-        
-        .non-refundable {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .non-refundable h4 {
-            color: #EF4444;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .non-refundable h4::before {
-            content: "⚠️";
-            font-size: 1.2rem;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-        
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
         }
         
-        .btn-danger {
-            background: linear-gradient(135deg, #EF4444, #DC2626);
-            color: white;
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-        }
-        
-        .btn-secondary {
-            background: #374151;
-            color: #ffffff;
-            border: 1px solid #4B5563;
-        }
-        
-        .btn-secondary:hover {
-            background: #4B5563;
-            transform: translateY(-2px);
-        }
-        
-        .loading {
+        /* Customer Menu Styles */
+        .customer-dropdown {
             display: none;
-            text-align: center;
-            padding: 2rem;
-        }
-        
-        .loading i {
-            font-size: 2rem;
-            color: #FF3CAC;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .success-message {
-            display: none;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .success-message h4 {
-            color: #10B981;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
+        .dropdown-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .success-message h4::before {
-            content: "✅";
-            font-size: 1.2rem;
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Cancel Booking</h1>
-            <p>Review your booking details and cancellation policy</p>
-        </div>
-        
-        <!-- Booking Details -->
-        <div class="booking-card" id="bookingCard">
-            <div class="booking-header">
-                <div class="business-info">
-                    <h3 id="businessName">Royal Hair Studio</h3>
-                    <div class="business-category">Hair Salon</div>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-                <div class="booking-status" id="bookingStatus">Confirmed</div>
-            </div>
-            
-            <div class="booking-details">
-                <div class="detail-row">
-                    <span class="detail-label">Date:</span>
-                    <span class="detail-value" id="appointmentDate">Saturday, Dec 28, 2024</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Time:</span>
-                    <span class="detail-value" id="appointmentTime">2:00 PM</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Duration:</span>
-                    <span class="detail-value">1h 15m</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Total:</span>
-                    <span class="detail-value" id="totalAmount">£70</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Cancellation Policy -->
-        <div class="cancellation-policy">
-            <h4>Cancellation Policy</h4>
-            <div class="policy-content" id="policyContent">
-                Royal Hair Studio – Cancellation Policy:
-                You may cancel your booking up to 48 hours before your appointment for a full refund.
-                Cancellations made within 48 hours will be charged 50% of the service price.
-                No-shows will be charged 100% of the service price.
-                Refunds are returned to your original payment method within 5–10 business days.
 
-                This policy is set by Royal Hair Studio. BlkPages processes payments via Stripe on behalf of the venue but is not responsible for enforcing refunds.
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
-        
-        <!-- Refund Information -->
-        <div class="refund-info" id="refundInfo">
-            <h4>Refund Information</h4>
-            <div class="refund-amount" id="refundAmount">£35.00</div>
-            <div class="refund-details" id="refundDetails">
-                You will receive a 50% refund as you are cancelling within 48 hours of your appointment.
-                The refund will be processed back to your original payment method within 5-10 business days.
-            </div>
-        </div>
-        
-        <!-- Non-refundable Notice -->
-        <div class="non-refundable" id="nonRefundableNotice" style="display: none;">
-            <h4>Non-Refundable Booking</h4>
-            <div class="policy-content">
-                This booking is non-refundable under Royal Hair Studio's cancellation policy.
-                No refund will be issued for this cancellation.
-            </div>
-        </div>
-        
-        <!-- Success Message -->
-        <div class="success-message" id="successMessage">
-            <h4>Booking Cancelled Successfully</h4>
-            <div class="policy-content" id="successContent">
-                Your booking has been cancelled. You will receive a confirmation email shortly.
-            </div>
-        </div>
-        
-        <!-- Loading State -->
-        <div class="loading" id="loadingState">
-            <i class="fas fa-spinner"></i>
-            <p>Processing cancellation...</p>
-        </div>
-        
-        <!-- Action Buttons -->
-        <div class="action-buttons" id="actionButtons">
-            <button class="btn btn-danger" onclick="confirmCancellation()">
-                <i class="fas fa-times"></i> Cancel Booking
-            </button>
-            <a href="customer-dashboard.html" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
-            </a>
-        </div>
-    </div>
+    </header>
     
-    <script>
-        // Get booking details from URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const bookingId = urlParams.get('booking') || 'booking1';
-        const userId = urlParams.get('user') || 'loggedin';
-        
-        // Sample booking data (in real implementation, fetch from API)
-        const bookingData = {
-            booking1: {
-                businessName: 'Royal Hair Studio',
-                appointmentDate: '2024-12-28',
-                appointmentTime: '2:00 PM',
-                totalAmount: 70,
-                policy: 'moderate',
-                hoursUntilAppointment: 36, // 36 hours until appointment
-                canCancel: true
-            },
-            booking2: {
-                businessName: 'Beauty Studio',
-                appointmentDate: '2024-12-30',
-                appointmentTime: '10:00 AM',
-                totalAmount: 140,
-                policy: 'strict',
-                hoursUntilAppointment: 72,
-                canCancel: false
-            }
-        };
-        
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            loadBookingData();
-            calculateRefund();
-        });
-        
-        function loadBookingData() {
-            const booking = bookingData[bookingId];
-            if (!booking) {
-                alert('Booking not found');
-                return;
-            }
-            
-            // Update page content
-            document.getElementById('businessName').textContent = booking.businessName;
-            document.getElementById('appointmentDate').textContent = booking.appointmentDate;
-            document.getElementById('appointmentTime').textContent = booking.appointmentTime;
-            document.getElementById('totalAmount').textContent = `£${booking.totalAmount}`;
-            
-            // Show/hide elements based on cancellation eligibility
-            if (!booking.canCancel) {
-                document.getElementById('refundInfo').style.display = 'none';
-                document.getElementById('nonRefundableNotice').style.display = 'block';
-                document.getElementById('actionButtons').style.display = 'none';
-            }
-        }
-        
-        function calculateRefund() {
-            const booking = bookingData[bookingId];
-            if (!booking || !booking.canCancel) return;
-            
-            let refundAmount = 0;
-            let refundDetails = '';
-            
-            switch (booking.policy) {
-                case 'flexible':
-                    if (booking.hoursUntilAppointment >= 24) {
-                        refundAmount = booking.totalAmount;
-                        refundDetails = 'Full refund as you are cancelling more than 24 hours before your appointment.';
-                    } else {
-                        refundAmount = 0;
-                        refundDetails = 'No refund as you are cancelling within 24 hours of your appointment.';
-                    }
-                    break;
-                    
-                case 'moderate':
-                    if (booking.hoursUntilAppointment >= 48) {
-                        refundAmount = booking.totalAmount;
-                        refundDetails = 'Full refund as you are cancelling more than 48 hours before your appointment.';
-                    } else if (booking.hoursUntilAppointment > 0) {
-                        refundAmount = booking.totalAmount * 0.5;
-                        refundDetails = '50% refund as you are cancelling within 48 hours of your appointment.';
-                    } else {
-                        refundAmount = 0;
-                        refundDetails = 'No refund for no-shows.';
-                    }
-                    break;
-                    
-                case 'strict':
-                    refundAmount = 0;
-                    refundDetails = 'This booking is non-refundable under the business cancellation policy.';
-                    break;
-            }
-            
-            // Update refund display
-            document.getElementById('refundAmount').textContent = `£${refundAmount.toFixed(2)}`;
-            document.getElementById('refundDetails').textContent = refundDetails;
-            
-            if (refundAmount === 0) {
-                document.getElementById('refundInfo').style.display = 'none';
-                document.getElementById('nonRefundableNotice').style.display = 'block';
-            }
-        }
-        
-        async function confirmCancellation() {
-            if (!confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) {
-                return;
-            }
-            
-            // Show loading state
-            document.getElementById('actionButtons').style.display = 'none';
-            document.getElementById('loadingState').style.display = 'block';
-            
-            try {
-                // Simulate API call to process cancellation
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                // Hide loading, show success
-                document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('successMessage').style.display = 'block';
-                
-                const booking = bookingData[bookingId];
-                const refundAmount = parseFloat(document.getElementById('refundAmount').textContent.replace('£', ''));
-                
-                if (refundAmount > 0) {
-                    document.getElementById('successContent').textContent = 
-                        `Your booking has been cancelled. A refund of £${refundAmount.toFixed(2)} will be processed back to your original payment method within 5-10 business days. You will receive a confirmation email shortly.`;
-                } else {
-                    document.getElementById('successContent').textContent = 
-                        'Your booking has been cancelled. No refund will be issued under the business cancellation policy. You will receive a confirmation email shortly.';
-                }
-                
-                // Update booking status
-                document.getElementById('bookingStatus').textContent = 'Cancelled';
-                document.getElementById('bookingStatus').style.color = '#EF4444';
-                
-            } catch (error) {
-                console.error('Cancellation failed:', error);
-                alert('Failed to cancel booking. Please try again or contact support.');
-                
-                // Show buttons again
-                document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('actionButtons').style.display = 'flex';
-            }
-        }
-    </script>
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><div><h1>Cancel Booking</h1><p>Review your booking details and cancellation policy</p></div><!-- Booking Details --><div><div><div><h3>Royal Hair Studio</h3><div>Hair Salon</div></div><div>Confirmed</div></div><div><div><span>Date:</span><span>Saturday, Dec 28, 2024</span></div><div><span>Time:</span><span>2:00 PM</span></div><div><span>Duration:</span><span>1h 15m</span></div><div><span>Total:</span><span>£70</span></div></div></div><!-- Cancellation Policy --><div><h4>Cancellation Policy</h4><div> Royal Hair Studio – Cancellation Policy: You may cancel your booking up to 48 hours before your appointment for a full refund. Cancellations made within 48 hours will be charged 50% of the service price. No-shows will be charged 100% of the service price. Refunds are returned to your original payment method within 5–10 business days. This policy is set by Royal Hair Studio. BlkPages processes payments via Stripe on behalf of the venue but is not responsible for enforcing refunds. </div></div><!-- Refund Information --><div><h4>Refund Information</h4><div>£35.00</div><div> You will receive a 50% refund as you are cancelling within 48 hours of your appointment. The refund will be processed back to your original payment method within 5-10 business days. </div></div><!-- Non-refundable Notice --><div><h4>Non-Refundable Booking</h4><div> This booking is non-refundable under Royal Hair Studio's cancellation policy. No refund will be issued for this cancellation. </div></div><!-- Success Message --><div><h4>Booking Cancelled Successfully</h4><div> Your booking has been cancelled. You will receive a confirmation email shortly. </div></div><!-- Loading State --><div><i></i><p>Processing cancellation...</p></div><!-- Action Buttons --><div><button onclick="confirmCancellation()"><i></i> Cancel Booking </button><a href="customer-dashboard.html"><i></i> Back to Dashboard </a></div></div><script> // Get booking details from URL parameters const urlParams = new URLSearchParams(window.location.search); const bookingId = urlParams.get('booking') || 'booking1'; const userId = urlParams.get('user') || 'loggedin'; // Sample booking data (in real implementation, fetch from API) const bookingData = { booking1: { businessName: 'Royal Hair Studio', appointmentDate: '2024-12-28', appointmentTime: '2:00 PM', totalAmount: 70, policy: 'moderate', hoursUntilAppointment: 36, // 36 hours until appointment canCancel: true }, booking2: { businessName: 'Beauty Studio', appointmentDate: '2024-12-30', appointmentTime: '10:00 AM', totalAmount: 140, policy: 'strict', hoursUntilAppointment: 72, canCancel: false } }; // Initialize page document.addEventListener('DOMContentLoaded', function() { loadBookingData(); calculateRefund(); }); function loadBookingData() { const booking = bookingData[bookingId]; if (!booking) { alert('Booking not found'); return; } // Update page content document.getElementById('businessName').textContent = booking.businessName; document.getElementById('appointmentDate').textContent = booking.appointmentDate; document.getElementById('appointmentTime').textContent = booking.appointmentTime; document.getElementById('totalAmount').textContent = `£${booking.totalAmount}`; // Show/hide elements based on cancellation eligibility if (!booking.canCancel) { document.getElementById('refundInfo').style.display = 'none'; document.getElementById('nonRefundableNotice').style.display = 'block'; document.getElementById('actionButtons').style.display = 'none'; } } function calculateRefund() { const booking = bookingData[bookingId]; if (!booking || !booking.canCancel) return; let refundAmount = 0; let refundDetails = ''; switch (booking.policy) { case 'flexible': if (booking.hoursUntilAppointment >= 24) { refundAmount = booking.totalAmount; refundDetails = 'Full refund as you are cancelling more than 24 hours before your appointment.'; } else { refundAmount = 0; refundDetails = 'No refund as you are cancelling within 24 hours of your appointment.'; } break; case 'moderate': if (booking.hoursUntilAppointment >= 48) { refundAmount = booking.totalAmount; refundDetails = 'Full refund as you are cancelling more than 48 hours before your appointment.'; } else if (booking.hoursUntilAppointment > 0) { refundAmount = booking.totalAmount * 0.5; refundDetails = '50% refund as you are cancelling within 48 hours of your appointment.'; } else { refundAmount = 0; refundDetails = 'No refund for no-shows.'; } break; case 'strict': refundAmount = 0; refundDetails = 'This booking is non-refundable under the business cancellation policy.'; break; } // Update refund display document.getElementById('refundAmount').textContent = `£${refundAmount.toFixed(2)}`; document.getElementById('refundDetails').textContent = refundDetails; if (refundAmount === 0) { document.getElementById('refundInfo').style.display = 'none'; document.getElementById('nonRefundableNotice').style.display = 'block'; } } async function confirmCancellation() { if (!confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) { return; } // Show loading state document.getElementById('actionButtons').style.display = 'none'; document.getElementById('loadingState').style.display = 'block'; try { // Simulate API call to process cancellation await new Promise(resolve => setTimeout(resolve, 2000)); // Hide loading, show success document.getElementById('loadingState').style.display = 'none'; document.getElementById('successMessage').style.display = 'block'; const booking = bookingData[bookingId]; const refundAmount = parseFloat(document.getElementById('refundAmount').textContent.replace('£', '')); if (refundAmount > 0) { document.getElementById('successContent').textContent = `Your booking has been cancelled. A refund of £${refundAmount.toFixed(2)} will be processed back to your original payment method within 5-10 business days. You will receive a confirmation email shortly.`; } else { document.getElementById('successContent').textContent = 'Your booking has been cancelled. No refund will be issued under the business cancellation policy. You will receive a confirmation email shortly.'; } // Update booking status document.getElementById('bookingStatus').textContent = 'Cancelled'; document.getElementById('bookingStatus').style.color = '#EF4444'; } catch (error) { console.error('Cancellation failed:', error); alert('Failed to cancel booking. Please try again or contact support.'); // Show buttons again document.getElementById('loadingState').style.display = 'none'; document.getElementById('actionButtons').style.display = 'flex'; } } </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

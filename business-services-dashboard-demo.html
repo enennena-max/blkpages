@@ -1,767 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Business Services Dashboard - BlkPages</title>
-    <link rel="stylesheet" href="frontend/src/components/BusinessServicesDashboard.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            background: #1a1a1a;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .demo-header {
-            background: linear-gradient(135deg, #1E90FF, #9c27b0);
-            color: white;
-            padding: 2rem;
-            text-align: center;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .demo-header h1 {
-            margin: 0 0 0.5rem 0;
-            font-size: 2.5rem;
-            font-weight: 700;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .demo-header p {
-            margin: 0;
-            opacity: 0.9;
-            font-size: 1.1rem;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .demo-controls {
-            background: #2a2a2a;
-            padding: 1.5rem;
-            border-bottom: 1px solid #444444;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .controls-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            max-width: 1200px;
-            margin: 0 auto;
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
         }
-        
-        .control-group {
-            background: #333333;
-            padding: 1rem;
-            border-radius: 12px;
-            border: 1px solid #555555;
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
         }
-        
-        .control-group h3 {
-            margin: 0 0 1rem 0;
-            color: #1E90FF;
-            font-size: 1.1rem;
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
         }
-        
-        .form-group {
-            margin-bottom: 1rem;
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
         }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #cccccc;
-            font-weight: 500;
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
         }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            background: #444444;
-            border: 1px solid #666666;
-            border-radius: 8px;
-            color: #ffffff;
-            font-size: 0.9rem;
-            box-sizing: border-box;
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
         }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #1E90FF;
-            box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
         }
-        
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
         }
         
-        .btn-primary {
-            background: linear-gradient(135deg, #1E90FF, #0066cc);
-            color: white;
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(30, 144, 255, 0.3);
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .btn-success {
-            background: linear-gradient(135deg, #28a745, #1e7e34);
-            color: white;
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .btn-success:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .btn-warning {
-            background: linear-gradient(135deg, #ffc107, #e0a800);
-            color: #212529;
-        }
-        
-        .btn-warning:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-        }
-        
-        .status-connected {
-            background: #28a745;
-            animation: pulse 2s infinite;
-        }
-        
-        .status-disconnected {
-            background: #dc3545;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .demo-stats {
-            background: #2a2a2a;
-            padding: 1rem;
-            border-bottom: 1px solid #444444;
-            text-align: center;
-        }
-        
-        .demo-stats p {
-            margin: 0;
-            color: #cccccc;
-        }
-        
-        .demo-stats strong {
-            color: #1E90FF;
-        }
-        
-        @media (max-width: 768px) {
-            .demo-header h1 {
-                font-size: 2rem;
-            }
-            
-            .controls-grid {
-                grid-template-columns: 1fr;
-            }
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="demo-header">
-        <h1>Business Services Dashboard</h1>
-        <p>Live service management with real-time updates and WebSocket integration</p>
-    </div>
-    
-    <div class="demo-controls">
-        <div class="controls-grid">
-            <!-- WebSocket Status -->
-            <div class="control-group">
-                <h3>🔌 WebSocket Connection</h3>
-                <p>
-                    <span id="ws-status" class="status-indicator status-disconnected"></span>
-                    <span id="ws-text">Disconnected</span>
-                </p>
-                <button id="connect-ws" class="btn btn-primary">Connect WebSocket</button>
-                <button id="disconnect-ws" class="btn btn-warning">Disconnect</button>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
             </div>
-            
-            <!-- Create Service -->
-            <div class="control-group">
-                <h3>🛠️ Create New Service</h3>
-                <div class="form-group">
-                    <label for="service-name">Service Name</label>
-                    <input type="text" id="service-name" placeholder="e.g., Luxury Haircut">
-                </div>
-                <div class="form-group">
-                    <label for="service-category">Category</label>
-                    <select id="service-category">
-                        <option value="Barbering">Barbering</option>
-                        <option value="Hair Styling">Hair Styling</option>
-                        <option value="Beauty">Beauty</option>
-                        <option value="Massage">Massage</option>
-                        <option value="Nails">Nails</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="service-price">Price (£)</label>
-                    <input type="number" id="service-price" step="0.01" placeholder="e.g., 25.00">
-                </div>
-                <div class="form-group">
-                    <label for="service-duration">Duration</label>
-                    <input type="text" id="service-duration" placeholder="e.g., 45 mins">
-                </div>
-                <div class="form-group">
-                    <label for="service-description">Description</label>
-                    <textarea id="service-description" rows="2" placeholder="Service description..."></textarea>
-                </div>
-                <button id="create-service" class="btn btn-success">Create Service</button>
-            </div>
-            
-            <!-- Generate Sample Data -->
-            <div class="control-group">
-                <h3>🎲 Sample Data</h3>
-                <p>Generate sample services for testing</p>
-                <button id="generate-samples" class="btn btn-primary">Generate 5 Sample Services</button>
-                <button id="clear-services" class="btn btn-warning">Clear All Services</button>
-            </div>
-            
-            <!-- Test Notifications -->
-            <div class="control-group">
-                <h3>🔔 Test Notifications</h3>
-                <p>Test the notification system</p>
-                <button id="test-notification" class="btn btn-primary">Show Test Notification</button>
-                <button id="simulate-new-service" class="btn btn-success">Simulate New Service</button>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
-    </div>
+    </header>
     
-    <div class="demo-stats">
-        <p>Business ID: <strong id="business-id">royal-hair-studio</strong> | 
-           Active Services: <strong id="active-services">0</strong> | 
-           Pending Services: <strong id="pending-services">0</strong></p>
-    </div>
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><h1>Business Services Dashboard</h1><p>Live service management with real-time updates and WebSocket integration</p></div><div><div><!-- WebSocket Status --><div><h3>🔌 WebSocket Connection</h3><p><span></span><span>Disconnected</span></p><button>Connect WebSocket</button><button>Disconnect</button></div><!-- Create Service --><div><h3>🛠️ Create New Service</h3><div><label for="service-name">Service Name</label><input type="text" placeholder="e.g., Luxury Haircut"></div><div><label for="service-category">Category</label><select><option value="Barbering">Barbering</option><option value="Hair Styling">Hair Styling</option><option value="Beauty">Beauty</option><option value="Massage">Massage</option><option value="Nails">Nails</option></select></div><div><label for="service-price">Price (£)</label><input type="number" step="0.01" placeholder="e.g., 25.00"></div><div><label for="service-duration">Duration</label><input type="text" placeholder="e.g., 45 mins"></div><div><label for="service-description">Description</label><textarea rows="2" placeholder="Service description..."></textarea></div><button>Create Service</button></div><!-- Generate Sample Data --><div><h3>🎲 Sample Data</h3><p>Generate sample services for testing</p><button>Generate 5 Sample Services</button><button>Clear All Services</button></div><!-- Test Notifications --><div><h3>🔔 Test Notifications</h3><p>Test the notification system</p><button>Show Test Notification</button><button>Simulate New Service</button></div></div></div><div><p>Business ID: <strong>royal-hair-studio</strong> | Active Services: <strong>0</strong> | Pending Services: <strong>0</strong></p></div><!-- Services Dashboard Component --><div></div><!-- React and Component Scripts --><script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script><script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script><script src="https://unpkg.com/@babel/standalone/babel.min.js"></script><script type="text/babel"> const { useState, useEffect, useRef } = React; // Business Services Dashboard Component const BusinessServicesDashboard = () => { const [stats, setStats] = useState({ active: 0, pending: 0, rejected: 0, archived: 0 }); const [services, setServices] = useState([]); const [loading, setLoading] = useState(true); const [activeTab, setActiveTab] = useState('Active'); const [showAddModal, setShowAddModal] = useState(false); const [editingService, setEditingService] = useState(null); const [newServicesCount, setNewServicesCount] = useState(0); const businessId = 'royal-hair-studio'; // Fetch service statistics const fetchStats = async () => { try { const response = await fetch(`/api/businesses/${businessId}/service-stats`); const data = await response.json(); setStats(data); // Update demo stats document.getElementById('active-services').textContent = data.active; document.getElementById('pending-services').textContent = data.pending; } catch (error) { console.error('Error fetching service stats:', error); } }; // Fetch services list const fetchServices = async (status = null) => { try { const url = status ? `/api/businesses/${businessId}/services?status=${encodeURIComponent(status)}` : `/api/businesses/${businessId}/services`; const response = await fetch(url); const data = await response.json(); setServices(data); } catch (error) { console.error('Error fetching services:', error); } }; // Fetch all data const fetchAllData = async () => { setLoading(true); await Promise.all([fetchStats(), fetchServices(activeTab)]); setLoading(false); }; // Show notification for new service const showNewServiceNotification = (service) => { const notification = document.createElement('div'); notification.className = 'new-service-notification'; notification.innerHTML = ` <div><strong>New Service!</strong><p>${service.name} added to ${service.status}</p></div> `; document.body.appendChild(notification); setTimeout(() => { notification.remove(); }, 5000); }; // Show notification for service update const showServiceUpdateNotification = (data) => { const notification = document.createElement('div'); notification.className = 'service-update-notification'; notification.innerHTML = ` <div><strong>Service Updated!</strong><p>${data.service.name} is now ${data.service.status}</p></div> `; document.body.appendChild(notification); setTimeout(() => { notification.remove(); }, 5000); }; // Handle tab change const handleTabChange = (tab) => { setActiveTab(tab); fetchServices(tab); }; // Handle service status change const handleStatusChange = async (serviceId, newStatus) => { try { const response = await fetch(`/api/services/${serviceId}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: newStatus }) }); if (response.ok) { // Update local state immediately setServices(prev => prev.map(service => service.id === serviceId ? { ...service, status: newStatus, last_updated: new Date().toISOString() } : service )); // Update stats fetchStats(); } } catch (error) { console.error('Error updating service status:', error); } }; // Handle service deletion const handleDeleteService = async (serviceId) => { if (confirm('Are you sure you want to delete this service?')) { try { const response = await fetch(`/api/services/${serviceId}`, { method: 'DELETE' }); if (response.ok) { // Remove from local state setServices(prev => prev.filter(service => service.id !== serviceId)); // Update stats fetchStats(); } } catch (error) { console.error('Error deleting service:', error); } } }; // Format date const formatDate = (dateString) => { return new Date(dateString).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); }; // Format currency const formatCurrency = (amount) => { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(amount); }; // Get status badge class const getStatusBadgeClass = (status) => { switch (status) { case 'Active': return 'status-badge active'; case 'Pending Approval': return 'status-badge pending'; case 'Rejected': return 'status-badge rejected'; case 'Archived': return 'status-badge archived'; default: return 'status-badge'; } }; // Clear new services count const clearNewServicesCount = () => { setNewServicesCount(0); }; useEffect(() => { fetchAllData(); // Polling fallback every 30 seconds const pollInterval = setInterval(fetchAllData, 30000); return () => { clearInterval(pollInterval); }; }, [activeTab]); if (loading) { return React.createElement('div', { className: 'services-dashboard' }, React.createElement('div', { className: 'loading' }, 'Loading services...') ); } return React.createElement('div', { className: 'services-dashboard' }, React.createElement('div', { className: 'dashboard-header' }, React.createElement('h1', null, 'Services Management'), React.createElement('p', null, 'Manage your business services and track their status') ), // Stats Cards React.createElement('div', { className: 'stats-grid' }, React.createElement('div', { className: 'stat-card' }, React.createElement('div', { className: 'stat-icon' }, '✅'), React.createElement('div', { className: 'stat-content' }, React.createElement('h3', null, stats.active), React.createElement('p', null, 'Active Services') ) ), React.createElement('div', { className: 'stat-card' }, React.createElement('div', { className: 'stat-icon' }, '⏳'), React.createElement('div', { className: 'stat-content' }, React.createElement('h3', null, stats.pending), React.createElement('p', null, 'Pending Approval') ) ), React.createElement('div', { className: 'stat-card' }, React.createElement('div', { className: 'stat-icon' }, '❌'), React.createElement('div', { className: 'stat-content' }, React.createElement('h3', null, stats.rejected), React.createElement('p', null, 'Rejected') ) ), React.createElement('div', { className: 'stat-card' }, React.createElement('div', { className: 'stat-icon' }, '📁'), React.createElement('div', { className: 'stat-content' }, React.createElement('h3', null, stats.archived), React.createElement('p', null, 'Archived') ) ) ), // Services Section React.createElement('div', { className: 'services-section' }, React.createElement('div', { className: 'section-header' }, React.createElement('h2', null, 'Services'), React.createElement('div', { className: 'header-actions' }, newServicesCount > 0 && React.createElement('button', { className: 'new-services-badge', onClick: clearNewServicesCount }, `${newServicesCount} new`), React.createElement('button', { className: 'btn btn-primary', onClick: () => setShowAddModal(true) }, '+ Add Service') ) ), // Tabs React.createElement('div', { className: 'tabs' }, React.createElement('button', { className: `tab ${activeTab === 'Active' ? 'active' : ''}`, onClick: () => handleTabChange('Active') }, `Active (${stats.active})`), React.createElement('button', { className: `tab ${activeTab === 'Pending Approval' ? 'active' : ''}`, onClick: () => handleTabChange('Pending Approval') }, `Pending Approval (${stats.pending})`), React.createElement('button', { className: `tab ${activeTab === 'Rejected' ? 'active' : ''}`, onClick: () => handleTabChange('Rejected') }, `Rejected (${stats.rejected})`), React.createElement('button', { className: `tab ${activeTab === 'Archived' ? 'active' : ''}`, onClick: () => handleTabChange('Archived') }, `Archived (${stats.archived})`) ), // Services Grid React.createElement('div', { className: 'services-grid' }, services.length === 0 ? React.createElement('div', { className: 'no-services' }, React.createElement('p', null, 'No services in this category yet.') ) : services.map((service) => React.createElement('div', { key: service.id, className: 'service-card' }, service.image_url && React.createElement('div', { className: 'service-image' }, React.createElement('img', { src: service.image_url, alt: service.name }) ), React.createElement('div', { className: 'service-content' }, React.createElement('div', { className: 'service-header' }, React.createElement('h3', null, service.name), React.createElement('span', { className: getStatusBadgeClass(service.status) }, service.status) ), React.createElement('div', { className: 'service-details' }, React.createElement('p', { className: 'service-category' }, service.category), React.createElement('p', { className: 'service-price' }, formatCurrency(service.price)), React.createElement('p', { className: 'service-duration' }, service.duration), service.description && React.createElement('p', { className: 'service-description' }, service.description), React.createElement('p', { className: 'service-updated' }, `Updated: ${formatDate(service.last_updated)}`) ), React.createElement('div', { className: 'service-actions' }, React.createElement('button', { className: 'btn btn-secondary', onClick: () => setEditingService(service) }, 'Edit'), service.status === 'Active' && React.createElement('button', { className: 'btn btn-warning', onClick: () => handleStatusChange(service.id, 'Archived') }, 'Archive'), service.status === 'Pending Approval' && React.createElement('button', { className: 'btn btn-success', onClick: () => handleStatusChange(service.id, 'Active') }, 'Approve'), service.status === 'Rejected' && React.createElement('button', { className: 'btn btn-primary', onClick: () => handleStatusChange(service.id, 'Pending Approval') }, 'Resubmit'), React.createElement('button', { className: 'btn btn-danger', onClick: () => handleDeleteService(service.id) }, 'Delete') ) ) ) ) ) ) ); }; // Demo Controls let ws = null; // WebSocket Controls document.getElementById('connect-ws').addEventListener('click', () => { if (ws) ws.close(); ws = new WebSocket('ws://localhost:5000'); ws.onopen = () => { document.getElementById('ws-status').className = 'status-indicator status-connected'; document.getElementById('ws-text').textContent = 'Connected'; ws.send(JSON.stringify({ type: 'join_business', businessId: 'royal-hair-studio' })); }; ws.onclose = () => { document.getElementById('ws-status').className = 'status-indicator status-disconnected'; document.getElementById('ws-text').textContent = 'Disconnected'; }; }); document.getElementById('disconnect-ws').addEventListener('click', () => { if (ws) { ws.close(); ws = null; } }); // Create Service document.getElementById('create-service').addEventListener('click', async () => { const name = document.getElementById('service-name').value; const category = document.getElementById('service-category').value; const price = document.getElementById('service-price').value; const duration = document.getElementById('service-duration').value; const description = document.getElementById('service-description').value; if (!name || !category || !price || !duration) { alert('Please fill in all required fields'); return; } try { const response = await fetch('/api/services', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ businessId: 'royal-hair-studio', name, category, price: parseFloat(price), duration, description }) }); if (response.ok) { // Clear form document.getElementById('service-name').value = ''; document.getElementById('service-category').value = 'Barbering'; document.getElementById('service-price').value = ''; document.getElementById('service-duration').value = ''; document.getElementById('service-description').value = ''; // Refresh the dashboard window.location.reload(); } } catch (error) { console.error('Error creating service:', error); } }); // Generate Sample Data document.getElementById('generate-samples').addEventListener('click', async () => { const samples = [ { name: 'Luxury Haircut', category: 'Barbering', price: 25.00, duration: '45 mins', description: 'Precision haircut and finish' }, { name: 'Beard Trim', category: 'Barbering', price: 15.00, duration: '30 mins', description: 'Professional beard trimming and shaping' }, { name: 'Hair Wash & Style', category: 'Hair Styling', price: 35.00, duration: '60 mins', description: 'Complete hair wash and styling service' }, { name: 'Facial Treatment', category: 'Beauty', price: 45.00, duration: '75 mins', description: 'Deep cleansing facial treatment' }, { name: 'Manicure', category: 'Nails', price: 20.00, duration: '45 mins', description: 'Professional nail care and polish' } ]; for (const sample of samples) { try { await fetch('/api/services', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ businessId: 'royal-hair-studio', ...sample }) }); } catch (error) { console.error('Error creating sample service:', error); } } // Refresh the dashboard setTimeout(() => window.location.reload(), 1000); }); // Clear Services document.getElementById('clear-services').addEventListener('click', async () => { if (confirm('Are you sure you want to clear all services?')) { // This would need a DELETE endpoint in the real implementation alert('Clear services functionality would be implemented with a DELETE endpoint'); } }); // Test Notification document.getElementById('test-notification').addEventListener('click', () => { const notification = document.createElement('div'); notification.className = 'new-service-notification'; notification.innerHTML = ` <div><strong>Test Notification!</strong><p>This is a test notification to show the styling</p></div> `; document.body.appendChild(notification); setTimeout(() => { notification.remove(); }, 5000); }); // Simulate New Service document.getElementById('simulate-new-service').addEventListener('click', () => { if (ws && ws.readyState === WebSocket.OPEN) { const mockService = { type: 'new_service', id: 'mock-' + Date.now(), name: 'Test Service', category: 'Barbering', price: 25.00, duration: '45 mins', status: 'Pending Approval', last_updated: new Date().toISOString(), description: 'Test service for demonstration' }; // Simulate receiving the message const event = new MessageEvent('message', { data: JSON.stringify(mockService) }); // Trigger the message handler ws.onmessage(event); } else { alert('Please connect WebSocket first'); } }); // Render the dashboard ReactDOM.render(React.createElement(BusinessServicesDashboard), document.getElementById('services-dashboard')); </script>
+        </div>
+    </main>
     
-    <!-- Services Dashboard Component -->
-    <div id="services-dashboard"></div>
-    
-    <!-- React and Component Scripts -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-        
-        // Business Services Dashboard Component
-        const BusinessServicesDashboard = () => {
-            const [stats, setStats] = useState({
-                active: 0,
-                pending: 0,
-                rejected: 0,
-                archived: 0
-            });
-            const [services, setServices] = useState([]);
-            const [loading, setLoading] = useState(true);
-            const [activeTab, setActiveTab] = useState('Active');
-            const [showAddModal, setShowAddModal] = useState(false);
-            const [editingService, setEditingService] = useState(null);
-            const [newServicesCount, setNewServicesCount] = useState(0);
-            
-            const businessId = 'royal-hair-studio';
-
-            // Fetch service statistics
-            const fetchStats = async () => {
-                try {
-                    const response = await fetch(`/api/businesses/${businessId}/service-stats`);
-                    const data = await response.json();
-                    setStats(data);
-                    
-                    // Update demo stats
-                    document.getElementById('active-services').textContent = data.active;
-                    document.getElementById('pending-services').textContent = data.pending;
-                } catch (error) {
-                    console.error('Error fetching service stats:', error);
-                }
-            };
-
-            // Fetch services list
-            const fetchServices = async (status = null) => {
-                try {
-                    const url = status 
-                        ? `/api/businesses/${businessId}/services?status=${encodeURIComponent(status)}`
-                        : `/api/businesses/${businessId}/services`;
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    setServices(data);
-                } catch (error) {
-                    console.error('Error fetching services:', error);
-                }
-            };
-
-            // Fetch all data
-            const fetchAllData = async () => {
-                setLoading(true);
-                await Promise.all([fetchStats(), fetchServices(activeTab)]);
-                setLoading(false);
-            };
-
-            // Show notification for new service
-            const showNewServiceNotification = (service) => {
-                const notification = document.createElement('div');
-                notification.className = 'new-service-notification';
-                notification.innerHTML = `
-                    <div class="notification-content">
-                        <strong>New Service!</strong>
-                        <p>${service.name} added to ${service.status}</p>
-                    </div>
-                `;
-                
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.remove();
-                }, 5000);
-            };
-
-            // Show notification for service update
-            const showServiceUpdateNotification = (data) => {
-                const notification = document.createElement('div');
-                notification.className = 'service-update-notification';
-                notification.innerHTML = `
-                    <div class="notification-content">
-                        <strong>Service Updated!</strong>
-                        <p>${data.service.name} is now ${data.service.status}</p>
-                    </div>
-                `;
-                
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.remove();
-                }, 5000);
-            };
-
-            // Handle tab change
-            const handleTabChange = (tab) => {
-                setActiveTab(tab);
-                fetchServices(tab);
-            };
-
-            // Handle service status change
-            const handleStatusChange = async (serviceId, newStatus) => {
-                try {
-                    const response = await fetch(`/api/services/${serviceId}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ status: newStatus })
-                    });
-                    
-                    if (response.ok) {
-                        // Update local state immediately
-                        setServices(prev => prev.map(service => 
-                            service.id === serviceId 
-                                ? { ...service, status: newStatus, last_updated: new Date().toISOString() }
-                                : service
-                        ));
-                        
-                        // Update stats
-                        fetchStats();
-                    }
-                } catch (error) {
-                    console.error('Error updating service status:', error);
-                }
-            };
-
-            // Handle service deletion
-            const handleDeleteService = async (serviceId) => {
-                if (confirm('Are you sure you want to delete this service?')) {
-                    try {
-                        const response = await fetch(`/api/services/${serviceId}`, {
-                            method: 'DELETE'
-                        });
-                        
-                        if (response.ok) {
-                            // Remove from local state
-                            setServices(prev => prev.filter(service => service.id !== serviceId));
-                            
-                            // Update stats
-                            fetchStats();
-                        }
-                    } catch (error) {
-                        console.error('Error deleting service:', error);
-                    }
-                }
-            };
-
-            // Format date
-            const formatDate = (dateString) => {
-                return new Date(dateString).toLocaleDateString('en-GB', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            };
-
-            // Format currency
-            const formatCurrency = (amount) => {
-                return new Intl.NumberFormat('en-GB', {
-                    style: 'currency',
-                    currency: 'GBP'
-                }).format(amount);
-            };
-
-            // Get status badge class
-            const getStatusBadgeClass = (status) => {
-                switch (status) {
-                    case 'Active':
-                        return 'status-badge active';
-                    case 'Pending Approval':
-                        return 'status-badge pending';
-                    case 'Rejected':
-                        return 'status-badge rejected';
-                    case 'Archived':
-                        return 'status-badge archived';
-                    default:
-                        return 'status-badge';
-                }
-            };
-
-            // Clear new services count
-            const clearNewServicesCount = () => {
-                setNewServicesCount(0);
-            };
-
-            useEffect(() => {
-                fetchAllData();
-                
-                // Polling fallback every 30 seconds
-                const pollInterval = setInterval(fetchAllData, 30000);
-                
-                return () => {
-                    clearInterval(pollInterval);
-                };
-            }, [activeTab]);
-
-            if (loading) {
-                return React.createElement('div', { className: 'services-dashboard' },
-                    React.createElement('div', { className: 'loading' }, 'Loading services...')
-                );
-            }
-
-            return React.createElement('div', { className: 'services-dashboard' },
-                React.createElement('div', { className: 'dashboard-header' },
-                    React.createElement('h1', null, 'Services Management'),
-                    React.createElement('p', null, 'Manage your business services and track their status')
-                ),
-
-                // Stats Cards
-                React.createElement('div', { className: 'stats-grid' },
-                    React.createElement('div', { className: 'stat-card' },
-                        React.createElement('div', { className: 'stat-icon' }, '✅'),
-                        React.createElement('div', { className: 'stat-content' },
-                            React.createElement('h3', null, stats.active),
-                            React.createElement('p', null, 'Active Services')
-                        )
-                    ),
-                    
-                    React.createElement('div', { className: 'stat-card' },
-                        React.createElement('div', { className: 'stat-icon' }, '⏳'),
-                        React.createElement('div', { className: 'stat-content' },
-                            React.createElement('h3', null, stats.pending),
-                            React.createElement('p', null, 'Pending Approval')
-                        )
-                    ),
-                    
-                    React.createElement('div', { className: 'stat-card' },
-                        React.createElement('div', { className: 'stat-icon' }, '❌'),
-                        React.createElement('div', { className: 'stat-content' },
-                            React.createElement('h3', null, stats.rejected),
-                            React.createElement('p', null, 'Rejected')
-                        )
-                    ),
-                    
-                    React.createElement('div', { className: 'stat-card' },
-                        React.createElement('div', { className: 'stat-icon' }, '📁'),
-                        React.createElement('div', { className: 'stat-content' },
-                            React.createElement('h3', null, stats.archived),
-                            React.createElement('p', null, 'Archived')
-                        )
-                    )
-                ),
-
-                // Services Section
-                React.createElement('div', { className: 'services-section' },
-                    React.createElement('div', { className: 'section-header' },
-                        React.createElement('h2', null, 'Services'),
-                        React.createElement('div', { className: 'header-actions' },
-                            newServicesCount > 0 && React.createElement('button', {
-                                className: 'new-services-badge',
-                                onClick: clearNewServicesCount
-                            }, `${newServicesCount} new`),
-                            React.createElement('button', {
-                                className: 'btn btn-primary',
-                                onClick: () => setShowAddModal(true)
-                            }, '+ Add Service')
-                        )
-                    ),
-
-                    // Tabs
-                    React.createElement('div', { className: 'tabs' },
-                        React.createElement('button', {
-                            className: `tab ${activeTab === 'Active' ? 'active' : ''}`,
-                            onClick: () => handleTabChange('Active')
-                        }, `Active (${stats.active})`),
-                        React.createElement('button', {
-                            className: `tab ${activeTab === 'Pending Approval' ? 'active' : ''}`,
-                            onClick: () => handleTabChange('Pending Approval')
-                        }, `Pending Approval (${stats.pending})`),
-                        React.createElement('button', {
-                            className: `tab ${activeTab === 'Rejected' ? 'active' : ''}`,
-                            onClick: () => handleTabChange('Rejected')
-                        }, `Rejected (${stats.rejected})`),
-                        React.createElement('button', {
-                            className: `tab ${activeTab === 'Archived' ? 'active' : ''}`,
-                            onClick: () => handleTabChange('Archived')
-                        }, `Archived (${stats.archived})`)
-                    ),
-
-                    // Services Grid
-                    React.createElement('div', { className: 'services-grid' },
-                        services.length === 0 ? 
-                            React.createElement('div', { className: 'no-services' },
-                                React.createElement('p', null, 'No services in this category yet.')
-                            ) :
-                            services.map((service) => 
-                                React.createElement('div', { key: service.id, className: 'service-card' },
-                                    service.image_url && React.createElement('div', { className: 'service-image' },
-                                        React.createElement('img', { src: service.image_url, alt: service.name })
-                                    ),
-                                    
-                                    React.createElement('div', { className: 'service-content' },
-                                        React.createElement('div', { className: 'service-header' },
-                                            React.createElement('h3', null, service.name),
-                                            React.createElement('span', { className: getStatusBadgeClass(service.status) }, service.status)
-                                        ),
-                                        
-                                        React.createElement('div', { className: 'service-details' },
-                                            React.createElement('p', { className: 'service-category' }, service.category),
-                                            React.createElement('p', { className: 'service-price' }, formatCurrency(service.price)),
-                                            React.createElement('p', { className: 'service-duration' }, service.duration),
-                                            service.description && React.createElement('p', { className: 'service-description' }, service.description),
-                                            React.createElement('p', { className: 'service-updated' }, `Updated: ${formatDate(service.last_updated)}`)
-                                        ),
-                                        
-                                        React.createElement('div', { className: 'service-actions' },
-                                            React.createElement('button', {
-                                                className: 'btn btn-secondary',
-                                                onClick: () => setEditingService(service)
-                                            }, 'Edit'),
-                                            
-                                            service.status === 'Active' && React.createElement('button', {
-                                                className: 'btn btn-warning',
-                                                onClick: () => handleStatusChange(service.id, 'Archived')
-                                            }, 'Archive'),
-                                            
-                                            service.status === 'Pending Approval' && React.createElement('button', {
-                                                className: 'btn btn-success',
-                                                onClick: () => handleStatusChange(service.id, 'Active')
-                                            }, 'Approve'),
-                                            
-                                            service.status === 'Rejected' && React.createElement('button', {
-                                                className: 'btn btn-primary',
-                                                onClick: () => handleStatusChange(service.id, 'Pending Approval')
-                                            }, 'Resubmit'),
-                                            
-                                            React.createElement('button', {
-                                                className: 'btn btn-danger',
-                                                onClick: () => handleDeleteService(service.id)
-                                            }, 'Delete')
-                                        )
-                                    )
-                                )
-                            )
-                    )
-                )
-            );
-        };
-
-        // Demo Controls
-        let ws = null;
-        
-        // WebSocket Controls
-        document.getElementById('connect-ws').addEventListener('click', () => {
-            if (ws) ws.close();
-            ws = new WebSocket('ws://localhost:5000');
-            
-            ws.onopen = () => {
-                document.getElementById('ws-status').className = 'status-indicator status-connected';
-                document.getElementById('ws-text').textContent = 'Connected';
-                ws.send(JSON.stringify({
-                    type: 'join_business',
-                    businessId: 'royal-hair-studio'
-                }));
-            };
-            
-            ws.onclose = () => {
-                document.getElementById('ws-status').className = 'status-indicator status-disconnected';
-                document.getElementById('ws-text').textContent = 'Disconnected';
-            };
-        });
-        
-        document.getElementById('disconnect-ws').addEventListener('click', () => {
-            if (ws) {
-                ws.close();
-                ws = null;
-            }
-        });
-        
-        // Create Service
-        document.getElementById('create-service').addEventListener('click', async () => {
-            const name = document.getElementById('service-name').value;
-            const category = document.getElementById('service-category').value;
-            const price = document.getElementById('service-price').value;
-            const duration = document.getElementById('service-duration').value;
-            const description = document.getElementById('service-description').value;
-            
-            if (!name || !category || !price || !duration) {
-                alert('Please fill in all required fields');
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/services', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        businessId: 'royal-hair-studio',
-                        name,
-                        category,
-                        price: parseFloat(price),
-                        duration,
-                        description
-                    })
-                });
-                
-                if (response.ok) {
-                    // Clear form
-                    document.getElementById('service-name').value = '';
-                    document.getElementById('service-category').value = 'Barbering';
-                    document.getElementById('service-price').value = '';
-                    document.getElementById('service-duration').value = '';
-                    document.getElementById('service-description').value = '';
-                    
-                    // Refresh the dashboard
-                    window.location.reload();
-                }
-            } catch (error) {
-                console.error('Error creating service:', error);
-            }
-        });
-        
-        // Generate Sample Data
-        document.getElementById('generate-samples').addEventListener('click', async () => {
-            const samples = [
-                { name: 'Luxury Haircut', category: 'Barbering', price: 25.00, duration: '45 mins', description: 'Precision haircut and finish' },
-                { name: 'Beard Trim', category: 'Barbering', price: 15.00, duration: '30 mins', description: 'Professional beard trimming and shaping' },
-                { name: 'Hair Wash & Style', category: 'Hair Styling', price: 35.00, duration: '60 mins', description: 'Complete hair wash and styling service' },
-                { name: 'Facial Treatment', category: 'Beauty', price: 45.00, duration: '75 mins', description: 'Deep cleansing facial treatment' },
-                { name: 'Manicure', category: 'Nails', price: 20.00, duration: '45 mins', description: 'Professional nail care and polish' }
-            ];
-            
-            for (const sample of samples) {
-                try {
-                    await fetch('/api/services', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            businessId: 'royal-hair-studio',
-                            ...sample
-                        })
-                    });
-                } catch (error) {
-                    console.error('Error creating sample service:', error);
-                }
-            }
-            
-            // Refresh the dashboard
-            setTimeout(() => window.location.reload(), 1000);
-        });
-        
-        // Clear Services
-        document.getElementById('clear-services').addEventListener('click', async () => {
-            if (confirm('Are you sure you want to clear all services?')) {
-                // This would need a DELETE endpoint in the real implementation
-                alert('Clear services functionality would be implemented with a DELETE endpoint');
-            }
-        });
-        
-        // Test Notification
-        document.getElementById('test-notification').addEventListener('click', () => {
-            const notification = document.createElement('div');
-            notification.className = 'new-service-notification';
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <strong>Test Notification!</strong>
-                    <p>This is a test notification to show the styling</p>
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 5000);
-        });
-        
-        // Simulate New Service
-        document.getElementById('simulate-new-service').addEventListener('click', () => {
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                const mockService = {
-                    type: 'new_service',
-                    id: 'mock-' + Date.now(),
-                    name: 'Test Service',
-                    category: 'Barbering',
-                    price: 25.00,
-                    duration: '45 mins',
-                    status: 'Pending Approval',
-                    last_updated: new Date().toISOString(),
-                    description: 'Test service for demonstration'
-                };
-                
-                // Simulate receiving the message
-                const event = new MessageEvent('message', {
-                    data: JSON.stringify(mockService)
-                });
-                
-                // Trigger the message handler
-                ws.onmessage(event);
-            } else {
-                alert('Please connect WebSocket first');
-            }
-        });
-        
-        // Render the dashboard
-        ReactDOM.render(React.createElement(BusinessServicesDashboard), document.getElementById('services-dashboard'));
-    </script>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

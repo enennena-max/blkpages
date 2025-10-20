@@ -1,2080 +1,1147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results - BlkPages (Updated)</title>
-    <script src="https://cdn.tailwindcss.com?v=2"></script>
-    <script src="js/suppress-tailwind-warning.js"></script>
-    
-    <!-- Basket Count Sync Fix -->
-    <script src="assets/js/basket.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=2">
-    
-    <!-- Business Management System -->
-    <script src="business-manager.js"></script>
-    
-    <!-- Analytics Tracking System -->
-    <script src="analytics-tracker.js"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'inter': ['Inter', 'sans-serif'],
-                        'poppins': ['Poppins', 'sans-serif'],
-                    },
-                    colors: {
-                        'neon-pink': '#FF3CAC',
-                        'neon-purple': '#784BA0',
-                        'neon-blue': '#2B86C5',
-                        'neon-green': '#4ADE80',
-                        'charcoal': '#121212',
-                        'dark-grey': '#1A1A1A',
-                        'light-grey': '#E5E5E5',
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.8s ease-in-out',
-                        'slide-up': 'slideUp 0.6s ease-out',
-                        'glow': 'glow 2s ease-in-out infinite alternate',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(30px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        },
-                        glow: {
-                            '0%': { boxShadow: '0 0 20px rgba(255, 60, 172, 0.3)' },
-                            '100%': { boxShadow: '0 0 30px rgba(255, 60, 172, 0.6)' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BlkPages — Find Local Businesses</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .list-business-btn:hover{box-shadow:0 0 16px rgba(16,185,129,0.6);}/* green glow */
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%);
-            min-height: 100vh;
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #2B86C5, #4ADE80);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 3s ease-in-out infinite;
-        }
-        
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-        }
-        
-        .neon-glow:hover {
-            box-shadow: 0 0 20px rgba(255, 60, 172, 0.5);
-        }
-        
-        .hero-bg {
-            background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=600&fit=crop&crop=center');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
+  /* Base Styles */
+  body{
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 211, 92, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(198, 139, 30, 0.05) 0%, transparent 50%),
+      #000;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto; 
+    padding-bottom: 50px;
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  /* Animated background particles */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(2px 2px at 20px 30px, rgba(212, 175, 55, 0.3), transparent),
+      radial-gradient(2px 2px at 40px 70px, rgba(255, 211, 92, 0.2), transparent),
+      radial-gradient(1px 1px at 90px 40px, rgba(198, 139, 30, 0.4), transparent),
+      radial-gradient(1px 1px at 130px 80px, rgba(212, 175, 55, 0.2), transparent),
+      radial-gradient(2px 2px at 160px 30px, rgba(255, 211, 92, 0.3), transparent);
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    animation: particleFloat 25s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+  }
+  
+  @keyframes particleFloat {
+    0% { transform: translateY(0px) translateX(0px); }
+    25% { transform: translateY(-100px) translateX(50px); }
+    50% { transform: translateY(-200px) translateX(0px); }
+    75% { transform: translateY(-100px) translateX(-50px); }
+    100% { transform: translateY(0px) translateX(0px); }
+  }
+  
+  /* Glassmorphism Effect for Search Bar */
+  .glass{
+    background:rgba(26,26,26,.75);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(212,175,55,.2);
+    box-shadow: 
+      0 20px 40px rgba(0,0,0,0.3),
+      0 0 0 1px rgba(255,255,255,0.1),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .glass::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+  
+  /* Top Scroll Progress Bar */
+  #progress{position:fixed;top:0;left:0;height:3px;background:#D4AF37;width:0;z-index:50}
 
-        /* Back Button Styling */
-        .back-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: #ffffff;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+  /* Primary Search CTA - Gold Gradient */
+  .search-cta-btn {
+    background:linear-gradient(90deg,#FFD35C,#D4AF37);
+    color:#000; 
+    transition: transform 0.1s ease, filter 0.1s ease;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+  }
+  .search-cta-btn:hover{filter:brightness(1.03);transform:translateY(-1px)}
+  .search-cta-btn:active{transform:translateY(0);filter:brightness(1)}
 
-        .back-btn:hover {
-            background: rgba(33, 150, 243, 0.2);
-            border-color: rgba(33, 150, 243, 0.4);
-            transform: translateX(-2px);
-        }
+  /* Secondary/Subtle CTA Buttons (cta-btn) */
+  .cta-btn {
+    border-radius: 8px !important;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background: none;
+    border: 1px solid #3a3a3a;
+    color: #D4AF37;
+  }
+  
+  .cta-btn:hover {
+    transform: scale(1.03);
+    opacity: 0.9;
+    border-color: #D4AF37;
+    color: #D4AF37;
+  }
 
-        .back-btn i {
-            font-size: 0.8rem;
+  /* Outline Icons (for star, etc.) */
+  .section-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #D4AF37;
+    fill: none;
+    vertical-align: middle;
+  }
+
+  /* Sort / Filter Bar Styling */
+  .sort-filter-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.9rem;
+  }
+  
+  .sort-filter-bar label {
+    color: #9ca3af;
+  }
+  
+  .sort-filter-bar select,
+  .sort-filter-bar button {
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    color: #fff;
+    border: 1px solid #333;
+    padding: 8px 12px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23facc15' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+  }
+  
+  .sort-filter-bar select:hover,
+  .sort-filter-bar button:hover {
+    background-color: #facc15;
+    color: #000;
+    border-color: #facc15;
+  }
+  
+  /* ================================================= */
+  /* === NEW OVERRIDE STYLES (Consolidated & Prioritized) === */
+  /* ================================================= */
+
+  /* HERO TAGLINE */
+  .hero-tagline,
+  .hero-subtitle {
+    font-weight: 500 !important;
+    font-size: 1.2rem !important;
+    letter-spacing: 0.5px;
+    color: #ccc !important;
+  }
+  
+  /* SEARCH BAR CLEANUP (Reinforcement) */
+  .search-bar input,
+  .search-bar select {
+    background-image: none !important;
+    padding-left: 16px !important;
+  }
+
+  /* SECTION HEADINGS */
+  .featured-section h2,
+  .local-section h2,
+  .featured-listings-title,
+  .local-businesses-title {
+    color: #D4AF37 !important;
+    font-weight: 700 !important;
+    margin-bottom: 8px;
+    font-size: 1.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    position: relative;
+    animation: fadeInUp 0.8s ease-out;
+  }
+  
+  .featured-section h2::after, .local-section h2::after, .featured-listings-title::after, .local-businesses-title::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #FFD35C, #D4AF37);
+    border-radius: 2px;
+    animation: expandLine 1s ease-out 0.5s both;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes expandLine {
+    from {
+      width: 0;
+    }
+    to {
+      width: 60px;
+    }
+  }
+  
+  .featured-section {
+    margin-top: 40px;
+  }
+
+
+  /* FEATURED LISTINGS SCROLL LAYOUT (Horizontal Scroll & Card Sizing) */
+  .featured-listings {
+    display: block !important;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    white-space: nowrap !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 12px 8px 12px;
+  }
+  .featured-listings::-webkit-scrollbar { display: none; }
+  .featured-listings { scrollbar-width: none; }
+
+  /* Card Styles: Smaller, neater cards for featured & local */
+  .featured-card,
+  .business-card,
+  .card {
+    /* REMOVED: display: inline-flex !important; to fix grid layout issue */
+    flex-direction: column;
+    justify-content: space-between;
+    
+    width: 100%; /* Default to 100% width for grid/block layouts */
+    min-height: 320px !important;
+    padding: 20px;
+    
+    border-radius: 20px;
+    background: linear-gradient(135deg, #111 0%, rgba(17, 17, 17, 0.9) 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 
+      0 10px 30px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(212, 175, 55, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    
+    vertical-align: top;
+    white-space: normal;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    scroll-snap-align: start;
+    
+    /* Ensure local cards use flex to properly stack content in the grid */
+    display: flex !important; 
+    margin-right: 0; /* Clear horizontal margin for grid */
+            position: relative;
+            overflow: hidden;
+        }
+        
+  .featured-card::before, .business-card::before, .card::before {
+    content: "";
+            position: absolute;
+            top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #FFD35C, #D4AF37);
+    border-radius: 20px 20px 0 0;
+  }
+  
+  /* Specific styling for cards inside the horizontal scroll container */
+  .featured-listings .featured-card {
+    display: inline-flex !important; /* Re-apply inline-flex for horizontal scroll */
+    width: 260px !important; /* Re-apply fixed width for horizontal scroll */
+    margin-right: 14px; /* Re-apply spacing for horizontal scroll */
+    animation: slideInFromLeft 0.6s ease-out;
+  }
+  
+  .business-card, .card {
+    animation: slideInFromBottom 0.6s ease-out;
+  }
+  
+  .business-card:nth-child(1) { animation-delay: 0.1s; }
+  .business-card:nth-child(2) { animation-delay: 0.2s; }
+  .business-card:nth-child(3) { animation-delay: 0.3s; }
+  .business-card:nth-child(4) { animation-delay: 0.4s; }
+  .business-card:nth-child(5) { animation-delay: 0.5s; }
+  .business-card:nth-child(6) { animation-delay: 0.6s; }
+  
+  @keyframes slideInFromLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideInFromBottom {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+
+  
+  .featured-card:hover,
+  .business-card:hover,
+  .card:hover {
+    transform: translateY(-10px) scale(1.02) !important;
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(212, 175, 55, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 0 30px rgba(212, 175, 55, 0.3) !important;
+    border-color: rgba(212, 175, 55, 0.4);
+  }
+  
+  .featured-card:active,
+  .business-card:active,
+  .card:active {
+    transform: scale(0.985);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.7) inset;
+  }
+
+
+  /* Image / Placeholder Area Cleanup */
+  .business-card .overlay-text,
+  .business-card .category-label,
+  .business-card .category-title,
+  .business-card [class*="overlay"],
+  .business-card [class*="category-"],
+  .business-card .image-title {
+    display: none !important;
+  }
+  .business-card-image,
+  .business-card .image,
+  .business-card .card-media,
+  .business-card .image-placeholder,
+  .featured-card .image,
+  .featured-card .card-media {
+            width: 100%;
+    height: 140px !important; /* New fixed height */
+    object-fit: cover;
+    border-radius: 10px 10px 0 0; /* New border radius */
+    background-color: #222;
+  }
+  .business-card .relative {
+      margin: -14px -14px 14px; /* Adjust image container margin to fit new padding */
+  }
+
+
+  /* BOOK NOW BUTTON */
+  button.book-now-btn,
+  a.book-now-btn,
+  .featured-card .book-now-btn,
+  .business-card .book-now-btn {
+    background: linear-gradient(90deg, #FFD35C, #D4AF37) !important;
+    color: #000 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    padding: 12px 24px !important;
+    text-align: center;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+    box-shadow: 
+      0 8px 25px rgba(212, 175, 55, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+  button.book-now-btn::before, a.book-now-btn::before, .featured-card .book-now-btn::before, .business-card .book-now-btn::before {
+    content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+  button.book-now-btn:hover,
+  a.book-now-btn:hover,
+  .featured-card .book-now-btn:hover,
+  .business-card .book-now-btn:hover {
+    background: linear-gradient(90deg, #FFB700, #FFD700) !important;
+    color: #000 !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 
+      0 15px 35px rgba(212, 175, 55, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  }
+  
+  button.book-now-btn:hover::before, a.book-now-btn:hover::before, .featured-card .book-now-btn:hover::before, .business-card .book-now-btn:hover::before {
+    left: 100%;
+  }
+  button.book-now-btn:active,
+  a.book-now-btn:active {
+    transform: scale(0.98) !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.7) inset !important;
+  }
+
+  /* CTA ALIGNMENT */
+  .card-cta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    gap: 6px;
+  }
+  .card-cta-row .cta-btn {
+    flex: 1;
+    text-align: center;
+    border-radius: 8px;
+  }
+
+  /* TEXT LAYOUT */
+  .business-info {
+    margin-top: 4px;
+    flex-grow: 1; /* Ensures text area takes available space for better justification */
+  }
+  .business-name {
+      margin-bottom: 6px;
+  }
+  .business-card .description {
+    display: block;
+    margin: 6px 0 2px;
+    color: #ddd;
+    font-size: 0.95rem;
+  }
+  .business-card .address {
+    display: block;
+    color: #cfcfcf;
+    line-height: 1.35;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
         }
     </style>
 </head>
-<body class="bg-charcoal text-white font-inter">
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-charcoal/95 backdrop-blur-md border-b border-white/10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Desktop Navigation -->
-            <div class="hidden lg:flex items-center justify-between h-16">
-                <!-- Left: Logo -->
-                <div class="flex items-center">
-                    <a href="index.html" class="text-2xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
-                </div>
-                
-                <!-- Center: Main Navigation -->
-                <div class="flex items-center space-x-8">
-                    <a href="index.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Home</a>
-                    <a href="search-results.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Browse</a>
-                    <a href="offers.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Offers</a>
-                    <a href="why-list-with-us.html#pricing" class="text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium">Plans</a>
-                </div>
-                
-                <!-- Right: Actions -->
-                <div class="flex items-center space-x-4">
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                    </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
                     <!-- Basket Icon -->
                     <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
                         <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
                         <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
-                    </div>
-                    
-                    <!-- Sign In / Customer Menu -->
+                        </div>
+                        
+                    <!-- Sign In / Sign Up (for signed out users) -->
                     <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="loginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
                             <i class="fas fa-sign-in-alt mr-1"></i>Sign In
-                        </button>
-                    </div>
+                            </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                            </a>
+                        </div>
                     
                     <!-- Customer Menu (for logged-in users) -->
                     <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
                         <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
                             <span id="customerInitialText">U</span>
-                        </button>
-                        <div class="customer-dropdown" id="customerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
-                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                                <i class="fas fa-user"></i>
-                                Account
+                            </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
                             </a>
-                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
                                 <i class="fas fa-sign-out-alt"></i>
                                 Sign Out
                             </a>
-                        </div>
                     </div>
-                    
-                    <!-- List Business Button (smaller and less overpowering) -->
-                    <a href="business-register.html" class="text-text-secondary hover:text-green-400 transition-colors duration-300 font-medium text-sm list-business-btn">+ List Business</a>
-                </div>
-            </div>
-            
-            <!-- Mobile Navigation -->
-            <div class="lg:hidden flex items-center justify-between h-16">
-                <!-- Left: Logo -->
-                <div class="flex items-center">
-                    <a href="index.html" class="text-xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
                 </div>
                 
-                <!-- Right: Actions -->
-                <div class="flex items-center space-x-3">
-                    <!-- Basket Icon -->
-                    <div class="basket-icon" id="mobileBasketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
-                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
-                        <span class="basket-count" id="mobileBasketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
-                    </div>
-                    
-                    <!-- Account Icon -->
-                    <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
-                            <i class="fas fa-sign-in-alt"></i>
-                        </button>
-                    </div>
-                    
-                    <!-- Customer Menu (Mobile) -->
-                    <div class="customer-menu" id="mobileCustomerMenu" style="display: none; position: relative;">
-                        <button class="customer-initial" id="mobileCustomerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
-                            <span id="mobileCustomerInitialText">U</span>
-                        </button>
-                        <div class="customer-dropdown" id="mobileCustomerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
-                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                                <i class="fas fa-user"></i>
-                                Account
-                            </a>
-                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
-                                <i class="fas fa-sign-out-alt"></i>
-                                Sign Out
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Hamburger Menu -->
-                    <button onclick="toggleMobileMenu()" class="text-white hover:text-neon-pink transition-colors duration-300">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Mobile Menu Dropdown -->
-            <div id="mobileMenu" class="lg:hidden hidden bg-charcoal/95 backdrop-blur-md border-t border-white/10">
-                <div class="px-4 py-3 space-y-3">
-                    <a href="index.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium py-2">Home</a>
-                    <a href="search-results.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium py-2">Browse</a>
-                    <a href="offers.html" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium py-2">Offers</a>
-                    <a href="why-list-with-us.html#pricing" class="block text-text-secondary hover:text-neon-pink transition-colors duration-300 font-medium py-2">Plans</a>
-                    <a href="business-register.html" class="block text-text-secondary hover:text-green-400 transition-colors duration-300 font-medium py-2 text-center list-business-btn">+ List Business</a>
-                </div>
-            </div>
-            
-            <!-- Mobile Navigation -->
-            <div class="lg:hidden flex items-center justify-between h-16">
-                <!-- Left: Logo -->
-                <div class="flex items-center">
-                    <a href="index.html" class="text-xl font-bold text-white hover:text-neon-pink transition-colors duration-300">BlkPages</a>
-                </div>
-                
-                <!-- Right: Actions -->
-                <div class="flex items-center space-x-3">
-                    <!-- Basket Icon -->
-                    <div class="basket-icon" id="mobileBasketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
-                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
-                        <span class="basket-count" id="mobileBasketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
-                    </div>
-                    
-                    <!-- Account Icon -->
-                    <div class="auth-links" id="mobileAuthLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="mobileLoginBtn" class="text-white hover:text-neon-pink transition-colors duration-300 text-sm" onclick="redirectToLogin()">
-                            <i class="fas fa-sign-in-alt"></i>
-                        </button>
-                    </div>
-                    
-                    <!-- Customer Menu (Mobile) -->
-                    <div class="customer-menu" id="mobileCustomerMenu" style="display: none; position: relative;">
-                        <button class="customer-initial" id="mobileCustomerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
-                            <span id="mobileCustomerInitialText">U</span>
-                        </button>
-                        <div class="customer-dropdown" id="mobileCustomerDropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(26, 26, 26, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); min-width: 150px; z-index: 1000; margin-top: 0.5rem;">
-                            <a href="customer-dashboard.html" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-                                <i class="fas fa-user"></i>
-                                Account
-                            </a>
-                            <a href="#" onclick="signOut()" class="dropdown-item" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: #ffffff; text-decoration: none; font-size: 0.9rem; transition: all 0.3s ease;">
-                                <i class="fas fa-sign-out-alt"></i>
-                                Sign Out
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Hamburger Menu -->
-                    <button onclick="toggleMobileMenu()" class="text-white hover:text-neon-pink transition-colors duration-300">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                </div>
-            </div>
-            
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero-bg relative pt-20 pb-16">
-        <div class="absolute inset-0 bg-black/60"></div>
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl md:text-6xl font-bold font-poppins gradient-text mb-4">
-                Browse Businesses
-            </h1>
-            <p class="text-xl text-light-grey" id="dynamicSubheading">
-                Discover amazing businesses near you
-            </p>
-        </div>
-    </section>
-
-    <!-- Search Panel -->
-    <section class="py-8 bg-charcoal">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-dark-grey rounded-2xl p-6 border border-white/10">
-                <!-- Initial Search Interface -->
-                <div id="initialSearch" class="text-center">
-                    <h2 class="text-2xl font-bold text-white mb-4 font-poppins">Find Your Perfect Business</h2>
-                    <p class="text-light-grey mb-8">Search for businesses near you</p>
-                    
-                    <div class="max-w-4xl mx-auto">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                            <!-- Business Name Search -->
-                            <div class="lg:col-span-2">
-                                <label class="block text-sm font-medium text-light-grey mb-2 text-left">Business Name</label>
-                                <input type="text" id="businessNameSearch" placeholder="Search by business name..." class="w-full px-4 py-3 bg-charcoal border border-white/20 rounded-lg text-white placeholder-light-grey focus:border-neon-pink focus:ring-2 focus:ring-neon-pink/20 transition-all duration-300">
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
                             </div>
                             
-                            <!-- Location/Postcode -->
-                            <div>
-                                <label class="block text-sm font-medium text-light-grey mb-2 text-left">Location</label>
-                                <input type="text" id="locationSearch" placeholder="Enter postcode or city" class="w-full px-4 py-3 bg-charcoal border border-white/20 rounded-lg text-white placeholder-light-grey focus:border-neon-pink focus:ring-2 focus:ring-neon-pink/20 transition-all duration-300">
-                            </div>
-                            
-                            <!-- Category -->
-                            <div>
-                                <label class="block text-sm font-medium text-light-grey mb-2 text-left">Category</label>
-                                <select id="categorySearch" class="w-full px-4 py-3 bg-charcoal border border-white/20 rounded-lg text-white focus:border-neon-pink focus:ring-2 focus:ring-neon-pink/20 transition-all duration-300">
-                                    <option value="">All Categories</option>
-                                    <option value="hair">Hair Salons</option>
-                                    <option value="barber">Barbers</option>
-                                    <option value="beauty">Beauty</option>
-                                    <option value="nail">Nail Salons</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <!-- Action Buttons -->
-                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button id="searchBtn" class="px-8 py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow">
-                                <i class="fas fa-search mr-2"></i>Search
-                            </button>
-                            <button id="nearMeBtn" class="px-8 py-3 rounded-lg border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-white transition-all duration-300">
-                                <i class="fas fa-map-marker-alt mr-2"></i>Near Me
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Advanced Filters & Sort (Hidden Initially) -->
-                <div id="advancedControls" class="hidden">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold text-white font-poppins">Refine Your Search</h3>
-                        <div class="flex gap-3">
-                            <!-- Filter Hamburger Menu -->
-                            <div class="relative">
-                                <button id="filterMenuBtn" class="px-4 py-2 rounded-lg bg-charcoal border border-white/20 text-white hover:border-neon-pink focus:border-neon-pink transition-all duration-300 flex items-center gap-2">
-                                    <i class="fas fa-filter"></i>
-                                    <span>Filters</span>
-                                    <i class="fas fa-chevron-down text-sm"></i>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                                 </button>
-                                <div id="filterMenu" class="absolute top-full right-0 mt-2 w-64 bg-charcoal border border-white/20 rounded-lg shadow-lg z-10 hidden">
-                                    <div class="p-4 space-y-4">
-                                        <div>
-                                            <label class="block text-sm font-medium text-light-grey mb-2">Min Rating</label>
-                                            <select id="ratingFilter" class="w-full px-3 py-2 bg-dark-grey border border-white/20 rounded text-white focus:border-neon-pink transition-all duration-300">
-                                                <option value="">Any Rating</option>
-                                                <option value="4">4+ Stars</option>
-                                                <option value="4.5">4.5+ Stars</option>
-                                                <option value="5">5 Stars</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-sm font-medium text-light-grey mb-2">Distance</label>
-                                            <select id="distanceFilter" class="w-full px-3 py-2 bg-dark-grey border border-white/20 rounded text-white focus:border-neon-pink transition-all duration-300">
-                                                <option value="5">5 miles</option>
-                                                <option value="10">10 miles</option>
-                                                <option value="25">25 miles</option>
-                                                <option value="50">50 miles</option>
-                                            </select>
-                                        </div>
-                                        <div class="flex gap-2 pt-2">
-                                            <button id="applyFiltersBtn" class="flex-1 px-4 py-2 rounded bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
-                                                Apply
-                                            </button>
-                                            <button id="clearFiltersBtn" class="flex-1 px-4 py-2 rounded border border-white/20 text-light-grey hover:text-white hover:bg-white/10 transition-all duration-300">
-                                                Clear
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Sort Hamburger Menu -->
-                            <div class="relative">
-                                <button id="sortMenuBtn" class="px-4 py-2 rounded-lg bg-charcoal border border-white/20 text-white hover:border-neon-pink focus:border-neon-pink transition-all duration-300 flex items-center gap-2">
-                                    <i class="fas fa-sort"></i>
-                                    <span id="sortMenuText">Sort</span>
-                                    <i class="fas fa-chevron-down text-sm"></i>
-                                </button>
-                                <div id="sortMenu" class="absolute top-full right-0 mt-2 w-48 bg-charcoal border border-white/20 rounded-lg shadow-lg z-10 hidden">
-                                    <div class="py-2">
-                                        <button class="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors duration-300" data-sort="relevance">Relevance</button>
-                                        <button class="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors duration-300" data-sort="price">Price</button>
-                                        <button class="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors duration-300" data-sort="distance">Distance</button>
-                                        <button class="w-full px-4 py-3 text-left text-white hover:bg-white/10 transition-colors duration-300" data-sort="reviews">Reviews</button>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Content - Two Column Layout -->
-    <section class="py-12 bg-charcoal">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Mobile Featured Section (moved above main results) -->
-            <div class="lg:hidden mb-8">
-                <div class="bg-dark-grey rounded-2xl p-6 border border-white/10">
-                    <h3 class="text-xl font-bold text-white mb-6 font-poppins">Featured Businesses</h3>
-                    <div class="overflow-x-auto">
-                        <div class="flex space-x-4 pb-4" id="mobileFeaturedBusinessesTop" style="min-width: max-content;">
-                            <!-- Mobile featured businesses will be populated dynamically -->
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+                                                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Main Results Column -->
-                <div class="lg:col-span-2">
-                    <div class="mb-6">
-                        <h2 class="text-2xl font-bold text-white mb-2" id="resultsHeading">All Businesses</h2>
-                        <p class="text-light-grey" id="resultsCount">12 businesses found</p>
-                    </div>
-                    
-                    
-                    <!-- Business Listings Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="businessResults">
-                        <!-- Premium Business Card 1 -->
-                        <div class="bg-dark-grey rounded-2xl p-6 border border-white/10 card-hover">
-                            <div class="mb-4">
-                                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=250&fit=crop&crop=center" alt="Royal Hair Studio" class="w-full h-48 object-cover rounded-lg">
-                            </div>
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-xl font-bold text-white">Royal Hair Studio</h3>
-                                <div class="flex items-center">
-                                    <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center mb-2">
-                                <div class="flex text-yellow-400 mr-2">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <span class="text-light-grey text-sm">4.8 (127 reviews)</span>
-                            </div>
-                            <p class="text-neon-pink text-sm font-medium mb-2">Hair Salon</p>
-                            <p class="text-light-grey text-sm mb-4 flex items-center">
-                                <i class="fas fa-map-marker-alt mr-2"></i>
-                                123 High Street, London SW1A 1AA
-                            </p>
-                            <button class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow" onclick="goToBusinessProfile('royal-hair-studio')">
-                                Book Now
-                            </button>
-                        </div>
-
-                        <!-- Premium Business Card 2 -->
-                        <div class="bg-dark-grey rounded-2xl p-6 border border-white/10 card-hover">
-                            <div class="mb-4">
-                                <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=250&fit=crop&crop=center" alt="Elite Barber Shop" class="w-full h-48 object-cover rounded-lg">
-                            </div>
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-xl font-bold text-white">Elite Barber Shop</h3>
-                            </div>
-                            <div class="flex items-center mb-2">
-                                <div class="flex text-yellow-400 mr-2">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <span class="text-light-grey text-sm">4.9 (89 reviews)</span>
-                            </div>
-                            <p class="text-neon-pink text-sm font-medium mb-2">Barber Shop</p>
-                            <p class="text-light-grey text-sm mb-4 flex items-center">
-                                <i class="fas fa-map-marker-alt mr-2"></i>
-                                456 King's Road, London SW3 4LX
-                            </p>
-                            <button class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow" onclick="goToBusinessProfile('elite-barber-shop')">
-                                Book Now
-                            </button>
-                        </div>
-
-                        <!-- Premium Business Card 3 -->
-                        <div class="bg-dark-grey rounded-2xl p-6 border border-white/10 card-hover">
-                            <div class="mb-4">
-                                <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=250&fit=crop&crop=center" alt="Glamour Beauty Lounge" class="w-full h-48 object-cover rounded-lg">
-                            </div>
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-xl font-bold text-white">Glamour Beauty Lounge</h3>
-                            </div>
-                            <div class="flex items-center mb-2">
-                                <div class="flex text-yellow-400 mr-2">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <span class="text-light-grey text-sm">4.7 (156 reviews)</span>
-                            </div>
-                            <p class="text-neon-pink text-sm font-medium mb-2">Beauty Salon</p>
-                            <p class="text-light-grey text-sm mb-4 flex items-center">
-                                <i class="fas fa-map-marker-alt mr-2"></i>
-                                789 Oxford Street, London W1C 1JN
-                            </p>
-                            <button class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow" onclick="goToBusinessProfile('glamour-beauty-lounge')">
-                                Book Now
-                            </button>
-                        </div>
-
-                        <!-- Basic Business Card 1 -->
-                        <div class="bg-dark-grey rounded-2xl p-3 border border-white/10">
-                            <div class="mb-4">
-                                <h3 class="text-xl font-bold text-white mb-2">Classic Cuts</h3>
-                                <p class="text-light-grey text-sm mb-3">Traditional barber shop with experienced stylists</p>
-                            </div>
-                            <div class="space-y-2 mb-4">
-                                <p class="text-light-grey text-sm flex items-center">
-                                    <i class="fas fa-map-marker-alt mr-2 w-4"></i>
-                                    321 Baker Street, London NW1 6XE
-                                </p>
-                                <p class="text-light-grey text-sm flex items-center">
-                                    <i class="fas fa-phone mr-2 w-4"></i>
-                                    020 7123 4567
-                                </p>
-                                <p class="text-light-grey text-sm flex items-center">
-                                    <i class="fas fa-envelope mr-2 w-4"></i>
-                                    info@classiccuts.co.uk
-                                </p>
-                                <p class="text-light-grey text-sm flex items-center">
-                                    <i class="fas fa-clock mr-2 w-4"></i>
-                                    Mon-Fri: 9am-6pm, Sat: 9am-4pm
-                                </p>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-light-grey text-sm mb-3">Contact the business directly for enquiries</p>
-                            </div>
-                        </div>
-
-                        <!-- Basic Business Card 2 -->
-                        <div class="bg-dark-grey rounded-2xl p-4 border border-white/10">
-                            <div class="mb-3">
-                                <h3 class="text-lg font-bold text-white mb-2">Natural Hair Care</h3>
-                                <p class="text-light-grey text-xs mb-2">Specializing in natural hair treatments and styling</p>
-                            </div>
-                            <div class="space-y-2 mb-3">
-                                <p class="text-light-grey text-xs flex items-center">
-                                    <i class="fas fa-map-marker-alt mr-2 w-3"></i>
-                                    654 Brixton Road, London SW9 8AD
-                                </p>
-                                <p class="text-light-grey text-xs flex items-center">
-                                    <i class="fas fa-phone mr-2 w-3"></i>
-                                    020 8765 4321
-                                </p>
-                                <p class="text-light-grey text-xs flex items-center">
-                                    <i class="fas fa-envelope mr-2 w-3"></i>
-                                    hello@naturalhaircare.com
-                                </p>
-                                <p class="text-light-grey text-xs flex items-center">
-                                    <i class="fas fa-clock mr-2 w-3"></i>
-                                    Tue-Sat: 10am-7pm
-                                </p>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-light-grey text-xs mb-2">Contact the business directly for enquiries</p>
-                            </div>
-                        </div>
-
-                        <!-- Basic Business Card 3 -->
-                        <div class="bg-dark-grey rounded-2xl p-4 border border-white/10">
-                            <div class="mb-3">
-                                <h3 class="text-lg font-bold text-white mb-2">Style Studio</h3>
-                                <p class="text-light-grey text-xs mb-2">Full-service hair and beauty salon</p>
-                            </div>
-                            <div class="space-y-2 mb-3">
-                                <p class="text-light-grey text-xs flex items-center">
-                                    <i class="fas fa-map-marker-alt mr-2 w-3"></i>
-                                    987 Camden High Street, London NW1 7JE
-                                </p>
-                                <p class="text-light-grey text-xs flex items-center">
-                                    <i class="fas fa-phone mr-2 w-3"></i>
-                                    020 9876 5432
-                                </p>
-                                <p class="text-light-grey text-xs flex items-center">
-                                    <i class="fas fa-envelope mr-2 w-3"></i>
-                                    bookings@stylestudio.co.uk
-                                </p>
-                                <p class="text-light-grey text-xs flex items-center">
-                                    <i class="fas fa-clock mr-2 w-3"></i>
-                                    Mon-Sat: 9am-8pm, Sun: 10am-5pm
-                                </p>
-                            </div>
-                            <div class="text-center">
-                                <p class="text-light-grey text-xs mb-2">Contact the business directly for enquiries</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Pagination -->
-                    <div class="flex justify-center items-center mt-12 space-x-2">
-                        <button class="px-4 py-2 rounded-lg border border-white/20 text-light-grey hover:text-white hover:bg-white/10 transition-all duration-300">
-                            ← Previous
-                        </button>
-                        <button class="px-4 py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold neon-glow">
-                            1
-                        </button>
-                        <button class="px-4 py-2 rounded-lg border border-white/20 text-light-grey hover:text-white hover:bg-white/10 transition-all duration-300">
-                            2
-                        </button>
-                        <button class="px-4 py-2 rounded-lg border border-white/20 text-light-grey hover:text-white hover:bg-white/10 transition-all duration-300">
-                            3
-                        </button>
-                        <button class="px-4 py-2 rounded-lg border border-white/20 text-light-grey hover:text-white hover:bg-white/10 transition-all duration-300">
-                            Next →
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Sidebar - Featured Businesses -->
-                <div class="lg:col-span-1">
-                    <!-- Desktop Featured Section -->
-                    <div class="hidden lg:block bg-dark-grey rounded-2xl p-6 border border-white/10">
-                        <h3 class="text-xl font-bold text-white mb-6 font-poppins">Featured Businesses</h3>
-                        <div class="space-y-4" id="featuredBusinesses">
-                            <!-- Featured Business 1 -->
-                            <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover">
-                                <div class="mb-3">
-                                    <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=150&fit=crop&crop=center" alt="Royal Hair Studio" class="w-full h-32 object-cover rounded-lg">
-                                </div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="text-lg font-bold text-white">Royal Hair Studio</h4>
-                                    <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
-                                </div>
-                                <div class="flex items-center mb-2">
-                                    <div class="flex text-yellow-400 mr-2">
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                    </div>
-                                    <span class="text-light-grey text-xs">4.8 (127)</span>
-                                </div>
-                                <p class="text-neon-pink text-xs font-medium mb-2">Hair Salon</p>
-                                <p class="text-light-grey text-xs mb-3">123 High Street, London</p>
-                                <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('classic-cuts')">
-                                    Book Now
-                                </button>
-                            </div>
-
-                            <!-- Featured Business 2 -->
-                            <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover">
-                                <div class="mb-3">
-                                    <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=150&fit=crop&crop=center" alt="Elite Barber Shop" class="w-full h-32 object-cover rounded-lg">
-                                </div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="text-lg font-bold text-white">Elite Barber Shop</h4>
-                                    <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
-                                </div>
-                                <div class="flex items-center mb-2">
-                                    <div class="flex text-yellow-400 mr-2">
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                    </div>
-                                    <span class="text-light-grey text-xs">4.9 (89)</span>
-                                </div>
-                                <p class="text-neon-pink text-xs font-medium mb-2">Barber Shop</p>
-                                <p class="text-light-grey text-xs mb-3">456 King's Road, London</p>
-                                <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('elite-barber-shop')">
-                                    Book Now
-                                </button>
-                            </div>
-
-                            <!-- Featured Business 3 -->
-                            <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover">
-                                <div class="mb-3">
-                                    <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=300&h=150&fit=crop&crop=center" alt="Glamour Beauty Lounge" class="w-full h-32 object-cover rounded-lg">
-                                </div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="text-lg font-bold text-white">Glamour Beauty Lounge</h4>
-                                    <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
-                                </div>
-                                <div class="flex items-center mb-2">
-                                    <div class="flex text-yellow-400 mr-2">
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                        <i class="fas fa-star text-xs"></i>
-                                    </div>
-                                    <span class="text-light-grey text-xs">4.7 (156)</span>
-                                </div>
-                                <p class="text-neon-pink text-xs font-medium mb-2">Beauty Salon</p>
-                                <p class="text-light-grey text-xs mb-3">789 Oxford Street, London</p>
-                                <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('glamour-beauty-lounge')">
-                                    Book Now
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Mobile Featured Section -->
-                    <div class="lg:hidden bg-dark-grey rounded-2xl p-6 border border-white/10 mb-8">
-                        <h3 class="text-xl font-bold text-white mb-6 font-poppins">Featured Businesses</h3>
-                        <div class="overflow-x-auto">
-                            <div class="flex space-x-4 pb-4" id="mobileFeaturedBusinesses" style="min-width: max-content;">
-                                <!-- Mobile Featured Business 1 -->
-                                <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover flex-shrink-0" style="width: 280px;">
-                                    <div class="mb-3">
-                                        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=150&fit=crop&crop=center" alt="Royal Hair Studio" class="w-full h-32 object-cover rounded-lg">
-                                    </div>
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h4 class="text-lg font-bold text-white">Royal Hair Studio</h4>
-                                        <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
-                                    </div>
-                                    <div class="flex items-center mb-2">
-                                        <div class="flex text-yellow-400 mr-2">
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                        </div>
-                                        <span class="text-light-grey text-xs">4.8 (127)</span>
-                                    </div>
-                                    <p class="text-neon-pink text-xs font-medium mb-2">Hair Salon</p>
-                                    <p class="text-light-grey text-xs mb-3">123 High Street, London</p>
-                                    <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('classic-cuts')">
-                                        Book Now
-                                    </button>
-                                </div>
-
-                                <!-- Mobile Featured Business 2 -->
-                                <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover flex-shrink-0" style="width: 280px;">
-                                    <div class="mb-3">
-                                        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=150&fit=crop&crop=center" alt="Elite Barber Shop" class="w-full h-32 object-cover rounded-lg">
-                                    </div>
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h4 class="text-lg font-bold text-white">Elite Barber Shop</h4>
-                                        <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
-                                    </div>
-                                    <div class="flex items-center mb-2">
-                                        <div class="flex text-yellow-400 mr-2">
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                        </div>
-                                        <span class="text-light-grey text-xs">4.9 (89)</span>
-                                    </div>
-                                    <p class="text-neon-pink text-xs font-medium mb-2">Barber Shop</p>
-                                    <p class="text-light-grey text-xs mb-3">456 King's Road, London</p>
-                                    <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('elite-barber-shop')">
-                                        Book Now
-                                    </button>
-                                </div>
-
-                                <!-- Mobile Featured Business 3 -->
-                                <div class="bg-charcoal rounded-xl p-4 border border-white/10 card-hover flex-shrink-0" style="width: 280px;">
-                                    <div class="mb-3">
-                                        <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=300&h=150&fit=crop&crop=center" alt="Glamour Beauty Lounge" class="w-full h-32 object-cover rounded-lg">
-                                    </div>
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h4 class="text-lg font-bold text-white">Glamour Beauty Lounge</h4>
-                                        <span class="bg-gradient-to-r from-neon-green to-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Featured</span>
-                                    </div>
-                                    <div class="flex items-center mb-2">
-                                        <div class="flex text-yellow-400 mr-2">
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                            <i class="fas fa-star text-xs"></i>
-                                        </div>
-                                        <span class="text-light-grey text-xs">4.7 (156)</span>
-                                    </div>
-                                    <p class="text-neon-pink text-xs font-medium mb-2">Beauty Salon</p>
-                                    <p class="text-light-grey text-xs mb-3">789 Oxford Street, London</p>
-                                    <button class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-sm" onclick="goToBusinessProfile('glamour-beauty-lounge')">
-                                        Book Now
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-dark-grey py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <div class="mb-8">
-                    <h3 class="text-2xl font-bold font-poppins gradient-text mb-4">BlkPages</h3>
-                    <p class="text-light-grey mb-8">© 2025 BlkPages – Supporting Black-owned Businesses</p>
-                    <div class="flex justify-center space-x-8 text-light-grey mb-6">
-                        <a href="about.html" class="hover:text-neon-blue transition-colors font-medium">About</a>
-                        <a href="contact.html" class="hover:text-neon-blue transition-colors font-medium">Contact</a>
-                        <a href="privacy.html" class="hover:text-neon-blue transition-colors font-medium">Privacy</a>
-                        <a href="terms.html" class="hover:text-neon-blue transition-colors font-medium">Terms</a>
-                        <a href="blog.html" class="hover:text-neon-blue transition-colors font-medium">Blog</a>
-                    </div>
-                    <div class="max-w-4xl mx-auto mb-6">
-                        <p class="text-xs text-light-grey leading-relaxed">
-                            <strong>Disclaimer:</strong> BlkPages is a third-party directory and booking facilitator. Each business listed on our platform is an independent provider and is solely responsible for its own services, pricing, availability, and cancellation or refund policies. By booking through BlkPages, you agree that any cancellations, changes, or disputes must be resolved directly with the business.
-                        </p>
-                    </div>
-                </div>
-                <div class="flex justify-center space-x-6">
-                    <a href="#" class="text-light-grey hover:text-neon-pink transition-colors duration-300 text-2xl">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" class="text-light-grey hover:text-neon-pink transition-colors duration-300 text-2xl">
-                        <i class="fab fa-tiktok"></i>
-                    </a>
-                    <a href="#" class="text-light-grey hover:text-neon-pink transition-colors duration-300 text-2xl">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Mobile menu functions
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.toggle('hidden');
-        }
-        
-        function closeMobileMenu() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.add('hidden');
-        }
-        
-        // Modal functions (placeholder - these would need to be implemented)
-        function toggleLoginModal(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            alert('Login modal would open here');
-        }
-        
-        function toggleSignupModal(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            alert('Signup modal would open here');
-        }
-        
-        // Basket management
-        const BASKET_KEY = 'blkpages_basket';
-        const GUEST_BASKET_KEY = 'blkpages_guest_basket';
-        let selectedServices = [];
-        
-        function saveBasket() {
-            const basketData = {
-                selectedServices: selectedServices,
-                timestamp: Date.now()
-            };
-            
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            if (isLoggedIn) {
-                localStorage.setItem(BASKET_KEY, JSON.stringify(basketData));
-            } else {
-                sessionStorage.setItem(GUEST_BASKET_KEY, JSON.stringify(basketData));
-            }
-            
-            // Store current page as referrer for login redirect
-            // // localStorage.setItem('loginReferrer', window.location.pathname); // Removed - using returnUrl instead // Removed - using returnUrl instead
-        }
-        
-        function loadBasket() {
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            let basketData = null;
-            
-            if (isLoggedIn) {
-                const savedBasket = localStorage.getItem(BASKET_KEY);
-                if (savedBasket) basketData = JSON.parse(savedBasket);
-            } else {
-                const guestBasket = sessionStorage.getItem(GUEST_BASKET_KEY);
-                if (guestBasket) basketData = JSON.parse(guestBasket);
-            }
-            
-            if (basketData) {
-                selectedServices = basketData.selectedServices || [];
-                updateBasketCount();
-            }
-        }
-        
-        function updateBasketCount() {
-            const basketCount = document.getElementById('basketCount');
-            if (basketCount) {
-                basketCount.textContent = selectedServices.length;
-            }
-        }
-        
-        function scrollToBooking() {
-            if (selectedServices.length > 0) {
-                alert('You have ' + selectedServices.length + ' service(s) in your basket. Visit a business profile to complete your booking.');
-            } else {
-                alert('Your basket is empty. Browse businesses to add services.');
-            }
-        }
-        
-        // Customer menu functions
-        function toggleCustomerMenu() {
-            const dropdown = document.getElementById('customerDropdown');
-            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
-                dropdown.style.display = 'block';
-            } else {
-                dropdown.style.display = 'none';
-            }
-        }
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const customerMenu = document.getElementById('customerMenu');
-            const dropdown = document.getElementById('customerDropdown');
-            
-            if (customerMenu && dropdown && !customerMenu.contains(event.target)) {
-                dropdown.style.display = 'none';
-            }
-        });
-        
-        // Check login status and show/hide customer menu
-        function updateNavVisibility() {
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            const authLinks = document.getElementById('authLinks');
-            const customerMenu = document.getElementById('customerMenu');
-            const basketIcon = document.getElementById('basketIcon');
-            
-            if (isLoggedIn) {
-                if (authLinks) authLinks.style.display = 'none';
-                if (customerMenu) customerMenu.style.display = 'block';
-                if (basketIcon) basketIcon.style.display = 'flex';
-            } else {
-                if (authLinks) authLinks.style.display = 'flex';
-                if (customerMenu) customerMenu.style.display = 'none';
-                if (basketIcon) basketIcon.style.display = 'flex';
-            }
-        }
-        
-        function checkLoginStatus() {
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            const customerMenu = document.getElementById('customerMenu');
-            
-            if (customerMenu) {
-                if (isLoggedIn) {
-                    customerMenu.style.display = 'block';
-                    
-                    // Set customer initial
-                    const userName = localStorage.getItem('userName') || 'Demo User';
-                    const initial = userName.charAt(0).toUpperCase();
-                    document.getElementById('customerInitialText').textContent = initial;
-                } else {
-                    customerMenu.style.display = 'none';
-                }
-            }
-            
-            // Update navigation visibility
-            updateNavVisibility();
-        }
-        
-        function signOut() {
-            if (confirm('Are you sure you want to sign out?')) {
-                // Clear all user data from localStorage
-                localStorage.removeItem('userLoggedIn');
-                localStorage.removeItem('userEmail');
-                localStorage.removeItem('userName');
-                localStorage.removeItem('userPhone');
-                localStorage.removeItem('basketContents');
-                
-                // Show success message
-                alert('You have been signed out successfully.');
-                
-                // Reload the page
-                location.reload();
-            }
-        }
-        
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            checkLoginStatus();
-            loadBasket();
-        });
-
-        // Fade in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in-section').forEach(section => {
-            observer.observe(section);
-        });
-
-        // Load business manager
-        if (typeof window.businessManager === 'undefined') {
-            // Load business manager script if not already loaded
-            const script = document.createElement('script');
-            script.src = 'business-manager.js';
-            script.onload = function() {
-                initializeSearch();
-            };
-            document.head.appendChild(script);
-        } else {
-            initializeSearch();
-        }
-        
-        function initializeSearch() {
-            // Get business data from business manager
-            const businessData = window.businessManager.getBusinesses();
-            
-            // Display all businesses initially
-            displaySearchResults(businessData);
-            
-            // Track search impressions for initial load
-            trackSearchImpressions(businessData);
-
-        // Track if search has been performed
-        let hasSearched = false;
-
-        // Show advanced controls after search
-        function showAdvancedControls() {
-            document.getElementById('advancedControls').classList.remove('hidden');
-        }
-
-        // Hide advanced controls (reset to initial state)
-        function hideAdvancedControls() {
-            document.getElementById('advancedControls').classList.add('hidden');
-        }
-
-        // Filter menu functionality
-        function toggleFilterMenu() {
-            const filterMenu = document.getElementById('filterMenu');
-            filterMenu.classList.toggle('hidden');
-        }
-
-        function applyFilters() {
-            const filterMenu = document.getElementById('filterMenu');
-            filterMenu.classList.add('hidden');
-            performSearch();
-        }
-
-        function clearFilters() {
-            document.getElementById('categoryFilter').value = '';
-            document.getElementById('locationFilter').value = '';
-            document.getElementById('ratingFilter').value = '';
-            document.getElementById('distanceFilter').value = '5';
-            const filterMenu = document.getElementById('filterMenu');
-            filterMenu.classList.add('hidden');
-            performSearch();
-        }
-
-        // Sort menu functionality
-        function toggleSortMenu() {
-            const sortMenu = document.getElementById('sortMenu');
-            sortMenu.classList.toggle('hidden');
-        }
-
-        function selectSortOption(sortType) {
-            const sortMenuText = document.getElementById('sortMenuText');
-            const sortMenu = document.getElementById('sortMenu');
-            
-            sortMenuText.textContent = sortType.charAt(0).toUpperCase() + sortType.slice(1);
-            sortMenu.classList.add('hidden');
-            
-            // Trigger search with new sort
-            performSearch();
-        }
-
-        // Business name search with partial matching
-        function searchBusinesses() {
-            const businessName = document.getElementById('businessNameSearch').value.toLowerCase().trim();
-            const location = document.getElementById('locationSearch').value.toLowerCase().trim();
-            const category = document.getElementById('categorySearch').value;
-            
-            // Get advanced filter values (if available)
-            const advancedCategory = document.getElementById('categoryFilter')?.value || '';
-            const advancedLocation = document.getElementById('locationFilter')?.value.toLowerCase().trim() || '';
-            const minRating = document.getElementById('ratingFilter')?.value || '';
-            const distance = document.getElementById('distanceFilter')?.value || '5';
-            const sortBy = document.getElementById('sortMenuText')?.textContent.toLowerCase() || 'relevance';
-
-            // Use business manager to search
-            const searchFilters = {
-                businessName: businessName,
-                category: advancedCategory || category,
-                location: advancedLocation || location,
-                minRating: minRating ? parseFloat(minRating) : null
-            };
-            
-            let filteredBusinesses = window.businessManager.searchBusinesses(searchFilters);
-
-            // Sort results
-            if (sortBy === 'price') {
-                // Sort by price (assuming lower is better for demo)
-                filteredBusinesses.sort((a, b) => a.rating - b.rating);
-            } else if (sortBy === 'distance') {
-                // For demo purposes, randomize distance
-                filteredBusinesses.sort(() => Math.random() - 0.5);
-            } else if (sortBy === 'reviews') {
-                // Sort by number of reviews (assuming higher is better)
-                filteredBusinesses.sort((a, b) => b.rating - a.rating);
-            } else if (sortBy === 'relevance') {
-                // Keep original order for relevance
-                // No sorting needed
-            }
-
-            displaySearchResults(filteredBusinesses);
-            
-            // Track search impressions for each business that appears in results
-            trackSearchImpressions(filteredBusinesses);
-        }
-        
-        // Track search impressions
-        function trackSearchImpressions(businesses) {
-            const currentDate = new Date().toISOString().split('T')[0];
-            const currentTime = new Date().toISOString();
-            
-            console.log('Tracking search impressions for', businesses.length, 'businesses');
-            
-            businesses.forEach(business => {
-                const businessId = business.id || 'royalHairStudio'; // Use business ID or default
-                
-                // Get existing analytics data
-                let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
-                
-                // Initialize business analytics if not exists
-                if (!analyticsData[businessId]) {
-                    analyticsData[businessId] = {
-                        totalViews: 0,
-                        dailyViews: {},
-                        lastView: null,
-                        viewHistory: [],
-                        searchImpressions: 0,
-                        dailySearchImpressions: {},
-                        contactClicks: 0,
-                        dailyContactClicks: {},
-                        enquiries: 0,
-                        dailyEnquiries: {}
-                    };
-                }
-                
-                // Ensure all required objects exist
-                if (!analyticsData[businessId].dailySearchImpressions) {
-                    analyticsData[businessId].dailySearchImpressions = {};
-                }
-                
-                // Update search impressions
-                analyticsData[businessId].searchImpressions += 1;
-                
-                // Update daily search impressions
-                if (!analyticsData[businessId].dailySearchImpressions[currentDate]) {
-                    analyticsData[businessId].dailySearchImpressions[currentDate] = 0;
-                }
-                analyticsData[businessId].dailySearchImpressions[currentDate] += 1;
-                
-                // Save updated analytics
-                localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
-                
-                console.log(`Search impression tracked for ${business.name}:`, {
-                    businessId: businessId,
-                    totalImpressions: analyticsData[businessId].searchImpressions,
-                    todayImpressions: analyticsData[businessId].dailySearchImpressions[currentDate]
-                });
-            });
-            
-            // Trigger analytics update event
-            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
-                detail: { 
-                    type: 'searchImpressions',
-                    count: businesses.length
-                }
-            }));
-            
-            console.log('Search impressions tracking completed for', businesses.length, 'businesses');
-        }
-        
-        // Test function for debugging (can be called from console)
-        window.testSearchTracking = function() {
-            console.log('Testing search impressions tracking...');
-            const businessData = window.businessManager.getBusinesses();
-            trackSearchImpressions(businessData);
-            console.log('Test completed. Check analytics dashboard.');
-        };
-
-        // Near Me functionality
-        function handleNearMe() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    // Store location data
-                    localStorage.setItem('userLat', position.coords.latitude);
-                    localStorage.setItem('userLng', position.coords.longitude);
-                    localStorage.setItem('userLocation', 'Current Location');
-                    
-                    // Update location field
-                    document.getElementById('locationSearch').value = 'Current Location';
-                    
-                    // Perform search with current location
-                    performSearch();
-                }, function(error) {
-                    alert('Unable to get your location. Please enter your location manually.');
-                });
-            } else {
-                alert('Geolocation is not supported by this browser. Please enter your location manually.');
-            }
-        }
-
-        function displaySearchResults(businesses) {
-            const resultsContainer = document.getElementById('businessResults');
-            const resultsCount = document.querySelector('.text-light-grey');
-            
-            if (businesses.length === 0) {
-                resultsContainer.innerHTML = `
-                    <div class="col-span-2 bg-dark-grey rounded-2xl p-8 border border-white/10 text-center">
-                        <i class="fas fa-search text-4xl text-light-grey mb-4"></i>
-                        <h3 class="text-xl font-bold text-white mb-2">No results found</h3>
-                        <p class="text-light-grey mb-4">Try broadening your filters or search area.</p>
-                        <div class="text-sm text-light-grey mb-6">
-                            <p class="mb-2">Suggestions:</p>
-                            <ul class="text-left max-w-md mx-auto">
-                                <li>• Try different keywords or categories</li>
-                                <li>• Expand your search radius</li>
-                                <li>• Check nearby areas</li>
-                            </ul>
-                        </div>
-                        <button onclick="clearAllFilters()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
-                            Clear All Filters
-                        </button>
-                    </div>
-                `;
-                resultsCount.textContent = '0 businesses found';
-                return;
-            }
-
-            resultsCount.textContent = `${businesses.length} businesses found`;
-
-            resultsContainer.innerHTML = businesses.map(business => {
-                const isPremium = business.subscription === 'premium';
-                const categoryColor = business.category === 'hair' ? 'neon-pink' : 
-                                     business.category === 'barber' ? 'neon-blue' : 
-                                     business.category === 'beauty' ? 'neon-green' : 'neon-purple';
-                const categoryIcon = business.category === 'hair' ? 'fas fa-cut' : 
-                                   business.category === 'barber' ? 'fas fa-cut' : 
-                                   business.category === 'beauty' ? 'fas fa-spa' : 'fas fa-star';
-                
-                if (isPremium) {
-                    // Premium card with photo, ratings, and Book Now button
-                    return `
-                    <div class="card-hover bg-dark-grey rounded-2xl p-6 border border-white/10 hover:border-neon-pink/50 transition-all duration-300" role="article" aria-label="Premium business listing for ${business.name}">
-                        <img src="${business.image}" alt="${business.name} - ${business.category} salon" class="w-full h-48 object-cover rounded-xl mb-4" loading="lazy">
-                        <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-xl font-bold text-white">${business.name}</h3>
-                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-${categoryColor}/20 text-${categoryColor} border border-${categoryColor}/30">
-                                ${business.category.charAt(0).toUpperCase() + business.category.slice(1)}
-                            </span>
-                        </div>
-                        <div class="flex items-center text-yellow-400 mb-3" aria-label="Rating: ${business.rating} out of 5 stars">
-                            <i class="fas fa-star text-sm" aria-hidden="true"></i>
-                            <i class="fas fa-star text-sm" aria-hidden="true"></i>
-                            <i class="fas fa-star text-sm" aria-hidden="true"></i>
-                            <i class="fas fa-star text-sm" aria-hidden="true"></i>
-                            <i class="fas fa-star text-sm" aria-hidden="true"></i>
-                            <span class="ml-2 text-sm font-semibold text-white">${business.rating}</span>
-                            <span class="ml-2 text-sm text-light-grey">(${business.reviews} reviews)</span>
-                        </div>
-                        <div class="flex items-center text-light-grey mb-4">
-                            <i class="fas fa-map-marker-alt mr-2" aria-hidden="true"></i>
-                            <span class="text-sm">${business.location}</span>
-                        </div>
-                        <a href="business-profile.html" class="w-full py-3 rounded-xl bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 neon-glow text-center block" aria-label="Book appointment with ${business.name}">
-                            Book Now
-                        </a>
-                    </div>
-                `;
-                } else {
-                    // Basic card with contact info only
-                    return `
-                    <div class="card-hover bg-dark-grey rounded-2xl p-4 border border-white/10 hover:border-neon-pink/50 transition-all duration-300" role="article" aria-label="Basic business listing for ${business.name}">
-                        <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-lg font-bold text-white">${business.name}</h3>
-                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-${categoryColor}/20 text-${categoryColor} border border-${categoryColor}/30">
-                                ${business.category.charAt(0).toUpperCase() + business.category.slice(1)}
-                            </span>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="flex items-center text-light-grey">
-                                <i class="fas fa-map-marker-alt mr-2 w-3" aria-hidden="true"></i>
-                                <span class="text-xs">${business.location}</span>
-                            </div>
-                            <div class="flex items-center text-light-grey">
-                                <i class="fas fa-phone mr-2 w-3" aria-hidden="true"></i>
-                                <a href="tel:${business.phone}" class="text-xs hover:text-neon-blue transition-colors">${business.phone}</a>
-                            </div>
-                            <div class="flex items-center text-light-grey">
-                                <i class="fas fa-envelope mr-2 w-3" aria-hidden="true"></i>
-                                <a href="mailto:${business.email}" class="text-xs hover:text-neon-blue transition-colors">${business.email}</a>
-                            </div>
-                            <div class="flex items-center text-light-grey">
-                                <i class="fab fa-instagram mr-2 w-3" aria-hidden="true"></i>
-                                <span class="text-xs">${business.instagram}</span>
-                            </div>
-                            <div class="flex items-center text-light-grey">
-                                <i class="fab fa-tiktok mr-2 w-3" aria-hidden="true"></i>
-                                <span class="text-xs">${business.tiktok}</span>
-                            </div>
-                            <div class="flex items-center text-light-grey">
-                                <i class="fas fa-clock mr-2 w-3" aria-hidden="true"></i>
-                                <span class="text-xs">${business.hours}</span>
-                            </div>
-                        </div>
-                        <div class="mt-3 p-2 bg-charcoal/50 rounded-lg border border-white/10">
-                            <p class="text-xs text-light-grey text-center">
-                                Contact the business directly for enquiries.
-                            </p>
-                        </div>
-                    </div>
-                `;
-                }
-            }).join('');
-        }
-
-        function clearAllFilters() {
-            document.getElementById('businessNameSearch').value = '';
-            document.getElementById('locationSearch').value = '';
-            document.getElementById('categorySearch').value = '';
-            document.getElementById('categoryFilter').value = '';
-            document.getElementById('locationFilter').value = '';
-            document.getElementById('ratingFilter').value = '';
-            document.getElementById('distanceFilter').value = '5';
-            
-            // Reset search state and hide advanced controls
-            hasSearched = false;
-            hideAdvancedControls();
-            
-            // Show all businesses
-            displaySearchResults(businessData);
-            
-            // Track search impressions for reset
-            trackSearchImpressions(businessData);
-        }
-
-        function performSearch() {
-            searchBusinesses();
-            // Show advanced controls after any search is performed
-            hasSearched = true;
-            showAdvancedControls();
-        }
-
-        // Populate featured businesses
-        function populateFeaturedBusinesses() {
-            const featuredBusinesses = businessData.filter(business => business.featured);
-            const desktopContainer = document.getElementById('featuredBusinesses');
-            const mobileContainer = document.getElementById('mobileFeaturedBusinesses');
-            const mobileTopContainer = document.getElementById('mobileFeaturedBusinessesTop');
-            
-            // Desktop featured businesses
-            if (desktopContainer) {
-                desktopContainer.innerHTML = featuredBusinesses.map(business => `
-                    <div class="card-hover bg-charcoal rounded-xl p-4 border border-white/10 hover:border-neon-pink/50 transition-all duration-300" role="article" aria-label="Featured business: ${business.name}">
-                        <div class="flex items-start space-x-3">
-                            <img src="${business.image}" alt="${business.name}" class="w-16 h-16 object-cover rounded-lg" loading="lazy">
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="text-sm font-bold text-white">${business.name}</h4>
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
-                                        Featured
-                                    </span>
-                                </div>
-                                <p class="text-xs text-light-grey mb-2">Premium ${business.category} services</p>
-                                <div class="flex items-center text-yellow-400 mb-3" aria-label="Rating: ${business.rating} out of 5 stars">
-                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
-                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
-                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
-                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
-                                    <i class="fas fa-star text-xs" aria-hidden="true"></i>
-                                    <span class="ml-1 text-xs font-semibold text-white">${business.rating}</span>
-                                    <span class="ml-1 text-xs text-light-grey">(${business.reviews})</span>
-                                </div>
-                                <a href="business-profile.html" class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-xs text-center block" aria-label="Book appointment with ${business.name}">
-                                    Book Now
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            
-            // Mobile featured businesses (horizontal scroll) - both containers
-            const mobileFeaturedHTML = featuredBusinesses.map(business => `
-                <div class="card-hover bg-charcoal rounded-xl p-4 border border-white/10 hover:border-neon-pink/50 transition-all duration-300 flex-shrink-0" style="width: 280px;" role="article" aria-label="Featured business: ${business.name}">
-                    <div class="flex flex-col">
-                        <img src="${business.image}" alt="${business.name}" class="w-full h-32 object-cover rounded-lg mb-3" loading="lazy">
-                        <div class="flex items-center justify-between mb-2">
-                            <h4 class="text-sm font-bold text-white">${business.name}</h4>
-                            <span class="px-2 py-1 rounded-full text-xs font-medium bg-neon-pink/20 text-neon-pink border border-neon-pink/30">
-                                Featured
-                            </span>
-                        </div>
-                        <p class="text-xs text-light-grey mb-2">Premium ${business.category} services</p>
-                        <div class="flex items-center text-yellow-400 mb-3" aria-label="Rating: ${business.rating} out of 5 stars">
-                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
-                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
-                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
-                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
-                            <i class="fas fa-star text-xs" aria-hidden="true"></i>
-                            <span class="ml-1 text-xs font-semibold text-white">${business.rating}</span>
-                            <span class="ml-1 text-xs text-light-grey">(${business.reviews})</span>
-                        </div>
-                        <a href="business-profile.html" class="w-full py-2 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300 text-xs text-center block" aria-label="Book appointment with ${business.name}">
-                            Book Now
-                        </a>
-                    </div>
-                </div>
-            `).join('');
-            
-            if (mobileContainer) {
-                mobileContainer.innerHTML = mobileFeaturedHTML;
-            }
-            if (mobileTopContainer) {
-                mobileTopContainer.innerHTML = mobileFeaturedHTML;
-            }
-        }
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set up event listeners
-            document.getElementById('searchBtn').addEventListener('click', performSearch);
-            document.getElementById('nearMeBtn').addEventListener('click', handleNearMe);
-            document.getElementById('filterMenuBtn').addEventListener('click', toggleFilterMenu);
-            document.getElementById('sortMenuBtn').addEventListener('click', toggleSortMenu);
-            document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
-            document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
-            
-            // Sort menu options
-            document.querySelectorAll('#sortMenu button').forEach(button => {
-                button.addEventListener('click', () => selectSortOption(button.dataset.sort));
-            });
-
-            // Real-time search as user types in business name or location
-            document.getElementById('businessNameSearch').addEventListener('input', performSearch);
-            document.getElementById('locationSearch').addEventListener('input', performSearch);
-            document.getElementById('categorySearch').addEventListener('change', performSearch);
-
-            // Close menus when clicking outside
-            document.addEventListener('click', (e) => {
-                const filterMenu = document.getElementById('filterMenu');
-                const filterMenuBtn = document.getElementById('filterMenuBtn');
-                const sortMenu = document.getElementById('sortMenu');
-                const sortMenuBtn = document.getElementById('sortMenuBtn');
-                
-                if (!filterMenu.contains(e.target) && !filterMenuBtn.contains(e.target)) {
-                    filterMenu.classList.add('hidden');
-                }
-                
-                if (!sortMenu.contains(e.target) && !sortMenuBtn.contains(e.target)) {
-                    sortMenu.classList.add('hidden');
-                }
-            });
-
-            // Initialize with all businesses and hidden advanced controls
-            displaySearchResults(businessData);
-            
-            // Track search impressions for initial load
-            trackSearchImpressions(businessData);
-            
-            populateFeaturedBusinesses();
-            hideAdvancedControls();
-        });
-
-        // Back button function
-        function goBack() {
-            if (window.history.length > 1) {
-                window.history.back();
-            } else {
-                // If no history, go to homepage
-                window.location.href = 'index.html';
-            }
-        }
-
-        // Modal functions
-        function toggleLoginModal(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            const modal = document.getElementById('loginModal');
-            modal.classList.toggle('hidden');
-            
-            // Store current page as referrer when opening login modal
-            if (!modal.classList.contains('hidden')) {
-                // localStorage.setItem('loginReferrer', window.location.pathname); // Removed - using returnUrl instead
-            }
-        }
-
-        function toggleSignupModal(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            const modal = document.getElementById('signupModal');
-            modal.classList.toggle('hidden');
-        }
-
-        // Handle login
-        function handleLogin(event) {
-            event.preventDefault();
-            const email = event.target.querySelector('input[type="email"]').value;
-            const password = event.target.querySelector('input[type="password"]').value;
-            
-            console.log('Login attempt:', email, password);
-            
-            // Demo credentials check
-            if (email === 'customer@example.com' && password === 'password123') {
-                console.log('Credentials valid, logging in...');
-                localStorage.setItem('userLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userName', 'Demo Customer');
-                
-                // Close modal
-                toggleLoginModal();
-                
-                // Show success message
-                alert('Login successful! Redirecting...');
-                
-                // Redirect to referring page or dashboard
-                // setTimeout(() => {
-                //     console.log('Attempting redirect...');
-                //     const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
-                //     // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
-                //     window.location.replace(referringPage);
-                // }, 500); // Removed - using returnUrl system instead
-                
-            } else {
-                alert('Invalid credentials. Use the demo credentials: customer@example.com / password123');
-            }
-        }
-
-        // Handle signup
-        function handleSignup(event) {
-            event.preventDefault();
-            const name = event.target.querySelector('input[type="text"]').value;
-            const email = event.target.querySelector('input[type="email"]').value;
-            const password = event.target.querySelector('input[type="password"]').value;
-            
-            console.log('Signup attempt:', name, email, password);
-            
-            // Demo signup - just log them in
-            localStorage.setItem('userLoggedIn', 'true');
-            localStorage.setItem('userEmail', email);
-            localStorage.setItem('userName', name);
-            
-            // Close modal
-            toggleSignupModal();
-            
-            // Show success message
-            alert('Account created successfully! Redirecting...');
-            
-            // Redirect to referring page or dashboard
-            // setTimeout(() => {
-            //     console.log('Attempting redirect...');
-            //     const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
-            //     // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
-            //     window.location.replace(referringPage);
-            // }, 500); // Removed - using returnUrl system instead
-        }
-    </script>
-
-    <!-- Login Modal -->
-    <div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-bold gradient-text">Login</h3>
-                    <button onclick="redirectToLogin()" class="text-white/70 hover:text-white">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="mb-4">
-                        <label class="block text-white/70 mb-2">Email</label>
-                        <input type="email" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-white/70 mb-2">Password</label>
-                        <input type="password" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
-                    </div>
-                    <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
-                        Login
-                    </button>
-                </form>
-                <div class="mt-4 text-center">
-                    <p class="text-white/70 text-sm">Don't have an account? <a href="#" onclick="redirectToRegister()" class="text-neon-pink hover:text-neon-purple transition-colors duration-300">Sign up</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Signup Modal -->
-    <div id="signupModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-black/90 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/10">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-bold gradient-text">Sign Up</h3>
-                    <button onclick="toggleSignupModal(event)" class="text-white/70 hover:text-white">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <form id="signupForm" onsubmit="handleSignup(event)">
-                    <div class="mb-4">
-                        <label class="block text-white/70 mb-2">Full Name</label>
-                        <input type="text" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-white/70 mb-2">Email</label>
-                        <input type="email" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-white/70 mb-2">Password</label>
-                        <input type="password" required class="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-neon-pink">
-                    </div>
-                    <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-neon-pink to-neon-purple text-white font-semibold hover:from-neon-purple hover:to-neon-blue transition-all duration-300">
-                        Sign Up
-                    </button>
-                </form>
-                <p class="text-center text-white/70 mt-4">
-                    Already have an account? 
-                    <button onclick="toggleLoginModal(event); toggleSignupModal(event);" class="text-neon-pink hover:underline">Login</button>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Navigation functions
-        function updateNavVisibility() {
-            const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
-            const userName = localStorage.getItem('userName') || 'User';
-            const userInitial = userName.charAt(0).toUpperCase();
-            
-            // Desktop elements
-            const authLinks = document.getElementById('authLinks');
-            const customerMenu = document.getElementById('customerMenu');
-            const customerInitialText = document.getElementById('customerInitialText');
-            const basketIcon = document.getElementById('basketIcon');
-            
-            // Mobile elements
-            const mobileAuthLinks = document.getElementById('mobileAuthLinks');
-            const mobileCustomerMenu = document.getElementById('mobileCustomerMenu');
-            const mobileCustomerInitialText = document.getElementById('mobileCustomerInitialText');
-            const mobileBasketIcon = document.getElementById('mobileBasketIcon');
-            
-            if (isLoggedIn) {
-                // Show customer menu, hide sign in
-                if (authLinks) authLinks.style.display = 'none';
-                if (customerMenu) customerMenu.style.display = 'block';
-                if (customerInitialText) customerInitialText.textContent = userInitial;
-                
-                // Mobile
-                if (mobileAuthLinks) mobileAuthLinks.style.display = 'none';
-                if (mobileCustomerMenu) mobileCustomerMenu.style.display = 'block';
-                if (mobileCustomerInitialText) mobileCustomerInitialText.textContent = userInitial;
-            } else {
-                // Show sign in, hide customer menu
-                if (authLinks) authLinks.style.display = 'flex';
-                if (customerMenu) customerMenu.style.display = 'none';
-                
-                // Mobile
-                if (mobileAuthLinks) mobileAuthLinks.style.display = 'flex';
-                if (mobileCustomerMenu) mobileCustomerMenu.style.display = 'none';
-            }
-            
-            // Basket is always visible
-            if (basketIcon) basketIcon.style.display = 'flex';
-            if (mobileBasketIcon) mobileBasketIcon.style.display = 'flex';
-        }
-
-        // Modal functions
-        function toggleLoginModal(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            const modal = document.getElementById('loginModal');
-            modal.classList.toggle('hidden');
-            
-            // Store current page as referrer when opening login modal
-            if (!modal.classList.contains('hidden')) {
-                // localStorage.setItem('loginReferrer', window.location.pathname); // Removed - using returnUrl instead
-            }
-        }
-
-        function toggleSignupModal(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            const modal = document.getElementById('signupModal');
-            modal.classList.toggle('hidden');
-        }
-
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.toggle('hidden');
-        }
-
-        function closeMobileMenu() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.add('hidden');
-        }
-
-        function toggleCustomerMenu() {
-            const dropdown = document.getElementById('customerDropdown');
-            const mobileDropdown = document.getElementById('mobileCustomerDropdown');
-            
-            if (dropdown) dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-            if (mobileDropdown) mobileDropdown.style.display = mobileDropdown.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // Handle login
-        function handleLogin(event) {
-            event.preventDefault();
-            const email = event.target.querySelector('input[type="email"]').value;
-            const password = event.target.querySelector('input[type="password"]').value;
-            
-            console.log('Login attempt:', email, password);
-            
-            // Demo credentials check
-            if (email === 'customer@example.com' && password === 'password123') {
-                console.log('Credentials valid, logging in...');
-                localStorage.setItem('userLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userName', 'Demo Customer');
-                
-                // Close modal
-                toggleLoginModal();
-                
-                // Show success message
-                alert('Login successful! Redirecting...');
-                
-                // Redirect to referring page or dashboard
-                // setTimeout(() => {
-                //     console.log('Attempting redirect...');
-                //     const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
-                //     // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
-                //     window.location.replace(referringPage);
-                // }, 500); // Removed - using returnUrl system instead
-                
-            } else {
-                alert('Invalid credentials. Use the demo credentials: customer@example.com / password123');
-            }
-        }
-
-        // Handle signup
-        function handleSignup(event) {
-            event.preventDefault();
-            const name = event.target.querySelector('input[type="text"]').value;
-            const email = event.target.querySelector('input[type="email"]').value;
-            const password = event.target.querySelector('input[type="password"]').value;
-            
-            console.log('Signup attempt:', name, email, password);
-            
-            // Demo signup - just log them in
-            localStorage.setItem('userLoggedIn', 'true');
-            localStorage.setItem('userEmail', email);
-            localStorage.setItem('userName', name);
-            
-            // Close modal
-            toggleSignupModal();
-            
-            // Show success message
-            alert('Account created successfully! Redirecting...');
-            
-            // Redirect to referring page or dashboard
-            // setTimeout(() => {
-            //     console.log('Attempting redirect...');
-            //     const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
-            //     // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
-            //     window.location.replace(referringPage);
-            // }, 500); // Removed - using returnUrl system instead
-        }
-
-        // Sign out function
-        function signOut() {
-            localStorage.removeItem('userLoggedIn');
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('userName');
-            // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
-            
-            // Update navigation
-            updateNavVisibility();
-            
-            // Redirect to homepage
-            window.location.href = 'index.html';
-        }
-
-        // Modal functions
-        function toggleLoginModal(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            const modal = document.getElementById('loginModal');
-            modal.classList.toggle('hidden');
-            
-            // Store current page as referrer when opening login modal
-            if (!modal.classList.contains('hidden')) {
-                // localStorage.setItem('loginReferrer', window.location.pathname); // Removed - using returnUrl instead
-            }
-        }
-        
-        function toggleSignupModal(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            const modal = document.getElementById('signupModal');
-            modal.classList.toggle('hidden');
-        }
-        
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.toggle('hidden');
-        }
-        
-        function closeMobileMenu() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.add('hidden');
-        }
-        
-        function toggleCustomerMenu() {
-            const dropdown = document.getElementById('customerDropdown');
-            const mobileDropdown = document.getElementById('mobileCustomerDropdown');
-            
-            if (dropdown) {
-                dropdown.style.display = dropdown.style.display === 'none' || dropdown.style.display === '' ? 'block' : 'none';
-            }
-            if (mobileDropdown) {
-                mobileDropdown.style.display = mobileDropdown.style.display === 'none' || mobileDropdown.style.display === '' ? 'block' : 'none';
-            }
-        }
-        
-        // Handle login
-        function handleLogin(event) {
-            event.preventDefault();
-            const email = event.target.querySelector('input[type="email"]').value;
-            const password = event.target.querySelector('input[type="password"]').value;
-            
-            console.log('Login attempt:', email, password);
-            
-            if (email === 'customer@example.com' && password === 'password123') {
-                console.log('Credentials valid, logging in...');
-                localStorage.setItem('userLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userName', 'Demo Customer');
-                
-                toggleLoginModal(); // Close modal
-                alert('Login successful! Redirecting...');
-                
-                setTimeout(() => {
-                    console.log('Attempting redirect...');
-                    const referringPage = localStorage.getItem('loginReferrer') || 'customer-dashboard.html';
-                    // localStorage.removeItem('loginReferrer'); // Removed - using returnUrl instead
-                    window.location.replace(referringPage);
-                }, 500);
-                
-            } else {
-                alert('Invalid credentials. Use the demo credentials: customer@example.com / password123');
-            }
-        }
-        
-        // Handle signup
-        function handleSignup(event) {
-            event.preventDefault();
-            const name = event.target.querySelector('input[type="text"]').value;
-            const email = event.target.querySelector('input[type="email"]').value;
-            const password = event.target.querySelector('input[type="password"]').value;
-            
-            // Simple validation
-            if (name && email && password) {
-                localStorage.setItem('userLoggedIn', 'true');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userName', name);
-                updateNavVisibility();
-                toggleSignupModal();
-                alert('Account created successfully! You can now save searches.');
-            }
-        }
-        
-        // Dynamic heading and search functionality
-        function updateDynamicHeadings(searchTerm, location, category) {
-            const dynamicSubheading = document.getElementById('dynamicSubheading');
-            const resultsHeading = document.getElementById('resultsHeading');
-            const resultsCount = document.getElementById('resultsCount');
-            
-            if (searchTerm || location || category) {
-                let context = '';
-                if (category) context += category;
-                if (location) context += (context ? ' in ' : '') + location;
-                if (searchTerm) context += (context ? ' matching "' : '') + searchTerm + (searchTerm ? '"' : '');
-                
-                if (dynamicSubheading) {
-                    dynamicSubheading.textContent = `Showing results for ${context}`;
-                }
-                if (resultsHeading) {
-                    resultsHeading.textContent = `Search Results`;
-                }
-            } else {
-                if (dynamicSubheading) {
-                    dynamicSubheading.textContent = 'Discover amazing businesses near you';
-                }
-                if (resultsHeading) {
-                    resultsHeading.textContent = 'All Businesses';
-                }
-            }
-        }
-        
-        // Search functionality
-        function performSearch() {
-            const businessName = document.getElementById('businessNameSearch').value;
-            const location = document.getElementById('locationSearch').value;
-            const category = document.getElementById('categorySearch').value;
-            
-            // Update dynamic headings
-            updateDynamicHeadings(businessName, location, category);
-            
-            // Show advanced controls after search
-            const advancedControls = document.getElementById('advancedControls');
-            if (advancedControls) {
-                advancedControls.classList.remove('hidden');
-            }
-            
-            // Update results count (simulate filtering)
-            const resultsCount = document.getElementById('resultsCount');
-            if (resultsCount) {
-                const baseCount = 12;
-                let filteredCount = baseCount;
-                
-                if (businessName) filteredCount = Math.max(3, Math.floor(filteredCount * 0.6));
-                if (location) filteredCount = Math.max(2, Math.floor(filteredCount * 0.7));
-                if (category) filteredCount = Math.max(1, Math.floor(filteredCount * 0.5));
-                
-                resultsCount.textContent = `${filteredCount} businesses found`;
-            }
-        }
-        
-        // Near Me functionality
-        function findNearMe() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    // Simulate location-based results
-                    updateDynamicHeadings('', 'your area', '');
-                    const resultsCount = document.getElementById('resultsCount');
-                    if (resultsCount) {
-                        resultsCount.textContent = '8 businesses found near you';
-                    }
-                    
-                    // Show advanced controls
-                    const advancedControls = document.getElementById('advancedControls');
-                    if (advancedControls) {
-                        advancedControls.classList.remove('hidden');
-                    }
-                }, function(error) {
-                    alert('Unable to get your location. Please enter your postcode manually.');
-                });
-            } else {
-                alert('Geolocation is not supported by this browser.');
-            }
-        }
-        
-        // Initialize search functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            updateNavVisibility();
-            
-            // Add event listeners
-            const searchBtn = document.getElementById('searchBtn');
-            const nearMeBtn = document.getElementById('nearMeBtn');
-            
-            if (searchBtn) {
-                searchBtn.addEventListener('click', performSearch);
-            }
-            
-            if (nearMeBtn) {
-                nearMeBtn.addEventListener('click', findNearMe);
-            }
-            
-            // Add enter key support for search inputs
-            const searchInputs = document.querySelectorAll('#businessNameSearch, #locationSearch');
-            searchInputs.forEach(input => {
-                input.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        performSearch();
-                    }
-                });
-            });
-        });
-
-        // Handle Book Now button clicks - redirect to business profile
-        function goToBusinessProfile(businessId) {
-            // Redirect to business profile page where customers can add services
-            window.location.href = `business-profile.html?business=${businessId}`;
-        }
-
-        // Redirect to login page with return URL
-        function redirectToLogin() {
-            console.log('redirectToLogin function called');
-            // Store current page URL for redirect after login
-            const currentUrl = window.location.href;
-            localStorage.setItem('returnUrl', currentUrl);
-            console.log('Return URL stored:', currentUrl);
-            console.log('Return URL in localStorage:', localStorage.getItem('returnUrl'));
-            // Navigate to login page
-            window.location.href = 'customer-login.html';
-        }
-
-        // Redirect to register page with return URL
-        function redirectToRegister() {
-            // Store current page URL for redirect after registration
-            localStorage.setItem('returnUrl', window.location.href);
-            // Navigate to register page
-            window.location.href = 'customer-register.html';
-        }
-    </script>
+                </header>
     
-    <!-- Footer -->
-    <footer class="bg-charcoal border-t border-white/10 py-8 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                <div class="flex items-center space-x-6">
-                    <a href="blog.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300">Blog</a>
-                    <a href="terms.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300">Terms & Conditions</a>
-                    <a href="privacy.html" class="text-text-secondary hover:text-neon-pink transition-colors duration-300">Privacy Policy</a>
+<!-- progress bar -->
+<div id="progress"></div>
+
+<!-- HERO SECTION with CANVAS Background -->
+<section class="relative text-center py-16 md:py-24 bg-gradient-to-b from-black via-[#0a0a0a] to-[#121212] overflow-hidden">
+  
+  <!-- The Canvas Element for dynamic background animation -->
+  <canvas id="hero-canvas" class="absolute inset-0 z-0"></canvas>
+  
+  <!-- Static Background Blur Elements (z-10, above canvas but below content) -->
+  <div class="absolute -top-40 -left-32 w-[520px] h-[520px] bg-yellow-400/10 rounded-full blur-3xl z-10"></div>
+  <div class="absolute -bottom-52 -right-40 w-[620px] h-[620px] bg-yellow-400/15 rounded-full blur-3xl z-10"></div>
+
+  <!-- Content Wrapper (z-20, ensures content is on top) -->
+  <div class="relative z-20">
+    <!-- New Tagline Element (Styling applied by .hero-tagline CSS) -->
+    <p class="hero-tagline text-gray-400 max-w-xl mx-auto mb-2 px-6">Discover. Connect. Grow.</p>
+    
+    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight px-6">
+      Discover <span class="text-yellow-400">Local Businesses</span> Near You
+    </h1>
+    
+    <!-- Subtitle Element (Styling applied by .hero-subtitle CSS) -->
+    <p class="hero-subtitle text-gray-400 max-w-xl mx-auto mt-4 px-6 text-lg">
+      Your cultural, creative and community-driven directory — find trusted services nearby.
+    </p>
+
+    <!-- Search Bar with Glass Effect -->
+    <div class="glass rounded-2xl p-5 md:p-7 max-w-3xl w-[92%] mx-auto mt-8 search-bar">
+      <div class="flex flex-col md:flex-row gap-3 md:gap-4 items-stretch">
+        <div class="flex-1 relative">
+          <!-- Input fields with search bar cleanup styles applied -->
+          <input class="w-full px-4 py-3 rounded-lg bg-black/70 border border-gray-700 text-gray-200 focus:border-yellow-400 outline-none placeholder:text-gray-500"
+                 placeholder="Search businesses…" />
+                            </div>
+        <div class="flex-1 relative">
+          <!-- Input fields with search bar cleanup styles applied -->
+          <input class="w-full px-4 py-3 rounded-lg bg-black/70 border border-gray-700 text-gray-200 focus:border-yellow-400 outline-none placeholder:text-gray-500"
+                 placeholder="Location" />
+                        </div>
+        <button class="search-cta-btn font-bold px-6 py-3 rounded-lg min-w-[140px] transition shadow-md">
+                                Search
+                        </button>
+                    </div>
+      <div class="flex flex-wrap justify-center gap-3 mt-4">
+        <button class="cta-btn text-sm text-gray-200">Near Me</button>
+        <button class="cta-btn text-sm text-gray-200">All Categories</button>
+        <button class="cta-btn text-sm text-gray-200">All Locations</button>
                 </div>
-                <div class="text-text-secondary text-sm">
-                    © 2024 BlkPages. All rights reserved.
+                            </div>
+                            </div>
+</section>
+<!-- FEATURED (Horizontal Scroll) -->
+<section class="max-w-7xl mx-auto px-0 pt-8 pb-2 featured-section">
+  <div class="flex items-center justify-between w-full px-5 mb-4">
+    <h2 class="featured-listings-title text-2xl font-bold flex items-center">
+      <svg class="section-icon inline mr-2" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+      </svg>
+      Featured Listings
+    </h2>
+    <a href="#" class="text-[#D4AF37] text-sm hover:underline">View All &rarr;</a>
+                    </div>
+                    
+  <!-- Container for Rule 6 styling (horizontal scroll) -->
+  <div class="featured-listings">
+    <!-- Featured card 1 -->
+    <article class="featured-card overflow-hidden">
+      <div class="relative">
+        <!-- Image uses fixed 140px height from CSS -->
+        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="business-card-image opacity-95" alt="Royal Hair Studio image">
+        <span class="absolute top-3 left-3 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-bold shadow-md">Offer</span>
+                                </div>
+      <div class="business-details">
+        <h3 class="text-lg font-bold text-[#D4AF37] business-name">Royal Hair Studio</h3>
+        <div class="business-info">
+          <p class="description">Premium styling & cutting services.</p>
+          <p class="address">12 Queens Rd, London.</p>
+                                    </div>
+        <a href="business-profile-with-tracking.html" class="book-now-btn w-full font-semibold px-4 py-2 transition shadow-md" style="display: inline-block; text-align: center; text-decoration: none;">Book Now</a>
+        <!-- New CTA Row Structure -->
+        <div class="card-cta-row text-xs">
+          <a href="tel:+44000000000" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72 17.5 17.5 0 0 0 .5 3.39A2 2 0 0 1 8.25 9.9l-2 2a15.06 15.06 0 0 0 6 6l2-2a2 2 0 0 1 2.38-.28 17.5 17.5 0 0 0 3.39.5A2 2 0 0 1 22 16.92z"/></svg>
+            Call
+          </a>
+          <a href="mailto:info@royalhair.co.uk" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"/><path d="M21 5L12 13L3 5"/></svg>
+            Email
+          </a>
+          <button class="cta-btn flex items-center justify-center gap-1" onclick="share('Royal Hair Studio')">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+                                </div>
+      </div>
+    </article>
+    
+    <!-- Featured card 2 -->
+    <article class="featured-card overflow-hidden">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="business-card-image opacity-95" alt="Glamour Beauty image">
+                    </div>
+      <div class="business-details">
+        <h3 class="text-lg font-bold text-[#D4AF37] business-name">Glamour Beauty</h3>
+        <div class="business-info">
+          <p class="description">Luxury beauty treatments & spa.</p>
+          <p class="address">77 Regent St, London.</p>
+                    </div>
+        <a href="business-profile-with-tracking.html" class="book-now-btn w-full font-semibold px-4 py-2 transition shadow-md" style="display: inline-block; text-align: center; text-decoration: none;">Book Now</a>
+        <div class="card-cta-row text-xs">
+          <a href="tel:+44000000000" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72 17.5 17.5 0 0 0 .5 3.39A2 2 0 0 1 8.25 9.9l-2 2a15.06 15.06 0 0 0 6 6l2-2a2 2 0 0 1 2.38-.28 17.5 17.5 0 0 0 3.39.5A2 2 0 0 1 22 16.92z"/></svg>
+            Call
+          </a>
+          <a href="mailto:hello@glamour.co.uk" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"/><path d="M21 5L12 13L3 5"/></svg>
+            Email
+          </a>
+          <button class="cta-btn flex items-center justify-center gap-1" onclick="share('Glamour Beauty')">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+                    </div>
                 </div>
-            </div>
+    </article>
+    
+    <!-- Featured card 3 -->
+    <article class="featured-card overflow-hidden">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="business-card-image opacity-95" alt="Gold Line Spa image">
+                            </div>
+      <div class="business-details">
+        <h3 class="text-lg font-bold text-[#D4AF37] business-name">Gold Line Spa</h3>
+        <div class="business-info">
+          <p class="description">Wellness & relaxation specialists.</p>
+          <p class="address">21 Baker St, London.</p>
+                        </div>
+        <a href="business-profile-with-tracking.html" class="book-now-btn w-full font-semibold px-4 py-2 transition shadow-md" style="display: inline-block; text-align: center; text-decoration: none;">Book Now</a>
+        <div class="card-cta-row text-xs">
+          <a href="tel:+44000000000" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72 17.5 17.5 0 0 0 .5 3.39A2 2 0 0 1 8.25 9.9l-2 2a15.06 15.06 0 0 0 6 6l2-2a2 2 0 0 1 2.38-.28 17.5 17.5 0 0 0 3.39.5A2 2 0 0 1 22 16.92z"/></svg>
+            Call
+          </a>
+          <a href="mailto:spa@goldline.co.uk" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"/><path d="M21 5L12 13L3 5"/></svg>
+            Email
+          </a>
+          <button class="cta-btn flex items-center justify-center gap-1" onclick="share('Gold Line Spa')">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+                    </div>
+                                </div>
+    </article>
+    
+    <!-- Featured card 4 -->
+    <article class="featured-card overflow-hidden">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="business-card-image opacity-95" alt="Auto Revamp image">
+                                </div>
+      <div class="business-details">
+        <h3 class="text-lg font-bold text-[#D4AF37] business-name">Auto Revamp</h3>
+        <div class="business-info">
+          <p class="description">Premium car detailing services.</p>
+          <p class="address">55 Garage Rd.</p>
+                                </div>
+        <a href="business-profile-with-tracking.html" class="book-now-btn w-full font-semibold px-4 py-2 transition shadow-md" style="display: inline-block; text-align: center; text-decoration: none;">Book Now</a>
+        <div class="card-cta-row text-xs">
+          <a href="tel:+44000000000" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72 17.5 17.5 0 0 0 .5 3.39A2 2 0 0 1 8.25 9.9l-2 2a15.06 15.06 0 0 0 6 6l2-2a2 2 0 0 1 2.38-.28 17.5 17.5 0 0 0 3.39.5A2 2 0 0 1 22 16.92z"/></svg>
+            Call
+          </a>
+          <a href="mailto:info@autoreramp.co.uk" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"/><path d="M21 5L12 13L3 5"/></svg>
+                                        Email
+          </a>
+          <button class="cta-btn flex items-center justify-center gap-1" onclick="share('Auto Revamp')">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                                    Share
+                                </button>
+                            </div>
+                        </div>
+    </article>
+                    </div>
+</section>
+
+<!-- LOCAL BUSINESSES -->
+<section class="max-w-7xl mx-auto px-5 py-10 local-section">
+  <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
+    <h2 class="local-businesses-title text-2xl font-bold mb-4 md:mb-0">Local Businesses</h2>
+    <!-- Sort/Filter Bar -->
+    <div class="flex flex-wrap gap-4 text-right">
+      <div class="sort-filter-bar">
+        <label for="sortBy">Sort By:</label>
+        <select id="sortBy" name="sortBy">
+          <option value="distance">Distance (Nearest)</option>
+          <option value="ratingHigh">Rating: High to Low</option>
+          <option value="ratingLow">Rating: Low to High</option>
+        </select>
+                                </div>
+      <div class="sort-filter-bar">
+        <label for="filterRating">Filter By:</label>
+        <select id="filterRating" name="filterRating">
+          <option value="all">All Ratings</option>
+          <option value="3stars">3 Stars & Up</option>
+          <option value="4stars">4 Stars & Up</option>
+          <option value="5stars">5 Stars Only</option>
+        </select>
+                        </div>
+                    </div>
+                            </div>
+                            
+  <!-- Regular Grid of Cards (using the new .card / .business-card styles) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <!-- 1 - Full Card -->
+    <article class="business-card card overflow-hidden">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="business-card-image" alt="Elite Barber Shop image">
+                                </div>
+      <div class="business-details">
+        <h3 class="text-lg font-bold text-[#D4AF37] business-name">Elite Barber Shop</h3>
+        <div class="business-info">
+          <p class="description">Premium fades and hot towel shaves.</p>
+          <p class="address">456 High Street, London</p>
+                                </div>
+        <a href="business-profile-with-tracking.html" class="book-now-btn w-full font-semibold px-4 py-2 transition shadow-md" style="display: inline-block; text-align: center; text-decoration: none;">Book Now</a>
+        <div class="card-cta-row text-xs">
+          <a href="tel:+44" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72 17.5 17.5 0 0 0 .5 3.39A2 2 0 0 1 8.25 9.9l-2 2a15.06 15.06 0 0 0 6 6l2-2a2 2 0 0 1 2.38-.28 17.5 17.5 0 0 0 3.39.5A2 2 0 0 1 22 16.92z"/></svg>
+            Call
+          </a>
+          <a href="mailto:barber@elite.co.uk" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"/><path d="M21 5L12 13L3 5"/></svg>
+            Email
+          </a>
+          <button class="cta-btn flex items-center justify-center gap-1" onclick="share('Elite Barber Shop')">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+                                    </div>
+                            </div>
+    </article>
+    
+    <!-- 2 - Full Card -->
+    <article class="business-card card overflow-hidden">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="business-card-image" alt="Urban Fade Lounge image">
+      </div>
+      <div class="business-details">
+        <h3 class="text-lg font-bold text-[#D4AF37] business-name">Urban Fade Lounge</h3>
+        <div class="business-info">
+          <p class="description">Modern cuts in a chill environment.</p>
+          <p class="address">58 Soho Rd, London</p>
         </div>
+        <a href="business-profile-with-tracking.html" class="book-now-btn w-full font-semibold px-4 py-2 transition shadow-md" style="display: inline-block; text-align: center; text-decoration: none;">Book Now</a>
+        <div class="card-cta-row text-xs">
+          <a href="tel:+44000000000" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72 17.5 17.5 0 0 0 .5 3.39A2 2 0 0 1 8.25 9.9l-2 2a15.06 15.06 0 0 0 6 6l2-2a2 2 0 0 1 2.38-.28 17.5 17.5 0 0 0 3.39.5A2 2 0 0 1 22 16.92z"/></svg>
+            Call
+          </a>
+          <a href="mailto:info@urbanfade.co.uk" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"/><path d="M21 5L12 13L3 5"/></svg>
+                                        Email
+          </a>
+          <button class="cta-btn flex items-center justify-center gap-1" onclick="share('Urban Fade Lounge')">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                                    Share
+                                </button>
+                            </div>
+      </div>
+    </article>
+    
+    <!-- 3 - Full Card -->
+    <article class="business-card card overflow-hidden">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="business-card-image" alt="Glow Aesthetics image">
+                        </div>
+      <div class="business-details">
+        <h3 class="text-lg font-bold text-[#D4AF37] business-name">Glow Aesthetics</h3>
+        <div class="business-info">
+          <p class="description">Skin care, treatments and wellness.</p>
+          <p class="address">102 Camden Rd, London</p>
+                    </div>
+        <a href="business-profile-with-tracking.html" class="book-now-btn w-full font-semibold px-4 py-2 transition shadow-md" style="display: inline-block; text-align: center; text-decoration: none;">Book Now</a>
+        <div class="card-cta-row text-xs">
+          <a href="tel:+44000000000" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72 17.5 17.5 0 0 0 .5 3.39A2 2 0 0 1 8.25 9.9l-2 2a15.06 15.06 0 0 0 6 6l2-2a2 2 0 0 1 2.38-.28 17.5 17.5 0 0 0 3.39.5A2 2 0 0 1 22 16.92z"/></svg>
+            Call
+          </a>
+          <a href="mailto:hello@glowaes.co.uk" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"/><path d="M21 5L12 13L3 5"/></svg>
+            Email
+          </a>
+          <button class="cta-btn flex items-center justify-center gap-1" onclick="share('Glow Aesthetics')">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+                            </button>
+                        </div>
+      </div>
+    </article>
+    
+    <!-- 4 - Compact Card -->
+    <article class="business-card card overflow-hidden">
+      <!-- Added a placeholder image here to ensure compact cards look consistent, even without media -->
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1621605815971-f5b8d3a6f0bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="business-card-image" alt="Classic Cuts placeholder image">
+                            </div>
+      <div class="business-details">
+        <h3 class="text-lg font-bold text-[#D4AF37] business-name">Classic Cuts</h3>
+        <div class="business-info">
+          <p class="description">Traditional barbering for gentlemen.</p>
+          <p class="address">654 Baker Street, London</p>
+                        </div>
+        <button class="book-now-btn w-full font-semibold px-4 py-2 transition shadow-md">Contact</button>
+        <div class="card-cta-row text-xs">
+          <a href="tel:+44" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72 17.5 17.5 0 0 0 .5 3.39A2 2 0 0 1 8.25 9.9l-2 2a15.06 15.06 0 0 0 6 6l2-2a2 2 0 0 1 2.38-.28 17.5 17.5 0 0 0 3.39.5A2 2 0 0 1 22 16.92z"/></svg>
+            Call
+          </a>
+          <a href="mailto:classic@cuts.co.uk" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"/><path d="M21 5L12 13L3 5"/></svg>
+            Email
+          </a>
+          <button class="cta-btn flex items-center justify-center gap-1" onclick="share('Classic Cuts')">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+        </div>
+      </div>
+    </article>
+    
+    <!-- 5 - Full Card -->
+    <article class="business-card card overflow-hidden">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="business-card-image" alt="Nail Nova image">
+                            </div>
+      <div class="business-details">
+        <h3 class="text-lg font-bold text-[#D4AF37] business-name">Nail Nova</h3>
+        <div class="business-info">
+          <p class="description">Express manicures and pedicures.</p>
+          <p class="address">88 Oxford St, London</p>
+                            </div>
+        <a href="business-profile-with-tracking.html" class="book-now-btn w-full font-semibold px-4 py-2 transition shadow-md" style="display: inline-block; text-align: center; text-decoration: none;">Book Now</a>
+        <div class="card-cta-row text-xs">
+          <a href="tel:+44000000000" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72 17.5 17.5 0 0 0 .5 3.39A2 2 0 0 1 8.25 9.9l-2 2a15.06 15.06 0 0 0 6 6l2-2a2 2 0 0 1 2.38-.28 17.5 17.5 0 0 0 3.39.5A2 2 0 0 1 22 16.92z"/></svg>
+            Call
+          </a>
+          <a href="mailto:book@nailnova.co.uk" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"/><path d="M21 5L12 13L3 5"/></svg>
+            Email
+          </a>
+          <button class="cta-btn flex items-center justify-center gap-1" onclick="share('Nail Nova')">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+                                </div>
+                        </div>
+    </article>
+    
+    <!-- 6 - Compact Card -->
+    <article class="business-card card overflow-hidden">
+      <div class="relative">
+        <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="business-card-image" alt="Trim & Tidy placeholder image">
+                        </div>
+      <div class="business-details">
+        <h3 class="text-lg font-bold text-[#D4AF37] business-name">Trim & Tidy</h3>
+        <div class="business-info">
+          <p class="description">The clean-cut specialist.</p>
+          <p class="address">12 King St, London</p>
+        </div>
+        <button class="book-now-btn w-full font-semibold px-4 py-2 transition shadow-md">Contact</button>
+        <div class="card-cta-row text-xs">
+          <a href="tel:+44" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72 17.5 17.5 0 0 0 .5 3.39A2 2 0 0 1 8.25 9.9l-2 2a15.06 15.06 0 0 0 6 6l2-2a2 2 0 0 1 2.38-.28 17.5 17.5 0 0 0 3.39.5A2 2 0 0 1 22 16.92z"/></svg>
+            Call
+          </a>
+          <a href="mailto:trim@tidy.co.uk" class="cta-btn flex items-center justify-center gap-1">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"/><path d="M21 5L12 13L3 5"/></svg>
+                                    Email
+          </a>
+          <button class="cta-btn flex items-center justify-center gap-1" onclick="share('Trim & Tidy')">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                                Share
+                            </button>
+                        </div>
+                    </div>
+    </article>
+                </div>
+  
+  <!-- Pagination -->
+  <div class="flex justify-center mt-8 gap-2 text-sm">
+    <button class="px-3 py-1 rounded-md search-cta-btn font-semibold shadow-md">1</button>
+    <button class="px-3 py-1 rounded-md border border-gray-700 hover:border-[#D4AF37] transition">2</button>
+    <button class="px-3 py-1 rounded-md border border-gray-700 hover:border-[#D4AF37] transition">3</button>
+    <button class="px-3 py-1 rounded-md border border-gray-700 hover:border-[#D4AF37] transition">Next &rarr;</button>
+                    </div>
+</section>
+
+<!-- Bottom App Nav (Fixed) -->
+<nav class="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-md border-t border-gray-800 z-40">
+  <div class="max-w-7xl mx-auto px-6 py-3 grid grid-cols-4 text-center text-sm">
+    <!-- Browse/Home -->
+    <a href="#" class="text-[#D4AF37] flex flex-col items-center">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <div class="text-[11px] mt-1 font-semibold">Browse</div>
+    </a>
+    <!-- Offers -->
+    <a href="#" class="text-gray-300 hover:text-[#D4AF37] transition flex flex-col items-center">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <div class="text-[11px] mt-1">Offers</div>
+    </a>
+    <!-- Add -->
+    <a href="#" class="text-gray-300 hover:text-[#D4AF37] transition flex flex-col items-center">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <div class="text-[11px] mt-1">Add</div>
+    </a>
+    <!-- Account -->
+    <a href="#" class="text-gray-300 hover:text-[#D4AF37] transition flex flex-col items-center">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <div class="text-[11px] mt-1">Account</div>
+    </a>
+                    </div>
+</nav>
+
+<script>
+// ===================================
+// CANVAS ANIMATION LOGIC
+// ===================================
+const canvas = document.getElementById('hero-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  // Set canvas dimensions based on its container (the section element)
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = canvas.parentElement.clientHeight;
+}
+
+class Particle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = Math.random() * 0.8 + 0.2; // Tiny dots for a subtle glow
+    this.speedX = Math.random() * 0.3 - 0.15; // Slow horizontal movement
+    this.speedY = Math.random() * 0.3 - 0.15; // Slow vertical movement
+    // Subtle yellow color matching the theme
+    this.color = `rgba(250, 204, 21, ${Math.random() * 0.2 + 0.05})`;
+  }
+  
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    
+    // Bounce or loop particles
+    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+  }
+  
+  draw() {
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function initParticles() {
+  particles = [];
+  // Calculate particle density based on screen size
+  const numberOfParticles = Math.floor((canvas.width * canvas.height) / 8000);
+  for (let i = 0; i < numberOfParticles; i++) {
+    particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height));
+  }
+}
+
+function animateCanvas() {
+  // Clear canvas with a slight transparent fill to create subtle trails/glow effect
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  particles.forEach(p => {
+    p.update();
+    p.draw();
+  });
+  
+  requestAnimationFrame(animateCanvas);
+}
+
+// ===================================
+// PAGE INITIALIZATION
+// ===================================
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  initParticles(); // Re-initialize particles on resize
+});
+
+// Start canvas animation and init on window load
+window.onload = function () {
+  resizeCanvas();
+  initParticles();
+  animateCanvas();
+  
+  // Ensure scroll progress script runs after load too
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+  prog.style.width = (scrolled * 100) + '%';
+};
+
+// ===================================
+// UTILITY SCRIPTS
+// ===================================
+// share helper (uses Web Share API if available, otherwise copies link)
+function share(name){
+  const shareData = {
+    title: name,
+    text: `Check out ${name} on BlkPages`,
+    url: window.location.href
+  };
+  
+  if (navigator.share){
+    navigator.share(shareData).catch(()=>{});
+  } else {
+    // Fallback for non-supporting browsers
+    document.execCommand('copy');
+    console.log('Link copied to clipboard!');
+  }
+}
+
+// scroll progress calculation and update
+const prog = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  // Calculate scroll percentage: (Scrolled amount) / (Total scrollable height)
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+  prog.style.width = (scrolled * 100) + '%';
+}, { passive: true });
+</script>
+                            </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+                            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+                            </div>
+            <!-- Links -->
+                            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                                </ul>
+                            </div>
+            <!-- Legal -->
+                            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                                </ul>
+                            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                        </div>
+                        </div>
+                    </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+                </div>
     </footer>
 </body>
 </html>

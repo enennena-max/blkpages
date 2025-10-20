@@ -1,747 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Analytics Tracking Demo Hub - BLKPAGES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #0a0a0a 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            padding: 2rem;
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
         }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #1E90FF, #00BFFF);
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
         }
         
-        .header p {
-            color: #9CA3AF;
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .demo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .demo-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(30, 144, 255, 0.2);
-            border-radius: 12px;
-            padding: 2rem;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
         }
         
-        .demo-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(30, 144, 255, 0.4);
-            box-shadow: 0 10px 30px rgba(30, 144, 255, 0.1);
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .demo-card h3 {
-            color: #1E90FF;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .demo-card p {
-            color: #9CA3AF;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-        
-        .demo-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #1E90FF, #00BFFF);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            justify-content: center;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(30, 144, 255, 0.3);
-        }
-        
-        .btn-secondary {
-            background: rgba(30, 144, 255, 0.1);
-            border: 1px solid #1E90FF;
-            color: #1E90FF;
-        }
-        
-        .btn-secondary:hover {
-            background: #1E90FF;
-            color: white;
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #28A745, #20C997);
-        }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, #FFC107, #FF8F00);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #DC2626, #B91C1C);
-        }
-        
-        .live-stats {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-        
-        .stat-item {
-            text-align: center;
-            padding: 1rem;
-            background: rgba(30, 144, 255, 0.1);
-            border-radius: 8px;
-            border: 1px solid rgba(30, 144, 255, 0.2);
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1E90FF;
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-label {
-            color: #9CA3AF;
             font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .console-output {
-            background: #000;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            color: #00ff00;
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 1rem;
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        
-        .status-active {
-            background: rgba(40, 167, 69, 0.2);
-            color: #28A745;
-            border: 1px solid rgba(40, 167, 69, 0.3);
-        }
-        
-        .status-inactive {
-            background: rgba(220, 38, 38, 0.2);
-            color: #DC2626;
-            border: 1px solid rgba(220, 38, 38, 0.3);
-        }
-        
-        .test-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(30, 144, 255, 0.2);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .test-section h3 {
-            color: #1E90FF;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-        }
-        
-        .test-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        @media (max-width: 768px) {
-            .demo-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .test-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                justify-content: center;
-            }
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-chart-line"></i> Analytics Tracking Demo Hub</h1>
-            <p>Comprehensive testing and demonstration of all analytics tracking features including Profile Views, Search Impressions, Contact Clicks, and Enquiries Received.</p>
-        </div>
-        
-        <!-- Live Analytics Stats -->
-        <div class="test-section">
-            <h3><i class="fas fa-chart-pie"></i> Live Analytics Data</h3>
-            <div class="live-stats">
-                <div class="stats-grid" id="liveStats">
-                    <div class="stat-item">
-                        <div class="stat-number" id="liveProfileViews">0</div>
-                        <div class="stat-label">Profile Views</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="liveSearchImpressions">0</div>
-                        <div class="stat-label">Search Impressions</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="liveContactClicks">0</div>
-                        <div class="stat-label">Contact Clicks</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="liveEnquiries">0</div>
-                        <div class="stat-label">Enquiries Received</div>
-                    </div>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
-            </div>
-            <div class="test-buttons">
-                <button onclick="refreshLiveStats()" class="btn btn-secondary">
-                    <i class="fas fa-sync"></i> Refresh Stats
-                </button>
-                <button onclick="clearAllAnalytics()" class="btn btn-danger">
-                    <i class="fas fa-trash"></i> Clear All Data
-                </button>
-            </div>
-        </div>
-        
-        <!-- Demo Cards Grid -->
-        <div class="demo-grid">
-            <!-- Profile Views Demo -->
-            <div class="demo-card">
-                <h3><i class="fas fa-eye"></i> Profile Views Tracking</h3>
-                <p>Test automatic profile view tracking when someone visits a business profile page. This tracks every public view of the business profile.</p>
-                <div class="status-indicator status-active">
-                    <i class="fas fa-check-circle"></i>
-                    Active - Tracks on business-profile.html
-                </div>
-                <div class="demo-actions">
-                    <a href="business-profile.html" class="btn" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Visit Business Profile
-                    </a>
-                    <button onclick="simulateProfileView()" class="btn btn-secondary">
-                        <i class="fas fa-plus"></i> Simulate Profile View
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Search Impressions Demo -->
-            <div class="demo-card">
-                <h3><i class="fas fa-search"></i> Search Impressions Tracking</h3>
-                <p>Test search impression tracking when businesses appear in search results. This tracks every time a business is shown in search results.</p>
-                <div class="status-indicator status-active">
-                    <i class="fas fa-check-circle"></i>
-                    Active - Tracks on search-results.html
-                </div>
-                <div class="demo-actions">
-                    <a href="search-results.html" class="btn" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Visit Search Results
-                    </a>
-                    <button onclick="simulateSearchImpression()" class="btn btn-secondary">
-                        <i class="fas fa-search"></i> Simulate Search
-                    </button>
-                    <button onclick="testRealSearchTracking()" class="btn btn-warning">
-                        <i class="fas fa-search-plus"></i> Test Real Search
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Contact Clicks Demo -->
-            <div class="demo-card">
-                <h3><i class="fas fa-phone"></i> Contact Clicks Tracking</h3>
-                <p>Test contact click tracking when users click on call or message buttons. This tracks every interaction with contact buttons.</p>
-                <div class="status-indicator status-active">
-                    <i class="fas fa-check-circle"></i>
-                    Active - Tracks on business-profile.html
-                </div>
-                <div class="demo-actions">
-                    <a href="business-profile.html" class="btn" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Visit Business Profile
-                    </a>
-                    <button onclick="simulateContactClick()" class="btn btn-secondary">
-                        <i class="fas fa-phone"></i> Simulate Contact Click
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Enquiries Demo -->
-            <div class="demo-card">
-                <h3><i class="fas fa-envelope"></i> Enquiries Received Tracking</h3>
-                <p>Test enquiry tracking when users complete bookings or send messages. This tracks every booking submission and enquiry.</p>
-                <div class="status-indicator status-active">
-                    <i class="fas fa-check-circle"></i>
-                    Active - Tracks on business-profile.html
-                </div>
-                <div class="demo-actions">
-                    <a href="business-profile.html" class="btn" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Visit Business Profile
-                    </a>
-                    <button onclick="simulateEnquiry()" class="btn btn-secondary">
-                        <i class="fas fa-envelope"></i> Simulate Enquiry
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Analytics Dashboard Demo -->
-            <div class="demo-card">
-                <h3><i class="fas fa-chart-bar"></i> Analytics Dashboard</h3>
-                <p>View the comprehensive analytics dashboard with real-time data updates. See all metrics in one place with detailed breakdowns.</p>
-                <div class="status-indicator status-active">
-                    <i class="fas fa-check-circle"></i>
-                    Live - Real-time updates
-                </div>
-                <div class="demo-actions">
-                    <a href="business-analytics-dashboard.html" class="btn" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> View Analytics Dashboard
-                    </a>
-                    <a href="business-dashboard.html" class="btn btn-secondary" target="_blank">
-                        <i class="fas fa-tachometer-alt"></i> View Business Dashboard
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Testing Tools Demo -->
-            <div class="demo-card">
-                <h3><i class="fas fa-tools"></i> Testing & Debug Tools</h3>
-                <p>Access comprehensive testing tools and debugging utilities to verify all tracking systems are working correctly.</p>
-                <div class="status-indicator status-active">
-                    <i class="fas fa-check-circle"></i>
-                    Available - Full testing suite
-                </div>
-                <div class="demo-actions">
-                    <a href="analytics-test.html" class="btn" target="_blank">
-                        <i class="fas fa-vial"></i> Analytics Test Page
-                    </a>
-                    <a href="debug-analytics.html" class="btn btn-secondary" target="_blank">
-                        <i class="fas fa-bug"></i> Debug Tools
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Comprehensive Testing Section -->
-        <div class="test-section">
-            <h3><i class="fas fa-rocket"></i> Comprehensive Testing</h3>
-            <p>Test all tracking systems simultaneously to verify everything is working correctly.</p>
-            <div class="test-buttons">
-                <button onclick="testAllTracking()" class="btn btn-success">
-                    <i class="fas fa-rocket"></i> Test All Tracking Systems
-                </button>
-                <button onclick="simulateRealUserJourney()" class="btn btn-warning">
-                    <i class="fas fa-user"></i> Simulate Real User Journey
-                </button>
-                <button onclick="verifyAnalyticsSync()" class="btn btn-secondary">
-                    <i class="fas fa-sync"></i> Verify Analytics Sync
-                </button>
-            </div>
-        </div>
-        
-        <!-- Console Output -->
-        <div class="test-section">
-            <h3><i class="fas fa-terminal"></i> Console Output</h3>
-            <div class="console-output" id="consoleOutput">
-                Analytics Demo Hub loaded. Ready to test tracking systems...
-            </div>
-        </div>
-    </div>
 
-    <script>
-        const businessId = 'royalHairStudio';
-        
-        // Load and display live analytics data
-        function refreshLiveStats() {
-            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
-            
-            if (analyticsData[businessId]) {
-                const data = analyticsData[businessId];
-                
-                document.getElementById('liveProfileViews').textContent = data.totalViews || 0;
-                document.getElementById('liveSearchImpressions').textContent = data.searchImpressions || 0;
-                document.getElementById('liveContactClicks').textContent = data.contactClicks || 0;
-                document.getElementById('liveEnquiries').textContent = data.enquiries || 0;
-                
-                logToConsole('Live stats refreshed');
-            } else {
-                document.getElementById('liveProfileViews').textContent = '0';
-                document.getElementById('liveSearchImpressions').textContent = '0';
-                document.getElementById('liveContactClicks').textContent = '0';
-                document.getElementById('liveEnquiries').textContent = '0';
-                
-                logToConsole('No analytics data found');
-            }
-        }
-        
-        // Simulate profile view
-        function simulateProfileView() {
-            const currentDate = new Date().toISOString().split('T')[0];
-            const currentTime = new Date().toISOString();
-            
-            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
-            
-            if (!analyticsData[businessId]) {
-                analyticsData[businessId] = {
-                    totalViews: 0,
-                    dailyViews: {},
-                    lastView: null,
-                    viewHistory: [],
-                    searchImpressions: 0,
-                    dailySearchImpressions: {},
-                    contactClicks: 0,
-                    dailyContactClicks: {},
-                    enquiries: 0,
-                    dailyEnquiries: {}
-                };
-            }
-            
-            analyticsData[businessId].totalViews += 1;
-            analyticsData[businessId].lastView = currentTime;
-            
-            if (!analyticsData[businessId].dailyViews[currentDate]) {
-                analyticsData[businessId].dailyViews[currentDate] = 0;
-            }
-            analyticsData[businessId].dailyViews[currentDate] += 1;
-            
-            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
-            
-            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
-                detail: { 
-                    businessId: businessId,
-                    totalViews: analyticsData[businessId].totalViews,
-                    dailyViews: analyticsData[businessId].dailyViews[currentDate]
-                }
-            }));
-            
-            refreshLiveStats();
-            logToConsole('Profile view simulated');
-        }
-        
-        // Simulate search impression
-        function simulateSearchImpression() {
-            const currentDate = new Date().toISOString().split('T')[0];
-            
-            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
-            
-            if (!analyticsData[businessId]) {
-                analyticsData[businessId] = {
-                    totalViews: 0,
-                    dailyViews: {},
-                    lastView: null,
-                    viewHistory: [],
-                    searchImpressions: 0,
-                    dailySearchImpressions: {},
-                    contactClicks: 0,
-                    dailyContactClicks: {},
-                    enquiries: 0,
-                    dailyEnquiries: {}
-                };
-            }
-            
-            analyticsData[businessId].searchImpressions += 1;
-            
-            if (!analyticsData[businessId].dailySearchImpressions[currentDate]) {
-                analyticsData[businessId].dailySearchImpressions[currentDate] = 0;
-            }
-            analyticsData[businessId].dailySearchImpressions[currentDate] += 1;
-            
-            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
-            
-            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
-                detail: { 
-                    businessId: businessId,
-                    type: 'searchImpressions',
-                    totalImpressions: analyticsData[businessId].searchImpressions,
-                    todayImpressions: analyticsData[businessId].dailySearchImpressions[currentDate]
-                }
-            }));
-            
-            refreshLiveStats();
-            logToConsole('Search impression simulated');
-        }
-        
-        // Simulate contact click
-        function simulateContactClick() {
-            const currentDate = new Date().toISOString().split('T')[0];
-            
-            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
-            
-            if (!analyticsData[businessId]) {
-                analyticsData[businessId] = {
-                    totalViews: 0,
-                    dailyViews: {},
-                    lastView: null,
-                    viewHistory: [],
-                    searchImpressions: 0,
-                    dailySearchImpressions: {},
-                    contactClicks: 0,
-                    dailyContactClicks: {},
-                    enquiries: 0,
-                    dailyEnquiries: {}
-                };
-            }
-            
-            analyticsData[businessId].contactClicks += 1;
-            
-            if (!analyticsData[businessId].dailyContactClicks[currentDate]) {
-                analyticsData[businessId].dailyContactClicks[currentDate] = 0;
-            }
-            analyticsData[businessId].dailyContactClicks[currentDate] += 1;
-            
-            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
-            
-            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
-                detail: { 
-                    businessId: businessId,
-                    type: 'contactClick',
-                    totalClicks: analyticsData[businessId].contactClicks,
-                    todayClicks: analyticsData[businessId].dailyContactClicks[currentDate]
-                }
-            }));
-            
-            refreshLiveStats();
-            logToConsole('Contact click simulated');
-        }
-        
-        // Simulate enquiry
-        function simulateEnquiry() {
-            const currentDate = new Date().toISOString().split('T')[0];
-            
-            let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
-            
-            if (!analyticsData[businessId]) {
-                analyticsData[businessId] = {
-                    totalViews: 0,
-                    dailyViews: {},
-                    lastView: null,
-                    viewHistory: [],
-                    searchImpressions: 0,
-                    dailySearchImpressions: {},
-                    contactClicks: 0,
-                    dailyContactClicks: {},
-                    enquiries: 0,
-                    dailyEnquiries: {}
-                };
-            }
-            
-            analyticsData[businessId].enquiries += 1;
-            
-            if (!analyticsData[businessId].dailyEnquiries[currentDate]) {
-                analyticsData[businessId].dailyEnquiries[currentDate] = 0;
-            }
-            analyticsData[businessId].dailyEnquiries[currentDate] += 1;
-            
-            localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData));
-            
-            window.dispatchEvent(new CustomEvent('analyticsUpdated', {
-                detail: { 
-                    businessId: businessId,
-                    type: 'enquiry',
-                    totalEnquiries: analyticsData[businessId].enquiries,
-                    todayEnquiries: analyticsData[businessId].dailyEnquiries[currentDate]
-                }
-            }));
-            
-            refreshLiveStats();
-            logToConsole('Enquiry simulated');
-        }
-        
-        // Test real search tracking
-        function testRealSearchTracking() {
-            logToConsole('Testing real search tracking...');
-            
-            const searchWindow = window.open('search-results.html', '_blank');
-            
-            setTimeout(() => {
-                if (searchWindow && !searchWindow.closed) {
-                    try {
-                        searchWindow.testSearchTracking();
-                        logToConsole('Real search tracking test triggered');
-                    } catch (error) {
-                        logToConsole('Error triggering search test: ' + error.message);
-                    }
-                }
-            }, 2000);
-        }
-        
-        // Test all tracking systems
-        function testAllTracking() {
-            logToConsole('Testing all tracking systems...');
-            
-            simulateProfileView();
-            setTimeout(() => simulateSearchImpression(), 200);
-            setTimeout(() => simulateContactClick(), 400);
-            setTimeout(() => simulateEnquiry(), 600);
-            setTimeout(() => {
-                logToConsole('All tracking tests completed!');
-                refreshLiveStats();
-            }, 800);
-        }
-        
-        // Simulate real user journey
-        function simulateRealUserJourney() {
-            logToConsole('Simulating real user journey...');
-            
-            // Step 1: User searches for businesses
-            simulateSearchImpression();
-            setTimeout(() => {
-                logToConsole('Step 1: User searches for businesses');
-                simulateSearchImpression();
-            }, 500);
-            
-            // Step 2: User views business profile
-            setTimeout(() => {
-                logToConsole('Step 2: User views business profile');
-                simulateProfileView();
-            }, 1000);
-            
-            // Step 3: User clicks contact button
-            setTimeout(() => {
-                logToConsole('Step 3: User clicks contact button');
-                simulateContactClick();
-            }, 1500);
-            
-            // Step 4: User completes booking
-            setTimeout(() => {
-                logToConsole('Step 4: User completes booking');
-                simulateEnquiry();
-            }, 2000);
-            
-            // Final update
-            setTimeout(() => {
-                logToConsole('Real user journey simulation completed!');
-                refreshLiveStats();
-            }, 2500);
-        }
-        
-        // Verify analytics sync
-        function verifyAnalyticsSync() {
-            logToConsole('Verifying analytics sync...');
-            
-            const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}');
-            
-            if (analyticsData[businessId]) {
-                const data = analyticsData[businessId];
-                logToConsole(`Analytics data found: ${data.totalViews} views, ${data.searchImpressions} impressions, ${data.contactClicks} clicks, ${data.enquiries} enquiries`);
-                
-                // Check if data is consistent
-                const hasData = data.totalViews > 0 || data.searchImpressions > 0 || data.contactClicks > 0 || data.enquiries > 0;
-                
-                if (hasData) {
-                    logToConsole('✅ Analytics sync verified - data is present and consistent');
-                } else {
-                    logToConsole('⚠️ Analytics sync verified - no data found (this is normal for new installations)');
-                }
-            } else {
-                logToConsole('❌ No analytics data found for business');
-            }
-        }
-        
-        // Clear all analytics
-        function clearAllAnalytics() {
-            localStorage.removeItem('businessAnalytics');
-            refreshLiveStats();
-            logToConsole('All analytics data cleared');
-        }
-        
-        // Log to console output
-        function logToConsole(message) {
-            const consoleOutput = document.getElementById('consoleOutput');
-            const timestamp = new Date().toLocaleTimeString();
-            consoleOutput.innerHTML += `[${timestamp}] ${message}\n`;
-            consoleOutput.scrollTop = consoleOutput.scrollHeight;
-        }
-        
-        // Listen for analytics updates
-        window.addEventListener('analyticsUpdated', function(e) {
-            logToConsole(`Analytics updated: ${e.detail.type || 'general'} - ${JSON.stringify(e.detail)}`);
-            refreshLiveStats();
-        });
-        
-        // Listen for storage changes
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'businessAnalytics') {
-                logToConsole('Analytics data changed in another tab');
-                refreshLiveStats();
-            }
-        });
-        
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            refreshLiveStats();
-            logToConsole('Analytics Demo Hub initialized');
-        });
-    </script>
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><div><h1><i></i> Analytics Tracking Demo Hub</h1><p>Comprehensive testing and demonstration of all analytics tracking features including Profile Views, Search Impressions, Contact Clicks, and Enquiries Received.</p></div><!-- Live Analytics Stats --><div><h3><i></i> Live Analytics Data</h3><div><div><div><div>0</div><div>Profile Views</div></div><div><div>0</div><div>Search Impressions</div></div><div><div>0</div><div>Contact Clicks</div></div><div><div>0</div><div>Enquiries Received</div></div></div></div><div><button onclick="refreshLiveStats()"><i></i> Refresh Stats </button><button onclick="clearAllAnalytics()"><i></i> Clear All Data </button></div></div><!-- Demo Cards Grid --><div><!-- Profile Views Demo --><div><h3><i></i> Profile Views Tracking</h3><p>Test automatic profile view tracking when someone visits a business profile page. This tracks every public view of the business profile.</p><div><i></i> Active - Tracks on business-profile.html </div><div><a href="business-profile.html" target="_blank"><i></i> Visit Business Profile </a><button onclick="simulateProfileView()"><i></i> Simulate Profile View </button></div></div><!-- Search Impressions Demo --><div><h3><i></i> Search Impressions Tracking</h3><p>Test search impression tracking when businesses appear in search results. This tracks every time a business is shown in search results.</p><div><i></i> Active - Tracks on search-results.html </div><div><a href="search-results.html" target="_blank"><i></i> Visit Search Results </a><button onclick="simulateSearchImpression()"><i></i> Simulate Search </button><button onclick="testRealSearchTracking()"><i></i> Test Real Search </button></div></div><!-- Contact Clicks Demo --><div><h3><i></i> Contact Clicks Tracking</h3><p>Test contact click tracking when users click on call or message buttons. This tracks every interaction with contact buttons.</p><div><i></i> Active - Tracks on business-profile.html </div><div><a href="business-profile.html" target="_blank"><i></i> Visit Business Profile </a><button onclick="simulateContactClick()"><i></i> Simulate Contact Click </button></div></div><!-- Enquiries Demo --><div><h3><i></i> Enquiries Received Tracking</h3><p>Test enquiry tracking when users complete bookings or send messages. This tracks every booking submission and enquiry.</p><div><i></i> Active - Tracks on business-profile.html </div><div><a href="business-profile.html" target="_blank"><i></i> Visit Business Profile </a><button onclick="simulateEnquiry()"><i></i> Simulate Enquiry </button></div></div><!-- Analytics Dashboard Demo --><div><h3><i></i> Analytics Dashboard</h3><p>View the comprehensive analytics dashboard with real-time data updates. See all metrics in one place with detailed breakdowns.</p><div><i></i> Live - Real-time updates </div><div><a href="business-analytics-dashboard.html" target="_blank"><i></i> View Analytics Dashboard </a><a href="business-dashboard.html" target="_blank"><i></i> View Business Dashboard </a></div></div><!-- Testing Tools Demo --><div><h3><i></i> Testing & Debug Tools</h3><p>Access comprehensive testing tools and debugging utilities to verify all tracking systems are working correctly.</p><div><i></i> Available - Full testing suite </div><div><a href="analytics-test.html" target="_blank"><i></i> Analytics Test Page </a><a href="debug-analytics.html" target="_blank"><i></i> Debug Tools </a></div></div></div><!-- Comprehensive Testing Section --><div><h3><i></i> Comprehensive Testing</h3><p>Test all tracking systems simultaneously to verify everything is working correctly.</p><div><button onclick="testAllTracking()"><i></i> Test All Tracking Systems </button><button onclick="simulateRealUserJourney()"><i></i> Simulate Real User Journey </button><button onclick="verifyAnalyticsSync()"><i></i> Verify Analytics Sync </button></div></div><!-- Console Output --><div><h3><i></i> Console Output</h3><div> Analytics Demo Hub loaded. Ready to test tracking systems... </div></div></div><script> const businessId = 'royalHairStudio'; // Load and display live analytics data function refreshLiveStats() { const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}'); if (analyticsData[businessId]) { const data = analyticsData[businessId]; document.getElementById('liveProfileViews').textContent = data.totalViews || 0; document.getElementById('liveSearchImpressions').textContent = data.searchImpressions || 0; document.getElementById('liveContactClicks').textContent = data.contactClicks || 0; document.getElementById('liveEnquiries').textContent = data.enquiries || 0; logToConsole('Live stats refreshed'); } else { document.getElementById('liveProfileViews').textContent = '0'; document.getElementById('liveSearchImpressions').textContent = '0'; document.getElementById('liveContactClicks').textContent = '0'; document.getElementById('liveEnquiries').textContent = '0'; logToConsole('No analytics data found'); } } // Simulate profile view function simulateProfileView() { const currentDate = new Date().toISOString().split('T')[0]; const currentTime = new Date().toISOString(); let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}'); if (!analyticsData[businessId]) { analyticsData[businessId] = { totalViews: 0, dailyViews: {}, lastView: null, viewHistory: [], searchImpressions: 0, dailySearchImpressions: {}, contactClicks: 0, dailyContactClicks: {}, enquiries: 0, dailyEnquiries: {} }; } analyticsData[businessId].totalViews += 1; analyticsData[businessId].lastView = currentTime; if (!analyticsData[businessId].dailyViews[currentDate]) { analyticsData[businessId].dailyViews[currentDate] = 0; } analyticsData[businessId].dailyViews[currentDate] += 1; localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData)); window.dispatchEvent(new CustomEvent('analyticsUpdated', { detail: { businessId: businessId, totalViews: analyticsData[businessId].totalViews, dailyViews: analyticsData[businessId].dailyViews[currentDate] } })); refreshLiveStats(); logToConsole('Profile view simulated'); } // Simulate search impression function simulateSearchImpression() { const currentDate = new Date().toISOString().split('T')[0]; let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}'); if (!analyticsData[businessId]) { analyticsData[businessId] = { totalViews: 0, dailyViews: {}, lastView: null, viewHistory: [], searchImpressions: 0, dailySearchImpressions: {}, contactClicks: 0, dailyContactClicks: {}, enquiries: 0, dailyEnquiries: {} }; } analyticsData[businessId].searchImpressions += 1; if (!analyticsData[businessId].dailySearchImpressions[currentDate]) { analyticsData[businessId].dailySearchImpressions[currentDate] = 0; } analyticsData[businessId].dailySearchImpressions[currentDate] += 1; localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData)); window.dispatchEvent(new CustomEvent('analyticsUpdated', { detail: { businessId: businessId, type: 'searchImpressions', totalImpressions: analyticsData[businessId].searchImpressions, todayImpressions: analyticsData[businessId].dailySearchImpressions[currentDate] } })); refreshLiveStats(); logToConsole('Search impression simulated'); } // Simulate contact click function simulateContactClick() { const currentDate = new Date().toISOString().split('T')[0]; let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}'); if (!analyticsData[businessId]) { analyticsData[businessId] = { totalViews: 0, dailyViews: {}, lastView: null, viewHistory: [], searchImpressions: 0, dailySearchImpressions: {}, contactClicks: 0, dailyContactClicks: {}, enquiries: 0, dailyEnquiries: {} }; } analyticsData[businessId].contactClicks += 1; if (!analyticsData[businessId].dailyContactClicks[currentDate]) { analyticsData[businessId].dailyContactClicks[currentDate] = 0; } analyticsData[businessId].dailyContactClicks[currentDate] += 1; localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData)); window.dispatchEvent(new CustomEvent('analyticsUpdated', { detail: { businessId: businessId, type: 'contactClick', totalClicks: analyticsData[businessId].contactClicks, todayClicks: analyticsData[businessId].dailyContactClicks[currentDate] } })); refreshLiveStats(); logToConsole('Contact click simulated'); } // Simulate enquiry function simulateEnquiry() { const currentDate = new Date().toISOString().split('T')[0]; let analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}'); if (!analyticsData[businessId]) { analyticsData[businessId] = { totalViews: 0, dailyViews: {}, lastView: null, viewHistory: [], searchImpressions: 0, dailySearchImpressions: {}, contactClicks: 0, dailyContactClicks: {}, enquiries: 0, dailyEnquiries: {} }; } analyticsData[businessId].enquiries += 1; if (!analyticsData[businessId].dailyEnquiries[currentDate]) { analyticsData[businessId].dailyEnquiries[currentDate] = 0; } analyticsData[businessId].dailyEnquiries[currentDate] += 1; localStorage.setItem('businessAnalytics', JSON.stringify(analyticsData)); window.dispatchEvent(new CustomEvent('analyticsUpdated', { detail: { businessId: businessId, type: 'enquiry', totalEnquiries: analyticsData[businessId].enquiries, todayEnquiries: analyticsData[businessId].dailyEnquiries[currentDate] } })); refreshLiveStats(); logToConsole('Enquiry simulated'); } // Test real search tracking function testRealSearchTracking() { logToConsole('Testing real search tracking...'); const searchWindow = window.open('search-results.html', '_blank'); setTimeout(() => { if (searchWindow && !searchWindow.closed) { try { searchWindow.testSearchTracking(); logToConsole('Real search tracking test triggered'); } catch (error) { logToConsole('Error triggering search test: ' + error.message); } } }, 2000); } // Test all tracking systems function testAllTracking() { logToConsole('Testing all tracking systems...'); simulateProfileView(); setTimeout(() => simulateSearchImpression(), 200); setTimeout(() => simulateContactClick(), 400); setTimeout(() => simulateEnquiry(), 600); setTimeout(() => { logToConsole('All tracking tests completed!'); refreshLiveStats(); }, 800); } // Simulate real user journey function simulateRealUserJourney() { logToConsole('Simulating real user journey...'); // Step 1: User searches for businesses simulateSearchImpression(); setTimeout(() => { logToConsole('Step 1: User searches for businesses'); simulateSearchImpression(); }, 500); // Step 2: User views business profile setTimeout(() => { logToConsole('Step 2: User views business profile'); simulateProfileView(); }, 1000); // Step 3: User clicks contact button setTimeout(() => { logToConsole('Step 3: User clicks contact button'); simulateContactClick(); }, 1500); // Step 4: User completes booking setTimeout(() => { logToConsole('Step 4: User completes booking'); simulateEnquiry(); }, 2000); // Final update setTimeout(() => { logToConsole('Real user journey simulation completed!'); refreshLiveStats(); }, 2500); } // Verify analytics sync function verifyAnalyticsSync() { logToConsole('Verifying analytics sync...'); const analyticsData = JSON.parse(localStorage.getItem('businessAnalytics') || '{}'); if (analyticsData[businessId]) { const data = analyticsData[businessId]; logToConsole(`Analytics data found: ${data.totalViews} views, ${data.searchImpressions} impressions, ${data.contactClicks} clicks, ${data.enquiries} enquiries`); // Check if data is consistent const hasData = data.totalViews > 0 || data.searchImpressions > 0 || data.contactClicks > 0 || data.enquiries > 0; if (hasData) { logToConsole('✅ Analytics sync verified - data is present and consistent'); } else { logToConsole('⚠️ Analytics sync verified - no data found (this is normal for new installations)'); } } else { logToConsole('❌ No analytics data found for business'); } } // Clear all analytics function clearAllAnalytics() { localStorage.removeItem('businessAnalytics'); refreshLiveStats(); logToConsole('All analytics data cleared'); } // Log to console output function logToConsole(message) { const consoleOutput = document.getElementById('consoleOutput'); const timestamp = new Date().toLocaleTimeString(); consoleOutput.innerHTML += `[${timestamp}] ${message}\n`; consoleOutput.scrollTop = consoleOutput.scrollHeight; } // Listen for analytics updates window.addEventListener('analyticsUpdated', function(e) { logToConsole(`Analytics updated: ${e.detail.type || 'general'} - ${JSON.stringify(e.detail)}`); refreshLiveStats(); }); // Listen for storage changes window.addEventListener('storage', function(e) { if (e.key === 'businessAnalytics') { logToConsole('Analytics data changed in another tab'); refreshLiveStats(); } }); // Initialize when page loads document.addEventListener('DOMContentLoaded', function() { refreshLiveStats(); logToConsole('Analytics Demo Hub initialized'); }); </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

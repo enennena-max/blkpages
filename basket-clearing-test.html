@@ -1,324 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basket Clearing Rules Test - BlkPages</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="assets/js/basket.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .test-container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: #1a1a1a;
-            border-radius: 8px;
-            color: white;
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
         }
-        .test-section {
-            background: #222;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            border: 1px solid #333;
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .test-button {
-            background: #0D9488;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 0.5rem;
-            font-weight: 600;
+        
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
+        }
+        
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+        }
+        
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
         }
-        .test-button:hover {
-            background: #0F766E;
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
-        .test-button.danger {
-            background: #EF4444;
-        }
-        .test-button.danger:hover {
-            background: #DC2626;
-        }
-        .test-button.warning {
-            background: #F59E0B;
-        }
-        .test-button.warning:hover {
-            background: #D97706;
-        }
-        .basket-icon {
-            position: relative;
-            cursor: pointer;
-            padding: 1rem;
-            border-radius: 50%;
-            background: rgba(13, 148, 136, 0.1);
-            border: 1px solid rgba(13, 148, 136, 0.3);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            margin: 1rem;
-        }
-        .basket-count {
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
             position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ff4444;
-            color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border: 2px solid #1a1a1a;
-        }
-        .log {
-            background: #111;
-            padding: 1rem;
-            border-radius: 4px;
-            margin: 1rem 0;
-            font-family: monospace;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
             font-size: 0.9rem;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #333;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 0.5rem;
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
-        .status-indicator.success { background: #10B981; }
-        .status-indicator.warning { background: #F59E0B; }
-        .status-indicator.error { background: #EF4444; }
-        .status-indicator.info { background: #3B82F6; }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
-<body class="bg-gray-900">
-    <div class="test-container">
-        <h1 class="text-3xl font-bold mb-6 text-center">🧪 Basket Clearing Rules Test</h1>
-        
-        <!-- Basket Display -->
-        <div class="test-section">
-            <h2 class="text-xl font-semibold mb-4">Current Basket Status</h2>
-            <div class="text-center mb-4">
-                <div class="basket-icon" id="basketIcon">
-                    <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.5rem;"></i>
-                    <span class="basket-count" id="basketCount">0</span>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
                 </div>
             </div>
-            <div id="basketContents" class="log">Loading...</div>
-        </div>
-
-        <!-- Test Scenarios -->
-        <div class="test-section">
-            <h2 class="text-xl font-semibold mb-4">🧪 Test Scenarios</h2>
-            
-            <h3 class="text-lg font-medium mb-3">1. Auto-Clear After Successful Checkout</h3>
-            <button class="test-button" onclick="testSuccessfulCheckout()">
-                Simulate Successful Checkout
-            </button>
-            <button class="test-button" onclick="testPayAtVenue()">
-                Simulate "Pay at Venue" Booking
-            </button>
-            
-            <h3 class="text-lg font-medium mb-3">2. Session Timeout (30 min)</h3>
-            <button class="test-button warning" onclick="testSessionTimeout()">
-                Simulate Session Timeout
-            </button>
-            <button class="test-button" onclick="testSessionWarning()">
-                Simulate 2-Min Warning
-            </button>
-            
-            <h3 class="text-lg font-medium mb-3">3. Slot Unavailability</h3>
-            <button class="test-button" onclick="testSlotUnavailable()">
-                Simulate Slot Booked by Another Customer
-            </button>
-            
-            <h3 class="text-lg font-medium mb-3">4. Business Switching</h3>
-            <button class="test-button" onclick="testBusinessSwitch()">
-                Simulate Adding Service from Different Business
-            </button>
-            
-            <h3 class="text-lg font-medium mb-3">5. Manual Clearing</h3>
-            <button class="test-button danger" onclick="testManualClear()">
-                Test "Empty Basket" Button
-            </button>
-            
-            <h3 class="text-lg font-medium mb-3">6. GDPR Compliance</h3>
-            <button class="test-button danger" onclick="testLogoutClear()">
-                Simulate Logout Clearing
-            </button>
-        </div>
-
-        <!-- Event Log -->
-        <div class="test-section">
-            <h2 class="text-xl font-semibold mb-4">📋 Event Log</h2>
-            <div id="eventLog" class="log">Waiting for events...</div>
-        </div>
-
-        <!-- Test Instructions -->
-        <div class="test-section">
-            <h2 class="text-xl font-semibold mb-4">📖 Test Instructions</h2>
-            <div class="space-y-2 text-sm">
-                <p><span class="status-indicator success"></span><strong>Auto-Clear:</strong> Test successful checkout and "pay at venue" scenarios</p>
-                <p><span class="status-indicator warning"></span><strong>Session Timeout:</strong> Test 30-minute timeout with 2-minute warning</p>
-                <p><span class="status-indicator info"></span><strong>Slot Unavailability:</strong> Test partial clearing when slots become unavailable</p>
-                <p><span class="status-indicator error"></span><strong>Business Switching:</strong> Test clearing when adding services from different businesses</p>
-                <p><span class="status-indicator success"></span><strong>Manual Clearing:</strong> Test "Empty Basket" button with confirmation</p>
-                <p><span class="status-indicator error"></span><strong>GDPR Compliance:</strong> Test automatic clearing on logout</p>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
-    </div>
-
-    <script>
-        let itemCounter = 1;
-        let businessCounter = 1;
-        
-        // Initialize test data
-        function initializeTestData() {
-            // Add some test items to basket
-            const testItems = [
-                {
-                    id: 'test-item-1',
-                    name: 'Hair Cut & Style',
-                    price: 45,
-                    business_id: 'business-1',
-                    business: 'Royal Hair Studio',
-                    slotInfo: '2024-01-15-10:00'
-                },
-                {
-                    id: 'test-item-2',
-                    name: 'Deep Conditioning',
-                    price: 35,
-                    business_id: 'business-1',
-                    business: 'Royal Hair Studio',
-                    slotInfo: '2024-01-15-11:00'
-                }
-            ];
-            
-            testItems.forEach(item => {
-                addToBasket(item);
-            });
-            
-            updateBasketContents();
-            logEvent('Test data initialized with 2 items from Royal Hair Studio');
-        }
-        
-        // Test 1: Successful Checkout
-        function testSuccessfulCheckout() {
-            logEvent('Testing successful checkout clearing...');
-            clearBasketAfterCheckout();
-            updateBasketContents();
-        }
-        
-        function testPayAtVenue() {
-            logEvent('Testing "Pay at Venue" booking clearing...');
-            clearBasketAfterCheckout();
-            updateBasketContents();
-        }
-        
-        // Test 2: Session Timeout
-        function testSessionTimeout() {
-            logEvent('Testing session timeout (simulated)...');
-            handleSessionTimeout();
-            updateBasketContents();
-        }
-        
-        function testSessionWarning() {
-            logEvent('Testing 2-minute warning...');
-            showSessionWarning();
-        }
-        
-        // Test 3: Slot Unavailability
-        function testSlotUnavailable() {
-            const basket = getBasket();
-            if (basket.length === 0) {
-                logEvent('No items in basket to test slot unavailability');
-                return;
-            }
-            
-            const firstItem = basket[0];
-            logEvent(`Testing slot unavailability for: ${firstItem.name}`);
-            removeUnavailableSlot(firstItem.id, firstItem.slotInfo);
-            updateBasketContents();
-        }
-        
-        // Test 4: Business Switching
-        function testBusinessSwitch() {
-            const differentBusinessItem = {
-                id: 'test-item-different-business',
-                name: 'Massage Therapy',
-                price: 80,
-                business_id: 'business-2',
-                business: 'Wellness Spa',
-                slotInfo: '2024-01-16-14:00'
-            };
-            
-            logEvent('Testing business switching...');
-            addToBasketWithBusinessCheck(differentBusinessItem);
-            updateBasketContents();
-        }
-        
-        // Test 5: Manual Clearing
-        function testManualClear() {
-            logEvent('Testing manual basket clearing...');
-            clearBasketWithConfirmation();
-            updateBasketContents();
-        }
-        
-        // Test 6: Logout Clearing
-        function testLogoutClear() {
-            logEvent('Testing logout clearing (GDPR compliance)...');
-            clearBasketOnLogout();
-            updateBasketContents();
-        }
-        
-        // Utility Functions
-        function updateBasketContents() {
-            const basket = getBasket();
-            const container = document.getElementById('basketContents');
-            
-            if (basket.length === 0) {
-                container.innerHTML = '<div style="color: #666; text-align: center; padding: 1rem;">Basket is empty</div>';
-            } else {
-                container.innerHTML = basket.map(item => 
-                    `<div style="padding: 0.5rem; border-bottom: 1px solid #333;">
-                        <strong>${item.name}</strong> - £${item.price}<br>
-                        <small style="color: #999;">${item.business} | Slot: ${item.slotInfo}</small>
-                    </div>`
-                ).join('');
-            }
-        }
-        
-        function logEvent(message) {
-            const log = document.getElementById('eventLog');
-            const timestamp = new Date().toLocaleTimeString();
-            const logEntry = document.createElement('div');
-            logEntry.innerHTML = `<span style="color: #666;">[${timestamp}]</span> ${message}`;
-            log.appendChild(logEntry);
-            log.scrollTop = log.scrollHeight;
-        }
-        
-        // Listen for basket events
-        window.addEventListener('basketUpdated', function(e) {
-            logEvent(`Basket updated: ${e.detail.action} - ${e.detail.basket.length} items remaining`);
-            updateBasketContents();
-        });
-        
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeTestData();
-            logEvent('Basket clearing test page loaded');
-        });
-    </script>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><h1>🧪 Basket Clearing Rules Test</h1><!-- Basket Display --><div><h2>Current Basket Status</h2><div><div><i></i><span>0</span></div></div><div>Loading...</div></div><!-- Test Scenarios --><div><h2>🧪 Test Scenarios</h2><h3>1. Auto-Clear After Successful Checkout</h3><button onclick="testSuccessfulCheckout()"> Simulate Successful Checkout </button><button onclick="testPayAtVenue()"> Simulate "Pay at Venue" Booking </button><h3>2. Session Timeout (30 min)</h3><button onclick="testSessionTimeout()"> Simulate Session Timeout </button><button onclick="testSessionWarning()"> Simulate 2-Min Warning </button><h3>3. Slot Unavailability</h3><button onclick="testSlotUnavailable()"> Simulate Slot Booked by Another Customer </button><h3>4. Business Switching</h3><button onclick="testBusinessSwitch()"> Simulate Adding Service from Different Business </button><h3>5. Manual Clearing</h3><button onclick="testManualClear()"> Test "Empty Basket" Button </button><h3>6. GDPR Compliance</h3><button onclick="testLogoutClear()"> Simulate Logout Clearing </button></div><!-- Event Log --><div><h2>📋 Event Log</h2><div>Waiting for events...</div></div><!-- Test Instructions --><div><h2>📖 Test Instructions</h2><div><p><span></span><strong>Auto-Clear:</strong> Test successful checkout and "pay at venue" scenarios</p><p><span></span><strong>Session Timeout:</strong> Test 30-minute timeout with 2-minute warning</p><p><span></span><strong>Slot Unavailability:</strong> Test partial clearing when slots become unavailable</p><p><span></span><strong>Business Switching:</strong> Test clearing when adding services from different businesses</p><p><span></span><strong>Manual Clearing:</strong> Test "Empty Basket" button with confirmation</p><p><span></span><strong>GDPR Compliance:</strong> Test automatic clearing on logout</p></div></div></div><script> let itemCounter = 1; let businessCounter = 1; // Initialize test data function initializeTestData() { // Add some test items to basket const testItems = [ { id: 'test-item-1', name: 'Hair Cut & Style', price: 45, business_id: 'business-1', business: 'Royal Hair Studio', slotInfo: '2024-01-15-10:00' }, { id: 'test-item-2', name: 'Deep Conditioning', price: 35, business_id: 'business-1', business: 'Royal Hair Studio', slotInfo: '2024-01-15-11:00' } ]; testItems.forEach(item => { addToBasket(item); }); updateBasketContents(); logEvent('Test data initialized with 2 items from Royal Hair Studio'); } // Test 1: Successful Checkout function testSuccessfulCheckout() { logEvent('Testing successful checkout clearing...'); clearBasketAfterCheckout(); updateBasketContents(); } function testPayAtVenue() { logEvent('Testing "Pay at Venue" booking clearing...'); clearBasketAfterCheckout(); updateBasketContents(); } // Test 2: Session Timeout function testSessionTimeout() { logEvent('Testing session timeout (simulated)...'); handleSessionTimeout(); updateBasketContents(); } function testSessionWarning() { logEvent('Testing 2-minute warning...'); showSessionWarning(); } // Test 3: Slot Unavailability function testSlotUnavailable() { const basket = getBasket(); if (basket.length === 0) { logEvent('No items in basket to test slot unavailability'); return; } const firstItem = basket[0]; logEvent(`Testing slot unavailability for: ${firstItem.name}`); removeUnavailableSlot(firstItem.id, firstItem.slotInfo); updateBasketContents(); } // Test 4: Business Switching function testBusinessSwitch() { const differentBusinessItem = { id: 'test-item-different-business', name: 'Massage Therapy', price: 80, business_id: 'business-2', business: 'Wellness Spa', slotInfo: '2024-01-16-14:00' }; logEvent('Testing business switching...'); addToBasketWithBusinessCheck(differentBusinessItem); updateBasketContents(); } // Test 5: Manual Clearing function testManualClear() { logEvent('Testing manual basket clearing...'); clearBasketWithConfirmation(); updateBasketContents(); } // Test 6: Logout Clearing function testLogoutClear() { logEvent('Testing logout clearing (GDPR compliance)...'); clearBasketOnLogout(); updateBasketContents(); } // Utility Functions function updateBasketContents() { const basket = getBasket(); const container = document.getElementById('basketContents'); if (basket.length === 0) { container.innerHTML = '<div>Basket is empty</div>'; } else { container.innerHTML = basket.map(item => `<div><strong>${item.name}</strong> - £${item.price}<br><small>${item.business} | Slot: ${item.slotInfo}</small></div>` ).join(''); } } function logEvent(message) { const log = document.getElementById('eventLog'); const timestamp = new Date().toLocaleTimeString(); const logEntry = document.createElement('div'); logEntry.innerHTML = `<span>[${timestamp}]</span> ${message}`; log.appendChild(logEntry); log.scrollTop = log.scrollHeight; } // Listen for basket events window.addEventListener('basketUpdated', function(e) { logEvent(`Basket updated: ${e.detail.action} - ${e.detail.basket.length} items remaining`); updateBasketContents(); }); // Initialize on page load document.addEventListener('DOMContentLoaded', function() { initializeTestData(); logEvent('Basket clearing test page loaded'); }); </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

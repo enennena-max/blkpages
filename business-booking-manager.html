@@ -1,620 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Booking Link Manager - BlkPages</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="js/access-control.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Poppins', sans-serif;
-            background: #000;
-            color: #fff;
-            line-height: 1.6;
+            background-color: #0A0A0A;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
+        }
+        
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
+        }
+        
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+        }
+        
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
+        }
+        
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
         }
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px 0;
-            margin-bottom: 30px;
-            border-radius: 10px;
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
         }
 
-        .header h1 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
         }
 
-        .header p {
-            text-align: center;
-            opacity: 0.9;
-            font-size: 1.1rem;
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
         }
 
-        .booking-form {
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid #333;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
         }
 
-        .form-group {
-            margin-bottom: 20px;
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #fff;
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
         }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #333;
-            border-radius: 8px;
-            background: #2a2a2a;
-            color: #fff;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            margin: 0;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: #333;
-            margin-left: 10px;
-        }
-
-        .btn-secondary:hover {
-            background: #444;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .result-section {
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid #333;
-            margin-top: 30px;
-            display: none;
-        }
-
-        .result-section.show {
-            display: block;
-            animation: slideUp 0.5s ease;
-        }
-
-        .booking-link {
-            background: #2a2a2a;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #444;
-            margin: 20px 0;
-            word-break: break-all;
-        }
-
-        .booking-link h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .booking-link p {
-            color: #ccc;
-            margin-bottom: 15px;
-        }
-
-        .link-display {
-            background: #000;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            font-family: monospace;
-            color: #667eea;
-            word-break: break-all;
-        }
-
-        .whatsapp-section {
-            background: #25D366;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
-        .whatsapp-section h3 {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .whatsapp-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .btn-whatsapp {
-            background: #25D366;
-            color: white;
-            border: 2px solid #25D366;
-            padding: 12px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
         }
-
-        .btn-whatsapp:hover {
-            background: transparent;
-            color: #25D366;
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
-
-        .btn-copy {
-            background: #333;
-            color: white;
-            border: 2px solid #333;
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
-
-        .btn-copy:hover {
-            background: transparent;
-            color: #333;
-        }
-
-        .booking-details {
-            background: #2a2a2a;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
-        .booking-details h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-
-        .detail-row {
+        
+        .dropdown-item {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding: 8px 0;
-            border-bottom: 1px solid #333;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        .detail-row:last-child {
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dropdown-item:last-child {
             border-bottom: none;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            color: #ccc;
-        }
-
-        .detail-value {
-            color: #fff;
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-pending {
-            background: #ffa500;
-            color: #000;
-        }
-
-        .status-confirmed {
-            background: #25D366;
-            color: white;
-        }
-
-        .status-cancelled {
-            background: #ff4444;
-            color: white;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .spinner {
-            border: 3px solid #333;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .error {
-            background: #ff4444;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            display: none;
-        }
-
-        .success {
-            background: #25D366;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .whatsapp-buttons {
-                flex-direction: column;
-            }
-            
-            .container {
-                padding: 10px;
-            }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-link"></i> Booking Link Manager</h1>
-            <p>Generate WhatsApp booking links for your customers</p>
-        </div>
-
-        <div class="booking-form">
-            <h2><i class="fas fa-calendar-plus"></i> Create Booking Link</h2>
-            
-            <form id="bookingForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="customerName">Customer Name</label>
-                        <input type="text" id="customerName" name="customerName" placeholder="Enter customer name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="customerPhone">Customer Phone</label>
-                        <input type="tel" id="customerPhone" name="customerPhone" pattern="(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}" placeholder="+44 7123 456789 or 07123 456789" required>
-                    </div>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="service">Service</label>
-                        <select id="service" name="service" required>
-                            <option value="">Select a service</option>
-                            <option value="haircut">Haircut & Style</option>
-                            <option value="color">Hair Coloring</option>
-                            <option value="braids">Protective Style</option>
-                        </select>
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
                     </div>
-                    <div class="form-group">
-                        <label for="date">Date</label>
-                        <input type="date" id="date" name="date" required>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
                     </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="time">Time</label>
-                        <select id="time" name="time" required>
-                            <option value="">Select time</option>
-                            <option value="09:00">9:00 AM</option>
-                            <option value="10:00">10:00 AM</option>
-                            <option value="11:00">11:00 AM</option>
-                            <option value="12:00">12:00 PM</option>
-                            <option value="13:00">1:00 PM</option>
-                            <option value="14:00">2:00 PM</option>
-                            <option value="15:00">3:00 PM</option>
-                            <option value="16:00">4:00 PM</option>
-                            <option value="17:00">5:00 PM</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="specialRequests">Special Requests (Optional)</label>
-                        <textarea id="specialRequests" name="specialRequests" rows="3" placeholder="Any special requests or notes..."></textarea>
-                    </div>
-                </div>
-
-                <div class="checkbox-group">
-                    <input type="checkbox" id="sendWhatsApp" name="sendWhatsApp">
-                    <label for="sendWhatsApp">Send WhatsApp message automatically</label>
-                </div>
-
-                <div class="loading" id="loading">
-                    <div class="spinner"></div>
-                    <p>Generating booking link...</p>
-                </div>
-
-                <div class="error" id="error"></div>
-                <div class="success" id="success"></div>
-
-                <button type="submit" class="btn">
-                    <i class="fas fa-magic"></i> Generate Booking Link
-                </button>
-            </form>
-        </div>
-
-        <div class="result-section" id="resultSection">
-            <h2><i class="fas fa-check-circle"></i> Booking Link Generated</h2>
-            
-            <div class="booking-details" id="bookingDetails">
-                <!-- Booking details will be populated here -->
-            </div>
-
-            <div class="booking-link">
-                <h3><i class="fas fa-link"></i> Booking Link</h3>
-                <p>Share this link with your customer to confirm their appointment:</p>
-                <div class="link-display" id="bookingLinkDisplay"></div>
-                <div style="margin-top: 15px;">
-                    <button class="btn btn-copy" onclick="copyBookingLink()">
-                        <i class="fas fa-copy"></i> Copy Link
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     </button>
                 </div>
             </div>
-
-            <div class="whatsapp-section">
-                <h3><i class="fab fa-whatsapp"></i> WhatsApp Options</h3>
-                <p>Choose how to send the booking link to your customer:</p>
-                
-                <div class="whatsapp-buttons">
-                    <a href="#" id="whatsappLink" class="btn-whatsapp" target="_blank">
-                        <i class="fab fa-whatsapp"></i> Open WhatsApp
-                    </a>
-                    <button class="btn-whatsapp btn-copy" onclick="copyWhatsAppMessage()">
-                        <i class="fas fa-copy"></i> Copy Message
-                    </button>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div><div><h1><i></i> Booking Link Manager</h1><p>Generate WhatsApp booking links for your customers</p></div><div><h2><i></i> Create Booking Link</h2><form><div><div><label for="customerName">Customer Name</label><input type="text" name="customerName" placeholder="Enter customer name" required></div><div><label for="customerPhone">Customer Phone</label><input type="tel" name="customerPhone" pattern="(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}" placeholder="+44 7123 456789 or 07123 456789" required></div></div><div><div><label for="service">Service</label><select name="service" required><option value="">Select a service</option><option value="haircut">Haircut & Style</option><option value="color">Hair Coloring</option><option value="braids">Protective Style</option></select></div><div><label for="date">Date</label><input type="date" name="date" required></div></div><div><div><label for="time">Time</label><select name="time" required><option value="">Select time</option><option value="09:00">9:00 AM</option><option value="10:00">10:00 AM</option><option value="11:00">11:00 AM</option><option value="12:00">12:00 PM</option><option value="13:00">1:00 PM</option><option value="14:00">2:00 PM</option><option value="15:00">3:00 PM</option><option value="16:00">4:00 PM</option><option value="17:00">5:00 PM</option></select></div><div><label for="specialRequests">Special Requests (Optional)</label><textarea name="specialRequests" rows="3" placeholder="Any special requests or notes..."></textarea></div></div><div><input type="checkbox" name="sendWhatsApp"><label for="sendWhatsApp">Send WhatsApp message automatically</label></div><div><div></div><p>Generating booking link...</p></div><div></div><div></div><button type="submit"><i></i> Generate Booking Link </button></form></div><div><h2><i></i> Booking Link Generated</h2><div><!-- Booking details will be populated here --></div><div><h3><i></i> Booking Link</h3><p>Share this link with your customer to confirm their appointment:</p><div></div><div><button onclick="copyBookingLink()"><i></i> Copy Link </button></div></div><div><h3><i></i> WhatsApp Options</h3><p>Choose how to send the booking link to your customer:</p><div><a href="#" target="_blank"><i></i> Open WhatsApp </a><button onclick="copyWhatsAppMessage()"><i></i> Copy Message </button></div></div></div></div><script> const API_BASE_URL = 'http://localhost:3001/api'; let currentBookingData = null; // Set minimum date to today document.getElementById('date').min = new Date().toISOString().split('T')[0]; document.getElementById('bookingForm').addEventListener('submit', async (e) => { e.preventDefault(); // Validate UK phone number format const phone = document.getElementById('customerPhone').value; const ukPhoneRegex = /^(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}$/; if (!ukPhoneRegex.test(phone)) { alert('Please enter a valid UK phone number (e.g., +44 7123 456789 or 07123 456789)'); document.getElementById('customerPhone').focus(); return; } const formData = new FormData(e.target); const data = Object.fromEntries(formData.entries()); // Show loading document.getElementById('loading').style.display = 'block'; document.getElementById('error').style.display = 'none'; document.getElementById('success').style.display = 'none'; document.getElementById('resultSection').classList.remove('show'); try { // Format the date and time const slotDateTime = `${data.date}T${data.time}:00`; const response = await fetch(`${API_BASE_URL}/generate-booking-link`, { method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ businessId: '123', // This would come from the logged-in business serviceId: data.service, slotDateTime: slotDateTime, customerPhone: data.customerPhone, customerName: data.customerName, sendWhatsApp: data.sendWhatsApp === 'on' }) }); const result = await response.json(); if (result.success) { currentBookingData = result.bookingData; displayBookingResult(result); showSuccess('Booking link generated successfully!'); } else { showError(result.error || 'Failed to generate booking link'); } } catch (error) { console.error('Error:', error); showError('Failed to connect to server. Please try again.'); } finally { document.getElementById('loading').style.display = 'none'; } }); function displayBookingResult(result) { // Display booking details const bookingDetails = document.getElementById('bookingDetails'); bookingDetails.innerHTML = ` <h3><i></i> Booking Details</h3><div><span>Customer:</span><span>${result.bookingData.customerName}</span></div><div><span>Phone:</span><span>${result.bookingData.customerPhone}</span></div><div><span>Service:</span><span>${result.bookingData.serviceName}</span></div><div><span>Date & Time:</span><span>${new Date(result.bookingData.slotDateTime).toLocaleString()}</span></div><div><span>Status:</span><span><span>Pending Confirmation</span></span></div> `; // Display booking link document.getElementById('bookingLinkDisplay').textContent = result.bookingLink; // Set up WhatsApp link document.getElementById('whatsappLink').href = result.whatsappLink; // Show result section document.getElementById('resultSection').classList.add('show'); } function copyBookingLink() { const link = document.getElementById('bookingLinkDisplay').textContent; navigator.clipboard.writeText(link).then(() => { showSuccess('Booking link copied to clipboard!'); }); } function copyWhatsAppMessage() { if (currentBookingData) { const message = `Hi! 👋 Royal Hair Studio has reserved a booking for you: 📅 *Service:* ${currentBookingData.serviceName} 🕐 *Date & Time:* ${new Date(currentBookingData.slotDateTime).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })} Click the link below to confirm your appointment: ${document.getElementById('bookingLinkDisplay').textContent} This link is valid for 24 hours. Please confirm to secure your slot! ✨`; navigator.clipboard.writeText(message).then(() => { showSuccess('WhatsApp message copied to clipboard!'); }); } } function showError(message) { const errorDiv = document.getElementById('error'); errorDiv.textContent = message; errorDiv.style.display = 'block'; setTimeout(() => { errorDiv.style.display = 'none'; }, 5000); } function showSuccess(message) { const successDiv = document.getElementById('success'); successDiv.textContent = message; successDiv.style.display = 'block'; setTimeout(() => { successDiv.style.display = 'none'; }, 3000); } </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
+                </ul>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-    </div>
-
-    <script>
-        const API_BASE_URL = 'http://localhost:3001/api';
-        let currentBookingData = null;
-
-        // Set minimum date to today
-        document.getElementById('date').min = new Date().toISOString().split('T')[0];
-
-        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Validate UK phone number format
-            const phone = document.getElementById('customerPhone').value;
-            const ukPhoneRegex = /^(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}$/;
-            if (!ukPhoneRegex.test(phone)) {
-                alert('Please enter a valid UK phone number (e.g., +44 7123 456789 or 07123 456789)');
-                document.getElementById('customerPhone').focus();
-                return;
-            }
-            
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData.entries());
-            
-            // Show loading
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('error').style.display = 'none';
-            document.getElementById('success').style.display = 'none';
-            document.getElementById('resultSection').classList.remove('show');
-            
-            try {
-                // Format the date and time
-                const slotDateTime = `${data.date}T${data.time}:00`;
-                
-                const response = await fetch(`${API_BASE_URL}/generate-booking-link`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        businessId: '123', // This would come from the logged-in business
-                        serviceId: data.service,
-                        slotDateTime: slotDateTime,
-                        customerPhone: data.customerPhone,
-                        customerName: data.customerName,
-                        sendWhatsApp: data.sendWhatsApp === 'on'
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    currentBookingData = result.bookingData;
-                    displayBookingResult(result);
-                    showSuccess('Booking link generated successfully!');
-                } else {
-                    showError(result.error || 'Failed to generate booking link');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showError('Failed to connect to server. Please try again.');
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-            }
-        });
-
-        function displayBookingResult(result) {
-            // Display booking details
-            const bookingDetails = document.getElementById('bookingDetails');
-            bookingDetails.innerHTML = `
-                <h3><i class="fas fa-info-circle"></i> Booking Details</h3>
-                <div class="detail-row">
-                    <span class="detail-label">Customer:</span>
-                    <span class="detail-value">${result.bookingData.customerName}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Phone:</span>
-                    <span class="detail-value">${result.bookingData.customerPhone}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Service:</span>
-                    <span class="detail-value">${result.bookingData.serviceName}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Date & Time:</span>
-                    <span class="detail-value">${new Date(result.bookingData.slotDateTime).toLocaleString()}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Status:</span>
-                    <span class="detail-value">
-                        <span class="status-badge status-pending">Pending Confirmation</span>
-                    </span>
-                </div>
-            `;
-
-            // Display booking link
-            document.getElementById('bookingLinkDisplay').textContent = result.bookingLink;
-            
-            // Set up WhatsApp link
-            document.getElementById('whatsappLink').href = result.whatsappLink;
-            
-            // Show result section
-            document.getElementById('resultSection').classList.add('show');
-        }
-
-        function copyBookingLink() {
-            const link = document.getElementById('bookingLinkDisplay').textContent;
-            navigator.clipboard.writeText(link).then(() => {
-                showSuccess('Booking link copied to clipboard!');
-            });
-        }
-
-        function copyWhatsAppMessage() {
-            if (currentBookingData) {
-                const message = `Hi! 👋 
-
-Royal Hair Studio has reserved a booking for you:
-
-📅 *Service:* ${currentBookingData.serviceName}
-🕐 *Date & Time:* ${new Date(currentBookingData.slotDateTime).toLocaleString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                })}
-
-Click the link below to confirm your appointment:
-${document.getElementById('bookingLinkDisplay').textContent}
-
-This link is valid for 24 hours. Please confirm to secure your slot! ✨`;
-                
-                navigator.clipboard.writeText(message).then(() => {
-                    showSuccess('WhatsApp message copied to clipboard!');
-                });
-            }
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
-        }
-
-        function showSuccess(message) {
-            const successDiv = document.getElementById('success');
-            successDiv.textContent = message;
-            successDiv.style.display = 'block';
-            setTimeout(() => {
-                successDiv.style.display = 'none';
-            }, 3000);
-        }
-    </script>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
-

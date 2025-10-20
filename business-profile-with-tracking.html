@@ -1,418 +1,1132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Royal Hair Studio - BlkPages (With Analytics)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Royal Hair Studio | BlkPages</title>
+  <!-- Switched font link to Poppins to match the new CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+    /* ⚠️ DO NOT CHANGE ANYTHING UNLESS SPECIFICALLY INSTRUCTED */
+    
+    :root {
+      /* ================================================
+         ⚠️ DO NOT CHANGE ANYTHING UNLESS TOLD
+         🖤 BLKPAGES GLOBAL COLOUR SYSTEM
+         ================================================ */
+
+      /* 🎨 CORE BACKGROUND SHADES */
+      --color-bg: #0A0A0A;              /* Primary deep black background */
+      --color-bg-secondary: #111111;    /* Slightly lighter black for panels, footers, gradients */
+
+      /* 💛 GOLD ACCENTS */
+      --color-gold: #D4AF37;            /* Core gold (used for logo text, highlights) */
+      --color-gold-light: #FFD35C;      /* Bright gold for buttons, hover glows */
+      --color-gold-dark: #C68B1E;       /* Deep gold for gradient depth and shadows */
+
+      /* ✨ TEXT COLOURS */
+      --color-text: #F8F5E9;            /* Main body text (off-white, warm tone) */
+      --color-text-secondary: #B8B6A9;  /* Muted secondary text and nav links */
+
+      /* 🧱 BORDERS & EDGES */
+      --color-border: #9C7C2E;          /* Subtle gold-tinted border for cards and inputs */
+
+      /* 🌙 SHADOWS & GLOWS */
+      --color-shadow: rgba(212, 175, 55, 0.35);  /* Soft golden shadow/glow */
+
+      /* 🌈 GRADIENTS */
+      --gradient-gold: linear-gradient(90deg, #FFD35C, #C68B1E);  /* Main CTA gradient */
+      --gradient-gold-hover: linear-gradient(90deg, #FFB700, #FFD700);  /* Hover glow effect */
+      --gradient-bg: radial-gradient(circle at center, rgba(255,215,80,0.35) 0%, rgba(255,191,0,0.15) 35%, #0A0A0A 80%);
+
+      /* ⚡ TRANSPARENT STATES */
+      --color-bg-blur: rgba(10, 10, 10, 0.95);  /* Navbar and overlay background */
+      --color-border-light: rgba(212, 175, 55, 0.15); /* Divider and top border highlights */
+
+      /* 🩶 NEUTRAL GRAYS (UTILITY) */
+      --gray-400: #9CA3AF;              /* For muted descriptions */
+      --gray-500: #6B7280;
+      --gray-600: #4B5563;
+      --gray-700: #374151;
+
+      /* 🖋️ HOVER + ACTIVE STATES */
+      --hover-glow: 0 0 35px rgba(255, 215, 0, 0.5); /* For button and icon hover */
+      --hover-border: #FFD35C;          /* Active gold border on hover */
+
+      /* ✴️ BUTTON PRESETS */
+      --btn-gold: linear-gradient(90deg, var(--color-gold-light), var(--color-gold-dark));
+      --btn-gold-hover: linear-gradient(90deg, #FFB700, #FFD700);
+      --btn-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      
+      /* Retained Variables */
+      --radius: 10px;
+      --font-main: 'Poppins', sans-serif;
+    }
+
+    /* 🧩 FIX: Stop horizontal movement / overflow */
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #0a0a0a 100%);
-            color: #ffffff;
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .header h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #1E90FF, #00BFFF);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-        
-        .header p {
-            color: #9CA3AF;
-            font-size: 1.2rem;
-        }
-        
-        .business-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(30, 144, 255, 0.2);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+      font-family: var(--font-main);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    
+    header.blk-header {
+      background-color: var(--color-bg);
+      color: var(--color-gold);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 1.5rem;
+      /* Using the new color-border */
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    
+    .menu-icon {
+      font-size: 1.8rem;
+      color: var(--color-gold);
+    }
+    
+    /* Desktop Navigation Links */
+    .menu a {
+      margin-left: 25px;
+      font-weight: 600;
+      color: var(--color-text);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .menu a:hover {
+      color: var(--color-gold);
+    }
+
+    .business-profile {
+      text-align: center;
+      /* REVERTED: Restoring top padding */
+      padding: 2rem 1rem; 
+      max-width: 1200px;
+      margin: auto;
+      position: relative;
+    }
+    
+    /* Cool animated background */
+    .business-profile::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 211, 92, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(198, 139, 30, 0.05) 0%, transparent 50%);
+      z-index: -1;
+      animation: backgroundFloat 20s ease-in-out infinite;
+    }
+    
+    @keyframes backgroundFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(1deg); }
+    }
+    
+    /* Floating particles animation */
+    .business-profile::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, rgba(212, 175, 55, 0.3), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255, 211, 92, 0.2), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(198, 139, 30, 0.4), transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(212, 175, 55, 0.2), transparent),
+        radial-gradient(2px 2px at 160px 30px, rgba(255, 211, 92, 0.3), transparent);
+      background-repeat: repeat;
+      background-size: 200px 200px;
+      animation: particleFloat 20s linear infinite;
+      z-index: -1;
+      pointer-events: none;
+    }
+    
+    @keyframes particleFloat {
+      0% { transform: translateY(0px) translateX(0px); }
+      25% { transform: translateY(-100px) translateX(50px); }
+      50% { transform: translateY(-200px) translateX(0px); }
+      75% { transform: translateY(-100px) translateX(-50px); }
+      100% { transform: translateY(0px) translateX(0px); }
+    }
+    
+    /* ⚠️ DO NOT CHANGE ANYTHING UNLESS TOLD */
+    
+    /* Gold halo glow behind business name */
+    .business-name {
+      position: relative;
+      display: inline-block;
+      color: var(--color-gold); /* Corrected variable name to --color-gold */
+      font-size: 2.8rem; /* Kept original prominent size */
+      font-weight: 700; /* Added font-weight for impact */
+      text-align: center;
+      z-index: 1;
+      margin-bottom: 1rem;
+    }
+    
+    .business-name::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 220%;
+      height: 180%;
+      background: radial-gradient(
+        circle at center,
+        rgba(255, 204, 0, 0.25) 0%,     /* soft gold center */
+        rgba(255, 179, 0, 0.1) 40%,     /* warm fade */
+        rgba(10, 10, 10, 0) 75%         /* fade to black background */
+      );
+      z-index: -1;
+      border-radius: 50%;
+      filter: blur(12px);
+    }
+    
+    /* ⚠️ DO NOT CHANGE ANYTHING UNLESS TOLD */
+
+    /* --- ANIMATION KEYFRAMES --- */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ⭐ Business Rating Display (Updated) */
+    .business-rating {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.3rem;
+      margin-bottom: 1rem;
+      font-family: var(--font-main);
+      /* New animation properties */
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards 0.3s;
+    }
+
+    .business-rating .stars {
+      color: var(--color-gold); /* Corrected variable from --gold */
+      letter-spacing: 1px;
+      font-size: 1.1rem;
+    }
+
+    .business-rating .rating-value {
+      color: var(--color-text);
+      font-weight: 500;
+         font-size: 0.95rem;
+    }
+    
+    .business-rating .review-count {
+      color: var(--color-text-secondary);
+      font-size: 0.9rem;
+      /* Retaining the subtle divider for visual separation */
+      padding-left: 10px;
+      margin-left: 10px;
+      border-left: 1px solid var(--color-border-light); 
+    }
+
+    .banner {
+      background: url('https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80') center center / cover no-repeat;
+      height: 350px;
+      border-radius: 20px;
+      border: 3px solid var(--color-border);
+      box-shadow: 
+        0 20px 40px rgba(212, 175, 55, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transform: perspective(1000px) rotateX(2deg);
+      transition: all 0.3s ease;
+    }
+    
+    .banner:hover {
+      transform: perspective(1000px) rotateX(0deg) scale(1.02);
+      box-shadow: 
+        0 25px 50px rgba(212, 175, 55, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    
+    .banner::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.3) 0%,
+        rgba(212, 175, 55, 0.1) 50%,
+        rgba(0, 0, 0, 0.4) 100%
+      );
+      border-radius: 20px;
+    }
+    
+    .banner::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 70%
+      );
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+    
+    .banner p {
+        color: var(--color-text);
+        font-size: 1.4rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+        position: relative;
+        z-index: 2;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+    
+    .subtitle {
+      color: var(--color-text-secondary); /* Adjusted to use secondary text color */
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    
+    .cta-buttons::before {
+      content: "";
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--color-gold-light), var(--color-gold-dark));
+      border-radius: 2px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: translateX(-50%) scaleX(1); }
+      50% { opacity: 1; transform: translateX(-50%) scaleX(1.2); }
+    }
+    
+    /* Style anchors to look like buttons */
+    .cta-buttons a {
+        width: 100%;
+        max-width: 320px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary, .btn-secondary {
+      display: block; 
+         text-align: center;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: var(--btn-gold);
+      color: #000;
+      padding: 1rem 3rem;
+      border-radius: 15px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 
+        0 8px 25px rgba(212, 175, 55, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .btn-primary::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .btn-primary:hover {
+      background: var(--btn-gold-hover);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 
+        0 15px 35px rgba(212, 175, 55, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+    
+    .btn-primary:hover::before {
+      left: 100%;
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--color-gold);
+      border: 2px solid var(--color-gold);
+      padding: 1rem 3rem;
+      border-radius: 15px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .btn-secondary::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background: var(--color-gold);
+      transition: width 0.3s ease;
+      z-index: -1;
+    }
+    
+    .btn-secondary:hover {
+      color: #000;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+    }
+    
+    .btn-secondary:hover::before {
+      width: 100%;
+    }
+
+    /* --- GENERAL SECTIONS (About, Services) --- */
+    .section {
+      background: linear-gradient(135deg, var(--color-bg-secondary) 0%, rgba(17, 17, 17, 0.8) 100%);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(212, 175, 55, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      padding: 2.5rem;
+      margin: 2.5rem 0; 
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-gold-light), var(--color-gold-dark));
+      border-radius: 20px 20px 0 0;
+    }
+    
+    .section:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(212, 175, 55, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .section h2 {
+      color: var(--color-gold);
+      border-bottom: 2px solid var(--color-border);
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+    }
+    
+    .section h2::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 50px;
+      height: 2px;
+      background: var(--color-gold-light);
+      border-radius: 1px;
+    }
+
+    /* 🧾 Services Section Styling */
+    .services-box {
+      margin-top: 2rem;
+    }
+
+    .service-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .service-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      /* Refactored to use new light border variable */
+      border-bottom: 1px solid var(--color-border-light);
+      padding: 0.6rem 0;
+      font-size: 0.95rem;
+    }
+
+    .service-list li:last-child {
+        border-bottom: none;
+    }
+
+    .service-list li span:first-child {
+      color: var(--color-text);
+    }
+
+    .service-list li span:last-child {
+      color: var(--color-gold);
+      font-weight: 600;
             transition: all 0.3s ease;
         }
         
-        .business-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(30, 144, 255, 0.4);
-            box-shadow: 0 10px 30px rgba(30, 144, 255, 0.1);
-        }
-        
-        .business-info {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .business-image {
-            width: 100%;
-            height: 300px;
-            background: linear-gradient(135deg, #1E90FF, #00BFFF);
-            border-radius: 8px;
+    /* Optional: subtle golden glow when hovering */
+    .service-list li:hover span:last-child {
+      /* Updated to use a light gold variable for the glow */
+      text-shadow: 0 0 6px var(--color-gold-light);
+    }
+
+
+    /* --- INFO GRID (Contact, Hours, Payments) --- */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-top: 3rem;
+      margin-bottom: 3rem;
+    }
+    
+    .info-box {
+      background: linear-gradient(135deg, var(--color-bg-secondary) 0%, rgba(17, 17, 17, 0.9) 100%);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(212, 175, 55, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      padding: 2rem;
+      text-align: left;
+      min-height: 250px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .info-box::before {
+      content: "";
+            position: absolute;
+      top: 0;
+      left: 0;
+            right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--color-gold-light), var(--color-gold-dark));
+      border-radius: 20px 20px 0 0;
+    }
+    
+    .info-box:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(212, 175, 55, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    
+    .info-box h2 {
+      color: var(--color-gold);
+      margin-bottom: 1.2rem;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Ensure icon and text are aligned (applies to Contact/Hours using <p>) */
+    .info-box p {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 10px;
+    }
+
+    /* ⚠️ DO NOT CHANGE ANYTHING UNLESS TOLD */
+
+    /* 💳 Payment Options Layout Fix */
+    .payment-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .payment-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .payment-list li strong {
+      color: var(--color-gold);
+      margin-right: 0.3rem;
+      white-space: nowrap; /* keeps label intact */
+    }
+
+    /* MODIFIED: Target the new wrapper class for flexible text content */
+    .payment-list li .payment-text {
+      color: var(--color-text);
+      flex: 1; /* This makes the text content flexible */
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .icon.check {
+      margin-top: 0.2rem;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      border: 1.5px solid var(--color-gold);
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            color: white;
-        }
-        
-        .business-details h2 {
-            color: #1E90FF;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .business-details p {
-            color: #9CA3AF;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-        
-        .contact-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #1E90FF, #00BFFF);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(30, 144, 255, 0.3);
-        }
-        
-        .btn-secondary {
-            background: rgba(30, 144, 255, 0.1);
-            border: 1px solid #1E90FF;
-            color: #1E90FF;
-        }
-        
-        .btn-secondary:hover {
-            background: #1E90FF;
-            color: white;
-        }
-        
-        .analytics-info {
-            background: rgba(40, 167, 69, 0.1);
-            border: 1px solid rgba(40, 167, 69, 0.3);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .analytics-info i {
-            color: #28A745;
-            font-size: 1.2rem;
-        }
-        
-        .analytics-info span {
-            color: #28A745;
-            font-weight: 600;
-        }
-        
-        .time-tracker {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(30, 144, 255, 0.3);
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'Courier New', monospace;
+      justify-content: center;
+    }
+
+    .icon.check::before {
+      content: "";
+      width: 5px;
+      height: 9px;
+      border-right: 2px solid var(--color-gold);
+      border-bottom: 2px solid var(--color-gold);
+      transform: rotate(45deg);
+    }
+
+    /* Simple outline icons (General, keeping these for phone/email/address) */
+    .icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      vertical-align: middle;
+      border: 1.5px solid var(--color-gold);
+      border-radius: 3px;
+    }
+    
+    .icon.phone::before {
+      content: "";
+      display: block;
+      width: 8px;
+      height: 8px;
+      border-left: 1.5px solid var(--color-gold);
+      border-bottom: 1.5px solid var(--color-gold);
+      transform: rotate(-45deg);
+      position: relative;
+      top: 2px;
+      left: 3px;
+    }
+    
+    .icon.email::before {
+      content: "";
+      position: relative;
+      display: block;
+      width: 10px;
+      height: 6px;
+      border: 1.5px solid var(--color-gold);
+      border-top: none;
+      transform: translate(2px, 3px) rotate(0deg);
+    }
+    
+    .icon.address::before {
+      content: "";
+      display: block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-gold);
+      margin: 3px auto;
+    }
+    
+    /* ⚠️ DO NOT CHANGE ANYTHING UNLESS TOLD */
+
+    /* ✨ BlkPages Gold Divider Line */
+    .section-divider {
+      width: 90%;
+      height: 1px;
+      margin: 2rem auto; /* adds balanced spacing above and below */
+      background: linear-gradient(
+        90deg,
+        rgba(212, 175, 55, 0) 0%,     /* transparent start */
+        rgba(212, 175, 55, 0.6) 50%,  /* soft gold center */
+        rgba(212, 175, 55, 0) 100%    /* transparent end */
+      );
+      border: none;
+      opacity: 0.8;
+    }
+
+    /* ⚠️ DO NOT CHANGE ANYTHING UNLESS TOLD */
+
+    /* 🗣️ Reviews Section with Star Ratings */
+    .reviews-box {
+      text-align: center; /* Ensures h2 is centered */
+      position: relative;
+      margin-top: 2rem; /* Updated margin */
+      border-top: none; /* No top border needed */
+      padding-top: 1.5rem;
+    }
+
+    .reviews-container {
+      max-height: 420px; /* shows 2–3 reviews by default */
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+      text-align: left; /* Aligns content inside */
+    }
+
+    .reviews-container.expanded {
+      max-height: 1500px; /* expands to show all */
+    }
+
+    .review {
+      border-bottom: 1px solid rgba(255, 204, 0, 0.15);
+      padding: 1rem 0;
+      margin: 0; 
+    }
+    
+    .review:last-of-type {
+        border-bottom: none;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .review-stars {
+      color: var(--color-gold); /* Corrected variable name */
+      font-size: 1rem; /* Updated font size */
+      letter-spacing: 1px;
+    }
+
+    .review-text {
+      color: var(--color-text);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-top: 0.4rem; /* Updated margin */
+      font-style: normal; 
+    }
+
+    .review-author {
+      color: var(--color-text-secondary); /* Updated color */
+      font-size: 0.9rem; /* Updated font size */
+      font-weight: 600;
+      margin-left: auto; /* Updated margin for alignment */
+    }
+
+    /* View More Button */
+    .view-more-btn {
+      margin-top: 1.2rem; /* Updated margin */
+      display: block;
+      width: 100%;
+      text-align: center;
+      border: 1px solid var(--color-gold); /* Corrected variable name */
+      background: transparent;
+      color: var(--color-gold); /* Corrected variable name */
+      padding: 0.8rem 0;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      /* Keeping mobile centering/width constraints for usability */
+      max-width: 300px; 
+      margin: 1.2rem auto 0;
+    }
+
+    .view-more-btn:hover {
+      background: rgba(255, 204, 0, 0.1);
+    }
+
+
+    /* --- FOOTER --- */
+    .blk-footer {
+      text-align: center;
+      padding: 25px;
+      border-top: 1px solid var(--color-border);
+      color: var(--color-text);
             font-size: 0.9rem;
-            color: #1E90FF;
-            z-index: 1000;
-        }
-        
-        .services-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(30, 144, 255, 0.2);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .services-section h3 {
-            color: #1E90FF;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-        
-        .service-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .service-item:last-child {
+      background: var(--color-bg);
+      width: 100%;
+    }
+
+
+    /* --- RESPONSIVE LAYOUT --- */
+    @media (min-width: 768px) {
+      /* Now using a 2x2 grid structure for 4 info boxes on desktop, 
+         but the Reviews box is now separate. */
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .cta-buttons {
+          flex-direction: row;
+      }
+      .cta-buttons a {
+          width: auto;
+          max-width: none;
+      }
+      
+      .menu-icon {
+        display: none; /* Hide hamburger on desktop */
+      }
+      
+      /* Reset margins for the separate Reviews box on desktop */
+      .reviews-box {
+        margin-top: 2rem; /* Restore standard margin for a full section */
+      }
+    }
+    
+    @media (max-width: 767px) {
+      /* Mobile Navigation Overlay */
+      .menu a {
+        display: none; /* Hide desktop links */
+      }
+      .menu-icon {
+        display: block; /* Show hamburger */
+      }
+
+      .menu.active {
+        position: absolute;
+        top: 60px; 
+        right: 0;
+        left: 0;
+        background: var(--color-bg);
+        flex-direction: column;
+        width: 100%;
+        border-top: 1px solid var(--color-border);
+        padding: 10px 0;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      }
+
+      .menu.active a {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+        margin: 0;
+        border-bottom: 1px solid var(--color-border-light); /* Refactored */
+      }
+      .menu.active a:last-child {
             border-bottom: none;
         }
-        
-        .service-name {
-            font-weight: 600;
-            color: white;
-        }
-        
-        .service-price {
-            color: #1E90FF;
-            font-weight: 700;
-        }
-        
-        @media (max-width: 768px) {
-            .business-info {
-                grid-template-columns: 1fr;
-            }
-            
-            .contact-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                justify-content: center;
-            }
-        }
+    }
+
+    @media (max-width: 480px) {
+      /* REVERTED: Removing hero-section specific padding adjustments */
+      .business-name {
+          font-size: 2rem;
+      }
+      
+      .banner {
+        height: 250px;
+        transform: none;
+      }
+      
+      .banner:hover {
+        transform: scale(1.01);
+      }
+      
+      .section {
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+      }
+      
+      .info-box {
+        padding: 1.5rem;
+        min-height: 200px;
+      }
+      
+      .btn-primary, .btn-secondary {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+      }
+    }
+
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-cut"></i> Royal Hair Studio</h1>
-            <p>Professional hair salon specializing in natural hair care, styling, and treatments for all hair types.</p>
-        </div>
-        
-        <div class="analytics-info">
-            <i class="fas fa-chart-line"></i>
-            <span>Analytics tracking is active - your visit is being recorded for business insights</span>
-        </div>
-        
-        <div class="business-card">
-            <div class="business-info">
-                <div class="business-image">
-                    <i class="fas fa-cut"></i>
-                </div>
-                <div class="business-details">
-                    <h2>Royal Hair Studio</h2>
-                    <p><strong>Category:</strong> Hairdresser</p>
-                    <p><strong>Address:</strong> 123 Beauty Street, London, SW1A 1AA</p>
-                    <p><strong>Phone:</strong> +44-20-7123-4567</p>
-                    <p><strong>Email:</strong> info@royalhairstudio.com</p>
-                    <p><strong>Hours:</strong> Mon-Fri: 9AM-6PM, Sat: 9AM-4PM, Sun: Closed</p>
-                    <p>Professional hair salon specializing in natural hair care, styling, and treatments for all hair types. We offer a wide range of services from basic cuts to complex styling and treatments.</p>
-                    
-                    <div class="contact-buttons">
-                        <button class="btn" onclick="trackContactClick('call')">
-                            <i class="fas fa-phone"></i> Call Now
-                        </button>
-                        <button class="btn btn-secondary" onclick="trackContactClick('message')">
-                            <i class="fas fa-envelope"></i> Send Message
-                        </button>
-                        <button class="btn btn-secondary" onclick="trackEnquiry('booking')">
-                            <i class="fas fa-calendar"></i> Book Appointment
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="services-section">
-            <h3><i class="fas fa-scissors"></i> Our Services</h3>
-            <div class="service-item">
-                <span class="service-name">Hair Cut & Style</span>
-                <span class="service-price">£25</span>
-            </div>
-            <div class="service-item">
-                <span class="service-name">Hair Coloring</span>
-                <span class="service-price">£45</span>
-            </div>
-            <div class="service-item">
-                <span class="service-name">Hair Treatment</span>
-                <span class="service-price">£35</span>
-            </div>
-            <div class="service-item">
-                <span class="service-name">Hair Styling</span>
-                <span class="service-price">£30</span>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Time Tracker -->
-    <div class="time-tracker" id="timeTracker">
-        <div>Time on page: <span id="timeSpent">0:00</span></div>
-        <div>Views tracked: <span id="viewsCount">0</span></div>
-    </div>
 
-    <!-- Load Analytics Backend API -->
-    <script src="analytics-backend-api.js"></script>
+<body>
+  <!-- HEADER -->
+  <header class="blk-header">
+    <div class="logo">
+      <a href="index.html" style="color: inherit; text-decoration: none;">BlkPages</a>
+    </div>
+    <nav class="menu" id="mainNav">
+      <!-- Full Navigation Links (Hidden on mobile by CSS until toggled) -->
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+      <div class="menu-icon" id="menuToggle">&#9776;</div>
+                    </nav>
+  </header>
+
+  <main class="business-profile">
+    <!-- Business Name ABOVE Banner (REVERTED) -->
+    <h1 class="business-name">Royal Hair Studio</h1>
     
-    <script>
-        const businessId = 'royalHairStudio';
-        let startTime = Date.now();
-        let timeSpent = 0;
-        let isTracking = true;
-        
-        // Track profile view on page load
-        async function trackProfileView() {
-            try {
-                const result = await window.analyticsBackendAPI.recordProfileView(
-                    businessId,
-                    new Date(),
-                    0 // Initial view, time will be updated on unload
-                );
-                
-                if (result.success) {
-                    console.log('Profile view tracked successfully');
-                    updateViewsCount();
-                } else {
-                    console.error('Failed to track profile view:', result.error);
-                }
-            } catch (error) {
-                console.error('Error tracking profile view:', error);
-            }
-        }
-        
-        // Track contact clicks
-        async function trackContactClick(action) {
-            try {
-                console.log(`Contact click tracked: ${action}`);
-                // You can add additional tracking here if needed
-                alert(`Contact action: ${action} - This would normally open the contact method`);
-            } catch (error) {
-                console.error('Error tracking contact click:', error);
-            }
-        }
-        
-        // Track enquiries/bookings
-        async function trackEnquiry(type) {
-            try {
-                const result = await window.analyticsBackendAPI.recordProfileView(
-                    businessId,
-                    new Date(),
-                    timeSpent
-                );
-                
-                if (result.success) {
-                    console.log(`Enquiry tracked: ${type}`);
-                    alert(`Booking enquiry: ${type} - This would normally open the booking form`);
-                } else {
-                    console.error('Failed to track enquiry:', result.error);
-                }
-            } catch (error) {
-                console.error('Error tracking enquiry:', error);
-            }
-        }
-        
-        // Update time spent display
-        function updateTimeDisplay() {
-            const currentTime = Math.floor((Date.now() - startTime) / 1000);
-            timeSpent = currentTime;
-            
-            const minutes = Math.floor(currentTime / 60);
-            const seconds = currentTime % 60;
-            document.getElementById('timeSpent').textContent = 
-                `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-        
-        // Update views count
-        async function updateViewsCount() {
-            try {
-                const result = await window.analyticsBackendAPI.getProfileStats(businessId);
-                if (result.success) {
-                    document.getElementById('viewsCount').textContent = result.data.totalViews || 0;
-                }
-            } catch (error) {
-                console.error('Error updating views count:', error);
-            }
-        }
-        
-        // Handle page unload - record final time spent
-        function handlePageUnload() {
-            if (isTracking) {
-                const finalTimeSpent = Math.floor((Date.now() - startTime) / 1000);
-                
-                // Record the final view with actual time spent
-                window.analyticsBackendAPI.recordProfileView(
-                    businessId,
-                    new Date(),
-                    finalTimeSpent
-                ).then(result => {
-                    if (result.success) {
-                        console.log(`Final time spent recorded: ${finalTimeSpent}s`);
-                    }
-                }).catch(error => {
-                    console.error('Error recording final time:', error);
-                });
-            }
-        }
-        
-        // Initialize tracking
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Business profile page loaded - starting analytics tracking');
-            
-            // Track initial view
-            trackProfileView();
-            
-            // Update time display every second
-            setInterval(updateTimeDisplay, 1000);
-            
-            // Update views count every 10 seconds
-            setInterval(updateViewsCount, 10000);
+    <!-- ⚠️ DO NOT CHANGE ANYTHING UNLESS TOLD -->
+    <div class="business-rating">
+      <div class="stars">
+        ★★★★★
+                </div>
+      <span class="rating-value">4.8 / 5</span>
+      <span class="review-count">(24 Reviews)</span>
+                    </div>
+                    
+    <div class="banner">
+      <!-- Image is set via CSS background-image -->
+      <p>Royal Hair Studio Banner</p>
+                    </div>
+                    
+    <section class="info">
+      <p class="subtitle">Professional hair care services for all hair types</p>
+      <div class="cta-buttons">
+        <a href="#" class="btn-primary">Book Now</a>
+        <a href="tel:+442071234567" class="btn-secondary">Call</a>
+        <a href="mailto:info@royalhairstudio.com" class="btn-secondary">Email</a>
+                        </div>
+    </section>
+    
+    <!-- ABOUT SECTION -->
+    <section class="section" id="about">
+      <h2>About Royal Hair Studio</h2>
+      <p>Welcome to Royal Hair Studio, where we specialize in professional hair care services for all hair types. Our experienced stylists are dedicated to providing exceptional service in a luxurious and comfortable environment.</p>
+      <p>We offer a full range of services including cuts, coloring, styling, and treatments. Our team stays up-to-date with the latest trends and techniques to ensure you leave looking and feeling your best.</p>
+    </section>
+
+    <!-- SERVICES SECTION (With Prices) -->
+    <section class="section services-box" id="services">
+      <h2>Services & Prices</h2>
+      <ul class="service-list">
+        <li><span>Wash & Blow Dry</span><span>£25</span></li>
+        <li><span>Cut & Style</span><span>£40</span></li>
+        <li><span>Braids</span><span>£55</span></li>
+        <li><span>Weave Installation</span><span>£70</span></li>
+        <li><span>Colour Treatment</span><span>£60</span></li>
+      </ul>
+    </section>
+
+    <!-- CONTACT & HOURS SECTION (Now a 2-column grid on desktop) -->
+    <section class="info-grid">
+      
+      <div class="info-box" id="contact">
+        <h2>Contact Info</h2>
+        <!-- Icons now use CSS pseudo-elements -->
+        <p><span class="icon phone"></span><strong>Phone:</strong> +44 20 7123 4567</p>
+        <p><span class="icon email"></span><strong>Email:</strong> info@royalhairstudio.com</p>
+        <p><span class="icon address"></span><strong>Address:</strong> 123 Hair Street, London, SW1A 1AA</p>
+                    </div>
+                    
+      <div class="info-box" id="hours">
+        <h2>Opening Hours</h2>
+        <p><strong>Monday – Friday:</strong> 9:00 AM – 7:00 PM</p>
+        <p><strong>Saturday:</strong> 9:00 AM – 6:00 PM</p>
+        <p><strong>Sunday:</strong> 10:00 AM – 4:00 PM</p>
+                </div>
+    </section>
+    
+    <!-- ⚠️ DO NOT CHANGE ANYTHING UNLESS TOLD -->
+    <!-- PAYMENT OPTIONS SECTION (New standalone section) -->
+    <section class="info-box payment-box">
+      <h2>Payment Options</h2>
+      <ul class="payment-list">
+        <li>
+          <span class="icon check"></span>
+          <div class="payment-text">
+            <strong>Deposit Required:</strong> A partial payment is needed to confirm your booking.
+          </div>
+        </li>
+        <li>
+          <span class="icon check"></span>
+          <div class="payment-text">
+            <strong>Full Payment:</strong> Option to pay the total cost upfront when you book.
+                </div>
+        </li>
+        <li>
+          <span class="icon check"></span>
+          <div class="payment-text">
+            <strong>Pay at Venue:</strong> The final balance can be settled after your service is completed.
+            </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ✨ Gold Divider -->
+    <div class="section-divider"></div>
+
+    <!-- Customer Reviews -->
+    <section class="info-box reviews-box">
+      <h2>Customer Reviews</h2>
+
+      <div class="reviews-container" id="reviewsContainer">
+
+        <div class="review">
+          <div class="review-header">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-author">— Jade A.</p>
+            </div>
+          <p class="review-text">Amazing service and atmosphere. My hair has never looked better!</p>
+        </div>
+
+        <div class="review">
+          <div class="review-header">
+            <div class="review-stars">★★★★☆</div>
+            <p class="review-author">— Simone B.</p>
+          </div>
+          <p class="review-text">Professional, friendly, and always on time. Highly recommend Royal Hair Studio.</p>
+        </div>
+
+        <div class="review">
+          <div class="review-header">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-author">— Daniel K.</p>
+            </div>
+          <p class="review-text">Love the attention to detail and great advice on hair care!</p>
+        </div>
+
+        <div class="review">
+          <div class="review-header">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-author">— Rochelle T.</p>
+          </div>
+          <p class="review-text">Beautiful salon, excellent stylists, and great results every time.</p>
+        </div>
+
+      </div>
+
+      <button class="btn-secondary view-more-btn" id="toggleReviews">View All Reviews</button>
+    </section>
+    
+    <!-- ⚠️ DO NOT CHANGE ANYTHING UNLESS TOLD -->
+    <div class="section-divider"></div>
+
+  </main>
+  
+  <!-- FOOTER -->
+  <footer class="blk-footer">
+    © 2025 BlkPages. All rights reserved.
+    </footer>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuToggle = document.getElementById('menuToggle');
+      const mainNav = document.getElementById('mainNav');
+      /* ⚠️ DO NOT CHANGE ANYTHING UNLESS TOLD */
+      // Variables have been updated to match the user's requested snippet names
+      const toggleBtn = document.getElementById('toggleReviews');
+      const reviewsContainer = document.getElementById('reviewsContainer');
+      let expanded = false;
+
+      // --- Mobile Menu Toggle ---
+      if(menuToggle && mainNav) {
+        menuToggle.addEventListener('click', () => {
+          mainNav.classList.toggle('active');
         });
         
-        // Set up page unload tracking
-        window.addEventListener('beforeunload', handlePageUnload);
-        window.addEventListener('pagehide', handlePageUnload);
-        
-        // Handle visibility change (tab switching)
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                // Page is hidden, pause tracking
-                isTracking = false;
-            } else {
-                // Page is visible again, resume tracking
-                isTracking = true;
-                startTime = Date.now(); // Reset start time
-            }
+        // Close menu if a link is clicked
+        mainNav.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            // Add a small delay for smooth animation before closing
+            setTimeout(() => {
+              mainNav.classList.remove('active');
+            }, 300);
+          });
         });
-    </script>
+      }
+      
+      /* 🗣️ Review Toggle Logic (Updated per user request) */
+      if (toggleBtn && reviewsContainer) {
+        toggleBtn.addEventListener('click', () => {
+          expanded = !expanded;
+          
+          // Toggle the expanded class on the container (simpler call)
+          reviewsContainer.classList.toggle('expanded');
+
+          // Update text to 'Show Less' as requested
+          toggleBtn.textContent = expanded ? 'Show Less' : 'View All Reviews';
+          
+          // Removed: toggleBtn.classList.toggle('active', isExpanded);
+        });
+      }
+    });
+  </script>
+
 </body>
 </html>

@@ -1,1114 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Business Dashboard - BlkPages</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="frontend/src/components/BusinessDashboardFree.css">
-    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
         }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: linear-gradient(135deg, #121212 0%, #1A1A1A 50%, #0F0F0F 100%);
-            min-height: 100vh;
-            color: #ffffff; 
-        }
-        
-        .container { 
-            max-width: 1400px; 
-            margin: 0 auto; 
-            padding: 0 20px; 
-        }
-        
-        /* Navigation */
-        .navbar { 
-            background: rgba(0, 0, 0, 0.95); 
-            backdrop-filter: blur(10px);
-            position: fixed; 
-            top: 0; 
-            width: 100%; 
-            z-index: 1000; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .nav-wrapper { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 1rem 0;
-        }
-        
-        .logo { 
-            font-size: 1.8rem; 
-            font-weight: 700; 
-            color: #ffffff; 
-            text-decoration: none; 
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
         
-        .nav-links { 
-            display: flex; 
-            list-style: none; 
-            gap: 2rem; 
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .nav-links a { 
-            text-decoration: none; 
-            color: #ffffff; 
-            font-weight: 500; 
-            transition: color 0.3s; 
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .nav-links a:hover {
-            color: #FF3CAC;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        .user-menu { 
-            display: flex; 
-            align-items: center; 
-            gap: 1rem; 
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .user-info { 
-            color: #cccccc; 
-            font-size: 0.9rem; 
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
         }
-        
-        .logout-btn { 
-            background: #ff4757; 
-            color: white; 
-            border: none; 
-            padding: 0.5rem 1rem; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-weight: 500; 
-            transition: background 0.3s; 
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
         }
-        
-        .logout-btn:hover { 
-            background: #ff3742; 
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
         }
-        
-        /* Dashboard Layout */
-        .dashboard-container { 
-            display: flex; 
-            min-height: 100vh; 
-            padding-top: 80px; 
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
         }
-        
-        .main-content { 
-            padding: 120px 0 80px; 
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
         }
-        
-        .dashboard-header { 
-            margin-bottom: 3rem; 
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
         }
-        
-        .dashboard-title { 
-            font-size: 2.5rem; 
-            font-weight: 700; 
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem; 
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
         }
-        
-        .dashboard-subtitle { 
-            color: #cccccc; 
-            font-size: 1.1rem; 
-        }
-        
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            background: #1A1A1A;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2rem 0;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-        }
-        
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .sidebar-menu li {
-            margin: 0;
-        }
-        
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            padding: 1rem 2rem;
-            color: #ffffff; 
-            text-decoration: none;
+
+        /* Navigation Styles */
+        .nav-link {
             transition: all 0.3s ease;
-            border-left: 3px solid transparent;
         }
         
-        .sidebar-menu a:hover,
-        .sidebar-menu a.active {
-            background: rgba(255, 255, 255, 0.1);
-            border-left-color: #007bff;
+        .nav-link:hover {
+            color: #D4AF37 !important;
         }
         
-        .sidebar-menu a i {
-            margin-right: 0.75rem;
-            width: 20px;
-        }
-        
-        .sidebar-menu .badge {
-            background: #ff6b6b;
-            color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            margin-left: auto;
-        }
-        
-        .main-content {
-            flex: 1;
-            margin-left: 250px;
-            padding: 2rem;
-        }
-        
-        .content-section {
+        /* Customer Menu Styles */
+        .customer-dropdown {
             display: none;
-        }
-        
-        .content-section.active {
-            display: block;
-        }
-        
-        /* Cards and Sections */
-        .dashboard-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 2rem; 
-            margin-bottom: 3rem; 
-        }
-        
-        .card { 
-            background: rgba(255, 255, 255, 0.05); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            border-radius: 12px; 
-            padding: 2rem; 
-            backdrop-filter: blur(10px); 
-            transition: transform 0.3s, box-shadow 0.3s; 
-        }
-        
-        .card:hover { 
-            transform: translateY(-5px); 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); 
-        }
-        
-        .card-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 1.5rem; 
-        }
-        
-        .card-title { 
-            font-size: 1.2rem; 
-            font-weight: 600; 
-            color: #ffffff; 
-        }
-        
-        .card-icon { 
-            width: 40px; 
-            height: 40px; 
-            border-radius: 8px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 1.2rem; 
-        }
-        
-        .stats-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 1.5rem; 
-            margin-bottom: 2rem; 
-        }
-        
-        .stat-card { 
-            background: rgba(255, 255, 255, 0.05); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            border-radius: 12px; 
-            padding: 1.5rem; 
-            text-align: center; 
-            backdrop-filter: blur(10px); 
-        }
-        
-        .stat-number { 
-            font-size: 2.5rem; 
-            font-weight: 700; 
-            color: #FF3CAC; 
-            margin-bottom: 0.5rem; 
-        }
-        
-        .stat-label { 
-            color: #cccccc; 
-            font-size: 0.9rem; 
-        }
-        
-        /* Forms */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            color: #ffffff;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #FF3CAC;
-            box-shadow: 0 0 0 2px rgba(255, 60, 172, 0.2);
-        }
-        
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        
-        /* Buttons */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            color: #ffffff;
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #e6399f, #6a4190);
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: #ffffff;
-        }
-        
-        .btn-success:hover {
-            background: linear-gradient(135deg, #45a049, #3d8b40);
-        }
-        
-        /* Notifications */
-        .notification {
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-        
-        .notification.show {
-            display: block;
-        }
-        
-        .notification.success {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: #ffffff;
-        }
-        
-        .notification.error {
-            background: linear-gradient(135deg, #f44336, #d32f2f);
-            color: #ffffff;
-        }
-        
-        .notification.info {
-            background: linear-gradient(135deg, #2196F3, #1976D2);
-            color: #ffffff;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Loading */
-        .loading {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid #FF3CAC;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Info Cards */
-        .info-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            backdrop-filter: blur(10px);
-        }
-        
-        .info-card h3 {
-            color: #FF3CAC;
-            margin-bottom: 0.75rem;
-            font-size: 1.2rem;
-        }
-        
-        .info-card p {
-            color: #cccccc;
-            margin: 0;
-            line-height: 1.6;
-        }
-        
-        /* Upgrade Notice */
-        .upgrade-notice {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(10px);
-        }
-        
-        .upgrade-notice div {
-            flex: 1;
-        }
-        
-        .upgrade-notice i {
-            color: #FF3CAC;
-            margin-right: 0.75rem;
-            font-size: 1.2rem;
-        }
-        
-        .upgrade-notice strong {
-            color: #ffffff;
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-        
-        .upgrade-notice p {
-            color: #cccccc;
-            margin: 0;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-        
-        .upgrade-btn {
-            background: linear-gradient(135deg, #FF3CAC, #784BA0);
-            color: #ffffff;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-        
-        .upgrade-btn:hover {
-            background: linear-gradient(135deg, #e6399f, #6a4190);
-            transform: translateY(-2px);
-        }
-        
-        /* Toggle Switch */
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
             position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
+            top: 100%;
             right: 0;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.2);
-            transition: .4s;
-            border-radius: 34px;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        input:checked + .slider {
-            background-color: #FF3CAC;
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        
-        /* Package Badge */
-        .package-badge {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            margin-left: 1rem;
-            display: inline-block;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .sidebar {
-                width: 100%;
-                position: relative;
-                height: auto;
-                border-right: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            
-            .main-content {
-                margin-left: 0;
-                padding: 1rem;
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats-grid { 
-                grid-template-columns: repeat(2, 1fr); 
-            }
-            
-            .upgrade-notice {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-            }
-            
-            .upgrade-notice div {
-                margin-bottom: 0.5rem;
-            }
+        .dropdown-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <a href="index.html" class="logo">BlkPages</a>
-                <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="search.html">Search</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Navigation --><div><!-- Sidebar --><aside><ul><li><a href="#" onclick="showSection('dashboard')"><i></i> Dashboard </a></li><li><a href="#" onclick="showSection('profile')"><i></i> Business Profile </a></li><li><a href="#" onclick="showSection('settings')"><i></i> Settings </a></li><li><a href="#" onclick="showSection('plan')"><i></i> Manage Plan </a></li></ul></aside><!-- Main Content --><main><!-- Dashboard Section --><div><div><h1>Business Dashboard</h1><p>Manage your business listing and track your performance</p></div><!-- Dashboard Content Mount Point --><div></div></div><!-- Profile Section --><div><div><h1>Business Profile</h1><p>Manage your business information and visibility</p></div><!-- Dashboard Content Mount Point --><div></div></div><!-- Settings Section --><div><div><h1>Settings</h1><p>Configure your business preferences</p></div><!-- Dashboard Content Mount Point --><div></div></div><!-- Plan Section --><div><div><h1>Manage Plan</h1><p>View and upgrade your subscription plan</p></div><!-- Dashboard Content Mount Point --><div></div></div></main></div><!-- JavaScript Functions --><script> // Show section function function showSection(sectionId) { // Hide all sections document.querySelectorAll('.content-section').forEach(section => { section.classList.remove('active'); }); // Remove active class from all sidebar links document.querySelectorAll('.sidebar-menu a').forEach(link => { link.classList.remove('active'); }); // Show selected section const targetSection = document.getElementById(sectionId); if (targetSection) { targetSection.classList.add('active'); } // Add active class to clicked link event.target.classList.add('active'); // Update dashboard content with new section const event = new CustomEvent('navigateToSection', { detail: { section: sectionId } }); window.dispatchEvent(event); } // Logout function function logout() { if (confirm('Are you sure you want to logout?')) { // Clear any stored data localStorage.removeItem('businessLoggedIn'); localStorage.removeItem('businessEmail'); localStorage.removeItem('businessLoginTime'); // Redirect to home page window.location.href = 'index.html'; } } </script><!-- Free Dashboard JavaScript --><script> // Global variables const API_BASE_URL = 'http://localhost:5000'; const businessId = 'royal-hair-studio'; // Dashboard data let dashboardData = { businessProfile: null, basicSettings: null, planInfo: null }; // Initialize dashboard async function initFreeDashboard() { console.log('Initializing Free Dashboard...'); try { // Only fetch business profile data for the live Business Profile tab await fetchBusinessProfile(); console.log('Free Dashboard initialized successfully'); } catch (error) { console.error('Error initializing dashboard:', error); showNotification('Failed to load dashboard data', 'error'); } } // Fetch business profile async function fetchBusinessProfile() { try { const response = await fetch(`${API_BASE_URL}/api/businesses/${businessId}/profile`); if (response.ok) { dashboardData.businessProfile = await response.json(); } else { throw new Error('Failed to fetch profile'); } } catch (error) { console.log('Using mock profile data:', error.message); dashboardData.businessProfile = { business_id: businessId, business_name: "Royal Hair Studio", description: "Professional barber studio specialising in modern cuts.", contact_email: "info@royalhair.co.uk", phone_number: "020 1234 5678", address: "123 Lewisham High Street, London SE13", website: "https://royalhair.co.uk", instagram: "@royalhairstudio" }; } } // Fetch basic settings async function fetchBasicSettings() { try { const response = await fetch(`${API_BASE_URL}/api/businesses/${businessId}/settings-basic`); if (response.ok) { dashboardData.basicSettings = await response.json(); } else { throw new Error('Failed to fetch settings'); } } catch (error) { console.log('Using mock settings data:', error.message); dashboardData.basicSettings = { business_id: businessId, public_listing: true }; } } // Fetch plan info async function fetchPlanInfo() { try { const response = await fetch(`${API_BASE_URL}/api/businesses/${businessId}/plan-info`); if (response.ok) { dashboardData.planInfo = await response.json(); } else { throw new Error('Failed to fetch plan info'); } } catch (error) { console.log('Using mock plan data:', error.message); dashboardData.planInfo = { business_id: businessId, plan: "Free", upgrade_available: true, next_tier: "Starter", message: "Upgrade to Starter or Professional to unlock reviews, bookings, analytics, and more." }; } } // Show notification function showNotification(message, type = 'info') { const notification = document.createElement('div'); notification.className = `notification ${type} show`; notification.textContent = message; const container = document.querySelector('.main-content'); container.insertBefore(notification, container.firstChild); setTimeout(() => { notification.remove(); }, 4000); } // Render dashboard overview function renderDashboard() { const container = document.getElementById('free-dashboard-root'); container.innerHTML = ` <div><div><div><h3>Welcome to BlkPages</h3><p>Your Free Business Dashboard</p></div></div><div><h3>Welcome to your BlkPages Business Dashboard</h3><p>Your Free plan provides standard search placement so customers can find your business.</p></div><div><h3><i></i>Standard Visibility</h3><p>Your business appears in Browse and Search results with Free package placement.</p></div></div><div><div><i></i><strong>Unlock More Features</strong><p> Upgrade to Starter or Professional to unlock reviews, bookings, analytics, and advanced features. </p></div><a href="#">View Plans</a></div> `; } // Render business profile function renderProfile() { const profile = dashboardData.businessProfile; const container = document.getElementById('free-dashboard-root'); container.innerHTML = ` <div><div><div><h3>Business Profile</h3><p>Manage your business information</p></div></div><form><div><label for="business_name">Business Name *</label><input type="text" value="${profile.business_name || ''}" required></div><div><label for="description">Description *</label><textarea required>${profile.description || ''}</textarea></div><div><label for="contact_email">Contact Email *</label><input type="email" value="${profile.contact_email || ''}" required></div><div><label for="phone_number">Phone Number *</label><input type="tel" value="${profile.phone_number || ''}" required></div><div><label for="address">Address *</label><input type="text" value="${profile.address || ''}" required></div><div><label for="website">Website (Optional)</label><input type="url" value="${profile.website || ''}" placeholder="https://yourwebsite.com"></div><div><label for="instagram">Instagram (Optional)</label><input type="text" value="${profile.instagram || ''}" placeholder="@yourinstagram"></div><button type="submit"><i></i> Save Changes </button></form></div> `; // Add form submit handler document.getElementById('profileForm').addEventListener('submit', saveBusinessProfile); } // Save business profile async function saveBusinessProfile(e) { e.preventDefault(); const formData = { business_name: document.getElementById('business_name').value, description: document.getElementById('description').value, contact_email: document.getElementById('contact_email').value, phone_number: document.getElementById('phone_number').value, address: document.getElementById('address').value, website: document.getElementById('website').value, instagram: document.getElementById('instagram').value }; try { const response = await fetch(`${API_BASE_URL}/api/businesses/${businessId}/profile`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) }); if (response.ok) { showNotification('Profile updated successfully.', 'success'); await fetchBusinessProfile(); // Refresh data } else { throw new Error('Failed to update profile'); } } catch (error) { console.log('API not available, simulating save:', error.message); showNotification('Unable to update profile. Please try again.', 'error'); // Update local data dashboardData.businessProfile = { ...dashboardData.businessProfile, ...formData }; } } // Render settings function renderSettings() { const settings = dashboardData.basicSettings; const container = document.getElementById('free-dashboard-root'); container.innerHTML = ` <div><div><div><h3>Settings</h3><p>Manage your business preferences</p></div></div><form><div><label><span>Public Listing</span><div><input type="checkbox" ${settings.public_listing ? 'checked' : ''}><span></span></div></label><p> Toggle this to control if your business is visible on BlkPages </p></div><button type="submit"><i></i> Save Settings </button></form></div><div><div><i></i><strong>More Customization Options</strong><p> Upgrade to Starter for more customization options and advanced settings. </p></div><a href="#">Upgrade to Starter</a></div> `; // Add form submit handler document.getElementById('settingsForm').addEventListener('submit', saveBasicSettings); } // Save basic settings async function saveBasicSettings(e) { e.preventDefault(); const formData = { public_listing: document.getElementById('public_listing').checked }; try { const response = await fetch(`${API_BASE_URL}/api/businesses/${businessId}/settings-basic`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) }); if (response.ok) { showNotification('Settings updated successfully!', 'success'); await fetchBasicSettings(); // Refresh data } else { throw new Error('Failed to update settings'); } } catch (error) { console.log('API not available, simulating save:', error.message); showNotification('Settings updated successfully! (Demo Mode)', 'success'); // Update local data dashboardData.basicSettings = { ...dashboardData.basicSettings, ...formData }; } } // Render manage plan function renderPlan() { const plan = dashboardData.planInfo; const container = document.getElementById('free-dashboard-root'); container.innerHTML = ` <div><div><div><h3>Manage Plan</h3><p>Your current subscription</p></div></div><div><h3>Current Plan: Free</h3><p>You're currently on the Free package with basic features.</p></div><div><h3>What's Included</h3><ul><li>Standard search placement</li><li>Basic business profile</li><li>Contact information display</li><li>Public listing visibility</li></ul></div><div><h3>Upgrade to Unlock More</h3><p>Upgrade to Starter or Professional to unlock reviews, bookings, analytics, and more.</p></div><div><a href="#"><i></i> Upgrade to Starter </a><a href="#"><i></i> Upgrade to Professional </a></div></div> `; } // Navigation function function navigateToSection(section) { console.log('Navigating to section:', section); // Remove active class from all sidebar links document.querySelectorAll('.sidebar-menu a').forEach(link => { link.classList.remove('active'); }); // Add active class to clicked link event.target.classList.add('active'); // Only render Business Profile section - all others remain static if (section === 'profile') { renderProfile(); } // All other sections (dashboard, settings, analytics, loyalty, plan) remain static } // Global function to initialize dashboard (for external calls) window.initFreeDashboard = function() { console.log('External call to initFreeDashboard'); initFreeDashboard(); }; // Global navigation function for sidebar clicks window.navigateToSection = function(section) { navigateToSection(section); }; // Initialize dashboard on page load document.addEventListener('DOMContentLoaded', function() { initFreeDashboard(); // Only fetch data, don't render any section by default }); </script>
+        </div>
+    </main>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
+                <ul>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
                 </ul>
-                <div class="user-menu">
-                    <span class="user-info">Royal Hair Studio</span>
-                    <span class="package-badge">Free Package</span>
-                    <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-    </nav>
-
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <ul class="sidebar-menu">
-                <li><a href="#" onclick="showSection('dashboard')" class="active">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                </a></li>
-                <li><a href="#" onclick="showSection('profile')">
-                    <i class="fas fa-user"></i> Business Profile
-                </a></li>
-                <li><a href="#" onclick="showSection('settings')">
-                    <i class="fas fa-cog"></i> Settings
-                </a></li>
-                <li><a href="#" onclick="showSection('plan')">
-                    <i class="fas fa-credit-card"></i> Manage Plan
-                </a></li>
-            </ul>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Dashboard Section -->
-            <div id="dashboard" class="content-section active">
-                <div class="dashboard-header">
-                    <h1 class="dashboard-title">Business Dashboard</h1>
-                    <p class="dashboard-subtitle">Manage your business listing and track your performance</p>
-                </div>
-                
-                    <!-- Dashboard Content Mount Point -->
-                <div id="free-dashboard-root"></div>
-            </div>
-            
-            <!-- Profile Section -->
-            <div id="profile" class="content-section">
-                <div class="dashboard-header">
-                    <h1 class="dashboard-title">Business Profile</h1>
-                    <p class="dashboard-subtitle">Manage your business information and visibility</p>
-                </div>
-                
-                    <!-- Dashboard Content Mount Point -->
-                <div id="free-dashboard-root"></div>
-            </div>
-            
-            <!-- Settings Section -->
-            <div id="settings" class="content-section">
-                <div class="dashboard-header">
-                    <h1 class="dashboard-title">Settings</h1>
-                    <p class="dashboard-subtitle">Configure your business preferences</p>
-                </div>
-                
-                    <!-- Dashboard Content Mount Point -->
-                <div id="free-dashboard-root"></div>
-            </div>
-            
-            <!-- Plan Section -->
-            <div id="plan" class="content-section">
-                <div class="dashboard-header">
-                    <h1 class="dashboard-title">Manage Plan</h1>
-                    <p class="dashboard-subtitle">View and upgrade your subscription plan</p>
-                </div>
-                
-                    <!-- Dashboard Content Mount Point -->
-                <div id="free-dashboard-root"></div>
-            </div>
-        </main>
-    </div>
-
-    <!-- JavaScript Functions -->
-    <script>
-        // Show section function
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all sidebar links
-            document.querySelectorAll('.sidebar-menu a').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Show selected section
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-                targetSection.classList.add('active');
-            }
-            
-            // Add active class to clicked link
-            event.target.classList.add('active');
-            
-            // Update dashboard content with new section
-            const event = new CustomEvent('navigateToSection', { detail: { section: sectionId } });
-            window.dispatchEvent(event);
-        }
-        
-        // Logout function
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                // Clear any stored data
-                localStorage.removeItem('businessLoggedIn');
-                localStorage.removeItem('businessEmail');
-                localStorage.removeItem('businessLoginTime');
-                
-                // Redirect to home page
-                window.location.href = 'index.html';
-            }
-        }
-    </script>
-
-    <!-- Free Dashboard JavaScript -->
-    <script>
-        // Global variables
-        const API_BASE_URL = 'http://localhost:5000';
-        const businessId = 'royal-hair-studio';
-        
-        // Dashboard data
-        let dashboardData = {
-            businessProfile: null,
-            basicSettings: null,
-            planInfo: null
-        };
-        
-        // Initialize dashboard
-        async function initFreeDashboard() {
-            console.log('Initializing Free Dashboard...');
-            try {
-                // Only fetch business profile data for the live Business Profile tab
-                await fetchBusinessProfile();
-                console.log('Free Dashboard initialized successfully');
-            } catch (error) {
-                console.error('Error initializing dashboard:', error);
-                showNotification('Failed to load dashboard data', 'error');
-            }
-        }
-        
-        // Fetch business profile
-        async function fetchBusinessProfile() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/businesses/${businessId}/profile`);
-                if (response.ok) {
-                    dashboardData.businessProfile = await response.json();
-                } else {
-                    throw new Error('Failed to fetch profile');
-                }
-            } catch (error) {
-                console.log('Using mock profile data:', error.message);
-                dashboardData.businessProfile = {
-                    business_id: businessId,
-                    business_name: "Royal Hair Studio",
-                    description: "Professional barber studio specialising in modern cuts.",
-                    contact_email: "info@royalhair.co.uk",
-                    phone_number: "020 1234 5678",
-                    address: "123 Lewisham High Street, London SE13",
-                    website: "https://royalhair.co.uk",
-                    instagram: "@royalhairstudio"
-                };
-            }
-        }
-        
-        // Fetch basic settings
-        async function fetchBasicSettings() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/businesses/${businessId}/settings-basic`);
-                if (response.ok) {
-                    dashboardData.basicSettings = await response.json();
-                } else {
-                    throw new Error('Failed to fetch settings');
-                }
-            } catch (error) {
-                console.log('Using mock settings data:', error.message);
-                dashboardData.basicSettings = {
-                    business_id: businessId,
-                    public_listing: true
-                };
-            }
-        }
-        
-        // Fetch plan info
-        async function fetchPlanInfo() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/businesses/${businessId}/plan-info`);
-                if (response.ok) {
-                    dashboardData.planInfo = await response.json();
-                } else {
-                    throw new Error('Failed to fetch plan info');
-                }
-            } catch (error) {
-                console.log('Using mock plan data:', error.message);
-                dashboardData.planInfo = {
-                    business_id: businessId,
-                    plan: "Free",
-                    upgrade_available: true,
-                    next_tier: "Starter",
-                    message: "Upgrade to Starter or Professional to unlock reviews, bookings, analytics, and more."
-                };
-            }
-        }
-        
-        // Show notification
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type} show`;
-            notification.textContent = message;
-            
-            const container = document.querySelector('.main-content');
-            container.insertBefore(notification, container.firstChild);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 4000);
-        }
-        
-        // Render dashboard overview
-        function renderDashboard() {
-            const container = document.getElementById('free-dashboard-root');
-            container.innerHTML = `
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <h3 class="card-title">Welcome to BlkPages</h3>
-                            <p style="color: #cccccc; font-size: 0.9rem;">Your Free Business Dashboard</p>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h3>Welcome to your BlkPages Business Dashboard</h3>
-                        <p>Your Free plan provides standard search placement so customers can find your business.</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h3><i class="fas fa-search" style="color: #FF3CAC; margin-right: 10px;"></i>Standard Visibility</h3>
-                        <p>Your business appears in Browse and Search results with Free package placement.</p>
-                    </div>
-                </div>
-                
-                <div class="upgrade-notice">
-                    <div>
-                        <i class="fas fa-star"></i>
-                        <strong>Unlock More Features</strong>
-                        <p style="margin: 5px 0 0; font-size: 0.9rem;">
-                            Upgrade to Starter or Professional to unlock reviews, bookings, analytics, and advanced features.
-                        </p>
-                    </div>
-                    <a href="#" class="upgrade-btn">View Plans</a>
-                </div>
-            `;
-        }
-        
-        // Render business profile
-        function renderProfile() {
-            const profile = dashboardData.businessProfile;
-            const container = document.getElementById('free-dashboard-root');
-            container.innerHTML = `
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <h3 class="card-title">Business Profile</h3>
-                            <p style="color: #cccccc; font-size: 0.9rem;">Manage your business information</p>
-                        </div>
-                    </div>
-                    
-                    <form id="profileForm">
-                        <div class="form-group">
-                            <label for="business_name">Business Name *</label>
-                            <input type="text" id="business_name" value="${profile.business_name || ''}" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="description">Description *</label>
-                            <textarea id="description" required>${profile.description || ''}</textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="contact_email">Contact Email *</label>
-                            <input type="email" id="contact_email" value="${profile.contact_email || ''}" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="phone_number">Phone Number *</label>
-                            <input type="tel" id="phone_number" value="${profile.phone_number || ''}" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="address">Address *</label>
-                            <input type="text" id="address" value="${profile.address || ''}" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="website">Website (Optional)</label>
-                            <input type="url" id="website" value="${profile.website || ''}" placeholder="https://yourwebsite.com">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="instagram">Instagram (Optional)</label>
-                            <input type="text" id="instagram" value="${profile.instagram || ''}" placeholder="@yourinstagram">
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save" style="margin-right: 8px;"></i>
-                            Save Changes
-                        </button>
-                    </form>
-                </div>
-            `;
-            
-            // Add form submit handler
-            document.getElementById('profileForm').addEventListener('submit', saveBusinessProfile);
-        }
-        
-        // Save business profile
-        async function saveBusinessProfile(e) {
-            e.preventDefault();
-            
-            const formData = {
-                business_name: document.getElementById('business_name').value,
-                description: document.getElementById('description').value,
-                contact_email: document.getElementById('contact_email').value,
-                phone_number: document.getElementById('phone_number').value,
-                address: document.getElementById('address').value,
-                website: document.getElementById('website').value,
-                instagram: document.getElementById('instagram').value
-            };
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/businesses/${businessId}/profile`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                if (response.ok) {
-                    showNotification('Profile updated successfully.', 'success');
-                    await fetchBusinessProfile(); // Refresh data
-                } else {
-                    throw new Error('Failed to update profile');
-                }
-            } catch (error) {
-                console.log('API not available, simulating save:', error.message);
-                showNotification('Unable to update profile. Please try again.', 'error');
-                // Update local data
-                dashboardData.businessProfile = { ...dashboardData.businessProfile, ...formData };
-            }
-        }
-        
-        // Render settings
-        function renderSettings() {
-            const settings = dashboardData.basicSettings;
-            const container = document.getElementById('free-dashboard-root');
-            container.innerHTML = `
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <h3 class="card-title">Settings</h3>
-                            <p style="color: #cccccc; font-size: 0.9rem;">Manage your business preferences</p>
-                        </div>
-                    </div>
-                    
-                    <form id="settingsForm">
-                        <div class="form-group">
-                            <label style="display: flex; align-items: center; gap: 10px;">
-                                <span>Public Listing</span>
-                                <div class="toggle-switch">
-                                    <input type="checkbox" id="public_listing" ${settings.public_listing ? 'checked' : ''}>
-                                    <span class="slider"></span>
-                                </div>
-                            </label>
-                            <p style="color: #cccccc; font-size: 0.9rem; margin-top: 5px;">
-                                Toggle this to control if your business is visible on BlkPages
-                            </p>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save" style="margin-right: 8px;"></i>
-                            Save Settings
-                        </button>
-                    </form>
-                </div>
-                
-                <div class="upgrade-notice">
-                    <div>
-                        <i class="fas fa-cog"></i>
-                        <strong>More Customization Options</strong>
-                        <p style="margin: 5px 0 0; font-size: 0.9rem;">
-                            Upgrade to Starter for more customization options and advanced settings.
-                        </p>
-                    </div>
-                    <a href="#" class="upgrade-btn">Upgrade to Starter</a>
-                </div>
-            `;
-            
-            // Add form submit handler
-            document.getElementById('settingsForm').addEventListener('submit', saveBasicSettings);
-        }
-        
-        // Save basic settings
-        async function saveBasicSettings(e) {
-            e.preventDefault();
-            
-            const formData = {
-                public_listing: document.getElementById('public_listing').checked
-            };
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/businesses/${businessId}/settings-basic`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                if (response.ok) {
-                    showNotification('Settings updated successfully!', 'success');
-                    await fetchBasicSettings(); // Refresh data
-                } else {
-                    throw new Error('Failed to update settings');
-                }
-            } catch (error) {
-                console.log('API not available, simulating save:', error.message);
-                showNotification('Settings updated successfully! (Demo Mode)', 'success');
-                // Update local data
-                dashboardData.basicSettings = { ...dashboardData.basicSettings, ...formData };
-            }
-        }
-        
-        // Render manage plan
-        function renderPlan() {
-            const plan = dashboardData.planInfo;
-            const container = document.getElementById('free-dashboard-root');
-            container.innerHTML = `
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <h3 class="card-title">Manage Plan</h3>
-                            <p style="color: #cccccc; font-size: 0.9rem;">Your current subscription</p>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h3>Current Plan: Free</h3>
-                        <p>You're currently on the Free package with basic features.</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h3>What's Included</h3>
-                        <ul style="color: #cccccc; margin: 10px 0; padding-left: 20px;">
-                            <li>Standard search placement</li>
-                            <li>Basic business profile</li>
-                            <li>Contact information display</li>
-                            <li>Public listing visibility</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="info-card">
-                        <h3>Upgrade to Unlock More</h3>
-                        <p>Upgrade to Starter or Professional to unlock reviews, bookings, analytics, and more.</p>
-                    </div>
-                    
-                    <div style="text-align: center; margin-top: 30px;">
-                        <a href="#" class="btn btn-success" style="margin-right: 15px;">
-                            <i class="fas fa-arrow-up" style="margin-right: 8px;"></i>
-                            Upgrade to Starter
-                        </a>
-                        <a href="#" class="btn btn-primary">
-                            <i class="fas fa-crown" style="margin-right: 8px;"></i>
-                            Upgrade to Professional
-                        </a>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Navigation function
-        function navigateToSection(section) {
-            console.log('Navigating to section:', section);
-            
-            // Remove active class from all sidebar links
-            document.querySelectorAll('.sidebar-menu a').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Add active class to clicked link
-            event.target.classList.add('active');
-            
-            // Only render Business Profile section - all others remain static
-            if (section === 'profile') {
-                renderProfile();
-            }
-            // All other sections (dashboard, settings, analytics, loyalty, plan) remain static
-        }
-        
-        // Global function to initialize dashboard (for external calls)
-        window.initFreeDashboard = function() {
-            console.log('External call to initFreeDashboard');
-            initFreeDashboard();
-        };
-        
-        // Global navigation function for sidebar clicks
-        window.navigateToSection = function(section) {
-            navigateToSection(section);
-        };
-        
-        // Initialize dashboard on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            initFreeDashboard(); // Only fetch data, don't render any section by default
-        });
-    </script>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

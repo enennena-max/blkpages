@@ -1,1574 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Manage Your Plan - BLKPAGES</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="js/access-control.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Inter', sans-serif; 
-            line-height: 1.6; 
-            color: #ffffff; 
-            background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0F0F0F 100%); 
-            min-height: 100vh; 
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0A0A0A;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(90deg, #FFD35C, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        
-        /* Navigation */
-        .navbar { 
-            background: rgba(0, 0, 0, 0.95); 
-            box-shadow: 0 2px 10px rgba(255,255,255,0.1); 
-            position: fixed; 
-            top: 0; 
-            width: 100%; 
-            z-index: 1000; 
-        }
-        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; }
-        .logo { font-size: 1.8rem; font-weight: 700; color: #ffffff; text-decoration: none; }
-        .nav-links { display: flex; list-style: none; gap: 2rem; }
-        .nav-links a { text-decoration: none; color: #ffffff; font-weight: 500; transition: color 0.3s; }
-        .nav-links a:hover, .nav-links a.active { color: #007bff; }
-        .btn-nav { background: #007bff; color: white !important; padding: 0.5rem 1.5rem; border-radius: 25px; transition: background 0.3s; text-decoration: none; }
-        .btn-nav:hover { background: #0056b3; }
-        
-        /* Main Content */
-        .main-content { padding: 120px 0 80px; }
-        .page-title { font-size: 3rem; font-weight: 700; margin-bottom: 1rem; text-align: center; color: #ffffff; }
-        .page-subtitle { text-align: center; color: #cccccc; margin-bottom: 3rem; font-size: 1.1rem; }
-        
-        /* Plan Management Grid */
-        .plan-management-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 3rem;
+        .hero-gradient-bg {
+             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
         }
         
-        .plan-section {
-            background: #1a1a1a;
-            padding: 2rem;
-            border-radius: 15px;
-            border: 1px solid #333;
+        .connect-gradient-bg {
+             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
         }
         
-        .plan-section h2 {
-            color: #1E90FF;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
+        .cta-gradient-bg {
+             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
         }
         
-        /* Current Plan Card */
-        .current-plan-card {
-            background: linear-gradient(135deg, #1E90FF, #007bff);
-            color: white;
-            padding: 2rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
+        .gold-gradient-button {
+             background: linear-gradient(90deg, #ffcc00, #ffb700);
         }
         
-        .current-plan-card::before {
-            content: '';
+        .gold-gradient-button-hover:hover {
+             background: linear-gradient(90deg, #ffb700, #ffd700);
+        }
+
+        /* ===============================
+           🖋 BLKPAGES SEARCH SUBTEXT STYLE
+           =============================== */
+
+        .search-subtext {
+         margin-top: 35px; /* increased spacing below search bar */
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 6px;
+         font-size: 0.95rem;
+         color: #CFCFCF; /* text colour */
+         font-weight: 500;
+         letter-spacing: 0.2px;
+         text-align: center;
+        }
+
+        .search-subtext i {
+         color: #FFD700; /* icon gold */
+         font-size: 1rem;
+        }
+
+        /* Gold separator dot */
+        .dot-separator {
+         color: #D4AF37;
+         padding: 0 6px;
+        }
+
+        /* ✨ Optional subtle pulse animation for icons */
+        @keyframes goldPulse {
+         0% { opacity: 0.7; transform: scale(1); }
+         50% { opacity: 1; transform: scale(1.1); }
+         100% { opacity: 0.7; transform: scale(1); }
+        }
+
+        .search-subtext i {
+         animation: goldPulse 3s ease-in-out infinite;
+        }
+
+        /* 📱 Responsive for mobile */
+        @media (max-width: 600px) {
+         .search-subtext {
+           flex-direction: column;
+           gap: 4px;
+           font-size: 0.9rem;
+           margin-top: 25px; /* smaller space on mobile */
+         }
+         .dot-separator {
+           display: none;
+         }
+        }
+
+        /* Navigation Styles */
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+        
+        /* Customer Menu Styles */
+        .customer-dropdown {
+            display: none;
             position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            transform: rotate(45deg);
+            top: 100%;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            min-width: 150px;
+            z-index: 1000;
+            margin-top: 0.5rem;
         }
         
-        .current-plan-header {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .current-plan-name {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .current-plan-price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        
-        .current-plan-features {
-            list-style: none;
-            margin-bottom: 1.5rem;
-        }
-        
-        .current-plan-features li {
-            padding: 0.5rem 0;
+        .dropdown-item {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-        }
-        
-        .current-plan-features li i {
+            padding: 0.75rem 1rem;
             color: #ffffff;
-            font-size: 1.1rem;
-        }
-        
-        .plan-status {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+            text-decoration: none;
             font-size: 0.9rem;
-            font-weight: 600;
-        }
-        
-        /* Available Plans */
-        .available-plans {
-            display: grid;
-            gap: 1rem;
-        }
-        
-        .plan-option {
-            background: #2a2a2a;
-            border: 2px solid #333;
-            border-radius: 10px;
-            padding: 1.5rem;
-            cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .plan-option:hover {
-            border-color: #1E90FF;
-            transform: translateY(-2px);
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .plan-option.current {
-            border-color: #1E90FF;
-            background: #1a3a5c;
-        }
-        
-        .plan-option.current::after {
-            content: "Current Plan";
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #1E90FF;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .plan-option-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .plan-option-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #ffffff;
-        }
-        
-        .plan-option-price {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1E90FF;
-        }
-        
-        .plan-option-features {
-            list-style: none;
-            margin-bottom: 1rem;
-        }
-        
-        .plan-option-features li {
-            padding: 0.25rem 0;
-            font-size: 0.9rem;
-            color: #cccccc;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .plan-option-features li i {
-            color: #28a745;
-            font-size: 0.8rem;
-        }
-        
-        .plan-option-features li.unavailable i {
-            color: #dc3545;
-        }
-        
-        .plan-action {
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .plan-action.upgrade {
-            background: #28a745;
-            color: white;
-        }
-        
-        .plan-action.upgrade:hover {
-            background: #1e7e34;
-        }
-        
-        .plan-action.downgrade {
-            background: #ffc107;
-            color: #000;
-        }
-        
-        .plan-action.downgrade:hover {
-            background: #e0a800;
-        }
-        
-        .plan-action.current {
-            background: #6c757d;
-            color: white;
-            cursor: not-allowed;
-        }
-        
-        /* Add-ons Section */
-        .addons-section {
-            background: #1a1a1a;
-            padding: 2rem;
-            border-radius: 15px;
-            border: 1px solid #333;
-            margin-bottom: 2rem;
-        }
-        
-        .addon-card {
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-        
-        .addon-card.selected {
-            background: rgba(30, 144, 255, 0.1);
-            border: 1px solid #1E90FF;
-            box-shadow: 0 0 10px rgba(30, 144, 255, 0.2);
-        }
-        
-        .addon-info h4 {
-            color: #1E90FF;
-            margin-bottom: 0.5rem;
-        }
-        
-        .addon-info p {
-            color: #cccccc;
-            font-size: 0.9rem;
-        }
-        
-        .addon-price {
-            color: #ffffff;
-            font-weight: 600;
-            margin-right: 1rem;
-        }
-        
-        .addon-action {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .addon-action.add {
-            background: #28a745;
-            color: white;
-        }
-        
-        .addon-action.add:hover {
-            background: #1e7e34;
-        }
-        
-        .addon-action.remove {
-            background: #dc3545;
-            color: white;
-        }
-        
-        .addon-action.remove:hover {
-            background: #c82333;
-        }
-        
-        .addon-action.added {
-            background: #6c757d;
-            color: white;
-            cursor: not-allowed;
-        }
-        
-        /* Billing Section */
-        .billing-section {
-            background: #1a1a1a;
-            padding: 2rem;
-            border-radius: 15px;
-            border: 1px solid #333;
-            margin-bottom: 2rem;
-        }
-        
-        .billing-summary {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .billing-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid #444;
-        }
-        
-        .billing-item:last-child {
+        .dropdown-item:last-child {
             border-bottom: none;
-        }
-        
-        .billing-item.total {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #1E90FF;
-            border-top: 2px solid #1E90FF;
-            margin-top: 0.5rem;
-            padding-top: 1rem;
-        }
-        
-        .next-payment {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .next-payment h4 {
-            margin-bottom: 0.5rem;
-        }
-        
-        .next-payment-date {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        
-        /* Payment History */
-        .payment-history {
-            background: #1a1a1a;
-            padding: 2rem;
-            border-radius: 15px;
-            border: 1px solid #333;
-        }
-        
-        .payment-history-item {
-            background: #2a2a2a;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .payment-info h5 {
-            color: #ffffff;
-            margin-bottom: 0.25rem;
-        }
-        
-        .payment-info p {
-            color: #cccccc;
-            font-size: 0.9rem;
-        }
-        
-        .payment-amount {
-            font-weight: 600;
-            color: #28a745;
-        }
-        
-        .payment-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        
-        .payment-status.paid {
-            background: #28a745;
-            color: white;
-        }
-        
-        .payment-status.pending {
-            background: #ffc107;
-            color: #000;
-        }
-        
-        .payment-status.failed {
-            background: #dc3545;
-            color: white;
-        }
-        
-        /* Cancellation Section */
-        .cancellation-section {
-            background: #2a1a1a;
-            border: 1px solid #dc3545;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .cancellation-warning {
-            background: #3d2a1a;
-            border: 1px solid #ffc107;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            color: #ffc107;
-            font-size: 0.9rem;
-        }
-        
-        .btn-cancel {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-        
-        .btn-cancel:hover {
-            background: #c82333;
-            transform: translateY(-2px);
-        }
-        
-        /* Cancellation Modal */
-        .cancellation-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .cancellation-modal.show {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .cancellation-modal-content {
-            background: #1a1a1a;
-            color: white;
-            padding: 2rem;
-            border-radius: 12px;
-            border: 2px solid #dc3545;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            transform: scale(0.8);
-            transition: transform 0.3s ease;
-        }
-        
-        .cancellation-modal.show .cancellation-modal-content {
-            transform: scale(1);
-        }
-        
-        .cancellation-modal h3 {
-            color: #dc3545;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-        
-        .cancellation-modal p {
-            color: #cccccc;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-        
-        .cancellation-consequences {
-            background: #2a1a1a;
-            border: 1px solid #dc3545;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            text-align: left;
-        }
-        
-        .cancellation-consequences h4 {
-            color: #dc3545;
-            margin-bottom: 0.5rem;
-        }
-        
-        .cancellation-consequences ul {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .cancellation-consequences li {
-            padding: 0.25rem 0;
-            color: #cccccc;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .cancellation-consequences li i {
-            color: #dc3545;
-            font-size: 0.8rem;
-        }
-        
-        .cancellation-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-        
-        .btn-confirm-cancel {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-confirm-cancel:hover {
-            background: #c82333;
-        }
-        
-        .btn-keep-subscription {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-keep-subscription:hover {
-            background: #5a6268;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .page-title { font-size: 2rem; }
-            .plan-management-grid { grid-template-columns: 1fr; }
-            .addon-card { flex-direction: column; align-items: flex-start; gap: 1rem; }
-            .addon-action { width: 100%; }
         }
     </style>
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-wrapper">
-                <a href="index.html" class="logo">BLKPAGES</a>
-                <ul class="nav-links">
-                    <li><a href="business-dashboard.html">Dashboard</a></li>
-                    <li><a href="business-profile.html">Profile</a></li>
-                    <li><a href="business-booking-manager.html">Bookings</a></li>
-                    <li><a href="business-plan-management.html" class="active">Plan</a></li>
-                </ul>
-                <a href="business-login.html" class="btn-nav">Logout</a>
+<body class="text-white">
+    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-3">
+                <!-- Logo and Nav Links -->
+                <div class="flex items-center gap-8">
+                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
+                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
+                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
+                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-flask mr-1"></i>Preview Test
+                        </a>
+                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-cogs mr-1"></i>Demo Hub
+                        </a>
+                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
+                        </a>
+                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
+                        </a>
+                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                            <i class="fas fa-clock mr-1"></i>WLO System
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Basket Icon -->
+                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
+                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
+                    </div>
+                    
+                    <!-- Sign In / Sign Up (for signed out users) -->
+                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                        </button>
+                        <span class="text-gray-400">/</span>
+                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                            <i class="fas fa-user-plus mr-1"></i>Sign Up
+                        </a>
+                    </div>
+                    
+                    <!-- Customer Menu (for logged-in users) -->
+                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
+                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
+                            <span id="customerInitialText">U</span>
+                        </button>
+                        <div class="customer-dropdown" id="customerDropdown">
+                            <a href="customer-dashboard.html" class="dropdown-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
+                                <i class="fas fa-cog"></i>
+                                Account Settings
+                            </a>
+                            <a href="#" onclick="signOut()" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Sign Out
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- List Business Button -->
+                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
+                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
+                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
+                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
+                    <i class="fas fa-flask mr-2"></i>Preview Test
+                </a>
+                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
+                    <i class="fas fa-plus mr-2"></i>List Business
+                </a>
+                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
+                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
             </div>
         </div>
-    </nav>
-
+    </header>
+    
     <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <h1 class="page-title">Manage Your Plan</h1>
-            <p class="page-subtitle">Upgrade, downgrade, or manage your subscription and add-ons</p>
-            
-            <div class="plan-management-grid">
-                <!-- Current Plan & Available Plans -->
-                <div class="plan-section">
-                    <h2>Your Current Plan</h2>
-                    
-                    <div class="current-plan-card">
-                        <div class="current-plan-header">
-                            <div class="current-plan-name" id="currentPlanName">Professional Plan</div>
-                            <div class="current-plan-price" id="currentPlanPrice">£29/month</div>
-                            <span class="plan-status" id="planStatus">Active</span>
-                        </div>
-                        <ul class="current-plan-features" id="currentPlanFeatures">
-                            <li><i class="fas fa-check"></i> Everything in Starter</li>
-                            <li><i class="fas fa-check"></i> Photo gallery (up to 10 photos)</li>
-                            <li><i class="fas fa-check"></i> Advanced booking system</li>
-                            <li><i class="fas fa-check"></i> Customer management dashboard</li>
-                            <li><i class="fas fa-check"></i> Priority placement in search</li>
-                            <li><i class="fas fa-check"></i> Basic analytics</li>
-                        </ul>
-                    </div>
-                    
-                    <h3 style="color: #ffffff; margin-bottom: 1rem;">Available Plans</h3>
-                    <div class="available-plans">
-                        <div class="plan-option" data-plan="free">
-                            <div class="plan-option-header">
-                                <div class="plan-option-name">Free Listing</div>
-                                <div class="plan-option-price">£0</div>
-                            </div>
-                            <ul class="plan-option-features">
-                                <li><i class="fas fa-check"></i> Business name & contact</li>
-                                <li><i class="fas fa-check"></i> Basic address</li>
-                                <li><i class="fas fa-check"></i> Phone number</li>
-                                <li><i class="fas fa-check"></i> Category listing</li>
-                                <li><i class="fas fa-times unavailable"></i> Customer reviews</li>
-                                <li><i class="fas fa-times unavailable"></i> Business logo</li>
-                                <li><i class="fas fa-times unavailable"></i> Photo gallery</li>
-                                <li><i class="fas fa-times unavailable"></i> Online booking</li>
-                            </ul>
-                            <button class="plan-action downgrade" onclick="changePlan('free')">Downgrade to Free</button>
-                        </div>
-                        
-                        <div class="plan-option" data-plan="starter">
-                            <div class="plan-option-header">
-                                <div class="plan-option-name">Starter</div>
-                                <div class="plan-option-price">£15/month</div>
-                            </div>
-                            <ul class="plan-option-features">
-                                <li><i class="fas fa-check"></i> Everything in Free</li>
-                                <li><i class="fas fa-check"></i> Business logo and photo gallery (up to 3 photos)</li>
-                                <li><i class="fas fa-check"></i> Enhanced profile visibility</li>
-                                <li><i class="fas fa-check"></i> Customer review highlights</li>
-                                <li><i class="fas fa-check"></i> Basic booking system</li>
-                                <li><i class="fas fa-times unavailable"></i> Advanced booking system</li>
-                                <li><i class="fas fa-times unavailable"></i> Customer management dashboard</li>
-                                <li><i class="fas fa-times unavailable"></i> Priority placement in search</li>
-                            </ul>
-                            <button class="plan-action downgrade" onclick="changePlan('starter')">Downgrade to Starter</button>
-                        </div>
-                        
-                        <div class="plan-option current" data-plan="professional">
-                            <div class="plan-option-header">
-                                <div class="plan-option-name">Professional</div>
-                                <div class="plan-option-price">£29/month</div>
-                            </div>
-                            <ul class="plan-option-features">
-                                <li><i class="fas fa-check"></i> Everything in Starter</li>
-                                <li><i class="fas fa-check"></i> Photo gallery (up to 10 photos)</li>
-                                <li><i class="fas fa-check"></i> Advanced booking system with calendar sync</li>
-                                <li><i class="fas fa-check"></i> Customer management dashboard</li>
-                                <li><i class="fas fa-check"></i> Priority placement in search</li>
-                                <li><i class="fas fa-check"></i> Basic analytics</li>
-                                <li><i class="fas fa-times unavailable"></i> Advanced analytics</li>
-                                <li><i class="fas fa-times unavailable"></i> Marketing tools</li>
-                            </ul>
-                            <button class="plan-action current">Current Plan</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Billing & Payment History -->
-                <div class="plan-section">
-                    <h2>Billing & Payments</h2>
-                    
-                    <div class="billing-summary">
-                        <h4 style="color: #1E90FF; margin-bottom: 1rem;">Current Billing</h4>
-                        <div class="billing-item" id="planBillingItem">
-                            <span>Professional Plan</span>
-                            <span>£29.00/month</span>
-                        </div>
-                        <div id="addonsBillingContainer">
-                            <!-- Individual add-on billing items will be inserted here -->
-                        </div>
-                        <div class="billing-item total">
-                            <span>Total Monthly</span>
-                            <span id="totalBillingAmount">£29.00</span>
-                        </div>
-                    </div>
-                    
-                    <div class="next-payment">
-                        <h4>Next Payment Due</h4>
-                        <div class="next-payment-date" id="nextPaymentDate">15th March 2024</div>
-                        <p style="margin-top: 0.5rem; opacity: 0.9;">Auto-renewal enabled</p>
-                    </div>
-                    
-                    <div class="cancellation-section">
-                        <h4 style="color: #dc3545; margin-bottom: 1rem;">Danger Zone</h4>
-                        <div class="cancellation-warning">
-                            <i class="fas fa-exclamation-triangle" style="color: #ffc107; margin-right: 0.5rem;"></i>
-                            <span>Cancel your subscription to stop all payments and lose access to premium features.</span>
-                        </div>
-                        <button class="btn-cancel" onclick="showCancellationModal()">
-                            <i class="fas fa-times-circle"></i> Cancel Subscription
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Add-ons Section -->
-            <div class="addons-section">
-                <h2>Premium Add-ons</h2>
-                <p style="color: #cccccc; margin-bottom: 2rem;">Enhance your business with these premium features</p>
-                
-                <div class="addon-card" id="smsAddonCard">
-                    <div class="addon-info">
-                        <h4>📲 Extra SMS Credits</h4>
-                        <p>Send appointment reminders and updates to customers</p>
-                    </div>
-                    <div class="addon-price">£3 per 50 messages</div>
-                    <button class="addon-action add" id="smsAddonBtn" onclick="toggleSMSAddon()">
-                        <i class="fas fa-plus"></i> Add
-                    </button>
-                </div>
-                
-                <div class="addon-card" id="featuredAddonCard">
-                    <div class="addon-info">
-                        <h4>⭐ Featured Listing</h4>
-                        <p>Get priority placement in search results</p>
-                    </div>
-                    <div class="addon-price">£5/month</div>
-                    <button class="addon-action add" id="featuredAddonBtn" onclick="toggleFeaturedAddon()">
-                        <i class="fas fa-plus"></i> Add
-                    </button>
-                </div>
-                
-                <div class="addon-card" id="socialAddonCard">
-                    <div class="addon-info">
-                        <h4>📸 Instagram/TikTok Widget</h4>
-                        <p>Social media booking link widget</p>
-                    </div>
-                    <div class="addon-price">£4/month</div>
-                    <button class="addon-action add" id="socialAddonBtn" onclick="toggleSocialAddon()">
-                        <i class="fas fa-plus"></i> Add
-                    </button>
-                </div>
-                
-                <div class="addon-card" id="loyaltyAddonCard">
-                    <div class="addon-info">
-                        <h4>🎁 Customer Loyalty Rewards</h4>
-                        <p>Digital punch card system for customer retention</p>
-                    </div>
-                    <div class="addon-price">£5/month</div>
-                    <button class="addon-action added" id="loyaltyAddonBtn" onclick="toggleLoyaltyAddon()">
-                        <i class="fas fa-check"></i> Added
-                    </button>
-                </div>
-                
-                <div class="addon-card" id="analyticsAddonCard">
-                    <div class="addon-info">
-                        <h4>📊 Advanced Analytics</h4>
-                        <p>Performance & trends analysis</p>
-                    </div>
-                    <div class="addon-price">£5/month</div>
-                    <button class="addon-action add" id="analyticsAddonBtn" onclick="toggleAnalyticsAddon()">
-                        <i class="fas fa-plus"></i> Add
-                    </button>
-                </div>
-                
-                <div class="addon-card" id="staffAddonCard">
-                    <div class="addon-info">
-                        <h4>👥 Multi-Staff Scheduling</h4>
-                        <p>Per extra staff member scheduling</p>
-                    </div>
-                    <div class="addon-price">£2/month per staff</div>
-                    <button class="addon-action add" id="staffAddonBtn" onclick="toggleStaffAddon()">
-                        <i class="fas fa-plus"></i> Add
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Payment History -->
-            <div class="payment-history">
-                <h2>Payment History</h2>
-                <p style="color: #cccccc; margin-bottom: 2rem;">Your recent payment transactions</p>
-                
-                <div class="payment-history-item">
-                    <div class="payment-info">
-                        <h5>Monthly Subscription - March 2024</h5>
-                        <p>Professional Plan + Loyalty Rewards Programme</p>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div class="payment-amount">£34.00</div>
-                        <div class="payment-status paid">Paid</div>
-                    </div>
-                </div>
-                
-                <div class="payment-history-item">
-                    <div class="payment-info">
-                        <h5>Monthly Subscription - February 2024</h5>
-                        <p>Professional Plan + Loyalty Rewards Programme</p>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div class="payment-amount">£34.00</div>
-                        <div class="payment-status paid">Paid</div>
-                    </div>
-                </div>
-                
-                <div class="payment-history-item">
-                    <div class="payment-info">
-                        <h5>Monthly Subscription - January 2024</h5>
-                        <p>Professional Plan</p>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div class="payment-amount">£29.00</div>
-                        <div class="payment-status paid">Paid</div>
-                    </div>
-                </div>
-                
-                <div class="payment-history-item">
-                    <div class="payment-info">
-                        <h5>Plan Upgrade - December 2023</h5>
-                        <p>Upgraded from Starter to Professional</p>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div class="payment-amount">£14.00</div>
-                        <div class="payment-status paid">Paid</div>
-                    </div>
-                </div>
-            </div>
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <!-- Navigation --><!-- Main Content --><main><div><h1>Manage Your Plan</h1><p>Upgrade, downgrade, or manage your subscription and add-ons</p><div><!-- Current Plan & Available Plans --><div><h2>Your Current Plan</h2><div><div><div>Professional Plan</div><div>£29/month</div><span>Active</span></div><ul><li><i></i> Everything in Starter</li><li><i></i> Photo gallery (up to 10 photos)</li><li><i></i> Advanced booking system</li><li><i></i> Customer management dashboard</li><li><i></i> Priority placement in search</li><li><i></i> Basic analytics</li></ul></div><h3>Available Plans</h3><div><div data-plan="free"><div><div>Free Listing</div><div>£0</div></div><ul><li><i></i> Business name & contact</li><li><i></i> Basic address</li><li><i></i> Phone number</li><li><i></i> Category listing</li><li><i></i> Customer reviews</li><li><i></i> Business logo</li><li><i></i> Photo gallery</li><li><i></i> Online booking</li></ul><button onclick="changePlan('free')">Downgrade to Free</button></div><div data-plan="starter"><div><div>Starter</div><div>£15/month</div></div><ul><li><i></i> Everything in Free</li><li><i></i> Business logo and photo gallery (up to 3 photos)</li><li><i></i> Enhanced profile visibility</li><li><i></i> Customer review highlights</li><li><i></i> Basic booking system</li><li><i></i> Advanced booking system</li><li><i></i> Customer management dashboard</li><li><i></i> Priority placement in search</li></ul><button onclick="changePlan('starter')">Downgrade to Starter</button></div><div data-plan="professional"><div><div>Professional</div><div>£29/month</div></div><ul><li><i></i> Everything in Starter</li><li><i></i> Photo gallery (up to 10 photos)</li><li><i></i> Advanced booking system with calendar sync</li><li><i></i> Customer management dashboard</li><li><i></i> Priority placement in search</li><li><i></i> Basic analytics</li><li><i></i> Advanced analytics</li><li><i></i> Marketing tools</li></ul><button>Current Plan</button></div></div></div><!-- Billing & Payment History --><div><h2>Billing & Payments</h2><div><h4>Current Billing</h4><div><span>Professional Plan</span><span>£29.00/month</span></div><div><!-- Individual add-on billing items will be inserted here --></div><div><span>Total Monthly</span><span>£29.00</span></div></div><div><h4>Next Payment Due</h4><div>15th March 2024</div><p>Auto-renewal enabled</p></div><div><h4>Danger Zone</h4><div><i></i><span>Cancel your subscription to stop all payments and lose access to premium features.</span></div><button onclick="showCancellationModal()"><i></i> Cancel Subscription </button></div></div></div><!-- Add-ons Section --><div><h2>Premium Add-ons</h2><p>Enhance your business with these premium features</p><div><div><h4>📲 Extra SMS Credits</h4><p>Send appointment reminders and updates to customers</p></div><div>£3 per 50 messages</div><button onclick="toggleSMSAddon()"><i></i> Add </button></div><div><div><h4>⭐ Featured Listing</h4><p>Get priority placement in search results</p></div><div>£5/month</div><button onclick="toggleFeaturedAddon()"><i></i> Add </button></div><div><div><h4>📸 Instagram/TikTok Widget</h4><p>Social media booking link widget</p></div><div>£4/month</div><button onclick="toggleSocialAddon()"><i></i> Add </button></div><div><div><h4>🎁 Customer Loyalty Rewards</h4><p>Digital punch card system for customer retention</p></div><div>£5/month</div><button onclick="toggleLoyaltyAddon()"><i></i> Added </button></div><div><div><h4>📊 Advanced Analytics</h4><p>Performance & trends analysis</p></div><div>£5/month</div><button onclick="toggleAnalyticsAddon()"><i></i> Add </button></div><div><div><h4>👥 Multi-Staff Scheduling</h4><p>Per extra staff member scheduling</p></div><div>£2/month per staff</div><button onclick="toggleStaffAddon()"><i></i> Add </button></div></div><!-- Payment History --><div><h2>Payment History</h2><p>Your recent payment transactions</p><div><div><h5>Monthly Subscription - March 2024</h5><p>Professional Plan + Loyalty Rewards Programme</p></div><div><div>£34.00</div><div>Paid</div></div></div><div><div><h5>Monthly Subscription - February 2024</h5><p>Professional Plan + Loyalty Rewards Programme</p></div><div><div>£34.00</div><div>Paid</div></div></div><div><div><h5>Monthly Subscription - January 2024</h5><p>Professional Plan</p></div><div><div>£29.00</div><div>Paid</div></div></div><div><div><h5>Plan Upgrade - December 2023</h5><p>Upgraded from Starter to Professional</p></div><div><div>£14.00</div><div>Paid</div></div></div></div></div></main><!-- Cancellation Modal --><div><div><h3>⚠️ Cancel Subscription</h3><p>Are you sure you want to cancel your subscription? This action cannot be undone and will take effect immediately.</p><div><h4>What happens when you cancel:</h4><ul><li><i></i> All premium features will be disabled</li><li><i></i> Your business will revert to free listing</li><li><i></i> Photo gallery will be hidden</li><li><i></i> Online booking system will be disabled</li><li><i></i> Priority placement in search will be removed</li><li><i></i> Analytics dashboard will be unavailable</li><li><i></i> All add-ons will be removed</li></ul></div><div><button onclick="hideCancellationModal()"><i></i> Keep Subscription </button><button onclick="confirmCancellation()"><i></i> Yes, Cancel Subscription </button></div></div></div><script> // Business plan management functionality let currentPlan = 'professional'; let selectedAddons = ['loyalty']; // Initialize the page document.addEventListener('DOMContentLoaded', function() { console.log('Page loaded, initializing...'); // Set test data if none exists (for demo purposes) if (!localStorage.getItem('businessRegistrationData')) { setTestBusinessData(); } loadBusinessData(); console.log('Current plan after loading data:', currentPlan); console.log('Selected add-ons after loading data:', selectedAddons); updatePlanDisplay(); initializeAddonStates(); updateBillingSummary(); console.log('Initialization complete'); // Force update to ensure professional plan is displayed forceProfessionalPlan(); }); function forceProfessionalPlan() { console.log('Forcing professional plan display...'); currentPlan = 'professional'; selectedAddons = ['loyalty', 'featured', 'analytics']; // Force update the display document.getElementById('currentPlanName').textContent = 'Professional Plan'; document.getElementById('currentPlanPrice').textContent = '£29/month'; document.getElementById('planStatus').textContent = 'Active'; // Update features const featuresList = document.getElementById('currentPlanFeatures'); featuresList.innerHTML = ''; const professionalFeatures = [ 'Everything in Starter', 'Photo gallery (up to 10 photos)', 'Advanced booking system', 'Customer management dashboard', 'Priority placement in search', 'Custom cancellation policy', 'Advanced analytics' ]; professionalFeatures.forEach(feature => { const li = document.createElement('li'); li.innerHTML = `<i></i> ${feature}`; featuresList.appendChild(li); }); // Update plan option buttons document.querySelectorAll('.plan-option').forEach(option => { const plan = option.dataset.plan; const button = option.querySelector('.plan-action'); if (plan === 'professional') { option.classList.add('current'); button.textContent = 'Current Plan'; button.className = 'plan-action current'; } else { option.classList.remove('current'); if (plan === 'free') { button.textContent = 'Downgrade to Free'; button.className = 'plan-action downgrade'; } else if (plan === 'starter') { button.textContent = 'Downgrade to Starter'; button.className = 'plan-action downgrade'; } } }); // Update billing summary to reflect professional package and selected add-ons updateBillingSummary(); console.log('Professional plan display forced'); } function setTestBusinessData() { // Set test business registration data for professional package const testData = { businessName: 'Royal Hair Studio', selectedTier: 'professional', category: 'hairdresser', email: 'royal@hairstudio.com', phone: '+44 20 7123 4567', address: '123 High Street', city: 'London', state: 'England', zipCode: 'SW1A 1AA', paymentModel: 'deposit', depositPercentage: 30, loyaltyAddonSelected: true, smsAddonSelected: false, featuredAddonSelected: true, socialAddonSelected: false, analyticsAddonSelected: true, staffAddonSelected: false }; localStorage.setItem('businessRegistrationData', JSON.stringify(testData)); console.log('Set test business data for professional package'); } function loadBusinessData() { // Load business data from localStorage or API const businessData = localStorage.getItem('businessRegistrationData'); if (businessData) { const data = JSON.parse(businessData); currentPlan = data.selectedTier || 'professional'; // Load all selected add-ons selectedAddons = []; if (data.smsAddonSelected) selectedAddons.push('sms'); if (data.featuredAddonSelected) selectedAddons.push('featured'); if (data.socialAddonSelected) selectedAddons.push('social'); if (data.loyaltyAddonSelected) selectedAddons.push('loyalty'); if (data.analyticsAddonSelected) selectedAddons.push('analytics'); if (data.staffAddonSelected) selectedAddons.push('staff'); } else { // If no business data found, set default to professional for demo currentPlan = 'professional'; selectedAddons = ['loyalty']; // Default add-on for professional console.log('No business registration data found, using default professional plan'); } } function initializeAddonStates() { // Initialize add-on button states and card highlighting based on selected add-ons const addonButtons = { 'sms': document.getElementById('smsAddonBtn'), 'featured': document.getElementById('featuredAddonBtn'), 'social': document.getElementById('socialAddonBtn'), 'loyalty': document.getElementById('loyaltyAddonBtn'), 'analytics': document.getElementById('analyticsAddonBtn'), 'staff': document.getElementById('staffAddonBtn') }; const addonCards = { 'sms': document.getElementById('smsAddonCard'), 'featured': document.getElementById('featuredAddonCard'), 'social': document.getElementById('socialAddonCard'), 'loyalty': document.getElementById('loyaltyAddonCard'), 'analytics': document.getElementById('analyticsAddonCard'), 'staff': document.getElementById('staffAddonCard') }; Object.keys(addonButtons).forEach(addon => { const button = addonButtons[addon]; const card = addonCards[addon]; if (button && card) { if (selectedAddons.includes(addon)) { // Add-on is selected button.innerHTML = '<i></i> Added'; button.className = 'addon-action added'; card.classList.add('selected'); } else { // Add-on is not selected button.innerHTML = '<i></i> Add'; button.className = 'addon-action add'; card.classList.remove('selected'); } } }); } function updatePlanDisplay() { const planNames = { 'free': 'Free Listing', 'starter': 'Starter Plan', 'professional': 'Professional Plan' }; const planPrices = { 'free': 'Free', 'starter': '£15/month', 'professional': '£29/month' }; const planFeatures = { 'free': [ 'Basic business listing', 'Visibility in browse and search', 'Basic contact details', 'Standard cancellation policy' ], 'starter': [ 'Everything in Free', 'Photo gallery (up to 5 photos)', 'Basic booking system', 'Customer reviews', 'Flexible cancellation policy' ], 'professional': [ 'Everything in Starter', 'Photo gallery (up to 10 photos)', 'Advanced booking system', 'Customer management dashboard', 'Priority placement in search', 'Custom cancellation policy', 'Advanced analytics' ] }; document.getElementById('currentPlanName').textContent = planNames[currentPlan]; document.getElementById('currentPlanPrice').textContent = planPrices[currentPlan]; console.log('Updated plan display:', currentPlan, planNames[currentPlan], planPrices[currentPlan]); // Update plan features const featuresList = document.getElementById('currentPlanFeatures'); featuresList.innerHTML = ''; planFeatures[currentPlan].forEach(feature => { const li = document.createElement('li'); li.innerHTML = `<i></i> ${feature}`; featuresList.appendChild(li); }); // Update plan option buttons document.querySelectorAll('.plan-option').forEach(option => { const plan = option.dataset.plan; const button = option.querySelector('.plan-action'); if (plan === currentPlan) { option.classList.add('current'); button.textContent = 'Current Plan'; button.className = 'plan-action current'; } else { option.classList.remove('current'); if (plan === 'free') { button.textContent = 'Downgrade to Free'; button.className = 'plan-action downgrade'; } else if (plan === 'starter') { button.textContent = 'Downgrade to Starter'; button.className = 'plan-action downgrade'; } else if (plan === 'professional') { button.textContent = 'Upgrade to Professional'; button.className = 'plan-action upgrade'; } } }); } function updateBillingSummary() { const planCosts = { 'free': 0, 'starter': 15, 'professional': 29 }; const planNames = { 'free': 'Free Listing', 'starter': 'Starter Plan', 'professional': 'Professional Plan' }; const addonCosts = { 'sms': 3, 'featured': 5, 'social': 4, 'loyalty': 5, 'analytics': 5, 'staff': 2 }; const addonNames = { 'sms': 'Extra SMS Credits', 'featured': 'Featured Listing', 'social': 'Instagram/TikTok Widget', 'loyalty': 'Customer Loyalty Rewards', 'analytics': 'Advanced Analytics', 'staff': 'Multi-Staff Scheduling' }; const planCost = planCosts[currentPlan]; const totalAddonCost = selectedAddons.reduce((total, addon) => total + (addonCosts[addon] || 0), 0); const totalCost = planCost + totalAddonCost; // Update plan billing item const planBillingItem = document.getElementById('planBillingItem'); if (planBillingItem) { planBillingItem.innerHTML = `<span>${planNames[currentPlan]}</span><span>£${planCost}.00/month</span>`; } // Update individual add-ons billing items const addonsBillingContainer = document.getElementById('addonsBillingContainer'); if (addonsBillingContainer) { // Clear existing add-on items addonsBillingContainer.innerHTML = ''; // Add each selected add-on as a separate billing item selectedAddons.forEach(addon => { const addonItem = document.createElement('div'); addonItem.className = 'billing-item'; addonItem.innerHTML = `<span>${addonNames[addon]}</span><span>£${addonCosts[addon]}.00/month</span>`; addonsBillingContainer.appendChild(addonItem); }); } // Update total billing amount const totalBillingAmount = document.getElementById('totalBillingAmount'); if (totalBillingAmount) { totalBillingAmount.textContent = `£${totalCost}.00`; } console.log('Billing summary updated:', { plan: currentPlan, planCost: planCost, addons: selectedAddons, addonCost: totalAddonCost, totalCost: totalCost }); // Log each add-on being processed selectedAddons.forEach(addon => { console.log(`Add-on: ${addonNames[addon]} - £${addonCosts[addon]}/month`); }); } function changePlan(newPlan) { if (newPlan === currentPlan) return; const planNames = { 'free': 'Free Listing', 'starter': 'Starter Plan', 'professional': 'Professional Plan' }; const confirmed = confirm(`Are you sure you want to change to ${planNames[newPlan]}?\n\nThis change will take effect immediately.`); if (confirmed) { // Send appropriate email based on plan change direction if (isDowngrade(currentPlan, newPlan)) { sendDowngradeEmail(currentPlan, newPlan); } else if (isUpgrade(currentPlan, newPlan)) { sendUpgradeEmail(currentPlan, newPlan); } currentPlan = newPlan; updatePlanDisplay(); updateBillingSummary(); // Show success message alert(`Successfully changed to ${planNames[newPlan]}!\n\nA confirmation email has been sent to your registered email address.`); } } function isDowngrade(fromPlan, toPlan) { const planOrder = { 'professional': 3, 'starter': 2, 'free': 1 }; return planOrder[fromPlan] > planOrder[toPlan]; } function isUpgrade(fromPlan, toPlan) { const planOrder = { 'professional': 3, 'starter': 2, 'free': 1 }; return planOrder[fromPlan] < planOrder[toPlan]; } function sendDowngradeEmail(fromPlan, toPlan) { let emailTemplate = ''; if (fromPlan === 'professional' && toPlan === 'starter') { emailTemplate = 'business-downgrade-professional-to-starter.html'; } else if (fromPlan === 'professional' && toPlan === 'free') { emailTemplate = 'business-downgrade-professional-to-free.html'; } else if (fromPlan === 'starter' && toPlan === 'free') { emailTemplate = 'business-downgrade-starter-to-free.html'; } if (emailTemplate) { // In a real implementation, this would send an email via your backend // For demo purposes, we'll log the email being sent console.log(`Downgrade email sent: ${emailTemplate}`); // You could also open the email preview in a new tab for demo purposes // window.open(`email-previews/${emailTemplate}`, '_blank'); } } function sendUpgradeEmail(fromPlan, toPlan) { let emailTemplate = ''; if (fromPlan === 'free' && toPlan === 'starter') { emailTemplate = 'business-upgrade-free-to-starter.html'; } else if (fromPlan === 'free' && toPlan === 'professional') { emailTemplate = 'business-upgrade-free-to-professional.html'; } else if (fromPlan === 'starter' && toPlan === 'professional') { emailTemplate = 'business-upgrade-starter-to-professional.html'; } if (emailTemplate) { // In a real implementation, this would send an email via your backend // For demo purposes, we'll log the email being sent console.log(`Upgrade email sent: ${emailTemplate}`); // You could also open the email preview in a new tab for demo purposes // window.open(`email-previews/${emailTemplate}`, '_blank'); } } // SMS Add-on function function toggleSMSAddon() { const button = document.getElementById('smsAddonBtn'); const card = document.getElementById('smsAddonCard'); const index = selectedAddons.indexOf('sms'); if (index > -1) { // Remove addon selectedAddons.splice(index, 1); button.innerHTML = '<i></i> Add'; button.className = 'addon-action add'; card.classList.remove('selected'); alert('Extra SMS Credits removed from your plan.'); } else { // Add addon selectedAddons.push('sms'); button.innerHTML = '<i></i> Added'; button.className = 'addon-action added'; card.classList.add('selected'); alert('Extra SMS Credits added to your plan.'); } updateBillingSummary(); } // Featured Add-on function function toggleFeaturedAddon() { const button = document.getElementById('featuredAddonBtn'); const card = document.getElementById('featuredAddonCard'); const index = selectedAddons.indexOf('featured'); if (index > -1) { // Remove addon selectedAddons.splice(index, 1); button.innerHTML = '<i></i> Add'; button.className = 'addon-action add'; card.classList.remove('selected'); alert('Featured Listing removed from your plan.'); } else { // Add addon selectedAddons.push('featured'); button.innerHTML = '<i></i> Added'; button.className = 'addon-action added'; card.classList.add('selected'); alert('Featured Listing added to your plan.'); } updateBillingSummary(); } // Social Add-on function function toggleSocialAddon() { const button = document.getElementById('socialAddonBtn'); const card = document.getElementById('socialAddonCard'); const index = selectedAddons.indexOf('social'); if (index > -1) { // Remove addon selectedAddons.splice(index, 1); button.innerHTML = '<i></i> Add'; button.className = 'addon-action add'; card.classList.remove('selected'); alert('Instagram/TikTok Widget removed from your plan.'); } else { // Add addon selectedAddons.push('social'); button.innerHTML = '<i></i> Added'; button.className = 'addon-action added'; card.classList.add('selected'); alert('Instagram/TikTok Widget added to your plan.'); } updateBillingSummary(); } // Loyalty Add-on function function toggleLoyaltyAddon() { const button = document.getElementById('loyaltyAddonBtn'); const card = document.getElementById('loyaltyAddonCard'); const index = selectedAddons.indexOf('loyalty'); if (index > -1) { // Remove addon selectedAddons.splice(index, 1); button.innerHTML = '<i></i> Add'; button.className = 'addon-action add'; card.classList.remove('selected'); alert('Customer Loyalty Rewards removed from your plan.'); } else { // Add addon selectedAddons.push('loyalty'); button.innerHTML = '<i></i> Added'; button.className = 'addon-action added'; card.classList.add('selected'); alert('Customer Loyalty Rewards added to your plan.'); } updateBillingSummary(); } // Analytics Add-on function function toggleAnalyticsAddon() { const button = document.getElementById('analyticsAddonBtn'); const card = document.getElementById('analyticsAddonCard'); const index = selectedAddons.indexOf('analytics'); if (index > -1) { // Remove addon selectedAddons.splice(index, 1); button.innerHTML = '<i></i> Add'; button.className = 'addon-action add'; card.classList.remove('selected'); alert('Advanced Analytics removed from your plan.'); } else { // Add addon selectedAddons.push('analytics'); button.innerHTML = '<i></i> Added'; button.className = 'addon-action added'; card.classList.add('selected'); alert('Advanced Analytics added to your plan.'); } updateBillingSummary(); } // Staff Add-on function function toggleStaffAddon() { const button = document.getElementById('staffAddonBtn'); const card = document.getElementById('staffAddonCard'); const index = selectedAddons.indexOf('staff'); if (index > -1) { // Remove addon selectedAddons.splice(index, 1); button.innerHTML = '<i></i> Add'; button.className = 'addon-action add'; card.classList.remove('selected'); alert('Multi-Staff Scheduling removed from your plan.'); } else { // Add addon selectedAddons.push('staff'); button.innerHTML = '<i></i> Added'; button.className = 'addon-action added'; card.classList.add('selected'); alert('Multi-Staff Scheduling added to your plan.'); } updateBillingSummary(); } // Cancellation functions function showCancellationModal() { const modal = document.getElementById('cancellationModal'); modal.classList.add('show'); } function hideCancellationModal() { const modal = document.getElementById('cancellationModal'); modal.classList.remove('show'); } function confirmCancellation() { // Show final confirmation const finalConfirm = confirm('FINAL WARNING: This will immediately cancel your subscription and remove all premium features. Are you absolutely sure?'); if (finalConfirm) { // Process cancellation processCancellation(); } } function processCancellation() { // Update plan to free currentPlan = 'free'; selectedAddons = []; // Update the display updatePlanDisplay(); updateBillingSummary(); // Hide the modal hideCancellationModal(); // Send cancellation email sendCancellationEmail(); // Show success message alert('Your subscription has been cancelled successfully.\n\nA confirmation email has been sent to your registered email address.\n\nYour account has been downgraded to the free plan. You can upgrade again at any time from this page.'); // Update the page to reflect the changes updateCancellationState(); } function sendCancellationEmail() { // In a real implementation, this would send an email via your backend // For demo purposes, we'll simulate the email being sent console.log('Cancellation email sent to business'); // You could also open the email preview in a new tab for demo purposes // window.open('email-previews/business-subscription-cancelled.html', '_blank'); } function updateCancellationState() { // Update current plan display document.getElementById('currentPlanName').textContent = 'Free Listing'; document.getElementById('currentPlanPrice').textContent = 'Free'; document.getElementById('planStatus').textContent = 'Cancelled'; // Update next payment document.getElementById('nextPaymentDate').textContent = 'No payments due'; document.querySelector('.next-payment p').textContent = 'Subscription cancelled'; // Hide cancellation section since it's now cancelled document.querySelector('.cancellation-section').style.display = 'none'; // Add reactivation section addReactivationSection(); } function addReactivationSection() { const billingSection = document.querySelector('.plan-section:last-child'); const reactivationSection = document.createElement('div'); reactivationSection.className = 'reactivation-section'; reactivationSection.innerHTML = ` <div><h4>Reactivate Your Subscription</h4><p>Your subscription has been cancelled. You can reactivate it anytime to regain access to premium features.</p><button onclick="reactivateSubscription()"><i></i> Reactivate Subscription </button></div> `; billingSection.appendChild(reactivationSection); } function reactivateSubscription() { const confirmed = confirm('Reactivate your subscription?\n\nThis will restore your previous Professional plan with all add-ons for £34/month.'); if (confirmed) { // Restore previous plan currentPlan = 'professional'; selectedAddons = ['loyalty']; // Update displays updatePlanDisplay(); updateBillingSummary(); // Remove reactivation section const reactivationSection = document.querySelector('.reactivation-section'); if (reactivationSection) { reactivationSection.remove(); } // Show cancellation section again document.querySelector('.cancellation-section').style.display = 'block'; // Update status document.getElementById('planStatus').textContent = 'Active'; document.getElementById('nextPaymentDate').textContent = '15th March 2024'; document.querySelector('.next-payment p').textContent = 'Auto-renewal enabled'; alert('Your subscription has been reactivated successfully!\n\nWelcome back to the Professional plan with all your premium features restored.'); } } // Close modal when clicking outside document.addEventListener('click', function(event) { const modal = document.getElementById('cancellationModal'); if (event.target === modal) { hideCancellationModal(); } }); </script>
         </div>
     </main>
-
-    <!-- Cancellation Modal -->
-    <div id="cancellationModal" class="cancellation-modal">
-        <div class="cancellation-modal-content">
-            <h3>⚠️ Cancel Subscription</h3>
-            <p>Are you sure you want to cancel your subscription? This action cannot be undone and will take effect immediately.</p>
-            
-            <div class="cancellation-consequences">
-                <h4>What happens when you cancel:</h4>
+    
+    <footer class="bg-[#111111] py-12 px-4">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About -->
+            <div>
+                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
+                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+            </div>
+            <!-- Links -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
                 <ul>
-                    <li><i class="fas fa-times"></i> All premium features will be disabled</li>
-                    <li><i class="fas fa-times"></i> Your business will revert to free listing</li>
-                    <li><i class="fas fa-times"></i> Photo gallery will be hidden</li>
-                    <li><i class="fas fa-times"></i> Online booking system will be disabled</li>
-                    <li><i class="fas fa-times"></i> Priority placement in search will be removed</li>
-                    <li><i class="fas fa-times"></i> Analytics dashboard will be unavailable</li>
-                    <li><i class="fas fa-times"></i> All add-ons will be removed</li>
+                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
+                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
+                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
+                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
                 </ul>
             </div>
-            
-            <div class="cancellation-buttons">
-                <button class="btn-keep-subscription" onclick="hideCancellationModal()">
-                    <i class="fas fa-arrow-left"></i> Keep Subscription
-                </button>
-                <button class="btn-confirm-cancel" onclick="confirmCancellation()">
-                    <i class="fas fa-times-circle"></i> Yes, Cancel Subscription
-                </button>
+            <!-- Legal -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
+                <ul>
+                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
+                </ul>
+            </div>
+            <!-- Social -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+                </div>
             </div>
         </div>
-    </div>
-
-    <script>
-        // Business plan management functionality
-        let currentPlan = 'professional';
-        let selectedAddons = ['loyalty'];
-        
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Page loaded, initializing...');
-            
-            // Set test data if none exists (for demo purposes)
-            if (!localStorage.getItem('businessRegistrationData')) {
-                setTestBusinessData();
-            }
-            
-            loadBusinessData();
-            console.log('Current plan after loading data:', currentPlan);
-            console.log('Selected add-ons after loading data:', selectedAddons);
-            updatePlanDisplay();
-            initializeAddonStates();
-            updateBillingSummary();
-            
-            console.log('Initialization complete');
-            
-            // Force update to ensure professional plan is displayed
-            forceProfessionalPlan();
-        });
-        
-        function forceProfessionalPlan() {
-            console.log('Forcing professional plan display...');
-            currentPlan = 'professional';
-            selectedAddons = ['loyalty', 'featured', 'analytics'];
-            
-            // Force update the display
-            document.getElementById('currentPlanName').textContent = 'Professional Plan';
-            document.getElementById('currentPlanPrice').textContent = '£29/month';
-            document.getElementById('planStatus').textContent = 'Active';
-            
-            // Update features
-            const featuresList = document.getElementById('currentPlanFeatures');
-            featuresList.innerHTML = '';
-            const professionalFeatures = [
-                'Everything in Starter',
-                'Photo gallery (up to 10 photos)',
-                'Advanced booking system',
-                'Customer management dashboard',
-                'Priority placement in search',
-                'Custom cancellation policy',
-                'Advanced analytics'
-            ];
-            
-            professionalFeatures.forEach(feature => {
-                const li = document.createElement('li');
-                li.innerHTML = `<i class="fas fa-check"></i> ${feature}`;
-                featuresList.appendChild(li);
-            });
-            
-            // Update plan option buttons
-            document.querySelectorAll('.plan-option').forEach(option => {
-                const plan = option.dataset.plan;
-                const button = option.querySelector('.plan-action');
-                
-                if (plan === 'professional') {
-                    option.classList.add('current');
-                    button.textContent = 'Current Plan';
-                    button.className = 'plan-action current';
-                } else {
-                    option.classList.remove('current');
-                    if (plan === 'free') {
-                        button.textContent = 'Downgrade to Free';
-                        button.className = 'plan-action downgrade';
-                    } else if (plan === 'starter') {
-                        button.textContent = 'Downgrade to Starter';
-                        button.className = 'plan-action downgrade';
-                    }
-                }
-            });
-            
-            // Update billing summary to reflect professional package and selected add-ons
-            updateBillingSummary();
-            
-            console.log('Professional plan display forced');
-        }
-        
-        function setTestBusinessData() {
-            // Set test business registration data for professional package
-            const testData = {
-                businessName: 'Royal Hair Studio',
-                selectedTier: 'professional',
-                category: 'hairdresser',
-                email: 'royal@hairstudio.com',
-                phone: '+44 20 7123 4567',
-                address: '123 High Street',
-                city: 'London',
-                state: 'England',
-                zipCode: 'SW1A 1AA',
-                paymentModel: 'deposit',
-                depositPercentage: 30,
-                loyaltyAddonSelected: true,
-                smsAddonSelected: false,
-                featuredAddonSelected: true,
-                socialAddonSelected: false,
-                analyticsAddonSelected: true,
-                staffAddonSelected: false
-            };
-            
-            localStorage.setItem('businessRegistrationData', JSON.stringify(testData));
-            console.log('Set test business data for professional package');
-        }
-        
-        function loadBusinessData() {
-            // Load business data from localStorage or API
-            const businessData = localStorage.getItem('businessRegistrationData');
-            if (businessData) {
-                const data = JSON.parse(businessData);
-                currentPlan = data.selectedTier || 'professional';
-                
-                // Load all selected add-ons
-                selectedAddons = [];
-                if (data.smsAddonSelected) selectedAddons.push('sms');
-                if (data.featuredAddonSelected) selectedAddons.push('featured');
-                if (data.socialAddonSelected) selectedAddons.push('social');
-                if (data.loyaltyAddonSelected) selectedAddons.push('loyalty');
-                if (data.analyticsAddonSelected) selectedAddons.push('analytics');
-                if (data.staffAddonSelected) selectedAddons.push('staff');
-            } else {
-                // If no business data found, set default to professional for demo
-                currentPlan = 'professional';
-                selectedAddons = ['loyalty']; // Default add-on for professional
-                console.log('No business registration data found, using default professional plan');
-            }
-        }
-        
-        function initializeAddonStates() {
-            // Initialize add-on button states and card highlighting based on selected add-ons
-            const addonButtons = {
-                'sms': document.getElementById('smsAddonBtn'),
-                'featured': document.getElementById('featuredAddonBtn'),
-                'social': document.getElementById('socialAddonBtn'),
-                'loyalty': document.getElementById('loyaltyAddonBtn'),
-                'analytics': document.getElementById('analyticsAddonBtn'),
-                'staff': document.getElementById('staffAddonBtn')
-            };
-            
-            const addonCards = {
-                'sms': document.getElementById('smsAddonCard'),
-                'featured': document.getElementById('featuredAddonCard'),
-                'social': document.getElementById('socialAddonCard'),
-                'loyalty': document.getElementById('loyaltyAddonCard'),
-                'analytics': document.getElementById('analyticsAddonCard'),
-                'staff': document.getElementById('staffAddonCard')
-            };
-            
-            Object.keys(addonButtons).forEach(addon => {
-                const button = addonButtons[addon];
-                const card = addonCards[addon];
-                
-                if (button && card) {
-                    if (selectedAddons.includes(addon)) {
-                        // Add-on is selected
-                        button.innerHTML = '<i class="fas fa-check"></i> Added';
-                        button.className = 'addon-action added';
-                        card.classList.add('selected');
-                    } else {
-                        // Add-on is not selected
-                        button.innerHTML = '<i class="fas fa-plus"></i> Add';
-                        button.className = 'addon-action add';
-                        card.classList.remove('selected');
-                    }
-                }
-            });
-        }
-        
-        function updatePlanDisplay() {
-            const planNames = {
-                'free': 'Free Listing',
-                'starter': 'Starter Plan',
-                'professional': 'Professional Plan'
-            };
-            
-            const planPrices = {
-                'free': 'Free',
-                'starter': '£15/month',
-                'professional': '£29/month'
-            };
-            
-            const planFeatures = {
-                'free': [
-                    'Basic business listing',
-                    'Visibility in browse and search',
-                    'Basic contact details',
-                    'Standard cancellation policy'
-                ],
-                'starter': [
-                    'Everything in Free',
-                    'Photo gallery (up to 5 photos)',
-                    'Basic booking system',
-                    'Customer reviews',
-                    'Flexible cancellation policy'
-                ],
-                'professional': [
-                    'Everything in Starter',
-                    'Photo gallery (up to 10 photos)',
-                    'Advanced booking system',
-                    'Customer management dashboard',
-                    'Priority placement in search',
-                    'Custom cancellation policy',
-                    'Advanced analytics'
-                ]
-            };
-            
-            document.getElementById('currentPlanName').textContent = planNames[currentPlan];
-            document.getElementById('currentPlanPrice').textContent = planPrices[currentPlan];
-            
-            console.log('Updated plan display:', currentPlan, planNames[currentPlan], planPrices[currentPlan]);
-            
-            // Update plan features
-            const featuresList = document.getElementById('currentPlanFeatures');
-            featuresList.innerHTML = '';
-            planFeatures[currentPlan].forEach(feature => {
-                const li = document.createElement('li');
-                li.innerHTML = `<i class="fas fa-check"></i> ${feature}`;
-                featuresList.appendChild(li);
-            });
-            
-            // Update plan option buttons
-            document.querySelectorAll('.plan-option').forEach(option => {
-                const plan = option.dataset.plan;
-                const button = option.querySelector('.plan-action');
-                
-                if (plan === currentPlan) {
-                    option.classList.add('current');
-                    button.textContent = 'Current Plan';
-                    button.className = 'plan-action current';
-                } else {
-                    option.classList.remove('current');
-                    if (plan === 'free') {
-                        button.textContent = 'Downgrade to Free';
-                        button.className = 'plan-action downgrade';
-                    } else if (plan === 'starter') {
-                        button.textContent = 'Downgrade to Starter';
-                        button.className = 'plan-action downgrade';
-                    } else if (plan === 'professional') {
-                        button.textContent = 'Upgrade to Professional';
-                        button.className = 'plan-action upgrade';
-                    }
-                }
-            });
-        }
-        
-        function updateBillingSummary() {
-            const planCosts = {
-                'free': 0,
-                'starter': 15,
-                'professional': 29
-            };
-            
-            const planNames = {
-                'free': 'Free Listing',
-                'starter': 'Starter Plan',
-                'professional': 'Professional Plan'
-            };
-            
-            const addonCosts = {
-                'sms': 3,
-                'featured': 5,
-                'social': 4,
-                'loyalty': 5,
-                'analytics': 5,
-                'staff': 2
-            };
-            
-            const addonNames = {
-                'sms': 'Extra SMS Credits',
-                'featured': 'Featured Listing',
-                'social': 'Instagram/TikTok Widget',
-                'loyalty': 'Customer Loyalty Rewards',
-                'analytics': 'Advanced Analytics',
-                'staff': 'Multi-Staff Scheduling'
-            };
-            
-            const planCost = planCosts[currentPlan];
-            const totalAddonCost = selectedAddons.reduce((total, addon) => total + (addonCosts[addon] || 0), 0);
-            const totalCost = planCost + totalAddonCost;
-            
-            // Update plan billing item
-            const planBillingItem = document.getElementById('planBillingItem');
-            if (planBillingItem) {
-                planBillingItem.innerHTML = `<span>${planNames[currentPlan]}</span><span>£${planCost}.00/month</span>`;
-            }
-            
-            // Update individual add-ons billing items
-            const addonsBillingContainer = document.getElementById('addonsBillingContainer');
-            if (addonsBillingContainer) {
-                // Clear existing add-on items
-                addonsBillingContainer.innerHTML = '';
-                
-                // Add each selected add-on as a separate billing item
-                selectedAddons.forEach(addon => {
-                    const addonItem = document.createElement('div');
-                    addonItem.className = 'billing-item';
-                    addonItem.innerHTML = `<span>${addonNames[addon]}</span><span>£${addonCosts[addon]}.00/month</span>`;
-                    addonsBillingContainer.appendChild(addonItem);
-                });
-            }
-            
-            // Update total billing amount
-            const totalBillingAmount = document.getElementById('totalBillingAmount');
-            if (totalBillingAmount) {
-                totalBillingAmount.textContent = `£${totalCost}.00`;
-            }
-            
-            console.log('Billing summary updated:', {
-                plan: currentPlan,
-                planCost: planCost,
-                addons: selectedAddons,
-                addonCost: totalAddonCost,
-                totalCost: totalCost
-            });
-            
-            // Log each add-on being processed
-            selectedAddons.forEach(addon => {
-                console.log(`Add-on: ${addonNames[addon]} - £${addonCosts[addon]}/month`);
-            });
-        }
-        
-        function changePlan(newPlan) {
-            if (newPlan === currentPlan) return;
-            
-            const planNames = {
-                'free': 'Free Listing',
-                'starter': 'Starter Plan',
-                'professional': 'Professional Plan'
-            };
-            
-            const confirmed = confirm(`Are you sure you want to change to ${planNames[newPlan]}?\n\nThis change will take effect immediately.`);
-            
-            if (confirmed) {
-                // Send appropriate email based on plan change direction
-                if (isDowngrade(currentPlan, newPlan)) {
-                    sendDowngradeEmail(currentPlan, newPlan);
-                } else if (isUpgrade(currentPlan, newPlan)) {
-                    sendUpgradeEmail(currentPlan, newPlan);
-                }
-                
-                currentPlan = newPlan;
-                updatePlanDisplay();
-                updateBillingSummary();
-                
-                // Show success message
-                alert(`Successfully changed to ${planNames[newPlan]}!\n\nA confirmation email has been sent to your registered email address.`);
-            }
-        }
-        
-        function isDowngrade(fromPlan, toPlan) {
-            const planOrder = { 'professional': 3, 'starter': 2, 'free': 1 };
-            return planOrder[fromPlan] > planOrder[toPlan];
-        }
-        
-        function isUpgrade(fromPlan, toPlan) {
-            const planOrder = { 'professional': 3, 'starter': 2, 'free': 1 };
-            return planOrder[fromPlan] < planOrder[toPlan];
-        }
-        
-        function sendDowngradeEmail(fromPlan, toPlan) {
-            let emailTemplate = '';
-            
-            if (fromPlan === 'professional' && toPlan === 'starter') {
-                emailTemplate = 'business-downgrade-professional-to-starter.html';
-            } else if (fromPlan === 'professional' && toPlan === 'free') {
-                emailTemplate = 'business-downgrade-professional-to-free.html';
-            } else if (fromPlan === 'starter' && toPlan === 'free') {
-                emailTemplate = 'business-downgrade-starter-to-free.html';
-            }
-            
-            if (emailTemplate) {
-                // In a real implementation, this would send an email via your backend
-                // For demo purposes, we'll log the email being sent
-                console.log(`Downgrade email sent: ${emailTemplate}`);
-                
-                // You could also open the email preview in a new tab for demo purposes
-                // window.open(`email-previews/${emailTemplate}`, '_blank');
-            }
-        }
-        
-        function sendUpgradeEmail(fromPlan, toPlan) {
-            let emailTemplate = '';
-            
-            if (fromPlan === 'free' && toPlan === 'starter') {
-                emailTemplate = 'business-upgrade-free-to-starter.html';
-            } else if (fromPlan === 'free' && toPlan === 'professional') {
-                emailTemplate = 'business-upgrade-free-to-professional.html';
-            } else if (fromPlan === 'starter' && toPlan === 'professional') {
-                emailTemplate = 'business-upgrade-starter-to-professional.html';
-            }
-            
-            if (emailTemplate) {
-                // In a real implementation, this would send an email via your backend
-                // For demo purposes, we'll log the email being sent
-                console.log(`Upgrade email sent: ${emailTemplate}`);
-                
-                // You could also open the email preview in a new tab for demo purposes
-                // window.open(`email-previews/${emailTemplate}`, '_blank');
-            }
-        }
-        
-        // SMS Add-on function
-        function toggleSMSAddon() {
-            const button = document.getElementById('smsAddonBtn');
-            const card = document.getElementById('smsAddonCard');
-            const index = selectedAddons.indexOf('sms');
-            
-            if (index > -1) {
-                // Remove addon
-                selectedAddons.splice(index, 1);
-                button.innerHTML = '<i class="fas fa-plus"></i> Add';
-                button.className = 'addon-action add';
-                card.classList.remove('selected');
-                alert('Extra SMS Credits removed from your plan.');
-            } else {
-                // Add addon
-                selectedAddons.push('sms');
-                button.innerHTML = '<i class="fas fa-check"></i> Added';
-                button.className = 'addon-action added';
-                card.classList.add('selected');
-                alert('Extra SMS Credits added to your plan.');
-            }
-            
-            updateBillingSummary();
-        }
-        
-        // Featured Add-on function
-        function toggleFeaturedAddon() {
-            const button = document.getElementById('featuredAddonBtn');
-            const card = document.getElementById('featuredAddonCard');
-            const index = selectedAddons.indexOf('featured');
-            
-            if (index > -1) {
-                // Remove addon
-                selectedAddons.splice(index, 1);
-                button.innerHTML = '<i class="fas fa-plus"></i> Add';
-                button.className = 'addon-action add';
-                card.classList.remove('selected');
-                alert('Featured Listing removed from your plan.');
-            } else {
-                // Add addon
-                selectedAddons.push('featured');
-                button.innerHTML = '<i class="fas fa-check"></i> Added';
-                button.className = 'addon-action added';
-                card.classList.add('selected');
-                alert('Featured Listing added to your plan.');
-            }
-            
-            updateBillingSummary();
-        }
-        
-        // Social Add-on function
-        function toggleSocialAddon() {
-            const button = document.getElementById('socialAddonBtn');
-            const card = document.getElementById('socialAddonCard');
-            const index = selectedAddons.indexOf('social');
-            
-            if (index > -1) {
-                // Remove addon
-                selectedAddons.splice(index, 1);
-                button.innerHTML = '<i class="fas fa-plus"></i> Add';
-                button.className = 'addon-action add';
-                card.classList.remove('selected');
-                alert('Instagram/TikTok Widget removed from your plan.');
-            } else {
-                // Add addon
-                selectedAddons.push('social');
-                button.innerHTML = '<i class="fas fa-check"></i> Added';
-                button.className = 'addon-action added';
-                card.classList.add('selected');
-                alert('Instagram/TikTok Widget added to your plan.');
-            }
-            
-            updateBillingSummary();
-        }
-        
-        // Loyalty Add-on function
-        function toggleLoyaltyAddon() {
-            const button = document.getElementById('loyaltyAddonBtn');
-            const card = document.getElementById('loyaltyAddonCard');
-            const index = selectedAddons.indexOf('loyalty');
-            
-            if (index > -1) {
-                // Remove addon
-                selectedAddons.splice(index, 1);
-                button.innerHTML = '<i class="fas fa-plus"></i> Add';
-                button.className = 'addon-action add';
-                card.classList.remove('selected');
-                alert('Customer Loyalty Rewards removed from your plan.');
-            } else {
-                // Add addon
-                selectedAddons.push('loyalty');
-                button.innerHTML = '<i class="fas fa-check"></i> Added';
-                button.className = 'addon-action added';
-                card.classList.add('selected');
-                alert('Customer Loyalty Rewards added to your plan.');
-            }
-            
-            updateBillingSummary();
-        }
-        
-        // Analytics Add-on function
-        function toggleAnalyticsAddon() {
-            const button = document.getElementById('analyticsAddonBtn');
-            const card = document.getElementById('analyticsAddonCard');
-            const index = selectedAddons.indexOf('analytics');
-            
-            if (index > -1) {
-                // Remove addon
-                selectedAddons.splice(index, 1);
-                button.innerHTML = '<i class="fas fa-plus"></i> Add';
-                button.className = 'addon-action add';
-                card.classList.remove('selected');
-                alert('Advanced Analytics removed from your plan.');
-            } else {
-                // Add addon
-                selectedAddons.push('analytics');
-                button.innerHTML = '<i class="fas fa-check"></i> Added';
-                button.className = 'addon-action added';
-                card.classList.add('selected');
-                alert('Advanced Analytics added to your plan.');
-            }
-            
-            updateBillingSummary();
-        }
-        
-        // Staff Add-on function
-        function toggleStaffAddon() {
-            const button = document.getElementById('staffAddonBtn');
-            const card = document.getElementById('staffAddonCard');
-            const index = selectedAddons.indexOf('staff');
-            
-            if (index > -1) {
-                // Remove addon
-                selectedAddons.splice(index, 1);
-                button.innerHTML = '<i class="fas fa-plus"></i> Add';
-                button.className = 'addon-action add';
-                card.classList.remove('selected');
-                alert('Multi-Staff Scheduling removed from your plan.');
-            } else {
-                // Add addon
-                selectedAddons.push('staff');
-                button.innerHTML = '<i class="fas fa-check"></i> Added';
-                button.className = 'addon-action added';
-                card.classList.add('selected');
-                alert('Multi-Staff Scheduling added to your plan.');
-            }
-            
-            updateBillingSummary();
-        }
-        
-        // Cancellation functions
-        function showCancellationModal() {
-            const modal = document.getElementById('cancellationModal');
-            modal.classList.add('show');
-        }
-        
-        function hideCancellationModal() {
-            const modal = document.getElementById('cancellationModal');
-            modal.classList.remove('show');
-        }
-        
-        function confirmCancellation() {
-            // Show final confirmation
-            const finalConfirm = confirm('FINAL WARNING: This will immediately cancel your subscription and remove all premium features. Are you absolutely sure?');
-            
-            if (finalConfirm) {
-                // Process cancellation
-                processCancellation();
-            }
-        }
-        
-        function processCancellation() {
-            // Update plan to free
-            currentPlan = 'free';
-            selectedAddons = [];
-            
-            // Update the display
-            updatePlanDisplay();
-            updateBillingSummary();
-            
-            // Hide the modal
-            hideCancellationModal();
-            
-            // Send cancellation email
-            sendCancellationEmail();
-            
-            // Show success message
-            alert('Your subscription has been cancelled successfully.\n\nA confirmation email has been sent to your registered email address.\n\nYour account has been downgraded to the free plan. You can upgrade again at any time from this page.');
-            
-            // Update the page to reflect the changes
-            updateCancellationState();
-        }
-        
-        function sendCancellationEmail() {
-            // In a real implementation, this would send an email via your backend
-            // For demo purposes, we'll simulate the email being sent
-            console.log('Cancellation email sent to business');
-            
-            // You could also open the email preview in a new tab for demo purposes
-            // window.open('email-previews/business-subscription-cancelled.html', '_blank');
-        }
-        
-        function updateCancellationState() {
-            // Update current plan display
-            document.getElementById('currentPlanName').textContent = 'Free Listing';
-            document.getElementById('currentPlanPrice').textContent = 'Free';
-            document.getElementById('planStatus').textContent = 'Cancelled';
-            
-            // Update next payment
-            document.getElementById('nextPaymentDate').textContent = 'No payments due';
-            document.querySelector('.next-payment p').textContent = 'Subscription cancelled';
-            
-            // Hide cancellation section since it's now cancelled
-            document.querySelector('.cancellation-section').style.display = 'none';
-            
-            // Add reactivation section
-            addReactivationSection();
-        }
-        
-        function addReactivationSection() {
-            const billingSection = document.querySelector('.plan-section:last-child');
-            
-            const reactivationSection = document.createElement('div');
-            reactivationSection.className = 'reactivation-section';
-            reactivationSection.innerHTML = `
-                <div style="background: #1a3a1a; border: 1px solid #28a745; border-radius: 10px; padding: 1.5rem; margin-top: 2rem; text-align: center;">
-                    <h4 style="color: #28a745; margin-bottom: 1rem;">Reactivate Your Subscription</h4>
-                    <p style="color: #cccccc; margin-bottom: 1.5rem;">Your subscription has been cancelled. You can reactivate it anytime to regain access to premium features.</p>
-                    <button class="btn-reactivate" onclick="reactivateSubscription()" style="background: #28a745; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
-                        <i class="fas fa-undo"></i> Reactivate Subscription
-                    </button>
-                </div>
-            `;
-            
-            billingSection.appendChild(reactivationSection);
-        }
-        
-        function reactivateSubscription() {
-            const confirmed = confirm('Reactivate your subscription?\n\nThis will restore your previous Professional plan with all add-ons for £34/month.');
-            
-            if (confirmed) {
-                // Restore previous plan
-                currentPlan = 'professional';
-                selectedAddons = ['loyalty'];
-                
-                // Update displays
-                updatePlanDisplay();
-                updateBillingSummary();
-                
-                // Remove reactivation section
-                const reactivationSection = document.querySelector('.reactivation-section');
-                if (reactivationSection) {
-                    reactivationSection.remove();
-                }
-                
-                // Show cancellation section again
-                document.querySelector('.cancellation-section').style.display = 'block';
-                
-                // Update status
-                document.getElementById('planStatus').textContent = 'Active';
-                document.getElementById('nextPaymentDate').textContent = '15th March 2024';
-                document.querySelector('.next-payment p').textContent = 'Auto-renewal enabled';
-                
-                alert('Your subscription has been reactivated successfully!\n\nWelcome back to the Professional plan with all your premium features restored.');
-            }
-        }
-        
-        // Close modal when clicking outside
-        document.addEventListener('click', function(event) {
-            const modal = document.getElementById('cancellationModal');
-            if (event.target === modal) {
-                hideCancellationModal();
-            }
-        });
-    </script>
+        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
+            <p>&copy; 2024 BlkPages. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
