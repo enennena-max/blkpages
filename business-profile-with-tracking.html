@@ -167,13 +167,60 @@
       pointer-events: none;
     }
     
-    @keyframes particleFloat {
-      0% { transform: translateY(0px) translateX(0px); }
-      25% { transform: translateY(-100px) translateX(50px); }
-      50% { transform: translateY(-200px) translateX(0px); }
-      75% { transform: translateY(-100px) translateX(-50px); }
-      100% { transform: translateY(0px) translateX(0px); }
-    }
+      @keyframes particleFloat {
+        0% { transform: translateY(0px) translateX(0px); }
+        25% { transform: translateY(-100px) translateX(50px); }
+        50% { transform: translateY(-200px) translateX(0px); }
+        75% { transform: translateY(-100px) translateX(-50px); }
+        100% { transform: translateY(0px) translateX(0px); }
+      }
+
+      /* BOOK NOW MODAL STYLES */
+      .modal{
+        position:fixed;inset:0;background:rgba(0,0,0,0.7);
+        display:none;align-items:center;justify-content:center;
+        z-index:50;padding:20px;
+      }
+      .modal .sheet{
+        position:relative;
+        background:#111;border:1px solid rgba(255,215,0,0.35);
+        border-radius:12px;padding:32px;max-width:420px;width:100%;
+        text-align:center;color:#fff;
+      }
+      .modal h3{margin-top:0;margin-bottom:12px}
+      .modal .hint{color:#ccc;font-size:0.95rem;margin-bottom:20px}
+      .modal .hint.small{font-size:0.85rem;margin-top:8px}
+      .modal-actions{display:flex;flex-direction:column;gap:10px}
+      .btn{
+        background:#FFD700;color:#111;border:none;border-radius:8px;
+        padding:12px 16px;font-weight:600;cursor:pointer;
+        transition:background .25s;
+      }
+      .btn:hover{background:#ffdf33}
+      .btn-ghost{
+        background:#222;border:1px solid rgba(255,215,0,0.35);
+        color:#FFD700;
+      }
+      .btn-ghost:hover{background:#333}
+      .btn-outline{
+        background:transparent;border:1px solid #FFD700;
+        color:#FFD700;
+      }
+      .btn-outline:hover{background:#FFD700;color:#111}
+      .close-btn{
+        position:absolute;top:10px;right:14px;background:none;
+        border:none;color:#FFD700;font-size:1.5rem;cursor:pointer;
+      }
+      .divider{height:1px;background:rgba(255,215,0,0.25);margin:20px 0 10px}
+      
+      /* AUTHENTICATION MODAL STYLES */
+      .auth-sheet{max-width:420px;padding:32px;background:#111;border:1px solid rgba(255,215,0,0.35);border-radius:12px;color:#fff;text-align:left;}
+      .form-group{margin-top:14px;}
+      label{display:block;font-size:0.9rem;margin-bottom:4px;}
+      input[type="email"],input[type="password"],input[type="text"]{
+        width:100%;padding:12px;border-radius:8px;border:1px solid rgba(255,215,0,0.35);
+        background:#0E0E0E;color:#fff;font-size:1rem;
+      }
     
     /* ⚠️ DO NOT CHANGE ANYTHING UNLESS TOLD */
     
@@ -933,6 +980,10 @@
       <a href="#about">About</a>
       <a href="#services">Services</a>
       <a href="#contact">Contact</a>
+      <div id="headerAuth">
+        <a href="#" id="openSignIn" class="nav-link">Sign In</a>
+        <a href="#" id="openSignUp" class="nav-link">Sign Up</a>
+      </div>
       <div class="menu-icon" id="menuToggle">&#9776;</div>
                     </nav>
   </header>
@@ -958,7 +1009,7 @@
     <section class="info">
       <p class="subtitle">Professional hair care services for all hair types</p>
       <div class="cta-buttons">
-        <a href="#" class="btn-primary">Book Now</a>
+        <a href="#" class="btn-primary book-now" data-business="Royal Hair Studio">Book Now</a>
         <a href="tel:+442071234567" class="btn-secondary">Call</a>
         <a href="mailto:info@royalhairstudio.com" class="btn-secondary">Email</a>
                         </div>
@@ -1125,8 +1176,232 @@
           // Removed: toggleBtn.classList.toggle('active', isExpanded);
         });
       }
+
+      /* BOOK NOW MODAL FUNCTIONALITY */
+      // Open modal when any "Book Now" is clicked
+      document.querySelectorAll('.book-now').forEach(btn=>{
+        btn.addEventListener('click', e=>{
+          e.preventDefault();
+          const businessSlug = btn.dataset.business || 'selected-business';
+          const modal = document.getElementById('bookingChoiceModal');
+          modal.dataset.business = businessSlug;
+          modal.style.display='flex';
+        });
+      });
+
+      // Close modal
+      document.getElementById('closeChoice').onclick = () =>
+        document.getElementById('bookingChoiceModal').style.display='none';
+
+      // Continue as guest
+      document.getElementById('guestBtn').onclick = () => {
+        const b = document.getElementById('bookingChoiceModal').dataset.business;
+        window.location.href = `booking.html?business=${encodeURIComponent(b)}`;
+      };
+
+      // Sign in
+      document.getElementById('signInBtn').onclick = () => {
+        document.getElementById('bookingChoiceModal').style.display='none';
+        document.getElementById('signInModal').style.display='flex';
+      };
+
+      // Sign up
+      document.getElementById('signUpBtn').onclick = () => {
+        document.getElementById('bookingChoiceModal').style.display='none';
+        document.getElementById('signUpModal').style.display='flex';
+      };
+
+      /* AUTHENTICATION MODAL FUNCTIONALITY */
+      const signInModal = document.getElementById('signInModal');
+      const signUpModal = document.getElementById('signUpModal');
+
+      function openModal(modal){ modal.style.display='flex'; }
+      function closeModal(modal){ modal.style.display='none'; }
+
+      function validateEmail(v){ return /\S+@\S+\.\S+/.test(v); }
+
+      // Close modal handlers
+      document.getElementById('closeSignIn').onclick = ()=>closeModal(signInModal);
+      document.getElementById('closeSignUp').onclick = ()=>closeModal(signUpModal);
+
+      // Switch between modals
+      document.getElementById('goToSignup').onclick = (e)=>{e.preventDefault();closeModal(signInModal);openModal(signUpModal);}
+      document.getElementById('goToSignin').onclick = (e)=>{e.preventDefault();closeModal(signUpModal);openModal(signInModal);}
+
+      /* -------- Sign In -------- */
+      document.getElementById('signinSubmit').onclick = ()=>{
+        const email = document.getElementById('signinEmail').value.trim();
+        const pass = document.getElementById('signinPassword').value.trim();
+        const err = document.getElementById('signinError');
+        if(!email || !pass) { err.textContent='Please enter email and password.'; err.style.display='block'; return; }
+        if(!validateEmail(email)){ err.textContent='Enter a valid email.'; err.style.display='block'; return; }
+        err.style.display='none';
+        // Simulated login success
+        localStorage.setItem('blkpages_user', email);
+        closeModal(signInModal);
+        alert('Signed in successfully');
+      };
+
+      /* -------- Sign Up -------- */
+      document.getElementById('signupSubmit').onclick = ()=>{
+        const name = document.getElementById('signupName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const pass = document.getElementById('signupPassword').value.trim();
+        const err = document.getElementById('signupError');
+        if(!name || !email || !pass){ err.textContent='All fields are required.'; err.style.display='block'; return; }
+        if(!validateEmail(email)){ err.textContent='Enter a valid email.'; err.style.display='block'; return; }
+        err.style.display='none';
+        localStorage.setItem('blkpages_user', email);
+        closeModal(signUpModal);
+        alert('Account created successfully');
+      };
+
+      /* Optional: close when clicking outside */
+      window.addEventListener('click',(e)=>{
+        if(e.target===signInModal) closeModal(signInModal);
+        if(e.target===signUpModal) closeModal(signUpModal);
+      });
+
+      /* 🔐 BlkPages login state handling */
+      function updateHeaderAuth() {
+        const user = localStorage.getItem('blkpages_user');
+        const headerAuth = document.getElementById('headerAuth'); // a wrapper div or nav item area
+
+        if (!headerAuth) return;
+
+        if (user) {
+          headerAuth.innerHTML = `
+            <div class="auth-logged-in">
+              <a href="/account.html" class="nav-link">My Account</a>
+              <a href="#" id="logoutLink" class="nav-link">Sign Out</a>
+            </div>
+          `;
+          document.getElementById('logoutLink').addEventListener('click', e => {
+            e.preventDefault();
+            localStorage.removeItem('blkpages_user');
+            location.reload();
+          });
+        } else {
+          headerAuth.innerHTML = `
+            <div class="auth-guest">
+              <a href="#" id="openSignIn" class="nav-link">Sign In</a>
+              <a href="#" id="openSignUp" class="nav-link">Sign Up</a>
+            </div>
+          `;
+
+          // Open your modals if defined
+          const signInModal = document.getElementById('signInModal');
+          const signUpModal = document.getElementById('signUpModal');
+
+          document.getElementById('openSignIn').addEventListener('click', e => {
+            e.preventDefault();
+            if (signInModal) signInModal.style.display = 'flex';
+          });
+
+          document.getElementById('openSignUp').addEventListener('click', e => {
+            e.preventDefault();
+            if (signUpModal) signUpModal.style.display = 'flex';
+          });
+        }
+      }
+
+      // Ensure header updates on every page load
+      document.addEventListener('DOMContentLoaded', updateHeaderAuth);
+
+      // 👇 Integration with Book Now modal logic
+      const bookNowButtons = document.querySelectorAll('.book-now');
+      bookNowButtons.forEach(btn => {
+        btn.addEventListener('click', e => {
+          const user = localStorage.getItem('blkpages_user');
+          const business = btn.dataset.business || 'selected-business';
+          if (user) {
+            // Skip sign-in modal, go straight to booking page
+            window.location.href = `/booking.html?business=${encodeURIComponent(business)}`;
+          } else {
+            // Show Book Now choice modal (guest / sign in / sign up)
+            const modal = document.getElementById('bookingChoiceModal');
+            if (modal) {
+              e.preventDefault();
+              modal.dataset.business = business;
+              modal.style.display = 'flex';
+            }
+          }
+        });
+      });
     });
   </script>
+
+  <!-- BOOK NOW MODAL -->
+  <div id="bookingChoiceModal" class="modal">
+    <div class="sheet">
+      <h3>Book your appointment</h3>
+      <p class="hint">Choose how you'd like to continue</p>
+      <div class="modal-actions">
+        <button id="guestBtn" class="btn">Continue as Guest</button>
+        <button id="signInBtn" class="btn-ghost">Sign In</button>
+        <button id="signUpBtn" class="btn-outline">Create Account</button>
+      </div>
+      <div class="divider"></div>
+      <p class="hint small">You can still create an account later to manage bookings easily.</p>
+      <button id="closeChoice" class="close-btn">×</button>
+    </div>
+  </div>
+
+  <!-- 🔐 SIGN IN MODAL -->
+  <div id="signInModal" class="modal">
+    <div class="sheet auth-sheet">
+      <button class="close-btn" id="closeSignIn">×</button>
+      <h3>Welcome back</h3>
+      <p class="hint">Sign in to manage your bookings and profile.</p>
+
+      <div class="form-group">
+        <label for="signinEmail">Email</label>
+        <input id="signinEmail" type="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label for="signinPassword">Password</label>
+        <input id="signinPassword" type="password" placeholder="••••••••" required>
+      </div>
+
+      <div id="signinError" class="error" style="display:none;margin-top:6px;"></div>
+
+      <button id="signinSubmit" class="btn" style="margin-top:14px;">Sign In</button>
+      <p class="hint small" style="margin-top:14px;">
+        Don't have an account?
+        <a href="#" id="goToSignup">Create one</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- 🆕 SIGN UP MODAL -->
+  <div id="signUpModal" class="modal">
+    <div class="sheet auth-sheet">
+      <button class="close-btn" id="closeSignUp">×</button>
+      <h3>Create your account</h3>
+      <p class="hint">Join BlkPages to track bookings and unlock rewards.</p>
+
+      <div class="form-group">
+        <label for="signupName">Full name</label>
+        <input id="signupName" type="text" placeholder="Your name" required>
+      </div>
+      <div class="form-group">
+        <label for="signupEmail">Email</label>
+        <input id="signupEmail" type="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label for="signupPassword">Password</label>
+        <input id="signupPassword" type="password" placeholder="••••••••" required>
+      </div>
+
+      <div id="signupError" class="error" style="display:none;margin-top:6px;"></div>
+
+      <button id="signupSubmit" class="btn" style="margin-top:14px;">Create Account</button>
+      <p class="hint small" style="margin-top:14px;">
+        Already have an account?
+        <a href="#" id="goToSignin">Sign in</a>
+      </p>
+    </div>
+  </div>
 
 </body>
 </html>

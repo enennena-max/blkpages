@@ -47,6 +47,134 @@
     75% { transform: translateY(-100px) translateX(-50px); }
     100% { transform: translateY(0px) translateX(0px); }
   }
+
+  /* ================================================
+     🖤 BLKPAGES FEATURED LISTINGS FIX
+     ================================================ */
+
+  .featured-listings {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem; /* consistent space between cards */
+    padding: 2rem 0;
+  }
+
+  .business-card {
+    background: #111111;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+    overflow: hidden;
+    width: 260px;
+    height: 390px; /* consistent height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .business-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.4);
+  }
+
+  /* Image area */
+  .business-card img {
+    width: 100%;
+    height: 160px; /* uniform image height */
+    object-fit: cover;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+  }
+
+  /* Text area */
+  .business-card h3 {
+    font-size: 1rem;
+    color: #FFD700;
+    margin: 1rem 1rem 0.3rem;
+  }
+
+  .business-card p {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin: 0 1rem 0.5rem;
+  }
+
+  .business-card small {
+    color: #999;
+    font-size: 0.8rem;
+    margin: 0 1rem 1rem;
+  }
+
+  /* BOOK NOW button */
+  .business-card .book-btn {
+    background: #FFD700;
+    border: none;
+    color: #000;
+    font-weight: 600;
+    margin: 0 1rem 0.8rem;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+
+  .business-card .book-btn:hover {
+    background: #FFD700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+  }
+
+  /* Bottom CTA buttons */
+  .card-cta {
+    display: flex;
+    justify-content: space-around;
+    padding: 0.6rem 0.5rem 1rem;
+    border-top: 1px solid rgba(255, 215, 0, 0.1);
+  }
+
+  .card-cta button {
+    background: transparent;
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    color: #FFD700;
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    transition: 0.3s;
+  }
+
+  .card-cta button:hover {
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.6);
+  }
+
+  /* Headings */
+  h2.section-title {
+    color: #FFD700;
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 0.5px;
+    margin: 2rem 0 1rem;
+    border-bottom: 2px solid #FFD700;
+    display: inline-block;
+  }
+
+  /* Responsive layout */
+  @media (max-width: 768px) {
+    .business-card {
+      width: 90%;
+      height: auto;
+    }
+
+    .featured-listings {
+      gap: 1rem;
+    }
+
+    .business-card img {
+      height: 200px;
+    }
+  }
+
   
   /* Glassmorphism Effect for Search Bar */
   .glass{
@@ -82,15 +210,47 @@
 
   /* Primary Search CTA - Gold Gradient */
   .search-cta-btn {
-    background:linear-gradient(90deg,#FFD35C,#D4AF37);
-    color:#000; 
-    transition: transform 0.1s ease, filter 0.1s ease;
+    background: linear-gradient(90deg, #FFD35C, #D4AF37);
+    color: #000;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
     border-radius: 8px;
     font-weight: bold;
+    box-shadow: 
+      0 8px 25px rgba(212, 175, 55, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
-  .search-cta-btn:hover{filter:brightness(1.03);transform:translateY(-1px)}
-  .search-cta-btn:active{transform:translateY(0);filter:brightness(1)}
+  
+  .search-cta-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .search-cta-btn:hover {
+    background: linear-gradient(90deg, #FFB700, #FFD700);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 
+      0 15px 35px rgba(212, 175, 55, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  
+  .search-cta-btn:hover::before {
+    left: 100%;
+  }
+  
+  .search-cta-btn:active {
+    transform: translateY(-1px) scale(1.02);
+  }
 
   /* Secondary/Subtle CTA Buttons (cta-btn) */
   .cta-btn {
@@ -98,17 +258,35 @@
     padding: 8px 16px;
     font-size: 0.9rem;
     font-weight: 500;
-    transition: all 0.3s ease;
-    background: none;
-    border: 1px solid #3a3a3a;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
+    border: 1px solid #D4AF37;
     color: #D4AF37;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cta-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: #D4AF37;
+    transition: width 0.3s ease;
+    z-index: -1;
   }
   
   .cta-btn:hover {
-    transform: scale(1.03);
-    opacity: 0.9;
-    border-color: #D4AF37;
-    color: #D4AF37;
+    transform: translateY(-2px) scale(1.03);
+    color: #000;
+    border-color: #FFD35C;
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+  }
+  
+  .cta-btn:hover::before {
+    width: 100%;
   }
 
   /* Outline Icons (for star, etc.) */
@@ -503,14 +681,16 @@
                         </div>
                         
                     <!-- Sign In / Sign Up (for signed out users) -->
-                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
-                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
-                            </button>
-                        <span class="text-gray-400">/</span>
-                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
-                            <i class="fas fa-user-plus mr-1"></i>Sign Up
-                            </a>
+                    <div id="headerAuth">
+                        <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                            <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                                <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                                </button>
+                            <span class="text-gray-400">/</span>
+                            <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                                <i class="fas fa-user-plus mr-1"></i>Sign Up
+                                </a>
+                            </div>
                         </div>
                     
                     <!-- Customer Menu (for logged-in users) -->
@@ -1092,14 +1272,82 @@ function share(name){
   }
 }
 
-// scroll progress calculation and update
-const prog = document.getElementById('progress');
-window.addEventListener('scroll', () => {
-  const h = document.documentElement;
-  // Calculate scroll percentage: (Scrolled amount) / (Total scrollable height)
-  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
-  prog.style.width = (scrolled * 100) + '%';
-}, { passive: true });
+  // scroll progress calculation and update
+  const prog = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    // Calculate scroll percentage: (Scrolled amount) / (Total scrollable height)
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+    prog.style.width = (scrolled * 100) + '%';
+  }, { passive: true });
+
+  // 🔐 BlkPages login state handling
+  function updateHeaderAuth() {
+    const user = localStorage.getItem('blkpages_user');
+    const headerAuth = document.getElementById('headerAuth'); // a wrapper div or nav item area
+
+    if (!headerAuth) return;
+
+    if (user) {
+      headerAuth.innerHTML = `
+        <div class="auth-logged-in">
+          <a href="/account.html" class="nav-link">My Account</a>
+          <a href="#" id="logoutLink" class="nav-link">Sign Out</a>
+        </div>
+      `;
+      document.getElementById('logoutLink').addEventListener('click', e => {
+        e.preventDefault();
+        localStorage.removeItem('blkpages_user');
+        location.reload();
+      });
+    } else {
+      headerAuth.innerHTML = `
+        <div class="auth-guest">
+          <a href="#" id="openSignIn" class="nav-link">Sign In</a>
+          <a href="#" id="openSignUp" class="nav-link">Sign Up</a>
+        </div>
+      `;
+
+      // Open your modals if defined
+      const signInModal = document.getElementById('signInModal');
+      const signUpModal = document.getElementById('signUpModal');
+
+      document.getElementById('openSignIn').addEventListener('click', e => {
+        e.preventDefault();
+        if (signInModal) signInModal.style.display = 'flex';
+      });
+
+      document.getElementById('openSignUp').addEventListener('click', e => {
+        e.preventDefault();
+        if (signUpModal) signUpModal.style.display = 'flex';
+      });
+    }
+  }
+
+  // Ensure header updates on every page load
+  document.addEventListener('DOMContentLoaded', updateHeaderAuth);
+
+  // 👇 Integration with Book Now modal logic
+  const bookNowButtons = document.querySelectorAll('.book-now');
+  bookNowButtons.forEach(btn => {
+    btn.addEventListener('click', e => {
+      const user = localStorage.getItem('blkpages_user');
+      const business = btn.dataset.business || 'selected-business';
+      if (user) {
+        // Skip sign-in modal, go straight to booking page
+        window.location.href = `/booking.html?business=${encodeURIComponent(business)}`;
+      } else {
+        // Show Book Now choice modal (guest / sign in / sign up)
+        const modal = document.getElementById('bookingChoiceModal');
+        if (modal) {
+          e.preventDefault();
+          modal.dataset.business = business;
+          modal.style.display = 'flex';
+        }
+      }
+    });
+  });
+
 </script>
                             </div>
     </main>

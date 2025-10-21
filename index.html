@@ -57,11 +57,11 @@
         }
         
         .hero-gradient-bg {
-<<<<<<< HEAD
             background: 
                 radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.2) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(255, 211, 92, 0.15) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(198, 139, 30, 0.1) 0%, transparent 50%),
+                url('/Users/nnenaene/Downloads/gold map2.PNG') center center/cover no-repeat,
                 #0A0A0A;
             position: relative;
             overflow: hidden;
@@ -76,7 +76,8 @@
             bottom: 0;
             background: 
                 radial-gradient(circle at 30% 70%, rgba(255, 211, 92, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 70% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 40%);
+                radial-gradient(circle at 70% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+                url('/Users/nnenaene/Downloads/gold map2.PNG') center center/cover no-repeat,
             animation: heroFloat 20s ease-in-out infinite;
             z-index: -1;
         }
@@ -84,29 +85,6 @@
         @keyframes heroFloat {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(1deg); }
-=======
-             background: 
-                 radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%),
-                 url('map.jpg') center center/contain no-repeat;
-             background-attachment: fixed;
-             position: relative;
-             min-height: 60vh;
-             padding: 40px 0;
-        }
-        
-        .hero-gradient-bg::before {
-             content: '';
-             position: absolute;
-             top: 0;
-             left: 0;
-             right: 0;
-             bottom: 0;
-             background: 
-                 radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%),
-                 url('map.jpg') center center/contain no-repeat;
-             filter: blur(3px);
-             z-index: -1;
->>>>>>> d869132 (homepage)
         }
         
         .connect-gradient-bg {
@@ -221,6 +199,91 @@
             left: 100%;
         }
 
+        /* ✅ HERO SEARCH SECTION STYLES */
+        .search-bar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .search-input {
+            flex: 1 1 65%;
+            padding: 14px 20px;
+            border: 1px solid #FFD700;
+            border-radius: 8px;
+            background-color: #111;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .location-group {
+            display: flex;
+            align-items: center;
+            flex: 1 1 20%;
+            min-width: 220px;
+        }
+
+        .location-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #FFD700;
+            border-radius: 8px 0 0 8px;
+            background-color: #111;
+            color: #fff;
+        }
+
+        .near-me-btn {
+            background-color: #FFD700;
+            color: #111;
+            border: none;
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .near-me-btn:hover {
+            background-color: #ffdf33;
+        }
+
+        .search-btn {
+            background-color: #FFD700;
+            color: #111;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background-color: #ffdf33;
+        }
+
+        .hero-subtext {
+            font-size: 0.95rem;
+            color: #ccc;
+            margin-top: 0.8rem;
+            text-align: center;
+        }
+
+        .hero-subtext .view-all {
+            margin-left: 6px;
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s ease;
+        }
+
+        .hero-subtext .view-all:hover {
+            text-decoration: underline;
+            color: #ffdf33;
+        }
+
         /* ===============================
            🖋 BLKPAGES SEARCH SUBTEXT STYLE
            =============================== */
@@ -318,6 +381,30 @@
         .dropdown-item:last-child {
             border-bottom: none;
         }
+
+        /* ✅ HERO SEARCH SECTION FUNCTIONALITY */
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    document.getElementById("locationInput").value = "Using your location...";
+                    // Optional: send lat/lon to backend or geocode to postcode
+                });
+            } else {
+                alert("Geolocation not supported by your browser");
+            }
+        }
+
+        // Smooth scroll for "View all categories"
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener("click", function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute("href")).scrollIntoView({
+                    behavior: "smooth"
+                });
+            });
+        });
     </style>
 </head>
 <body class="text-white">
@@ -360,14 +447,16 @@
                     </div>
                     
                     <!-- Sign In / Sign Up (for signed out users) -->
-                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
-                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
-                        </button>
-                        <span class="text-gray-400">/</span>
-                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
-                            <i class="fas fa-user-plus mr-1"></i>Sign Up
-                        </a>
+                    <div id="headerAuth">
+                        <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
+                            <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
+                                <i class="fas fa-sign-in-alt mr-1"></i>Sign In
+                            </button>
+                            <span class="text-gray-400">/</span>
+                            <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
+                                <i class="fas fa-user-plus mr-1"></i>Sign Up
+                            </a>
+                        </div>
                     </div>
                     
                     <!-- Customer Menu (for logged-in users) -->
@@ -426,19 +515,20 @@
             <h1 class="text-4xl md:text-6xl font-extrabold mb-4 text-[#D4AF37] tracking-wide">BlkPages</h1>
             <p class="text-lg md:text-xl max-w-2xl mx-auto mb-8 text-gray-200">Connecting you to businesses inspired by Black culture and creativity.</p>
             
-            <form action="search-results.html" method="GET" class="max-w-xl mx-auto flex flex-col sm:flex-row gap-2">
-                <input type="text" name="q" placeholder="Search businesses..." class="w-full px-5 py-3 bg-[#111111] border border-[#9C7C2E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-white">
-                <input type="text" name="location" placeholder="Location..." class="w-full sm:w-auto px-5 py-3 bg-[#111111] border border-[#9C7C2E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#D4AF37] text-white">
-                <button type="submit" class="px-6 py-3 font-semibold text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md hover:opacity-90 transition-opacity duration-300">Search</button>
-            </form>
-
-            <div class="search-subtext">
-              <i class="fa-solid fa-calendar-check"></i>
-              <span>Book appointments directly online</span>
-              <span class="dot-separator">•</span>
-              <i class="fa-solid fa-phone-slash"></i>
-              <span>No phone calls needed</span>
+            <!-- ✅ HERO SEARCH SECTION (BlkPages - keep all other styles unchanged) -->
+            <div class="search-bar-container">
+              <input type="text" class="search-input" placeholder="Search by business, service..." />
+              <div class="location-group">
+                <input type="text" class="location-input" placeholder="Postcode, town" id="locationInput" />
+                <button class="near-me-btn" onclick="getLocation()">Near Me</button>
+              </div>
+              <button class="search-btn">Search</button>
             </div>
+
+            <p class="hero-subtext">
+              Book appointments directly online — no phone calls needed.
+              <a href="#categories" class="view-all">View all categories →</a>
+            </p>
             </div>
         </section>
 
@@ -686,6 +776,73 @@
                 updateBasketCount();
             }
         }
+
+        // 🔐 BlkPages login state handling
+        function updateHeaderAuth() {
+            const user = localStorage.getItem('blkpages_user');
+            const headerAuth = document.getElementById('headerAuth'); // a wrapper div or nav item area
+
+            if (!headerAuth) return;
+
+            if (user) {
+                headerAuth.innerHTML = `
+                    <div class="auth-logged-in">
+                        <a href="/account.html" class="nav-link">My Account</a>
+                        <a href="#" id="logoutLink" class="nav-link">Sign Out</a>
+                    </div>
+                `;
+                document.getElementById('logoutLink').addEventListener('click', e => {
+                    e.preventDefault();
+                    localStorage.removeItem('blkpages_user');
+                    location.reload();
+                });
+            } else {
+                headerAuth.innerHTML = `
+                    <div class="auth-guest">
+                        <a href="#" id="openSignIn" class="nav-link">Sign In</a>
+                        <a href="#" id="openSignUp" class="nav-link">Sign Up</a>
+                    </div>
+                `;
+
+                // Open your modals if defined
+                const signInModal = document.getElementById('signInModal');
+                const signUpModal = document.getElementById('signUpModal');
+
+                document.getElementById('openSignIn').addEventListener('click', e => {
+                    e.preventDefault();
+                    if (signInModal) signInModal.style.display = 'flex';
+                });
+
+                document.getElementById('openSignUp').addEventListener('click', e => {
+                    e.preventDefault();
+                    if (signUpModal) signUpModal.style.display = 'flex';
+                });
+            }
+        }
+
+        // Ensure header updates on every page load
+        document.addEventListener('DOMContentLoaded', updateHeaderAuth);
+
+        // 👇 Integration with Book Now modal logic
+        const bookNowButtons = document.querySelectorAll('.book-now');
+        bookNowButtons.forEach(btn => {
+            btn.addEventListener('click', e => {
+                const user = localStorage.getItem('blkpages_user');
+                const business = btn.dataset.business || 'selected-business';
+                if (user) {
+                    // Skip sign-in modal, go straight to booking page
+                    window.location.href = `/booking.html?business=${encodeURIComponent(business)}`;
+                } else {
+                    // Show Book Now choice modal (guest / sign in / sign up)
+                    const modal = document.getElementById('bookingChoiceModal');
+                    if (modal) {
+                        e.preventDefault();
+                        modal.dataset.business = business;
+                        modal.style.display = 'flex';
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
