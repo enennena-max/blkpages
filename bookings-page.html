@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlkPages | Your Bookings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- Global ---------- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at top left, #1a1a1a, #0d0d0d);
+      color: #f8f8f8;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 240px;
+      background: rgba(25, 25, 25, 0.8);
+      backdrop-filter: blur(8px);
+      border-right: 1px solid rgba(255, 215, 0, 0.2);
+      padding: 2rem 1rem;
+    }
+    .sidebar h1 {
+      color: #f2c94c;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      letter-spacing: 0.5px;
+    }
+    .sidebar a {
+      display: block;
+      color: #ddd;
+      text-decoration: none;
+      margin: 1rem 0;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .sidebar a:hover {
+      color: #f2c94c;
+    }
+
+    /* ---------- Main ---------- */
+    main {
+      margin-left: 260px;
+      padding: 3rem 4rem;
+    }
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #f2c94c, #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.sub {
+      color: #bfbfbf;
+      margin-bottom: 2rem;
+    }
+
+    /* ---------- Booking Cards ---------- */
+    .booking-card {
+      background: rgba(40, 40, 40, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s forwards;
+    }
+    .booking-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 215, 0, 0.4);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .booking-card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+    .status {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: rgba(242, 201, 76, 0.15);
+      color: #f2c94c;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .details {
+      margin: 0.6rem 0;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+    .details i {
+      margin-right: 0.5rem;
+      color: #f2c94c;
+    }
+
+    /* ---------- Buttons ---------- */
+    .buttons {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    button {
+      border: 1px solid #f2c94c;
+      background: transparent;
+      color: #f2c94c;
+      padding: 0.5rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+    }
+    button:hover {
+      background: #f2c94c;
+      color: #000;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    }
+
+    /* ---------- Cancellation Policy ---------- */
+    .policy {
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      color: #d4d4d4;
+      line-height: 1.4;
+      border-top: 1px solid rgba(255, 215, 0, 0.1);
+      padding-top: 0.8rem;
+      display: none;
+      animation: slideDown 0.3s ease forwards;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .policy.show { display: block; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 800px) {
+      .sidebar { width: 180px; }
+      main { margin-left: 200px; padding: 2rem; }
+    }
+    @media (max-width: 600px) {
+      .sidebar { display: none; }
+      main { margin: 0; padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h1>BlkPages</h1>
+    <a href="#">Bookings</a>
+    <a href="#">Payments</a>
+    <a href="#">Reviews</a>
+    <a href="#">Loyalty</a>
+    <a href="#">Messages</a>
+  </div>
+
+  <!-- Main content -->
+  <main>
+    <h2>Your Bookings</h2>
+    <p class="sub">Manage and track your upcoming and past appointments.</p>
+
+    <!-- Booking Card 1 -->
+    <div class="booking-card">
+      <span class="status">Pending</span>
+      <h3>Fade District – Skin Fade</h3>
+      <div class="details"><i>📅</i>28 Oct 2025 – 10:30 AM</div>
+      <div class="details"><i>📍</i>221B Baker Street, Marylebone, London NW1 6XE, United Kingdom</div>
+      <div class="policy" id="policy1">
+        <strong>Cancellation Policy:</strong><br>
+        Free cancellation up to 24 hours before your appointment.<br>
+        After this period, a 50% charge applies.
+      </div>
+      <div class="buttons">
+        <button onclick="togglePolicy('policy1')">View Policy</button>
+        <button>Reschedule</button>
+        <button>Cancel Booking</button>
+      </div>
+    </div>
+
+    <!-- Booking Card 2 -->
+    <div class="booking-card">
+      <span class="status">Confirmed</span>
+      <h3>Glow Studio – Makeup Session</h3>
+      <div class="details"><i>📅</i>5 Nov 2025 – 14:00</div>
+      <div class="details"><i>📍</i>12 Market Street, Soho, London W1F 8DR, United Kingdom</div>
+      <div class="policy" id="policy2">
+        <strong>Cancellation Policy:</strong><br>
+        Cancellations accepted up to 12 hours in advance. No refund for missed appointments.
+      </div>
+      <div class="buttons">
+        <button onclick="togglePolicy('policy2')">View Policy</button>
+        <button>Add to Calendar</button>
+      </div>
+    </div>
+
+    <!-- Booking Card 3 -->
+    <div class="booking-card">
+      <span class="status">Cancelled</span>
+      <h3>Soul Yoga – Vinyasa Class</h3>
+      <div class="details"><i>📅</i>18 Dec 2025 – 18:00</div>
+      <div class="details"><i>📍</i>21 Redchurch Street, Shoreditch, London E2 7DJ, United Kingdom</div>
+      <div class="policy" id="policy3">
+        <strong>Cancellation Policy:</strong><br>
+        Non-refundable booking. Please contact the studio directly for reschedule requests.
+      </div>
+      <div class="buttons">
+        <button onclick="togglePolicy('policy3')">View Policy</button>
+        <button>Add to Calendar</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- JavaScript for policy toggle -->
+  <script>
+    function togglePolicy(id) {
+      const policy = document.getElementById(id);
+      policy.classList.toggle('show');
+    }
+  </script>
+
+</body>
+</html>
