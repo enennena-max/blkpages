@@ -73,3 +73,4 @@ The server uses Gmail SMTP. For production, consider:
 - Use environment-specific Stripe keys
 - Implement proper validation in production
 - Add rate limiting for production use
+

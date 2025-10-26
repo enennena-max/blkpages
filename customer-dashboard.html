@@ -1,287 +1,1098 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Bookings - BlkPages</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0A0A0A;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlkPages — Customer Dashboard</title>
+  <style>
+    /* =========================================================
+       BLKPAGES DASHBOARD - Multi-Page Layout with Fade Transitions
+       ========================================================= */
 
-        .gold-gradient-text {
-            background: linear-gradient(90deg, #FFD35C, #D4AF37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .hero-gradient-bg {
-             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
-        }
-        
-        .connect-gradient-bg {
-             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
-        }
-        
-        .cta-gradient-bg {
-             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
-        }
-        
-        .gold-gradient-button {
-             background: linear-gradient(90deg, #ffcc00, #ffb700);
-        }
-        
-        .gold-gradient-button-hover:hover {
-             background: linear-gradient(90deg, #ffb700, #ffd700);
-        }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      background: #0f0f0f;
+    }
 
-        /* ===============================
-           🖋 BLKPAGES SEARCH SUBTEXT STYLE
-           =============================== */
+    /* Overall layout wrapper */
+    .dashboard-layout {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+      overflow: hidden;
+    }
 
-        .search-subtext {
-         margin-top: 35px; /* increased spacing below search bar */
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         flex-wrap: wrap;
-         gap: 6px;
-         font-size: 0.95rem;
-         color: #CFCFCF; /* text colour */
-         font-weight: 500;
-         letter-spacing: 0.2px;
-         text-align: center;
-        }
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      min-width: 230px;
+      background: #1a1a1a;
+      height: 100vh;
+      padding: 25px 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
 
-        .search-subtext i {
-         color: #FFD700; /* icon gold */
-         font-size: 1rem;
-        }
+    .logo {
+      color: gold;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+    }
 
-        /* Gold separator dot */
-        .dot-separator {
-         color: #D4AF37;
-         padding: 0 6px;
-        }
+    /* Sidebar inner links */
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex-grow: 1;
+    }
 
-        /* ✨ Optional subtle pulse animation for icons */
-        @keyframes goldPulse {
-         0% { opacity: 0.7; transform: scale(1); }
-         50% { opacity: 1; transform: scale(1.1); }
-         100% { opacity: 0.7; transform: scale(1); }
-        }
+    .sidebar li {
+      margin: 15px 0;
+    }
 
-        .search-subtext i {
-         animation: goldPulse 3s ease-in-out infinite;
-        }
+    .sidebar a {
+      text-decoration: none;
+      color: #ccc;
+      transition: 0.2s;
+    }
 
-        /* 📱 Responsive for mobile */
-        @media (max-width: 600px) {
-         .search-subtext {
-           flex-direction: column;
-           gap: 4px;
-           font-size: 0.9rem;
-           margin-top: 25px; /* smaller space on mobile */
-         }
-         .dot-separator {
-           display: none;
-         }
-        }
+    .sidebar a.active,
+    .sidebar a:hover {
+      color: gold;
+    }
 
-        /* Navigation Styles */
-        .nav-link {
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link:hover {
-            color: #D4AF37 !important;
-        }
-        
-        /* Customer Menu Styles */
-        .customer-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            min-width: 150px;
-            z-index: 1000;
-            margin-top: 0.5rem;
-        }
-        
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .dropdown-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-    </style>
+    .logout {
+      color: #999;
+      text-decoration: none;
+      margin-top: auto;
+      font-size: 0.9rem;
+    }
+
+    /* Main content */
+    main {
+      margin-left: 250px; /* space for sidebar */
+      flex: 1;
+      padding: 50px;
+      box-sizing: border-box;
+      background: #0f0f0f;
+      min-height: 100vh;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+
+    /* Section box */
+    .dashboard-section {
+      background: #181818;
+      padding: 25px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 900px;
+      box-sizing: border-box;
+      margin: 0 auto;
+    }
+
+    /* Fade transition */
+    .fade {
+      transition: opacity 0.3s ease;
+    }
+
+    .fade-in {
+      opacity: 1;
+    }
+
+    .fade-out {
+      opacity: 0;
+    }
+
+    /* Hamburger menu button */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background: gold;
+      border: none;
+      color: #000;
+      font-size: 1.5rem;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    /* Sidebar default */
+    .sidebar {
+      transition: transform 0.3s ease;
+    }
+
+    /* For mobile view */
+    @media (max-width: 900px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 230px;
+        height: 100vh;
+        background: #1a1a1a;
+        transform: translateX(-100%);
+        z-index: 1000;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.4);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      main {
+        margin-left: 0;
+        padding: 80px 20px 20px 20px; /* add top padding so content isn't hidden behind toggle */
+      }
+    }
+
+    .dashboard-section h2 {
+      margin: 0 0 10px 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+
+    .dashboard-section p {
+      margin: 0 0 20px 0;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    .loading {
+      color: #888;
+      font-style: italic;
+      text-align: center;
+      padding: 50px 0;
+    }
+
+    /* Button styles */
+    button {
+      background: gold;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #000;
+      margin-right: 8px;
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .btn {
+      background: gold;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #000;
+      margin-right: 8px;
+      text-decoration: none;
+      display: inline-block;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    .btn.secondary {
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    .btn.secondary:hover {
+      background: #444;
+    }
+
+    /* Card styling */
+    .booking-card, 
+    .payment-card, 
+    .review-card {
+      background: #222;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 12px;
+      border-left: 3px solid gold;
+    }
+
+    .booking-card h3,
+    .payment-card h3,
+    .review-card h3 {
+      margin: 0 0 8px 0;
+      color: #fff;
+      font-size: 1.1rem;
+    }
+
+    .booking-card p,
+    .payment-card p,
+    .review-card p {
+      margin: 0 0 8px 0;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    .payment-summary,
+    .review-summary {
+      background: #222;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 3px solid gold;
+    }
+
+    .payment-summary p,
+    .review-summary p {
+      margin: 5px 0;
+      color: #ccc;
+    }
+
+    .review-form {
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+      border-left: 3px solid gold;
+    }
+
+    .review-form h4 {
+      margin: 0 0 15px 0;
+      color: #fff;
+    }
+
+    .review-form input,
+    .review-form select,
+    .review-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      background: #333;
+      border: 1px solid #555;
+      border-radius: 5px;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .review-form input:focus,
+    .review-form select:focus,
+    .review-form textarea:focus {
+      outline: none;
+      border-color: gold;
+    }
+
+    .review-form textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .btn {
+      background: gold;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #000;
+      margin-right: 8px;
+      text-decoration: none;
+      display: inline-block;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    .btn.secondary {
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    .btn.secondary:hover {
+      background: #444;
+    }
+
+    /* Fade effect */
+    .fade {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    .fade-out {
+      opacity: 0;
+    }
+
+    .fade-in {
+      opacity: 1;
+    }
+
+    .loading {
+      color: #888;
+      font-style: italic;
+      text-align: center;
+      padding: 50px 0;
+    }
+
+    /* Card styling */
+    .booking-card, 
+    .payment-card, 
+    .review-card {
+      background: #222;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 12px;
+      border-left: 3px solid gold;
+    }
+
+    .booking-card h3,
+    .payment-card h3,
+    .review-card h3 {
+      margin: 0 0 8px 0;
+      color: #fff;
+      font-size: 1.1rem;
+    }
+
+    .booking-card p,
+    .payment-card p,
+    .review-card p {
+      margin: 0 0 8px 0;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    .payment-summary,
+    .review-summary {
+      background: #222;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 3px solid gold;
+    }
+
+    .payment-summary p,
+    .review-summary p {
+      margin: 5px 0;
+      color: #ccc;
+    }
+
+    .review-form {
+      background: #222;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+      border-left: 3px solid gold;
+    }
+
+    .review-form h4 {
+      margin: 0 0 15px 0;
+      color: #fff;
+    }
+
+    .review-form input,
+    .review-form select,
+    .review-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      background: #333;
+      border: 1px solid #555;
+      border-radius: 5px;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .review-form input:focus,
+    .review-form select:focus,
+    .review-form textarea:focus {
+      outline: none;
+      border-color: gold;
+    }
+
+    .review-form textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    /* Notification Widget */
+    .notif-wrapper { 
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .notif-btn {
+      position: relative;
+      background: #222;
+      border: 1px solid #555;
+      border-radius: 50%;
+      width: 45px; 
+      height: 45px;
+      display: grid; 
+      place-items: center;
+      color: #ccc;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .notif-btn:hover { 
+      color: gold; 
+      border-color: gold; 
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); 
+    }
+
+    .notif-badge {
+      position: absolute;
+      top: 8px; 
+      right: 8px;
+      width: 12px; 
+      height: 12px;
+      background: gold;
+      border-radius: 50%;
+      animation: notifPulse 1.2s infinite;
+    }
+
+    @keyframes notifPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+
+    .notif-dropdown {
+      position: absolute;
+      top: 50px; 
+      right: 0;
+      width: 300px;
+      background: #222;
+      border: 1px solid #555;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      overflow: hidden;
+      z-index: 200;
+      animation: notifSlideDown 0.2s ease-out;
+    }
+
+    @keyframes notifSlideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .notif-head {
+      font-weight: 700;
+      padding: 15px;
+      border-bottom: 1px solid #555;
+      background: #333;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .notif-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .notif-item {
+      padding: 12px 15px;
+      border-bottom: 1px solid #333;
+      font-size: 13px;
+      color: #ccc;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      position: relative;
+    }
+
+    .notif-item.unread { 
+      color: #fff; 
+      background: rgba(255, 215, 0, 0.1); 
+      border-left: 3px solid gold;
+    }
+
+    .notif-item:hover { 
+      background: #333; 
+    }
+
+    .notif-item:last-child { 
+      border-bottom: none; 
+    }
+
+    .notif-content {
+      margin-left: 8px;
+    }
+
+    .notif-text {
+      font-weight: 500;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .notif-time {
+      font-size: 11px;
+      color: #888;
+    }
+
+    .notif-foot {
+      text-align: center;
+      padding: 10px;
+      border-top: 1px solid #555;
+      background: #333;
+    }
+
+    .notif-empty {
+      padding: 30px 20px;
+      text-align: center;
+      color: #888;
+      font-size: 12px;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+      }
+      
+      .sidebar ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      .sidebar li {
+        margin: 5px 0;
+      }
+      
+      main {
+        padding: 20px;
+      }
+      
+      .notif-dropdown {
+        width: 280px;
+        right: -10px;
+      }
+      
+      .dashboard-section {
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
-<body class="text-white">
-    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between py-3">
-                <!-- Logo and Nav Links -->
-                <div class="flex items-center gap-8">
-                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
-                    <nav class="hidden md:flex items-center gap-6">
-                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
-                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
-                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
-                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                            <i class="fas fa-flask mr-1"></i>Preview Test
-                        </a>
-                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                            <i class="fas fa-cogs mr-1"></i>Demo Hub
-                        </a>
-                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
-                        </a>
-                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
-                        </a>
-                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                            <i class="fas fa-clock mr-1"></i>WLO System
-                        </a>
-                    </nav>
-                </div>
+  <body>
+    <!-- Hamburger menu button (mobile only) -->
+    <button class="menu-toggle" id="menuToggle">☰</button>
 
-                <!-- Action Buttons -->
-                <div class="hidden md:flex items-center gap-4">
-                    <!-- Basket Icon -->
-                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
-                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
-                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
-                    </div>
-                    
-                    <!-- Sign In / Sign Up (for signed out users) -->
-                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
-                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
-                        </button>
-                        <span class="text-gray-400">/</span>
-                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
-                            <i class="fas fa-user-plus mr-1"></i>Sign Up
-                        </a>
-                    </div>
-                    
-                    <!-- Customer Menu (for logged-in users) -->
-                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
-                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
-                            <span id="customerInitialText">U</span>
-                        </button>
-                        <div class="customer-dropdown" id="customerDropdown">
-                            <a href="customer-dashboard.html" class="dropdown-item">
-                                <i class="fas fa-tachometer-alt"></i>
-                                Dashboard
-                            </a>
-                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
-                                <i class="fas fa-cog"></i>
-                                Account Settings
-                            </a>
-                            <a href="#" onclick="signOut()" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt"></i>
-                                Sign Out
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- List Business Button -->
-                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
-                </div>
+    <div class="dashboard-layout">
+      <aside class="sidebar" id="sidebar">
+        <div class="logo">BlkPages</div>
+        <ul>
+          <li><a href="#bookings" class="nav-link active">📅 Bookings</a></li>
+          <li><a href="#payments" class="nav-link">💳 Payments</a></li>
+          <li><a href="#reviews" class="nav-link">⭐ Reviews</a></li>
+          <li><a href="#loyalty" class="nav-link">🎁 Loyalty</a></li>
+          <li><a href="#profile" class="nav-link">👤 Profile</a></li>
+          <li><a href="#messages" class="nav-link">💬 Messages</a></li>
+        </ul>
+        <a href="../index.html" class="logout">↩ Logout</a>
+      </aside>
 
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden">
-                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                    </button>
-                </div>
-            </div>
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden pb-4">
-                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
-                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
-                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
-                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                    <i class="fas fa-flask mr-2"></i>Preview Test
-                </a>
-                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
-                    <i class="fas fa-plus mr-2"></i>List Business
-                </a>
-                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
-                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
-            </div>
-        </div>
-    </header>
-    
-    <!-- Main Content -->
-    <main class="min-h-screen">
-        <div class="container mx-auto px-4 py-8">
-            <!-- Header --><div><!-- Page Header --><div><div><div><h1>My Dashboard</h1><p>Manage your bookings, favorites, and account</p></div><button onclick="signOut()"><i></i> Sign Out </button></div></div><!-- Dashboard Navigation --><div><button onclick="showTab('bookings')"><i></i> My Bookings </button><button onclick="showTab('favorites')"><i></i> Favorites </button><button onclick="showTab('recent')"><i></i> Recent Searches </button><button onclick="showTab('loyalty')"><i></i> Loyalty Rewards </button><button onclick="showTab('account')"><i></i> My Account </button><button onclick="showTab('waiting-list')"><i></i> Waiting List <span>0</span></button></div><!-- Dashboard Content --><div><!-- Phone Verification Banner --><div><div><div><i></i></div><div><h3>Phone Verification Required</h3><p> ⚠️ Please verify your phone number — it's used for booking confirmations and updates. You won't receive notifications until it's verified. </p></div><button onclick="showPhoneVerificationModal()"><i></i> Verify Now </button></div></div><!-- Contextual Dashboard Banners --><div><!-- Waiting List Offer Banner --><div><div><div>💬</div><div><h3>Waiting List Offer</h3><p>A slot opened at <strong>Royal Hair Studio</strong> for <strong>Haircut & Style</strong> on <strong>Friday, 15 Dec at 2:00 PM</strong>. This offer expires in <strong>1h 23m</strong>.</p></div><div><button onclick="acceptWaitingListOffer()">Accept Offer</button><button onclick="dismissBanner('waitingListBanner')">×</button></div></div></div><!-- Payment Failure Banner --><div><div><div>❌</div><div><h3>Payment Failed</h3><p>Your payment for <strong>£29.00</strong> failed on <strong>12 Dec 2024</strong>. Please update your payment method to avoid service interruption.</p></div><div><button onclick="updatePaymentMethod()">Update Payment</button><button onclick="dismissBanner('paymentFailureBanner')">×</button></div></div></div><!-- Review Request Banner --><div><div><div>💬</div><div><h3>Leave a Review</h3><p>How was your experience at <strong>Royal Hair Studio</strong>? Your feedback helps other customers and supports local businesses.</p></div><div><button onclick="writeReview()">Write Review</button><button onclick="dismissBanner('reviewRequestBanner')">×</button></div></div></div><!-- Privacy Reminder Banner --><div><div><div>🔐</div><div><h3>Privacy Reminder</h3><p>Your personal data is protected. You can download your data or delete your account anytime in <strong>Account Settings</strong>.</p></div><div><button onclick="openAccountSettings()">Account Settings</button><button onclick="dismissBanner('privacyReminderBanner')">×</button></div></div></div></div><!-- Bookings Tab --><div><!-- Upcoming Bookings Section --><div><h2>Upcoming Bookings</h2><p>Your confirmed and pending appointments</p></div><div><!-- Sample Booking 1 --><div><div><div><div>RH</div><div><h3>Royal Hair Studio</h3><div>Hair Salon</div></div></div><div>Confirmed</div></div><div><div><span>Date:</span><span>Saturday, Dec 28, 2024</span></div><div><span>Time:</span><span>2:00 PM</span></div><div><span>Duration:</span><span>1h 15m</span></div><div><span>Payment:</span><span>Paid Online</span></div><div><span>Payment Status:</span><span>✅ Haircut & Style, £70 paid in full online.</span></div><div><span>Cancellation:</span><span>48h notice required</span></div></div><div><div>Services</div><div><span>Haircut & Style</span><span>£45</span></div><div><span>Hair Wash & Blow Dry</span><span>£25</span></div></div><div><a href="booking-confirmation.html"><i></i> View Details </a><div><a href="cancel-booking.html?booking=booking1&user=loggedin"><i></i> Cancel Booking </a><div><i></i><span>This booking is non-refundable under Royal Hair Studio's cancellation policy.</span></div></div></div></div><!-- Sample Booking 2 --><div><div><div><div>BS</div><div><h3>Beauty Studio</h3><div>Beauty Salon</div></div></div><div>Pending</div></div><div><div><span>Date:</span><span>Monday, Dec 30, 2024</span></div><div><span>Time:</span><span>10:00 AM</span></div><div><span>Duration:</span><span>2h 30m</span></div><div><span>Payment:</span><span>Deposit Paid</span></div><div><span>Payment Status:</span><span>💳 Full Body Massage, £28 deposit paid, £52 due at venue.</span></div><div><span>Cancellation:</span><span>24h notice required</span></div></div><div><div>Services</div><div><span>Full Body Massage</span><span>£80</span></div><div><span>Facial Treatment</span><span>£60</span></div></div><div><a href="booking-confirmation.html"><i></i> View Details </a><div><a href="cancel-booking.html?booking=booking2&user=loggedin"><i></i> Cancel Booking </a><div><i></i><span>This booking is non-refundable under Beauty Studio's cancellation policy.</span></div></div></div></div><!-- Sample Booking 3 - Pay at Venue --><div><div><div><div>FS</div><div><h3>Fitness Studio</h3><div>Wellness Center</div></div></div><div>Confirmed</div></div><div><div><span>Date:</span><span>Friday, Jan 19, 2025</span></div><div><span>Time:</span><span>3:00 PM</span></div><div><span>Duration:</span><span>1h 00m</span></div><div><span>Payment:</span><span>Pay at Venue</span></div><div><span>Payment Status:</span><span>💷 Massage, £50 payable at the venue. No online payment taken.</span></div><div><span>Cancellation:</span><span>24h notice required</span></div></div><div><div>Services</div><div><span>Massage</span><span>£50</span></div></div><div><a href="booking-confirmation.html"><i></i> View Details </a><div><a href="cancel-booking.html?booking=booking3&user=loggedin"><i></i> Cancel Booking </a><div><i></i><span>This booking is non-refundable under Fitness Studio's cancellation policy.</span></div></div></div></div><!-- Sample Booking 4 - Non-Cancellable (Too Close) --><div><div><div><div>GS</div><div><h3>Glow Salon</h3><div>Hair Salon</div></div></div><div>Confirmed</div></div><div><div><span>Date:</span><span>Tomorrow, Jan 16, 2025</span></div><div><span>Time:</span><span>10:00 AM</span></div><div><span>Duration:</span><span>1h 00m</span></div><div><span>Payment:</span><span>Paid Online</span></div><div><span>Payment Status:</span><span>✅ Haircut, £35 paid in full online.</span></div><div><span>Cancellation:</span><span>24h notice required</span></div></div><div><div>Services</div><div><span>Haircut</span><span>£35</span></div></div><div><a href="booking-confirmation.html"><i></i> View Details </a><div><div><i></i><span>This booking is outside the cancellation timeframe. Contact the venue directly for assistance.</span></div></div></div></div></div><!-- Empty State (hidden by default) --><div><div>📅</div><h2>No Bookings Yet</h2><p>Start exploring and book your first appointment</p><a href="search-results.html"><i></i> Browse Services </a></div><!-- Past Bookings Section --><div><h2>Past Bookings</h2><p>Your completed appointments</p></div><div><!-- Sample Past Booking 1 --><div><div><div><div>RH</div><div><h3>Royal Hair Studio</h3><div>Hair Salon</div></div></div><div>Completed</div></div><div><div><span>Date:</span><span>Saturday, Dec 14, 2024</span></div><div><span>Time:</span><span>2:00 PM</span></div><div><span>Duration:</span><span>1h 15m</span></div><div><span>Payment:</span><span>Paid Online</span></div></div><div><div>Services</div><div><span>Haircut & Style</span><span>£45</span></div><div><span>Hair Wash & Blow Dry</span><span>£25</span></div></div><div><a href="booking-confirmation.html"><i></i> View Details </a><a href="business-profile.html" onclick="rebookAppointment('Royal Hair Studio', 'business-profile.html')"><i></i> Rebook </a></div></div><!-- Sample Past Booking 2 --><div><div><div><div>BS</div><div><h3>Beauty Studio</h3><div>Beauty Salon</div></div></div><div>Completed</div></div><div><div><span>Date:</span><span>Wednesday, Dec 11, 2024</span></div><div><span>Time:</span><span>10:00 AM</span></div><div><span>Duration:</span><span>2h 30m</span></div><div><span>Payment:</span><span>Paid at Venue</span></div></div><div><div>Services</div><div><span>Full Body Massage</span><span>£80</span></div><div><span>Facial Treatment</span><span>£60</span></div></div><div><a href="booking-confirmation.html"><i></i> View Details </a><a href="business-profile.html" onclick="rebookAppointment('Beauty Studio', 'business-profile.html')"><i></i> Rebook </a></div></div><!-- Sample Past Booking 3 --><div><div><div><div>NS</div><div><h3>Nail Studio</h3><div>Nail Salon</div></div></div><div>Completed</div></div><div><div><span>Date:</span><span>Monday, Dec 9, 2024</span></div><div><span>Time:</span><span>3:30 PM</span></div><div><span>Duration:</span><span>1h 45m</span></div><div><span>Payment:</span><span>Paid Online</span></div></div><div><div>Services</div><div><span>Manicure & Pedicure</span><span>£55</span></div><div><span>Gel Polish</span><span>£25</span></div></div><div><a href="booking-confirmation.html"><i></i> View Details </a><a href="business-profile.html" onclick="rebookAppointment('Nail Studio', 'business-profile.html')"><i></i> Rebook </a></div></div></div><!-- Sample Past Booking 4 - Cancelled --><div><div><div><div>GS</div><div><h3>Glow Salon</h3><div>Hair Salon</div></div></div><div>Cancelled</div></div><div><div><span>Date:</span><span>Monday, Jan 8, 2025</span></div><div><span>Time:</span><span>2:00 PM</span></div><div><span>Duration:</span><span>1h 30m</span></div><div><span>Payment:</span><span>Refunded</span></div><div><span>Refund Amount:</span><span>£45.00</span></div><div><span>Refund Date:</span><span>Jan 8, 2025</span></div><div><span>Refund Status:</span><span>🔄 Refund £45 issued to your payment method.</span></div></div><div><div>Services</div><div><span>Haircut & Style</span><span>£45</span></div></div><div><a href="booking-confirmation.html"><i></i> View Details </a><a href="business-profile.html"><i></i> Book Again </a></div></div><!-- Past Bookings Empty State (hidden by default) --><div><div>📋</div><h2>No Past Bookings</h2><p>Your completed appointments will appear here</p></div></div><!-- Favorites Tab --><div><div><h2>My Favorites</h2><p>Businesses and services you've saved</p></div><div><!-- Sample Favorite 1 --><div><div><div>RH</div><div><h3>Royal Hair Studio</h3><div>Hair Salon</div><div>⭐ 4.8 (120 reviews)</div></div><button onclick="toggleFavorite(this)"><i></i></button></div><div><a href="business-profile.html"><i></i> View Profile </a><a href="business-profile.html"><i></i> Book Now </a></div></div><!-- Sample Favorite 2 --><div><div><div>BS</div><div><h3>Beauty Studio</h3><div>Beauty Salon</div><div>⭐ 4.6 (89 reviews)</div></div><button onclick="toggleFavorite(this)"><i></i></button></div><div><a href="business-profile.html"><i></i> View Profile </a><a href="business-profile.html"><i></i> Book Now </a></div></div></div></div><!-- Recent Searches Tab --><div><div><h2>Recent Searches</h2><p>Your recent search history</p></div><div><!-- Sample Recent Search 1 --><div><div><div>Hair salons in London</div><div>2 hours ago</div></div><div><button onclick="repeatSearch('Hair salons in London')"><i></i> Search Again </button><button onclick="removeSearch(this)"><i></i> Remove </button></div></div><!-- Sample Recent Search 2 --><div><div><div>Beauty treatments near me</div><div>1 day ago</div></div><div><button onclick="repeatSearch('Beauty treatments near me')"><i></i> Search Again </button><button onclick="removeSearch(this)"><i></i> Remove </button></div></div><!-- Sample Recent Search 3 --><div><div><div>Barbers in Manchester</div><div>3 days ago</div></div><div><button onclick="repeatSearch('Barbers in Manchester')"><i></i> Search Again </button><button onclick="removeSearch(this)"><i></i> Remove </button></div></div></div></div><!-- Waiting List Tab --><div><div><h2>My Waiting Lists</h2><p>Track your waiting list positions and manage offers</p></div><div><div><div>0</div><div>Total Waiting</div></div><div><div>0</div><div>Offers Received</div></div><div><div>0</div><div>Offers Accepted</div></div></div><div><!-- Waiting list items will be loaded here --></div></div><!-- Loyalty Rewards Tab --><div><div><h2>Loyalty Rewards</h2><p>Track your progress and unlock rewards with your favorite businesses</p></div><div><!-- Dynamic loyalty programs will be loaded here --></div></div><!-- Loyalty Rewards FAQ Section --><div><div><h2>Loyalty Rewards FAQ</h2><p>Everything you need to know about earning and using rewards</p></div><div><div><div onclick="toggleLoyaltyFAQ(this)"> How do I earn loyalty rewards? <i></i></div><div> Each business sets their own loyalty programme. You might unlock a reward by booking a certain number of times, spending a certain amount, or booking within a timeframe. </div></div><div><div onclick="toggleLoyaltyFAQ(this)"> How do I know if I'm close to unlocking a reward? <i></i></div><div> You can track your progress in your customer dashboard. You'll also receive an email (and SMS if enabled) when you're close. </div></div><div><div onclick="toggleLoyaltyFAQ(this)"> How do I use my reward? <i></i></div><div> Rewards apply automatically at checkout once unlocked. You'll see the discount or free service before you confirm payment. </div></div><div><div onclick="toggleLoyaltyFAQ(this)"> Do rewards expire? <i></i></div><div> Each business sets their own rules. Some rewards may not expire, while others may need to be used within a timeframe (e.g., 6 weeks or 6 months). Check the details in your dashboard. </div></div><div><div onclick="toggleLoyaltyFAQ(this)"> Can I transfer rewards between businesses? <i></i></div><div> No. Rewards are tied to the business where you earned them. </div></div><div><div onclick="toggleLoyaltyFAQ(this)"> Can I save a reward for later? <i></i></div><div> Yes. If you don't use it immediately, you can save it for your next booking (until expiry if the business has set one). </div></div><div><div onclick="toggleLoyaltyFAQ(this)"> Do I need a code to redeem rewards? <i></i></div><div> No. Rewards are applied automatically at checkout when you book online. </div></div></div></div></div><!-- Account Tab --><div><div><h2>Account Settings</h2><p>Manage your account details and preferences</p></div><div><!-- Profile Information --><div><h3>Profile Information</h3><div><label>Full Name</label><input type="text" value="Test User"></div><div><label>Email Address</label><input type="email" value="test@example.com"></div><div><label>Phone Number</label><input type="tel" value="07123456789"></div><button onclick="updateProfile()"><i></i> Update Profile </button></div><!-- Phone Number Verification --><div><h3>Phone Number Verification</h3><div><div><div><i></i><span>Phone Number Verification</span></div><div><i></i> Unverified </div></div><div><div><label>Phone Number</label><div><input type="tel" placeholder="+44 7700 900000"><button onclick="initiatePhoneVerification()"><i></i> Send Code </button></div><div><i></i><span>We'll send a verification code to confirm your phone number for booking notifications.</span></div></div><div><div><label>Verification Code</label><div><input type="text" placeholder="123456" maxlength="6"><button onclick="verifyPhoneCode()"><i></i> Verify </button></div><div><span>Enter the 6-digit code sent to your phone</span><button onclick="resendVerificationCode()">Resend Code</button></div></div></div></div><div><i></i><span>Please verify your phone number — it's used for booking confirmations and updates. You won't receive notifications until it's verified.</span></div></div></div><!-- Change Password --><div><h3>Change Password</h3><div><label>Current Password</label><input type="password"></div><div><label>New Password</label><input type="password"></div><div><label>Confirm New Password</label><input type="password"></div><button onclick="changePassword()"><i></i> Change Password </button></div><!-- Notification Preferences --><div><h3>Notification Preferences</h3><div><label><input type="checkbox" checked><span></span> Email notifications </label></div><div><label><input type="checkbox"><span></span> SMS notifications </label></div><div><label><input type="checkbox" checked><span></span> Marketing emails </label></div><button onclick="updatePreferences()"><i></i> Update Preferences </button></div><!-- Account Actions --><div><h3>Account Actions</h3><div><button onclick="exportData()"><i></i> Export My Data </button><button onclick="deleteAccount()"><i></i> Delete Account </button></div></div></div></div></div></div><!-- Footer --><script> // Tab switching functionality /** * Phone Verification Functions */ function showPhoneVerificationModal() { // TODO: connect SMS verification function when notification system is added console.log('TODO: Implement phone verification modal when SMS system is ready'); // Show placeholder modal const modal = document.createElement('div'); modal.className = 'modal-overlay'; modal.innerHTML = ` <div><div><h2>Phone Verification</h2><button onclick="this.closest('.modal-overlay').remove()"><i></i></button></div><div><div><div><i></i></div><h3>Phone Verification</h3><p> Phone verification will be implemented when the SMS notification system is added. For now, your phone number is stored securely. </p><button onclick="this.closest('.modal-overlay').remove()"> Got It </button></div></div></div> `; document.body.appendChild(modal); } function checkPhoneVerificationStatus() { // TODO: connect SMS verification function when notification system is added // For now, show the banner for demonstration const banner = document.getElementById('phoneVerificationBanner'); if (banner) { banner.style.display = 'block'; } } function showTab(tabName) { // Hide all tab contents const tabContents = document.querySelectorAll('.tab-content'); tabContents.forEach(tab => { tab.classList.remove('active'); }); // Remove active class from all nav tabs const navTabs = document.querySelectorAll('.nav-tab'); navTabs.forEach(tab => { tab.classList.remove('active'); }); // Show selected tab content const selectedTab = document.getElementById(tabName + 'Tab'); if (selectedTab) { selectedTab.classList.add('active'); } // Add active class to clicked nav tab event.target.classList.add('active'); } // Favorites functionality function toggleFavorite(button) { const isActive = button.classList.contains('active'); if (isActive) { button.classList.remove('active'); button.innerHTML = '<i></i>'; showMessage('Removed from favorites', 'success'); } else { button.classList.add('active'); button.innerHTML = '<i></i>'; showMessage('Added to favorites', 'success'); } } // Recent searches functionality function repeatSearch(query) { // Redirect to search results with the query window.location.href = `search-results.html?q=${encodeURIComponent(query)}`; } function removeSearch(button) { const searchItem = button.closest('.search-item'); searchItem.remove(); showMessage('Search removed from history', 'success'); } // Account management functionality function updateProfile() { const name = document.getElementById('profileName').value; const email = document.getElementById('profileEmail').value; const phone = document.getElementById('profilePhone').value; if (!name || !email || !phone) { showMessage('Please fill in all fields', 'error'); return; } // Simulate profile update showMessage('Profile updated successfully', 'success'); } function changePassword() { const currentPassword = document.getElementById('currentPassword').value; const newPassword = document.getElementById('newPassword').value; const confirmPassword = document.getElementById('confirmPassword').value; if (!currentPassword || !newPassword || !confirmPassword) { showMessage('Please fill in all password fields', 'error'); return; } if (newPassword !== confirmPassword) { showMessage('New passwords do not match', 'error'); return; } if (newPassword.length < 8) { showMessage('Password must be at least 8 characters long', 'error'); return; } // Simulate password change showMessage('Password changed successfully', 'success'); // Clear password fields document.getElementById('currentPassword').value = ''; document.getElementById('newPassword').value = ''; document.getElementById('confirmPassword').value = ''; } function updatePreferences() { const emailNotifications = document.getElementById('emailNotifications').checked; const smsNotifications = document.getElementById('smsNotifications').checked; const marketingEmails = document.getElementById('marketingEmails').checked; showMessage('Notification preferences updated', 'success'); } function exportData() { showMessage('Data export initiated. You will receive an email with your data shortly.', 'success'); } function deleteAccount() { if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) { if (confirm('This will permanently delete all your data. Are you absolutely sure?')) { showMessage('Account deletion initiated. You will receive a confirmation email.', 'success'); } } } // Message display function function showMessage(message, type) { const messageDiv = document.createElement('div'); messageDiv.style.cssText = ` position: fixed; top: 20px; right: 20px; padding: 1rem 2rem; border-radius: 8px; color: white; font-weight: 500; z-index: 1000; max-width: 300px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); `; if (type === 'success') { messageDiv.style.background = '#4ADE80'; } else if (type === 'error') { messageDiv.style.background = '#DC2626'; } else { messageDiv.style.background = '#2B86C5'; } messageDiv.textContent = message; document.body.appendChild(messageDiv); // Auto-remove after 3 seconds setTimeout(() => { if (messageDiv.parentNode) { messageDiv.parentNode.removeChild(messageDiv); } }, 3000); } // Initialize page document.addEventListener('DOMContentLoaded', function() { // Check if there are any upcoming bookings const bookingsGrid = document.getElementById('bookingsGrid'); const upcomingBookings = bookingsGrid.querySelectorAll('.booking-card:not(.past-booking)'); if (upcomingBookings.length === 0) { document.getElementById('emptyState').style.display = 'block'; } // Check if there are any past bookings const pastBookingsGrid = document.getElementById('pastBookingsGrid'); const pastBookings = pastBookingsGrid.querySelectorAll('.booking-card.past-booking'); if (pastBookings.length === 0) { document.getElementById('pastBookingsEmptyState').style.display = 'block'; } // Load user preferences from localStorage loadUserPreferences(); }); function loadUserPreferences() { // Load notification preferences const emailNotifications = localStorage.getItem('emailNotifications') === 'true'; const smsNotifications = localStorage.getItem('smsNotifications') === 'true'; const marketingEmails = localStorage.getItem('marketingEmails') === 'true'; document.getElementById('emailNotifications').checked = emailNotifications; document.getElementById('smsNotifications').checked = smsNotifications; document.getElementById('marketingEmails').checked = marketingEmails; } // Save preferences to localStorage document.getElementById('emailNotifications').addEventListener('change', function() { localStorage.setItem('emailNotifications', this.checked); }); document.getElementById('smsNotifications').addEventListener('change', function() { localStorage.setItem('smsNotifications', this.checked); }); document.getElementById('marketingEmails').addEventListener('change', function() { localStorage.setItem('marketingEmails', this.checked); }); // Sign out function // Basket management const BASKET_KEY = 'blkpages_basket'; let selectedServices = []; function loadBasket() { const savedBasket = localStorage.getItem(BASKET_KEY); if (savedBasket) { const basketData = JSON.parse(savedBasket); selectedServices = basketData.selectedServices || []; updateBasketCount(); } } function updateBasketCount() { const basketCount = document.getElementById('basketCount'); if (basketCount) { basketCount.textContent = selectedServices.length; } } function scrollToBooking() { // For customer dashboard, scroll to a booking section or show message if (selectedServices.length > 0) { alert('You have ' + selectedServices.length + ' service(s) in your basket. Visit a business profile to complete your booking.'); } else { alert('Your basket is empty. Browse businesses to add services.'); } } // Customer menu functions function toggleCustomerMenu() { const dropdown = document.getElementById('customerDropdown'); if (dropdown.style.display === 'none' || dropdown.style.display === '') { dropdown.style.display = 'block'; } else { dropdown.style.display = 'none'; } } // Close dropdown when clicking outside document.addEventListener('click', function(event) { const customerMenu = document.getElementById('customerMenu'); const dropdown = document.getElementById('customerDropdown'); if (customerMenu && dropdown && !customerMenu.contains(event.target)) { dropdown.style.display = 'none'; } }); // Check login status and show/hide customer menu function checkLoginStatus() { const isLoggedIn = localStorage.getItem('userLoggedIn') === 'true'; const customerMenu = document.getElementById('customerMenu'); const basketIcon = document.getElementById('basketIcon'); if (customerMenu) { if (isLoggedIn) { customerMenu.style.display = 'block'; // Set customer initial const userName = localStorage.getItem('userName') || 'Demo User'; const initial = userName.charAt(0).toUpperCase(); document.getElementById('customerInitialText').textContent = initial; } else { customerMenu.style.display = 'none'; } } if (basketIcon) { if (isLoggedIn) { basketIcon.style.display = 'flex'; } else { basketIcon.style.display = 'none'; } } } function signOut() { if (confirm('Are you sure you want to sign out?')) { // Clear all user data from localStorage localStorage.removeItem('userLoggedIn'); localStorage.removeItem('userEmail'); localStorage.removeItem('userName'); localStorage.removeItem('userPhone'); localStorage.removeItem('basketContents'); // Show success message alert('You have been signed out successfully.'); // Redirect to homepage window.location.href = 'index.html'; } } // Rebook appointment function function rebookAppointment(businessName, businessUrl) { // Store the business name for potential use in the booking flow localStorage.setItem('rebookBusiness', businessName); // Show confirmation message if (confirm(`Redirecting to ${businessName} to book a new appointment. Continue?`)) { // Redirect to the business profile page window.location.href = businessUrl; } } // Cancellation Policy Logic function checkCancellationEligibility() { // In real implementation, this would check: // 1. Business cancellation policy // 2. Time until appointment // 3. Booking status // Sample data for demonstration const bookings = [ { id: 'booking1', businessName: 'Royal Hair Studio', appointmentDate: new Date('2024-12-28T14:00:00'), // 2 days from now policy: 'moderate', // 48h notice required canCancel: true }, { id: 'booking2', businessName: 'Beauty Studio', appointmentDate: new Date('2024-12-30T10:00:00'), // 4 days from now policy: 'strict', // Non-refundable canCancel: false } ]; bookings.forEach(booking => { const cancelBtn = document.getElementById(`cancelBtn${booking.id.slice(-1)}`); const nonRefundableNotice = document.getElementById(`nonRefundableNotice${booking.id.slice(-1)}`); if (booking.canCancel) { cancelBtn.style.display = 'block'; nonRefundableNotice.style.display = 'none'; } else { cancelBtn.style.display = 'none'; nonRefundableNotice.style.display = 'block'; } }); } // Initialize on page load document.addEventListener('DOMContentLoaded', function() { checkLoginStatus(); loadBasket(); checkCancellationEligibility(); loadCustomerWaitingList(); setupBookingEventListeners(); checkPhoneVerificationStatus(); // Check phone verification status // Check if user came from Account Settings link if (localStorage.getItem('redirectToAccount') === 'true') { // Clear the flag localStorage.removeItem('redirectToAccount'); // Switch to account tab showTab('account'); } }); // Setup booking event listeners function setupBookingEventListeners() { // Listen for booking.confirmed events window.addEventListener('booking.confirmed', function(event) { console.log('Booking confirmed event received:', event.detail); // Refresh customer bookings display loadCustomerBookings(); }); // Listen for booking.cancelled events window.addEventListener('booking.cancelled', function(event) { console.log('Booking cancelled event received:', event.detail); // Refresh customer bookings display loadCustomerBookings(); }); // Listen for booking updates window.addEventListener('bookingUpdated', function(event) { console.log('Booking updated event received:', event.detail); // Refresh customer bookings display loadCustomerBookings(); }); // Listen for booking.cancel events window.addEventListener('booking.cancel', function(event) { console.log('Booking cancel event received:', event.detail); // Refresh customer bookings display loadCustomerBookings(); // Show cancellation notification showNotification('Booking cancelled successfully', 'success'); }); // Listen for waitinglist.join events window.addEventListener('waitinglist.join', function(event) { console.log('Customer received waitinglist.join event:', event.detail); // Refresh waiting list display loadCustomerWaitingList(); // Show notification with position const position = event.detail.position; const message = position === 1 ? '🎯 You are first in line!' : `You are position #${position} in the waiting list`; showNotification(message, 'success'); }); // Listen for waitinglist.offer.accept events window.addEventListener('waitinglist.offer.accept', function(event) { console.log('Customer received waitinglist.offer.accept event:', event.detail); // Refresh waiting list display loadCustomerWaitingList(); // Show notification showNotification('Offer accepted - booking created!', 'success'); }); } // Loyalty FAQ toggle function function toggleLoyaltyFAQ(element) { const answer = element.nextElementSibling; const icon = element.querySelector('i'); if (answer.classList.contains('show')) { answer.classList.remove('show'); element.classList.remove('active'); } else { // Close all other FAQ answers document.querySelectorAll('.faq-answer.show').forEach(openAnswer => { openAnswer.classList.remove('show'); }); document.querySelectorAll('.faq-question.active').forEach(openQuestion => { openQuestion.classList.remove('active'); }); // Open this answer answer.classList.add('show'); element.classList.add('active'); } } // Load and display customer bookings from localStorage function loadCustomerBookings() { const customerId = localStorage.getItem('customerId') || 'customer_1'; const customerBookings = JSON.parse(localStorage.getItem(`customerBookings_${customerId}`) || '[]'); const bookingsGrid = document.getElementById('bookingsGrid'); if (!bookingsGrid) return; // Check business status for each booking const bookingsWithStatus = customerBookings.map(booking => { const businessStatus = getBusinessStatus(booking.businessId); return { ...booking, businessStatus: businessStatus }; }); // Clear existing bookings bookingsGrid.innerHTML = ''; if (bookingsWithStatus.length === 0) { bookingsGrid.innerHTML = ` <div><div>📅</div><h3>No bookings yet</h3><p>Start exploring businesses and book your first appointment!</p><a href="index.html">Browse Businesses</a></div> `; return; } // Display each booking bookingsWithStatus.forEach(booking => { const bookingCard = createBookingCard(booking); bookingsGrid.appendChild(bookingCard); }); } // Get business status function getBusinessStatus(businessId) { try { const businesses = JSON.parse(localStorage.getItem('blkpages_businesses') || '[]'); const business = businesses.find(b => b.id === businessId); return business ? business.status : 'unknown'; } catch (error) { console.error('Error getting business status:', error); return 'unknown'; } } // Create booking card HTML function createBookingCard(booking) { const card = document.createElement('div'); card.className = 'booking-card'; const statusClass = booking.status.toLowerCase().replace(' ', '-'); const statusIcon = booking.status === 'Confirmed' ? '✅' : booking.status === 'Pending' ? '⏳' : booking.status === 'Cancelled' ? '❌' : '📅'; // Generate refund information if applicable const refundInfo = generateRefundInfo(booking); // Generate business status information const businessStatusInfo = generateBusinessStatusInfo(booking); card.innerHTML = ` <div><div><div>${booking.businessName.charAt(0)}</div><div><h3>${booking.businessName}</h3><div>Hair Salon</div></div></div><div> ${statusIcon} ${booking.status} </div></div><div><div><span>Date:</span><span>${booking.date}</span></div><div><span>Time:</span><span>${booking.time}</span></div><div><span>Payment:</span><span>${booking.paymentMethod === 'payNow' ? 'Paid Online' : 'Pay at Venue'}</span></div><div><span>Total:</span><span>£${booking.totalAmount}</span></div><div><span>Booking ID:</span><span>${booking.bookingId}</span></div> ${refundInfo} ${businessStatusInfo} </div><div><div>Services</div> ${booking.services.map(service => ` <div><span>${service.name}</span><span>£${service.price}</span></div> `).join('')} </div> ${booking.status === 'Confirmed' ? ` <div><button onclick="cancelBooking('${booking.bookingId}')"><i></i> Cancel Booking </button></div> ` : ''} `; return card; } // Generate refund information for cancelled bookings function generateRefundInfo(booking) { if (booking.status === 'Cancelled' && booking.refundAmount) { const refundDate = booking.refundTimestamp ? new Date(booking.refundTimestamp).toLocaleDateString() : new Date().toLocaleDateString(); return ` <div><span>Payment Status:</span><span>${booking.paymentStatus || 'Refunded'}</span></div><div><span>Refund Amount:</span><span>£${booking.refundAmount.toFixed(2)}</span></div><div><span>Refund Date:</span><span>${refundDate}</span></div><div><span>Refund Status:</span><span>${booking.refundStatus || 'Processed'}</span></div> `; } else if (booking.status === 'Cancelled' && booking.refundStatus === 'Non-refundable') { return ` <div><span>Payment Status:</span><span>Non-refundable</span></div><div><span>Refund Status:</span><span>Non-refundable under business policy</span></div> `; } return ''; } // Generate business status information function generateBusinessStatusInfo(booking) { const businessStatus = booking.businessStatus || 'unknown'; if (businessStatus === 'active') { return ''; } let statusMessage = ''; let statusClass = 'business-status-info'; switch (businessStatus) { case 'suspended': statusMessage = '⚠️ This business is currently suspended. Your booking remains valid.'; statusClass += ' business-status-warning'; break; case 'deactivated': statusMessage = '❌ This business is no longer active. Your booking remains valid.'; statusClass += ' business-status-error'; break; case 'pending': statusMessage = '⏳ This business is under review. Your booking remains valid.'; statusClass += ' business-status-info'; break; default: statusMessage = 'ℹ️ Business status unknown. Your booking remains valid.'; statusClass += ' business-status-info'; } return ` <div><div><span>Business Status:</span><span>${statusMessage}</span></div></div> `; } // Enhanced cancel booking function with API integration async function cancelBooking(bookingId) { if (confirm('Are you sure you want to cancel this booking?')) { try { // Show loading state showNotification('Processing cancellation...', 'info'); // Call cancellation API const response = await fetch('/api/bookings/cancel', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('customerToken')}` }, body: JSON.stringify({ bookingId: bookingId, cancellationReason: 'Customer cancellation' }) }); const result = await response.json(); if (result.success) { // Update booking status to cancelled updateBookingStatus(bookingId, 'Cancelled'); // Add refund information if applicable if (result.refundAmount > 0) { updateBookingRefundInfo(bookingId, result.refundAmount, result.refundId); } // Trigger booking.cancelled event triggerBookingCancelledEvent(bookingId, result); // Trigger storage event for real-time sync localStorage.setItem(`bookingCancelled_${bookingId}`, Date.now().toString()); // Show success notification showNotification(result.message, 'success'); // Reload bookings display loadCustomerBookings(); } else { showNotification(result.message || 'Failed to cancel booking', 'error'); } } catch (error) { console.error('Cancellation failed:', error); showNotification('Failed to cancel booking. Please try again.', 'error'); } } } // Trigger booking.cancelled event function triggerBookingCancelledEvent(bookingId, cancellationResult) { try { // Get booking details const customerId = localStorage.getItem('customerId') || 'customer_1'; const customerBookings = JSON.parse(localStorage.getItem(`customerBookings_${customerId}`) || '[]'); const booking = customerBookings.find(b => b.id === bookingId); if (!booking) { console.error('Booking not found for cancellation event'); return; } // Create booking cancelled event data const bookingCancelledData = { bookingId: bookingId, customerId: customerId, businessId: booking.businessId, customerName: booking.customerName, businessName: booking.businessName, serviceName: booking.serviceName, bookingDate: booking.bookingDate, bookingTime: booking.bookingTime, status: 'Cancelled', cancellationReason: 'Customer cancelled', refundAmount: cancellationResult.refundAmount || 0, refundId: cancellationResult.refundId || null, timestamp: new Date().toISOString() }; // Dispatch custom event window.dispatchEvent(new CustomEvent('booking.cancelled', { detail: bookingCancelledData })); console.log('Booking.cancelled event triggered:', bookingCancelledData); } catch (error) { console.error('Failed to trigger booking.cancelled event:', error); } } // Update booking with refund information function updateBookingRefundInfo(bookingId, refundAmount, refundId) { const customerId = localStorage.getItem('customerId') || 'customer_1'; const customerBookings = JSON.parse(localStorage.getItem(`customerBookings_${customerId}`) || '[]'); const bookingIndex = customerBookings.findIndex(b => b.bookingId === bookingId); if (bookingIndex !== -1) { customerBookings[bookingIndex].refundAmount = refundAmount; customerBookings[bookingIndex].refundId = refundId; customerBookings[bookingIndex].refundStatus = 'Processed'; customerBookings[bookingIndex].refundTimestamp = new Date().toISOString(); customerBookings[bookingIndex].paymentStatus = 'Refunded'; localStorage.setItem(`customerBookings_${customerId}`, JSON.stringify(customerBookings)); } } // Enhanced notification system function showNotification(message, type = 'info') { const notification = document.createElement('div'); notification.className = `notification notification-${type}`; notification.innerHTML = ` <div><i></i><span>${message}</span></div> `; // Add to page document.body.appendChild(notification); // Auto remove after 5 seconds setTimeout(() => { if (notification.parentNode) { notification.parentNode.removeChild(notification); } }, 5000); } // Update booking status in localStorage function updateBookingStatus(bookingId, newStatus) { const customerId = localStorage.getItem('customerId') || 'customer_1'; const customerBookings = JSON.parse(localStorage.getItem(`customerBookings_${customerId}`) || '[]'); const bookingIndex = customerBookings.findIndex(b => b.bookingId === bookingId); if (bookingIndex !== -1) { customerBookings[bookingIndex].status = newStatus; customerBookings[bookingIndex].updatedAt = new Date().toISOString(); localStorage.setItem(`customerBookings_${customerId}`, JSON.stringify(customerBookings)); } } // Listen for booking status updates window.addEventListener('storage', function(e) { if (e.key && e.key.startsWith('bookingCancelled_')) { const bookingId = e.key.replace('bookingCancelled_', ''); updateBookingStatus(bookingId, 'Cancelled'); loadCustomerBookings(); // Refresh display } }); // Initialize bookings on page load document.addEventListener('DOMContentLoaded', function() { loadCustomerBookings(); loadLoyaltyRewards(); loadDemoLoyaltyData(); // Load demo data for punch card display }); // ======================================== // DEMO LOYALTY DATA LOADING // ======================================== /** * Load comprehensive demo data for punch card loyalty system */ function loadDemoLoyaltyData() { // Demo Businesses with different loyalty programs const demoBusinesses = [ { id: 'biz_glow_hair', name: 'Glow Hair Studio', logo: '💇‍♀️', plan: 'Professional', timezone: 'Europe/London' }, { id: 'biz_zen_spa', name: 'Zen Spa & Wellness', logo: '🧘‍♀️', plan: 'Starter', timezone: 'Europe/London' }, { id: 'biz_city_nails', name: 'City Nails & Beauty', logo: '💅', plan: 'Starter', timezone: 'Europe/London' }, { id: 'biz_fresh_cuts', name: 'Fresh Cuts Barbershop', logo: '✂️', plan: 'Professional', timezone: 'Europe/London' }, { id: 'biz_luxe_brow', name: 'Luxe Brow Studio', logo: '👁️', plan: 'FreeGrowth', timezone: 'Europe/London' } ]; // Demo Loyalty Programmes const demoLoyaltyProgrammes = [ { id: 'prog_glow_hair', business_id: 'biz_glow_hair', type: 'Visits', threshold: 5, reward_type: 'Free Service', reward_value: 'Blow Dry', expiry_days: 30, terms: 'Valid for new customers only. Cannot be combined with other offers.', active: true, demo: true }, { id: 'prog_zen_spa', business_id: 'biz_zen_spa', type: 'Spend', threshold: 200.00, reward_type: 'Credit', reward_value: '£20', expiry_days: 60, terms: 'Credit can be used towards any service. Expires 60 days from issue.', active: true, demo: true }, { id: 'prog_city_nails', business_id: 'biz_city_nails', type: 'Visits', threshold: 3, reward_type: 'Discount', reward_value: '20%', expiry_days: 14, terms: 'Discount applies to full service bookings only.', active: true, demo: true }, { id: 'prog_fresh_cuts', business_id: 'biz_fresh_cuts', type: 'Time', threshold: 4, reward_type: 'Free Service', reward_value: 'Express Cut', expiry_days: 45, terms: 'Must complete 4 visits within 60 days. Valid for express services only.', active: true, demo: true }, { id: 'prog_luxe_brow', business_id: 'biz_luxe_brow', type: 'Visits', threshold: 5, reward_type: 'Free Service', reward_value: 'Brow Wax', expiry_days: 30, terms: 'Free brow wax with any other service booking.', active: true, demo: true } ]; // Demo Customer Progress (showing different states) const demoLoyaltyProgress = [ // Customer 1: Glow Hair - 3/5 visits (progress state) { id: 'progress_glow_1', customer_id: 'customer_1', business_id: 'biz_glow_hair', total_visits: 3, total_spend: 0, last_visit: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), reward_unlocked: false, reward_redeemed: false, reward_voucher_id: null, demo: true }, // Customer 1: Zen Spa - 2/5 visits (progress state) { id: 'progress_zen_1', customer_id: 'customer_1', business_id: 'biz_zen_spa', total_visits: 0, total_spend: 120.00, last_visit: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(), reward_unlocked: false, reward_redeemed: false, reward_voucher_id: null, demo: true }, // Customer 1: City Nails - 2/3 visits (progress state) { id: 'progress_city_1', customer_id: 'customer_1', business_id: 'biz_city_nails', total_visits: 2, total_spend: 0, last_visit: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), reward_unlocked: false, reward_redeemed: false, reward_voucher_id: null, demo: true }, // Customer 1: Fresh Cuts - 4/4 visits (unlocked state) { id: 'progress_fresh_1', customer_id: 'customer_1', business_id: 'biz_fresh_cuts', total_visits: 4, total_spend: 0, last_visit: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), reward_unlocked: true, reward_redeemed: false, reward_voucher_id: 'voucher_fresh_1', demo: true }, // Customer 1: Luxe Brow - 5/5 visits (redeemed state) { id: 'progress_luxe_1', customer_id: 'customer_1', business_id: 'biz_luxe_brow', total_visits: 5, total_spend: 0, last_visit: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), reward_unlocked: true, reward_redeemed: true, reward_voucher_id: 'voucher_luxe_1', redeemed_on: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), demo: true } ]; // Demo Reward Vouchers const demoRewardVouchers = [ { id: 'voucher_fresh_1', code: 'BP-FR3SH1', customer_id: 'customer_1', business_id: 'biz_fresh_cuts', reward_type: 'Free Service', reward_value: 'Express Cut', expiry_date: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(), redeemed: false, expired: false, created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), demo: true }, { id: 'voucher_luxe_1', code: 'BP-LUX3B1', customer_id: 'customer_1', business_id: 'biz_luxe_brow', reward_type: 'Free Service', reward_value: 'Brow Wax', expiry_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), redeemed: true, expired: false, redeemed_on: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), demo: true } ]; // Demo Customer Bookings (to show booking history) const demoCustomerBookings = [ { id: 'booking_glow_1', customer_id: 'customer_1', business_id: 'biz_glow_hair', service: 'Hair Cut & Style', date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), status: 'Completed', amount: 45.00, demo: true }, { id: 'booking_glow_2', customer_id: 'customer_1', business_id: 'biz_glow_hair', service: 'Hair Color', date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(), status: 'Completed', amount: 85.00, demo: true }, { id: 'booking_glow_3', customer_id: 'customer_1', business_id: 'biz_glow_hair', service: 'Blow Dry', date: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(), status: 'Completed', amount: 25.00, demo: true }, { id: 'booking_zen_1', customer_id: 'customer_1', business_id: 'biz_zen_spa', service: 'Full Body Massage', date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(), status: 'Completed', amount: 120.00, demo: true }, { id: 'booking_city_1', customer_id: 'customer_1', business_id: 'biz_city_nails', service: 'Manicure', date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), status: 'Completed', amount: 35.00, demo: true }, { id: 'booking_city_2', customer_id: 'customer_1', business_id: 'biz_city_nails', service: 'Pedicure', date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), status: 'Completed', amount: 45.00, demo: true }, { id: 'booking_fresh_1', customer_id: 'customer_1', business_id: 'biz_fresh_cuts', service: 'Hair Cut', date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), status: 'Completed', amount: 30.00, demo: true }, { id: 'booking_luxe_1', customer_id: 'customer_1', business_id: 'biz_luxe_brow', service: 'Brow Shaping', date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), status: 'Completed', amount: 25.00, demo: true } ]; // Store demo data in localStorage localStorage.setItem('demoBusinesses', JSON.stringify(demoBusinesses)); localStorage.setItem('loyaltyProgrammes', JSON.stringify(demoLoyaltyProgrammes)); localStorage.setItem('loyaltyProgress', JSON.stringify(demoLoyaltyProgress)); localStorage.setItem('rewardVouchers', JSON.stringify(demoRewardVouchers)); localStorage.setItem('customerBookings', JSON.stringify(demoCustomerBookings)); // Set customer ID for demo localStorage.setItem('customerId', 'customer_1'); console.log('Demo loyalty data loaded successfully!'); console.log('Businesses:', demoBusinesses.length); console.log('Loyalty Programmes:', demoLoyaltyProgrammes.length); console.log('Progress Records:', demoLoyaltyProgress.length); console.log('Vouchers:', demoRewardVouchers.length); console.log('Bookings:', demoCustomerBookings.length); } // ======================================== // LOYALTY REWARDS FUNCTIONS // ======================================== /** * Load and display loyalty rewards based on progress states */ function loadLoyaltyRewards() { const customerId = localStorage.getItem('customerId') || 'customer_1'; const loyaltyProgress = JSON.parse(localStorage.getItem('loyaltyProgress') || '[]'); const loyaltyProgrammes = JSON.parse(localStorage.getItem('loyaltyProgrammes') || '[]'); const rewardVouchers = JSON.parse(localStorage.getItem('rewardVouchers') || '[]'); const container = document.getElementById('loyaltyPrograms'); if (loyaltyProgress.length === 0) { container.innerHTML = ` <div><div>🎁</div><h3>No Loyalty Programs Yet</h3><p>Book with businesses that offer loyalty programs to start earning rewards!</p></div> `; return; } let html = ''; loyaltyProgress.forEach(progress => { const programme = loyaltyProgrammes.find(p => p.business_id === progress.business_id); const voucher = rewardVouchers.find(v => v.id === progress.reward_voucher_id); if (programme) { html += generateLoyaltyCard(progress, programme, voucher); } }); container.innerHTML = html; } /** * Generate loyalty card based on progress state */ function generateLoyaltyCard(progress, programme, voucher) { const businessName = getBusinessName(progress.business_id); const businessLogo = getBusinessLogo(progress.business_id); if (progress.reward_unlocked === false) { return generateProgressCard(progress, programme, businessName, businessLogo); } else if (progress.reward_unlocked === true && progress.reward_redeemed === false) { return generateRewardCard(progress, programme, voucher, businessName, businessLogo); } else if (progress.reward_redeemed === true) { return generateRedeemedCard(progress, programme, voucher, businessName, businessLogo); } } /** * Check if customer has made bookings with a specific business */ function checkCustomerBookings(customerId, businessId) { try { const bookings = JSON.parse(localStorage.getItem('customerBookings') || '[]'); return bookings.some(booking => booking.customer_id === customerId && booking.business_id === businessId && booking.status === 'Completed' ); } catch (error) { console.error('Error checking customer bookings:', error); return false; } } /** * Generate progress card (reward_unlocked == false) * Enhanced with first booking check and digital punch card design */ function generateProgressCard(progress, programme, businessName, businessLogo) { // Check if customer has made any bookings with this business const hasBookings = checkCustomerBookings(progress.customer_id, progress.business_id); if (!hasBookings) { return ` <div><div><div><div>${businessLogo}</div><div><h3>${businessName}</h3><p>Loyalty Program</p></div></div><div><span>Pending</span></div></div><div><div>📅</div><div><h4>Complete your first booking to start earning rewards!</h4><p>Your loyalty card will appear here after your first completed booking.</p></div></div><div><div>🎁</div><div><div>Reward</div><div>${getRewardDescription(programme)}</div></div><div><span>Available after first booking</span></div></div></div> `; } const currentProgress = programme.type === 'Visits' ? progress.total_visits : progress.total_spend; const threshold = programme.threshold; const percentage = Math.min((currentProgress / threshold) * 100, 100); const remaining = threshold - currentProgress; const progressText = programme.type === 'Visits' ? `${progress.total_visits} of ${threshold} visits completed` : `£${progress.total_spend.toFixed(2)} of £${threshold} spent`; const remainingText = programme.type === 'Visits' ? `${remaining} more visits needed` : `£${remaining.toFixed(2)} more to spend`; return ` <div><div><div><div>${businessLogo}</div><div><h3>${businessName}</h3><p>Loyalty Program</p></div></div><div><span>Active</span></div></div><div><div><div>${progressText}</div><div>${Math.round(percentage)}%</div></div><div><div></div></div><div><span>${getProgrammeDescription(programme)}</span><span>${remainingText}</span></div></div><div><div>🎁</div><div><div>Reward</div><div>${getRewardDescription(programme)}</div></div><div><span>Locked</span></div></div></div> `; } /** * Generate reward card (reward_unlocked == true, reward_redeemed == false) */ function generateRewardCard(progress, programme, voucher, businessName, businessLogo) { const voucherCode = voucher ? voucher.id.substring(0, 8).toUpperCase() : 'BP-' + Math.random().toString(36).substr(2, 6).toUpperCase(); const expiryDate = voucher ? new Date(voucher.expires_at).toLocaleDateString() : new Date(Date.now() + (programme.expiry_days * 24 * 60 * 60 * 1000)).toLocaleDateString(); return ` <div><div><div><div>${businessLogo}</div><div><h3>${businessName}</h3><p>Loyalty Program</p></div></div><div><span>Reward Unlocked!</span></div></div><div><div><div>🎉</div><div>You've unlocked a reward!</div></div><div><div>${getRewardDescription(programme)}</div><div><span>Code:</span><span>${voucherCode}</span></div><div><span>Expires:</span><span>${expiryDate}</span></div></div><div><button onclick="useRewardNow('${progress.id}', '${voucherCode}', '${progress.business_id}')"><i></i> Use Reward Now </button></div></div></div> `; } /** * Generate redeemed card (reward_redeemed == true) */ function generateRedeemedCard(progress, programme, voucher, businessName, businessLogo) { const redeemedDate = voucher && voucher.used_at ? new Date(voucher.used_at).toLocaleDateString() : new Date().toLocaleDateString(); return ` <div><div><div><div>${businessLogo}</div><div><h3>${businessName}</h3><p>Loyalty Program</p></div></div><div><span>Reward Redeemed</span></div></div><div><div>✅</div><div><div>Reward redeemed on ${redeemedDate}</div><div>Your progress has been reset. Start earning your next reward!</div></div></div><div><button onclick="resetLoyaltyProgress('${progress.id}')"><i></i> Reset Progress </button></div></div> `; } /** * Use reward function */ function useReward(progressId, voucherCode) { if (confirm('Are you sure you want to use this reward? This action cannot be undone.')) { // Mark reward as redeemed const loyaltyProgress = JSON.parse(localStorage.getItem('loyaltyProgress') || '[]'); const progressIndex = loyaltyProgress.findIndex(p => p.id === progressId); if (progressIndex !== -1) { loyaltyProgress[progressIndex].reward_redeemed = true; loyaltyProgress[progressIndex].updated_at = new Date().toISOString(); localStorage.setItem('loyaltyProgress', JSON.stringify(loyaltyProgress)); // Update voucher const rewardVouchers = JSON.parse(localStorage.getItem('rewardVouchers') || '[]'); const voucherIndex = rewardVouchers.findIndex(v => v.id === loyaltyProgress[progressIndex].reward_voucher_id); if (voucherIndex !== -1) { rewardVouchers[voucherIndex].used = true; rewardVouchers[voucherIndex].used_at = new Date().toISOString(); localStorage.setItem('rewardVouchers', JSON.stringify(rewardVouchers)); } // Reload display loadLoyaltyRewards(); alert('Reward used successfully! Your progress has been reset.'); } } } /** * Use reward now (enhanced with promo code pre-fill) */ function useRewardNow(progressId, voucherCode, businessId) { try { // Check if voucher is expired const rewardVouchers = JSON.parse(localStorage.getItem('rewardVouchers') || '[]'); const voucher = rewardVouchers.find(v => v.id === voucherCode); if (voucher) { const now = new Date(); const expiryDate = new Date(voucher.expires_at); if (now > expiryDate) { alert('This reward has expired. Keep booking to earn another!'); return; } } // Store the promo code for pre-filling at checkout localStorage.setItem('prefillPromoCode', voucherCode); localStorage.setItem('prefillBusinessId', businessId); // Redirect to business profile for booking const businessProfileUrl = `business-profile.html?business=${businessId}&promo=${voucherCode}`; window.open(businessProfileUrl, '_blank'); // Show confirmation message alert('Redirecting to booking page with your reward code pre-filled!'); } catch (error) { console.error('Error using reward now:', error); alert('Error processing reward. Please try again.'); } } /** * Reset loyalty progress */ function resetLoyaltyProgress(progressId) { if (confirm('Are you sure you want to reset your progress? This will start your loyalty journey over.')) { const loyaltyProgress = JSON.parse(localStorage.getItem('loyaltyProgress') || '[]'); const progressIndex = loyaltyProgress.findIndex(p => p.id === progressId); if (progressIndex !== -1) { loyaltyProgress[progressIndex].total_visits = 0; loyaltyProgress[progressIndex].total_spend = 0; loyaltyProgress[progressIndex].reward_unlocked = false; loyaltyProgress[progressIndex].reward_redeemed = false; loyaltyProgress[progressIndex].reward_voucher_id = null; loyaltyProgress[progressIndex].updated_at = new Date().toISOString(); localStorage.setItem('loyaltyProgress', JSON.stringify(loyaltyProgress)); loadLoyaltyRewards(); alert('Progress reset successfully! Start earning your next reward.'); } } } /** * Helper functions */ function getBusinessName(businessId) { // Check demo businesses first const demoBusinesses = JSON.parse(localStorage.getItem('demoBusinesses') || '[]'); const demoBusiness = demoBusinesses.find(b => b.id === businessId); if (demoBusiness) return demoBusiness.name; // Fallback to hardcoded names const businessNames = { 'business_001': 'Glow Hair', 'business_002': 'Spa Haven', 'business_003': 'Luxe Beauty' }; return businessNames[businessId] || 'Business'; } function getBusinessLogo(businessId) { // Check demo businesses first const demoBusinesses = JSON.parse(localStorage.getItem('demoBusinesses') || '[]'); const demoBusiness = demoBusinesses.find(b => b.id === businessId); if (demoBusiness) return demoBusiness.logo; // Fallback to hardcoded logos const businessLogos = { 'business_001': 'GH', 'business_002': 'SH', 'business_003': 'LB' }; return businessLogos[businessId] || 'B'; } function getProgrammeDescription(programme) { if (programme.type === 'Visits') { return `Book ${programme.threshold} visits, get reward`; } else if (programme.type === 'Spend') { return `Spend £${programme.threshold}, get reward`; } else if (programme.type === 'Time') { return `Book ${programme.threshold} visits within time limit, get reward`; } return 'Complete requirements to earn reward'; } function getRewardDescription(programme) { if (programme.reward_type === 'Free Service') { return '1 Free Service'; } else if (programme.reward_type === 'Discount') { return `${programme.reward_value}% off next booking`; } else if (programme.reward_type === 'Credit') { return `£${programme.reward_value} off next booking`; } return programme.reward_value; } // ======================================== // CUSTOMER WAITING LIST FUNCTIONS // ======================================== /** * Load and display customer waiting list */ function loadCustomerWaitingList() { const customerId = localStorage.getItem('customerId') || 'customer_1'; const waitingList = JSON.parse(localStorage.getItem(`customerWaitingList_${customerId}`) || '[]'); updateCustomerWaitingListStats(waitingList); displayCustomerWaitingList(waitingList); } /** * Update customer waiting list statistics */ function updateCustomerWaitingListStats(waitingList) { const totalWaiting = waitingList.filter(item => item.status === 'waiting').length; const offersReceived = waitingList.filter(item => item.status === 'offered').length; const offersAccepted = waitingList.filter(item => item.status === 'accepted').length; document.getElementById('totalWaitingList').textContent = totalWaiting; document.getElementById('offersReceived').textContent = offersReceived; document.getElementById('offersAccepted').textContent = offersAccepted; // Update tab badge const badge = document.getElementById('waitingListTabBadge'); if (offersReceived > 0) { badge.textContent = offersReceived; badge.style.display = 'inline'; } else { badge.style.display = 'none'; } } /** * Display customer waiting list items */ function displayCustomerWaitingList(waitingList) { const container = document.getElementById('waitingListContent'); if (waitingList.length === 0) { container.innerHTML = ` <div><i></i><h3>No waiting lists</h3><p>When you join waiting lists for businesses, they'll appear here.</p></div> `; return; } container.innerHTML = waitingList.map(item => ` <div><div><div> ${item.businessName || 'Business'} ${item.position ? ` <span> ${item.position === 1 ? '🎯 First in line!' : `Position #${item.position}`} </span> ` : ''} </div><div><div>Joined: ${new Date(item.joinedAt).toLocaleDateString()}</div><div>Priority: ${item.priority || 0}</div> ${item.availableSlot ? ` <div>Available: ${item.availableSlot.date} at ${item.availableSlot.time}</div> ` : ''} </div><div><strong>${item.serviceData.name}</strong> - £${item.serviceData.price} </div></div><div> ${item.status === 'waiting' ? ` <button onclick="leaveWaitingList('${item.id}')"><i></i> Leave List </button> ` : item.status === 'offered' ? ` <button onclick="acceptOffer('${item.id}')"><i></i> Accept Offer </button><button onclick="rejectOffer('${item.id}')"><i></i> Decline </button> ` : ` <span>Accepted</span> `} </div></div> `).join(''); } /** * Accept offer from waiting list */ function acceptOffer(waitingListId) { if (!confirm('Are you sure you want to accept this offer? This will create a booking.')) { return; } const customerId = localStorage.getItem('customerId') || 'customer_1'; const waitingList = JSON.parse(localStorage.getItem(`customerWaitingList_${customerId}`) || '[]'); const item = waitingList.find(item => item.id === waitingListId); if (!item) { showNotification('Offer not found', 'error'); return; } // Create booking from offer const booking = { id: `booking_${Date.now()}`, customerId: customerId, businessId: item.businessId, businessName: item.businessName, services: [item.serviceData], date: item.availableSlot.date, time: item.availableSlot.time, totalAmount: item.serviceData.price, status: 'Confirmed', paymentMethod: 'payNow', source: 'waiting_list', createdAt: new Date().toISOString() }; // Save to customer bookings const customerBookings = JSON.parse(localStorage.getItem(`customerBookings_${customerId}`) || '[]'); customerBookings.push(booking); localStorage.setItem(`customerBookings_${customerId}`, JSON.stringify(customerBookings)); // Save to business bookings const businessBookings = JSON.parse(localStorage.getItem(`businessBookings_${item.businessId}`) || '[]'); businessBookings.push(booking); localStorage.setItem(`businessBookings_${item.businessId}`, JSON.stringify(businessBookings)); // Remove from waiting lists const updatedWaitingList = waitingList.filter(waitingItem => waitingItem.id !== waitingListId); localStorage.setItem(`customerWaitingList_${customerId}`, JSON.stringify(updatedWaitingList)); // Remove from business waiting list const businessWaitingList = JSON.parse(localStorage.getItem(`businessWaitingList_${item.businessId}`) || '[]'); const updatedBusinessWaitingList = businessWaitingList.filter(businessItem => businessItem.id !== waitingListId); localStorage.setItem(`businessWaitingList_${item.businessId}`, JSON.stringify(updatedBusinessWaitingList)); showNotification('Offer accepted! Booking created successfully.', 'success'); loadCustomerWaitingList(); } /** * Reject offer from waiting list */ function rejectOffer(waitingListId) { if (!confirm('Are you sure you want to decline this offer?')) { return; } const customerId = localStorage.getItem('customerId') || 'customer_1'; const waitingList = JSON.parse(localStorage.getItem(`customerWaitingList_${customerId}`) || '[]'); const item = waitingList.find(item => item.id === waitingListId); if (!item) { showNotification('Offer not found', 'error'); return; } // Update status back to waiting item.status = 'waiting'; item.availableSlot = null; item.offerSentAt = null; localStorage.setItem(`customerWaitingList_${customerId}`, JSON.stringify(waitingList)); // Also update business waiting list const businessWaitingList = JSON.parse(localStorage.getItem(`businessWaitingList_${item.businessId}`) || '[]'); const businessItem = businessWaitingList.find(businessItem => businessItem.id === waitingListId); if (businessItem) { businessItem.status = 'waiting'; businessItem.availableSlot = null; businessItem.offerSentAt = null; localStorage.setItem(`businessWaitingList_${item.businessId}`, JSON.stringify(businessWaitingList)); } showNotification('Offer declined', 'info'); loadCustomerWaitingList(); } /** * Leave waiting list */ function leaveWaitingList(waitingListId) { if (!confirm('Are you sure you want to leave this waiting list?')) { return; } const customerId = localStorage.getItem('customerId') || 'customer_1'; const waitingList = JSON.parse(localStorage.getItem(`customerWaitingList_${customerId}`) || '[]'); const item = waitingList.find(item => item.id === waitingListId); if (!item) { showNotification('Waiting list item not found', 'error'); return; } // Remove from customer waiting list const updatedWaitingList = waitingList.filter(waitingItem => waitingItem.id !== waitingListId); localStorage.setItem(`customerWaitingList_${customerId}`, JSON.stringify(updatedWaitingList)); // Remove from business waiting list const businessWaitingList = JSON.parse(localStorage.getItem(`businessWaitingList_${item.businessId}`) || '[]'); const updatedBusinessWaitingList = businessWaitingList.filter(businessItem => businessItem.id !== waitingListId); localStorage.setItem(`businessWaitingList_${item.businessId}`, JSON.stringify(updatedBusinessWaitingList)); showNotification('Left waiting list successfully', 'success'); loadCustomerWaitingList(); } // ==================== PHONE VERIFICATION SYSTEM ==================== /** * Initialize phone verification system */ function initializePhoneVerification() { const customerId = localStorage.getItem('customerId') || 'customer_1'; // Check verification status checkPhoneVerificationStatus(customerId); } /** * Check phone verification status */ function checkPhoneVerificationStatus(customerId) { try { const status = window.verifiedCustomerNumbers.getVerificationStatus(customerId); updatePhoneVerificationUI(status); } catch (error) { console.error('Error checking phone verification status:', error); } } /** * Update phone verification UI */ function updatePhoneVerificationUI(status) { const statusBadge = document.getElementById('phoneStatusBadge'); const phoneWarning = document.getElementById('phoneWarning'); if (status.is_verified) { if (statusBadge) { statusBadge.className = 'status-badge verified'; statusBadge.innerHTML = '<i></i> Verified'; } if (phoneWarning) { phoneWarning.classList.add('hidden'); } } else { if (statusBadge) { statusBadge.className = 'status-badge unverified'; statusBadge.innerHTML = '<i></i> Unverified'; } if (phoneWarning) { phoneWarning.classList.remove('hidden'); } } } /** * Initiate phone verification */ async function initiatePhoneVerification() { const customerId = localStorage.getItem('customerId') || 'customer_1'; const phoneNumber = document.getElementById('phoneNumber').value; if (!phoneNumber) { showNotification('Please enter a phone number', 'error'); return; } try { const result = await window.verifiedCustomerNumbers.initiateVerification(customerId, phoneNumber); if (result.success) { // Show verification code section document.getElementById('verificationCodeSection').style.display = 'block'; document.getElementById('verifyPhoneBtn').disabled = true; document.getElementById('verifyPhoneBtn').innerHTML = '<i></i> Code Sent'; showNotification(result.message, 'success'); } } catch (error) { console.error('Error initiating phone verification:', error); showNotification(error.message, 'error'); } } /** * Verify phone code */ async function verifyPhoneCode() { const customerId = localStorage.getItem('customerId') || 'customer_1'; const code = document.getElementById('verificationCode').value; if (!code) { showNotification('Please enter the verification code', 'error'); return; } try { const result = await window.verifiedCustomerNumbers.verifyCode(customerId, code); if (result.success) { // Update UI document.getElementById('verificationCodeSection').style.display = 'none'; document.getElementById('verifyPhoneBtn').disabled = false; document.getElementById('verifyPhoneBtn').innerHTML = '<i></i> Send Code'; document.getElementById('phoneNumber').value = ''; document.getElementById('verificationCode').value = ''; // Update status checkPhoneVerificationStatus(customerId); showNotification(result.message, 'success'); } } catch (error) { console.error('Error verifying phone code:', error); showNotification(error.message, 'error'); } } /** * Resend verification code */ async function resendVerificationCode() { const customerId = localStorage.getItem('customerId') || 'customer_1'; try { const result = await window.verifiedCustomerNumbers.resendVerificationCode(customerId); if (result.success) { showNotification(result.message, 'success'); } } catch (error) { console.error('Error resending verification code:', error); showNotification(error.message, 'error'); } } /** * Initialize phone verification on page load */ document.addEventListener('DOMContentLoaded', function() { // Initialize phone verification after a short delay to ensure systems are loaded setTimeout(initializePhoneVerification, 1000); // Initialize contextual banners initializeContextualBanners(); }); // Contextual Banner Functions function initializeContextualBanners() { // Simulate different banner states for demo purposes // In a real system, these would be determined by actual user data // Show waiting list offer banner (demo) setTimeout(() => { showBanner('waitingListBanner'); }, 2000); // Show review request banner after completed booking (demo) setTimeout(() => { showBanner('reviewRequestBanner'); }, 4000); } function showBanner(bannerId) { const banner = document.getElementById(bannerId); if (banner) { banner.style.display = 'block'; banner.style.animation = 'slideIn 0.3s ease-out'; } } function dismissBanner(bannerId) { const banner = document.getElementById(bannerId); if (banner) { banner.style.animation = 'slideOut 0.3s ease-in'; setTimeout(() => { banner.style.display = 'none'; }, 300); } } function acceptWaitingListOffer() { console.log('Accepting waiting list offer...'); // TODO: Implement waiting list offer acceptance alert('Waiting list offer accepted! Redirecting to booking...'); dismissBanner('waitingListBanner'); } function updatePaymentMethod() { console.log('Opening payment method update...'); // TODO: Implement payment method update alert('Opening payment method update...'); dismissBanner('paymentFailureBanner'); } function writeReview() { console.log('Opening review form...'); // TODO: Implement review writing alert('Opening review form...'); dismissBanner('reviewRequestBanner'); } function openAccountSettings() { console.log('Opening account settings...'); // TODO: Implement account settings navigation alert('Opening account settings...'); dismissBanner('privacyReminderBanner'); } // Add slideOut animation const style = document.createElement('style'); style.textContent = ` @keyframes slideOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } } `; document.head.appendChild(style); </script>
-        </div>
+    <main id="dashboard-content" class="fade">
+      <div class="loading">Loading...</div>
     </main>
-    
-    <footer class="bg-[#111111] py-12 px-4">
-        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-            <!-- About -->
-            <div>
-                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
-                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
+  </div>
+
+  <!-- Notification Widget -->
+  <div class="notif-wrapper" id="notifWrapper">
+    <button class="notif-btn" id="notifBtn" aria-label="Notifications">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+        <path d="M12 22a2 2 0 002-2H10a2 2 0 002 2zM18 16v-5a6 6 0 00-12 0v5l-2 2v1h16v-1l-2-2z"
+              stroke="currentColor" stroke-width="1.6" fill="currentColor"/>
+      </svg>
+      <span class="notif-badge" id="notifBadge" hidden></span>
+    </button>
+
+    <div class="notif-dropdown" id="notifDropdown" hidden>
+      <div class="notif-head">Notifications</div>
+      <div class="notif-list" id="notifList"></div>
+      <div class="notif-foot">
+        <button class="btn small" id="notifClear">Mark all read</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================
+    // MOBILE MENU TOGGLE
+    // =========================================================
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.getElementById("sidebar");
+
+    if (menuToggle && sidebar) {
+      menuToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+      });
+
+      // Auto-close the sidebar after a navigation click (mobile)
+      document.querySelectorAll(".nav-link").forEach(link => {
+        link.addEventListener("click", () => {
+          sidebar.classList.remove("open");
+        });
+      });
+    }
+
+    // =========================================================
+    // BLKPAGES DASHBOARD - Page Switching & Fade Transitions
+    // =========================================================
+
+    class Dashboard {
+      constructor() {
+        this.currentPage = 'bookings';
+        this.isLoading = false;
+        this.pages = {
+          bookings: this.getBookingsContent(),
+          payments: this.getPaymentsContent(),
+          reviews: this.getReviewsContent(),
+          loyalty: this.getLoyaltyContent(),
+          profile: this.getProfileContent(),
+          messages: this.getMessagesContent()
+        };
+        
+        this.init();
+      }
+
+      init() {
+        this.setupNavigation();
+        this.loadPage('bookings');
+        this.setupNotifications();
+      }
+
+      setupNavigation() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = link.getAttribute('href').substring(1);
+            this.switchPage(page);
+          });
+        });
+      }
+
+      async switchPage(pageName) {
+        if (this.isLoading || pageName === this.currentPage) return;
+        
+        this.isLoading = true;
+        this.currentPage = pageName;
+        
+        // Update active navigation
+        this.updateActiveNav(pageName);
+        
+        // Fade out current content
+        await this.fadeOut();
+        
+        // Load new page
+        this.loadPage(pageName);
+        
+        // Fade in new content
+        await this.fadeIn();
+        
+        this.isLoading = false;
+      }
+
+      updateActiveNav(pageName) {
+        document.querySelectorAll('.nav-link').forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${pageName}`) {
+            link.classList.add('active');
+          }
+        });
+      }
+
+      loadPage(pageName) {
+        const content = this.pages[pageName];
+        document.getElementById('dashboard-content').innerHTML = content;
+      }
+
+      async fadeOut() {
+        const content = document.getElementById('dashboard-content');
+        content.style.opacity = '0';
+        content.style.transform = 'translateY(20px)';
+        
+        return new Promise(resolve => {
+          setTimeout(resolve, 200);
+        });
+      }
+
+      async fadeIn() {
+        const content = document.getElementById('dashboard-content');
+        content.style.opacity = '1';
+        content.style.transform = 'translateY(0)';
+        
+        return new Promise(resolve => {
+          setTimeout(resolve, 200);
+        });
+      }
+
+      // Page Content Methods
+      getBookingsContent() {
+        return `
+          <section class="dashboard-section">
+            <h2>📅 Your Bookings</h2>
+            <p>Manage and track all your upcoming and past appointments.</p>
+
+            <div class="booking-card">
+              <h3>Fade District — Skin Fade</h3>
+              <p>2025-10-28, 10:30 — London</p>
+              <p><strong>Status:</strong> Pending</p>
+              <p><strong>Address:</strong> 221B Baker St, London</p>
+              <button onclick="dashboard.viewBooking('BKG-002')">View Details</button>
+              <button onclick="dashboard.rescheduleBooking('BKG-002')">Reschedule</button>
             </div>
-            <!-- Links -->
-            <div>
-                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
-                <ul>
-                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
-                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
-                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
-                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
-                </ul>
+
+            <div class="booking-card">
+              <h3>Glow Studio — Makeup Session</h3>
+              <p>2025-11-05, 14:00 — London</p>
+              <p><strong>Status:</strong> Confirmed</p>
+              <p><strong>Address:</strong> 12 Market St, London</p>
+              <button onclick="dashboard.viewBooking('BKG-001')">View Details</button>
+              <button onclick="dashboard.rescheduleBooking('BKG-001')">Reschedule</button>
             </div>
-            <!-- Legal -->
-            <div>
-                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
-                <ul>
-                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
-                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
-                </ul>
+
+            <div class="booking-card">
+              <h3>Soul Yoga — Vinyasa Class</h3>
+              <p>2025-09-18, 18:00 — Shoreditch</p>
+              <p><strong>Status:</strong> Cancelled</p>
+              <p><strong>Address:</strong> 21 Redchurch St, London</p>
+              <button onclick="dashboard.viewBooking('BKG-003')">View Details</button>
             </div>
-            <!-- Social -->
-            <div>
-                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
-                <div class="flex gap-4">
-                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
+          </section>
+        `;
+      }
+
+      getPaymentsContent() {
+        return `
+          <section class="dashboard-section">
+            <h2>💳 Payment History</h2>
+            <p>View all your transactions and receipts.</p>
+
+            <div class="payment-summary">
+              <p><strong>Total Payments:</strong> 2</p>
+              <p><strong>Refunds:</strong> 1</p>
+              <p><strong>Total Spent:</strong> £70.00</p>
+            </div>
+
+            <div class="payment-card">
+              <h3>Glow Studio</h3>
+              <p>2025-10-22 — Visa •••• 1234</p>
+              <p><strong>Amount:</strong> £48.00</p>
+              <p><strong>Status:</strong> Paid</p>
+              <button onclick="dashboard.viewReceipt('P-101')">View Receipt</button>
+            </div>
+
+            <div class="payment-card">
+              <h3>Soul Yoga</h3>
+              <p>2025-09-18 — Visa •••• 1234</p>
+              <p><strong>Amount:</strong> £15.00</p>
+              <p><strong>Status:</strong> Refunded</p>
+              <button onclick="dashboard.viewReceipt('P-102')">View Receipt</button>
+            </div>
+
+            <div class="payment-card">
+              <h3>Fade District</h3>
+              <p>2025-08-01 — Apple Pay</p>
+              <p><strong>Amount:</strong> £22.00</p>
+              <p><strong>Status:</strong> Paid</p>
+              <button onclick="dashboard.viewReceipt('P-103')">View Receipt</button>
+            </div>
+          </section>
+        `;
+      }
+
+      getReviewsContent() {
+        return `
+          <section class="dashboard-section">
+            <h2>⭐ Reviews & Ratings</h2>
+            <p>Share your experiences and read reviews from other customers.</p>
+
+            <div class="review-summary">
+              <p><strong>Reviews Written:</strong> 1</p>
+              <p><strong>Average Rating:</strong> 5.0</p>
+              <p><strong>Helpful Votes:</strong> 3</p>
+            </div>
+
+            <div class="review-card">
+              <h3>Fade District</h3>
+              <p>"Clean cut, great vibe." ★★★★★</p>
+              <p><strong>Date:</strong> 2025-08-02</p>
+              <button>Edit Review</button>
+            </div>
+
+            <div class="review-form">
+              <h4>Write a new review</h4>
+              <input type="text" placeholder="Business name" id="reviewBusiness">
+              <select id="reviewRating">
+                <option>⭐ 1</option>
+                <option>⭐⭐ 2</option>
+                <option>⭐⭐⭐ 3</option>
+                <option>⭐⭐⭐⭐ 4</option>
+                <option selected>⭐⭐⭐⭐⭐ 5</option>
+              </select>
+              <textarea placeholder="Share a few words..." id="reviewText"></textarea>
+              <button onclick="dashboard.submitReview()">Submit Review</button>
+            </div>
+          </section>
+        `;
+      }
+
+      getLoyaltyContent() {
+        return `
+          <section class="dashboard-section">
+            <h2>🎁 Loyalty & Rewards</h2>
+            <p>Earn points, unlock perks, and enjoy exclusive benefits.</p>
+
+            <div class="payment-summary">
+              <p><strong>BlkPoints:</strong> 240</p>
+              <p><strong>Current Tier:</strong> Bronze</p>
+              <p><strong>Points to Next Tier:</strong> 60</p>
+            </div>
+
+            <div class="booking-card">
+              <h3>Your BlkPoints</h3>
+              <p>Earn points when you book local businesses. Redeem for perks.</p>
+              <div style="margin: 15px 0; text-align: center;">
+                <div style="width: 90px; height: 90px; border-radius: 50%; border: 6px solid gold; display: inline-grid; place-items: center; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);">
+                  <div style="font-weight: 800; font-size: 18px;">240</div>
                 </div>
+              </div>
             </div>
-        </div>
-        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
-            <p>&copy; 2024 BlkPages. All rights reserved.</p>
-        </div>
-    </footer>
+
+            <div class="booking-card">
+              <h3>Refer friends</h3>
+              <p>Share your code. When they book, you both get perks.</p>
+              <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <input type="text" value="AMINA-UK-7X3" readonly style="flex: 1; padding: 8px; background: #333; border: 1px solid #555; border-radius: 5px; color: #fff;">
+                <button onclick="dashboard.copyReferralCode()">Copy</button>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      getProfileContent() {
+        return `
+          <section class="dashboard-section">
+            <h2>👤 Profile Settings</h2>
+            <p>Manage your personal information and account preferences.</p>
+
+            <div class="payment-summary">
+              <p><strong>Member Since:</strong> 2024</p>
+              <p><strong>Total Bookings:</strong> 3</p>
+              <p><strong>Favorite Businesses:</strong> 3</p>
+            </div>
+
+            <div class="review-form">
+              <h4>Personal Information</h4>
+              <input type="text" placeholder="Name" value="Amina" id="profileName">
+              <input type="email" placeholder="Email" value="amina@example.com" id="profileEmail">
+              <input type="tel" placeholder="Phone" id="profilePhone">
+              <input type="text" placeholder="Location" id="profileLocation">
+              <textarea placeholder="Preferences, interests..." id="profilePreferences"></textarea>
+              <button onclick="dashboard.saveProfile()">Save Changes</button>
+              <button class="btn secondary" onclick="dashboard.resetProfile()">Reset</button>
+            </div>
+          </section>
+        `;
+      }
+
+      getMessagesContent() {
+        return `
+          <section class="dashboard-section">
+            <h2>💬 Messages & Notifications</h2>
+            <p>Stay updated with messages from businesses and important notifications.</p>
+
+            <div class="payment-summary">
+              <p><strong>Unread Messages:</strong> 2</p>
+              <p><strong>Notifications:</strong> 3</p>
+              <p><strong>Upcoming Bookings:</strong> 2</p>
+            </div>
+
+            <div class="booking-card">
+              <h3>Glow Studio</h3>
+              <p>"Your booking is confirmed. See you soon!"</p>
+              <p><strong>Time:</strong> 2025-10-22 09:10</p>
+              <button>Reply</button>
+            </div>
+
+            <div class="booking-card">
+              <h3>BlkPages</h3>
+              <p>"New loyalty perk unlocked. Check your dashboard."</p>
+              <p><strong>Time:</strong> 2025-10-21 17:42</p>
+              <button>View Perks</button>
+            </div>
+          </section>
+        `;
+      }
+
+      // Action Methods
+      viewBooking(id) {
+        alert(`Viewing booking details for ${id}`);
+      }
+
+      rescheduleBooking(id) {
+        alert(`Opening reschedule flow for ${id}`);
+      }
+
+      viewReceipt(id) {
+        alert(`Opening receipt for payment ${id}`);
+      }
+
+      submitReview() {
+        const business = document.getElementById('reviewBusiness')?.value;
+        const rating = document.getElementById('reviewRating')?.value;
+        const text = document.getElementById('reviewText')?.value;
+        
+        if (!business || !text) {
+          alert('Please fill in all fields');
+          return;
+        }
+        
+        alert(`Review submitted for ${business}: ${rating} - ${text}`);
+        document.getElementById('reviewText').value = '';
+      }
+
+      copyReferralCode() {
+        navigator.clipboard.writeText('AMINA-UK-7X3');
+        alert('Referral code copied to clipboard!');
+      }
+
+      saveProfile() {
+        alert('Profile saved successfully!');
+      }
+
+      resetProfile() {
+        document.getElementById('profileName').value = 'Amina';
+        document.getElementById('profileEmail').value = 'amina@example.com';
+        document.getElementById('profilePhone').value = '';
+        document.getElementById('profileLocation').value = '';
+        document.getElementById('profilePreferences').value = '';
+      }
+
+      setupNotifications() {
+        // Notification system setup
+        const notifBtn = document.getElementById('notifBtn');
+        const notifDropdown = document.getElementById('notifDropdown');
+        const notifList = document.getElementById('notifList');
+        const notifBadge = document.getElementById('notifBadge');
+        const notifClear = document.getElementById('notifClear');
+
+        if (!notifBtn) return;
+
+        // Demo notifications
+        const notifications = [
+          { 
+            id: 1, 
+            title: "Your booking with Glow Studio is confirmed", 
+            time: "2 hours ago",
+            unread: true
+          },
+          { 
+            id: 2, 
+            title: "You earned 10 BlkPoints", 
+            time: "1 day ago",
+            unread: true
+          },
+          { 
+            id: 3, 
+            title: "Payment received for Fade District", 
+            time: "2 days ago",
+            unread: false
+          }
+        ];
+
+        // Render notifications
+        const renderNotifications = () => {
+          notifList.innerHTML = '';
+          let unreadCount = 0;
+
+          notifications.forEach(notif => {
+            const item = document.createElement('div');
+            item.className = `notif-item ${notif.unread ? 'unread' : ''}`;
+            item.innerHTML = `
+              <div class="notif-content">
+                <div class="notif-text">${notif.title}</div>
+                <div class="notif-time">${notif.time}</div>
+              </div>
+            `;
+            
+            item.addEventListener('click', () => {
+              notif.unread = false;
+              renderNotifications();
+            });
+            
+            notifList.appendChild(item);
+            if (notif.unread) unreadCount++;
+          });
+
+          notifBadge.hidden = unreadCount === 0;
+        };
+
+        // Event listeners
+        notifBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          notifDropdown.hidden = !notifDropdown.hidden;
+          if (!notifDropdown.hidden) {
+            renderNotifications();
+          }
+        });
+
+        notifClear.addEventListener('click', (e) => {
+          e.stopPropagation();
+          notifications.forEach(n => n.unread = false);
+          renderNotifications();
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
+            notifDropdown.hidden = true;
+          }
+        });
+
+        // Initial render
+        renderNotifications();
+      }
+    }
+
+    // Initialize dashboard when DOM is loaded
+    let dashboard;
+    document.addEventListener('DOMContentLoaded', () => {
+      dashboard = new Dashboard();
+    });
+  </script>
 </body>
 </html>
