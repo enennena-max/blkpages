@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlkPages | Loyalty</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- Global ---------- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at top left, #1a1a1a, #0d0d0d);
+      color: #f8f8f8;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(242, 201, 76, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.02) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(242, 201, 76, 0.01) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+      animation: subtleGlow 8s ease-in-out infinite;
+    }
+    @keyframes subtleGlow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* ---------- Header with Notification Bell ---------- */
+    .header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 240px;
+      background: rgba(25, 25, 25, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+    .notification-bell {
+      position: relative;
+      background: rgba(242, 201, 76, 0.2);
+      border: 2px solid rgba(242, 201, 76, 0.4);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: bellPulse 3s infinite;
+      box-shadow: 0 0 20px rgba(242, 201, 76, 0.3);
+    }
+    .notification-bell:hover {
+      background: rgba(242, 201, 76, 0.3);
+      transform: scale(1.1) rotate(10deg);
+      box-shadow: 0 0 30px rgba(242, 201, 76, 0.5);
+    }
+    @keyframes bellPulse {
+      0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(242, 201, 76, 0.4);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 0 0 15px rgba(242, 201, 76, 0);
+        transform: scale(1.05);
+      }
+    }
+    .notification-bell::before {
+      content: "🔔";
+      font-size: 1.2rem;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+      animation: badgeBounce 2s infinite;
+    }
+    @keyframes badgeBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 240px;
+      background: rgba(25, 25, 25, 0.8);
+      backdrop-filter: blur(8px);
+      border-right: 1px solid rgba(255, 215, 0, 0.2);
+      padding: 2rem 1rem;
+    }
+    .sidebar h1 {
+      color: #f2c94c;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      letter-spacing: 0.5px;
+    }
+    .sidebar a {
+      display: block;
+      color: #ddd;
+      text-decoration: none;
+      margin: 1rem 0;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .sidebar a:hover {
+      color: #f2c94c;
+    }
+
+    /* ---------- Main ---------- */
+    main {
+      margin-left: 260px;
+      margin-top: 80px;
+      padding: 3rem 4rem;
+    }
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #f2c94c, #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.sub {
+      color: #bfbfbf;
+      margin-bottom: 2rem;
+    }
+
+    /* ---------- Tab Navigation ---------- */
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      background: rgba(40, 40, 40, 0.5);
+      padding: 0.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #ccc;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .tab-btn.active {
+      background: rgba(242, 201, 76, 0.15);
+      color: #f2c94c;
+      border: 1px solid rgba(242, 201, 76, 0.3);
+    }
+    .tab-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    /* ---------- Loyalty Cards ---------- */
+    .loyalty-card {
+      background: rgba(40, 40, 40, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s forwards;
+    }
+    .loyalty-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 215, 0, 0.4);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .loyalty-card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+    .points {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: rgba(242, 201, 76, 0.15);
+      color: #f2c94c;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .details {
+      margin: 0.6rem 0;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+    .details i {
+      margin-right: 0.5rem;
+      color: #f2c94c;
+    }
+
+    /* ---------- Punch Card Styles ---------- */
+    .punch-card {
+      background: rgba(40, 40, 40, 0.6);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    .punch-card:hover {
+      border-color: rgba(255, 215, 0, 0.4);
+      transform: translateX(5px);
+    }
+    .punch-holes {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .hole {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      background: transparent;
+      transition: all 0.3s ease;
+    }
+    .hole.punched {
+      background: #f2c94c;
+      border-color: #f2c94c;
+      box-shadow: 0 0 10px rgba(242, 201, 76, 0.5);
+    }
+
+    /* ---------- Reward Cards ---------- */
+    .reward-card {
+      background: linear-gradient(135deg, rgba(242, 201, 76, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+      border: 2px solid rgba(242, 201, 76, 0.3);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .reward-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(242, 201, 76, 0.1), transparent);
+      transform: rotate(45deg);
+      transition: all 0.5s ease;
+    }
+    .reward-card:hover::before {
+      animation: shimmer 1s ease-in-out;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+    .reward-card:hover {
+      border-color: rgba(242, 201, 76, 0.5);
+      transform: scale(1.02);
+    }
+    .reward-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #f2c94c;
+      margin-bottom: 0.5rem;
+    }
+    .reward-description {
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .reward-cost {
+      color: #f2c94c;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    /* ---------- Buttons ---------- */
+    .buttons {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    button {
+      border: 1px solid #f2c94c;
+      background: transparent;
+      color: #f2c94c;
+      padding: 0.5rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+    }
+    button:hover {
+      background: #f2c94c;
+      color: #000;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    }
+    button.secondary {
+      border-color: #6c757d;
+      color: #6c757d;
+    }
+    button.secondary:hover {
+      background: #6c757d;
+      color: #fff;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ---------- Modal Styles ---------- */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+    }
+    .modal-content {
+      background: rgba(25, 25, 25, 0.95);
+      margin: 5% auto;
+      padding: 2rem;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+      animation: modalSlideIn 0.3s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+    }
+    .close:hover {
+      color: #f2c94c;
+    }
+
+    /* ---------- Tab Content ---------- */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* ---------- Stats Cards ---------- */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: rgba(40, 40, 40, 0.6);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+      border-color: rgba(255, 215, 0, 0.4);
+      transform: translateY(-5px);
+    }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #f2c94c;
+      margin-bottom: 0.5rem;
+    }
+    .stat-label {
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 800px) {
+      .sidebar { width: 180px; }
+      main { margin-left: 200px; padding: 2rem; }
+      .header { left: 180px; }
+    }
+    @media (max-width: 600px) {
+      .sidebar { display: none; }
+      main { margin: 0; margin-top: 80px; padding: 1.5rem; }
+      .header { left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header with Notification Bell -->
+  <div class="header">
+    <div></div>
+    <div class="notification-bell" onclick="openNotifications()">
+      <div class="notification-badge">1</div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h1>BlkPages</h1>
+    <a href="bookings-page.html">Bookings</a>
+    <a href="payments-page.html">Payments</a>
+    <a href="reviews-page.html">Reviews</a>
+    <a href="#" style="color: #f2c94c;">Loyalty</a>
+    <a href="messages-page.html">Messages</a>
+  </div>
+
+  <!-- Main content -->
+  <main>
+    <h2>Loyalty Program</h2>
+    <p class="sub">Earn points, unlock rewards, and enjoy exclusive benefits.</p>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="showTab('points')">My Points</button>
+      <button class="tab-btn" onclick="showTab('punch-cards')">Punch Cards</button>
+      <button class="tab-btn" onclick="showTab('rewards')">Rewards</button>
+      <button class="tab-btn" onclick="showTab('stats')">Stats</button>
+    </div>
+
+    <!-- My Points Tab -->
+    <div id="points" class="tab-content active">
+      <!-- Points Summary Card -->
+      <div class="loyalty-card">
+        <h3>Total Points Balance</h3>
+        <div class="points">1,250 pts</div>
+        <div class="details"><i>🎯</i>Available for redemption</div>
+        <div class="details"><i>📈</i>Earned this month: 150 points</div>
+        <div class="buttons">
+          <button onclick="viewPointsHistory()">View History</button>
+          <button onclick="openRedeemModal()">Redeem Points</button>
+        </div>
+      </div>
+
+      <!-- Recent Points Activity -->
+      <div class="loyalty-card">
+        <h3>Recent Activity</h3>
+        <div class="details"><i>✅</i>Completed booking at Royal Hair - +50 points</div>
+        <div class="details"><i>✅</i>Left review for Beauty Lounge - +25 points</div>
+        <div class="details"><i>✅</i>Referral bonus - +100 points</div>
+        <div class="details"><i>✅</i>Monthly bonus - +75 points</div>
+      </div>
+
+      <!-- Points Earning Opportunities -->
+      <div class="loyalty-card">
+        <h3>Earn More Points</h3>
+        <div class="details"><i>📅</i>Complete a booking - 50 points</div>
+        <div class="details"><i>⭐</i>Leave a review - 25 points</div>
+        <div class="details"><i>👥</i>Refer a friend - 100 points</div>
+        <div class="details"><i>📱</i>Share on social media - 15 points</div>
+        <div class="buttons">
+          <button onclick="shareOnSocial()">Share & Earn</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Punch Cards Tab -->
+    <div id="punch-cards" class="tab-content">
+      <!-- Punch Card 1 -->
+      <div class="punch-card">
+        <div>
+          <h4>Fade District</h4>
+          <small>Skin Fade - 8 visits for free haircut</small>
+        </div>
+        <div class="punch-holes">
+          <div class="hole punched"></div>
+          <div class="hole punched"></div>
+          <div class="hole punched"></div>
+          <div class="hole punched"></div>
+          <div class="hole punched"></div>
+          <div class="hole"></div>
+          <div class="hole"></div>
+          <div class="hole"></div>
+        </div>
+      </div>
+
+      <!-- Punch Card 2 -->
+      <div class="punch-card">
+        <div>
+          <h4>Glow Studio</h4>
+          <small>Makeup Session - 5 visits for free session</small>
+        </div>
+        <div class="punch-holes">
+          <div class="hole punched"></div>
+          <div class="hole punched"></div>
+          <div class="hole"></div>
+          <div class="hole"></div>
+          <div class="hole"></div>
+        </div>
+      </div>
+
+      <!-- Punch Card 3 -->
+      <div class="punch-card">
+        <div>
+          <h4>Royal Hair</h4>
+          <small>Haircut & Style - 6 visits for free service</small>
+        </div>
+        <div class="punch-holes">
+          <div class="hole punched"></div>
+          <div class="hole punched"></div>
+          <div class="hole punched"></div>
+          <div class="hole punched"></div>
+          <div class="hole punched"></div>
+          <div class="hole punched"></div>
+        </div>
+        <div class="buttons">
+          <button onclick="claimReward('royal-hair')">Claim Free Service</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rewards Tab -->
+    <div id="rewards" class="tab-content">
+      <!-- Available Rewards -->
+      <div class="reward-card">
+        <div class="reward-title">£10 Off Next Booking</div>
+        <div class="reward-description">Get £10 discount on your next service booking</div>
+        <div class="reward-cost">Cost: 500 points</div>
+        <div class="buttons">
+          <button onclick="redeemReward('discount-10')">Redeem</button>
+        </div>
+      </div>
+
+      <div class="reward-card">
+        <div class="reward-title">Free Consultation</div>
+        <div class="reward-description">Complimentary 30-minute consultation with any stylist</div>
+        <div class="reward-cost">Cost: 300 points</div>
+        <div class="buttons">
+          <button onclick="redeemReward('consultation')">Redeem</button>
+        </div>
+      </div>
+
+      <div class="reward-card">
+        <div class="reward-title">Premium Upgrade</div>
+        <div class="reward-description">Upgrade to premium service for free</div>
+        <div class="reward-cost">Cost: 800 points</div>
+        <div class="buttons">
+          <button onclick="redeemReward('upgrade')">Redeem</button>
+        </div>
+      </div>
+
+      <div class="reward-card">
+        <div class="reward-title">VIP Treatment</div>
+        <div class="reward-description">Exclusive VIP treatment package</div>
+        <div class="reward-cost">Cost: 1,200 points</div>
+        <div class="buttons">
+          <button onclick="redeemReward('vip')">Redeem</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Tab -->
+    <div id="stats" class="tab-content">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">1,250</div>
+          <div class="stat-label">Total Points</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">12</div>
+          <div class="stat-label">Bookings Completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">8</div>
+          <div class="stat-label">Reviews Written</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Rewards Redeemed</div>
+        </div>
+      </div>
+
+      <div class="loyalty-card">
+        <h3>Points Breakdown</h3>
+        <div style="margin-top: 1rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Bookings Completed:</span>
+            <span>600 points</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Reviews Written:</span>
+            <span>200 points</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Referrals:</span>
+            <span>300 points</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Social Shares:</span>
+            <span>75 points</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Monthly Bonuses:</span>
+            <span>75 points</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Redeem Points Modal -->
+  <div id="redeemModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('redeemModal')">&times;</span>
+      <h3>Redeem Points</h3>
+      <p>Choose a reward to redeem with your points:</p>
+      <div style="margin-top: 1rem;">
+        <div style="padding: 1rem; background: rgba(40, 40, 40, 0.5); border-radius: 8px; margin-bottom: 1rem;">
+          <strong>£10 Off Next Booking</strong><br>
+          <small>500 points</small>
+        </div>
+        <div style="padding: 1rem; background: rgba(40, 40, 40, 0.5); border-radius: 8px; margin-bottom: 1rem;">
+          <strong>Free Consultation</strong><br>
+          <small>300 points</small>
+        </div>
+        <div style="padding: 1rem; background: rgba(40, 40, 40, 0.5); border-radius: 8px;">
+          <strong>Premium Upgrade</strong><br>
+          <small>800 points</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function showTab(tabName) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Remove active class from all tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Show selected tab content
+      document.getElementById(tabName).classList.add('active');
+      
+      // Add active class to clicked button
+      event.target.classList.add('active');
+    }
+
+    function viewPointsHistory() {
+      alert('Points history would open here');
+    }
+
+    function openRedeemModal() {
+      document.getElementById('redeemModal').style.display = 'block';
+    }
+
+    function shareOnSocial() {
+      alert('Social sharing functionality would open here');
+    }
+
+    function claimReward(businessId) {
+      alert('Free service claimed! You can now book your complimentary service.');
+    }
+
+    function redeemReward(rewardId) {
+      if (confirm('Are you sure you want to redeem this reward?')) {
+        alert('Reward redeemed successfully! Check your email for details.');
+      }
+    }
+
+    function openNotifications() {
+      alert('Notifications would open here');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modals = document.querySelectorAll('.modal');
+      modals.forEach(modal => {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

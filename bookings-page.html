@@ -14,6 +14,98 @@
       color: #f8f8f8;
       overflow-x: hidden;
       min-height: 100vh;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(242, 201, 76, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.02) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(242, 201, 76, 0.01) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+      animation: subtleGlow 8s ease-in-out infinite;
+    }
+    @keyframes subtleGlow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* ---------- Header with Notification Bell ---------- */
+    .header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 240px;
+      background: rgba(25, 25, 25, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+    .notification-bell {
+      position: relative;
+      background: rgba(242, 201, 76, 0.2);
+      border: 2px solid rgba(242, 201, 76, 0.4);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: bellPulse 3s infinite;
+      box-shadow: 0 0 20px rgba(242, 201, 76, 0.3);
+    }
+    .notification-bell:hover {
+      background: rgba(242, 201, 76, 0.3);
+      transform: scale(1.1) rotate(10deg);
+      box-shadow: 0 0 30px rgba(242, 201, 76, 0.5);
+    }
+    @keyframes bellPulse {
+      0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(242, 201, 76, 0.4);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 0 0 15px rgba(242, 201, 76, 0);
+        transform: scale(1.05);
+      }
+    }
+    .notification-bell::before {
+      content: "🔔";
+      font-size: 1.2rem;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+      animation: badgeBounce 2s infinite;
+    }
+    @keyframes badgeBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
     }
 
     /* ---------- Sidebar ---------- */
@@ -49,6 +141,7 @@
     /* ---------- Main ---------- */
     main {
       margin-left: 260px;
+      margin-top: 80px;
       padding: 3rem 4rem;
     }
     h2 {
@@ -62,6 +155,38 @@
     p.sub {
       color: #bfbfbf;
       margin-bottom: 2rem;
+    }
+
+    /* ---------- Tab Navigation ---------- */
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      background: rgba(40, 40, 40, 0.5);
+      padding: 0.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #ccc;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .tab-btn.active {
+      background: rgba(242, 201, 76, 0.15);
+      color: #f2c94c;
+      border: 1px solid rgba(242, 201, 76, 0.3);
+    }
+    .tab-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
     }
 
     /* ---------- Booking Cards ---------- */
@@ -105,6 +230,14 @@
       font-size: 0.8rem;
       text-transform: uppercase;
     }
+    .status.completed {
+      background: rgba(46, 204, 113, 0.15);
+      color: #2ecc71;
+    }
+    .status.cancelled {
+      background: rgba(231, 76, 60, 0.15);
+      color: #e74c3c;
+    }
 
     .details {
       margin: 0.6rem 0;
@@ -138,36 +271,210 @@
       color: #000;
       box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
     }
-
-    /* ---------- Cancellation Policy ---------- */
-    .policy {
-      margin-top: 0.8rem;
-      font-size: 0.85rem;
-      color: #d4d4d4;
-      line-height: 1.4;
-      border-top: 1px solid rgba(255, 215, 0, 0.1);
-      padding-top: 0.8rem;
-      display: none;
-      animation: slideDown 0.3s ease forwards;
+    button.secondary {
+      border-color: #6c757d;
+      color: #6c757d;
     }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-5px); }
+    button.secondary:hover {
+      background: #6c757d;
+      color: #fff;
+    }
+
+    /* ---------- Modal Styles ---------- */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+    }
+    .modal-content {
+      background: rgba(25, 25, 25, 0.95);
+      margin: 5% auto;
+      padding: 2rem;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+      animation: modalSlideIn 0.3s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-50px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .policy.show { display: block; }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+    }
+    .close:hover {
+      color: #f2c94c;
+    }
+
+    /* ---------- Review Modal Styles ---------- */
+    .review-form {
+      margin-top: 1.5rem;
+    }
+    .star-rating {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .star {
+      font-size: 2rem;
+      color: #444;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .star.active {
+      color: #f2c94c;
+    }
+    .star:hover {
+      color: #f2c94c;
+    }
+    textarea {
+      width: 100%;
+      background: rgba(40, 40, 40, 0.8);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      color: #fff;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 100px;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: #f2c94c;
+    }
+
+    /* ---------- Tab Content ---------- */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* ---------- Notification Items ---------- */
+    .notification-item {
+      padding: 1rem;
+      background: rgba(40, 40, 40, 0.6);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .notification-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: linear-gradient(180deg, #f2c94c, #ffd700);
+      opacity: 0.8;
+    }
+    .notification-item:hover {
+      background: rgba(40, 40, 40, 0.8);
+      border-color: rgba(255, 215, 0, 0.4);
+      transform: translateX(5px);
+    }
+    .notification-item.read {
+      opacity: 0.5;
+      background: rgba(40, 40, 40, 0.3);
+      border-color: rgba(255, 215, 0, 0.1);
+    }
+    .notification-item.read::before {
+      background: #666;
+    }
+    .notification-content {
+      flex: 1;
+      padding-left: 1rem;
+    }
+    .mark-read-btn {
+      background: rgba(242, 201, 76, 0.15);
+      border: 1px solid rgba(242, 201, 76, 0.3);
+      color: #f2c94c;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .mark-read-btn:hover {
+      background: rgba(242, 201, 76, 0.25);
+      transform: scale(1.05);
+    }
+    .mark-read-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ---------- Toast Notification ---------- */
+    .toast {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      background: linear-gradient(135deg, rgba(40, 40, 40, 0.95) 0%, rgba(25, 25, 25, 0.95) 100%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      color: #f8f8f8;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      z-index: 1001;
+      transform: translateX(400px);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .toast.show {
+      transform: translateX(0);
+    }
+    .toast::before {
+      content: '✓';
+      color: #2ecc71;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
 
     /* ---------- Responsive ---------- */
     @media (max-width: 800px) {
       .sidebar { width: 180px; }
       main { margin-left: 200px; padding: 2rem; }
+      .header { left: 180px; }
     }
     @media (max-width: 600px) {
       .sidebar { display: none; }
-      main { margin: 0; padding: 1.5rem; }
+      main { margin: 0; margin-top: 80px; padding: 1.5rem; }
+      .header { left: 0; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Header with Notification Bell -->
+  <div class="header">
+    <div></div>
+    <div class="notification-bell" onclick="openNotifications()">
+      <div class="notification-badge">3</div>
+    </div>
+  </div>
 
   <!-- Sidebar -->
   <div class="sidebar">
@@ -184,22 +491,27 @@
     <h2>Your Bookings</h2>
     <p class="sub">Manage and track your upcoming and past appointments.</p>
 
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="showTab('upcoming')">Upcoming</button>
+      <button class="tab-btn" onclick="showTab('completed')">Completed</button>
+      <button class="tab-btn" onclick="showTab('cancelled')">Cancelled</button>
+    </div>
+
+    <!-- Upcoming Tab -->
+    <div id="upcoming" class="tab-content active">
     <!-- Booking Card 1 -->
     <div class="booking-card">
       <span class="status">Pending</span>
       <h3>Fade District – Skin Fade</h3>
       <div class="details"><i>📅</i>28 Oct 2025 – 10:30 AM</div>
       <div class="details"><i>📍</i>221B Baker Street, Marylebone, London NW1 6XE, United Kingdom</div>
-      <div class="policy" id="policy1">
-        <strong>Cancellation Policy:</strong><br>
-        Free cancellation up to 24 hours before your appointment.<br>
-        After this period, a 50% charge applies.
-      </div>
-      <div class="buttons">
-        <button onclick="togglePolicy('policy1')">View Policy</button>
-        <button>Reschedule</button>
-        <button>Cancel Booking</button>
-      </div>
+        <div class="buttons">
+          <button onclick="addToCalendar('booking1')">Add to Calendar</button>
+          <button onclick="viewBusinessProfile('fade-district')">View Business</button>
+          <button onclick="openRescheduleModal('booking1')">Reschedule</button>
+          <button onclick="openCancelModal('booking1')" class="secondary">Cancel Booking</button>
+        </div>
     </div>
 
     <!-- Booking Card 2 -->
@@ -208,38 +520,345 @@
       <h3>Glow Studio – Makeup Session</h3>
       <div class="details"><i>📅</i>5 Nov 2025 – 14:00</div>
       <div class="details"><i>📍</i>12 Market Street, Soho, London W1F 8DR, United Kingdom</div>
-      <div class="policy" id="policy2">
-        <strong>Cancellation Policy:</strong><br>
-        Cancellations accepted up to 12 hours in advance. No refund for missed appointments.
-      </div>
-      <div class="buttons">
-        <button onclick="togglePolicy('policy2')">View Policy</button>
-        <button>Add to Calendar</button>
+        <div class="buttons">
+          <button onclick="addToCalendar('booking2')">Add to Calendar</button>
+          <button onclick="viewBusinessProfile('glow-studio')">View Business</button>
+          <button onclick="openRescheduleModal('booking2')">Reschedule</button>
+          <button onclick="openCancelModal('booking2')" class="secondary">Cancel Booking</button>
+        </div>
       </div>
     </div>
 
-    <!-- Booking Card 3 -->
+    <!-- Completed Tab -->
+    <div id="completed" class="tab-content">
+      <!-- Booking Card 3 -->
+      <div class="booking-card">
+        <span class="status completed">Completed</span>
+        <h3>Royal Hair – Haircut & Style</h3>
+        <div class="details"><i>📅</i>15 Oct 2025 – 11:00 AM</div>
+        <div class="details"><i>📍</i>45 King Street, Covent Garden, London WC2E 8JZ, United Kingdom</div>
+        <div class="buttons">
+          <button onclick="viewBusinessProfile('royal-hair')">View Business</button>
+          <button onclick="openReviewModal('booking3')">Leave Review</button>
+          <button onclick="openBookingModal('booking3')">Book Again</button>
+        </div>
+      </div>
+
+      <!-- Booking Card 4 -->
+      <div class="booking-card">
+        <span class="status completed">Completed</span>
+        <h3>Beauty Lounge – Facial Treatment</h3>
+        <div class="details"><i>📅</i>8 Oct 2025 – 15:30</div>
+        <div class="details"><i>📍</i>78 Oxford Street, London W1D 1BS, United Kingdom</div>
+      <div class="buttons">
+          <button onclick="openReviewModal('booking4')">Leave Review</button>
+          <button onclick="openBookingModal('booking4')">Book Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cancelled Tab -->
+    <div id="cancelled" class="tab-content">
+      <!-- Booking Card 5 -->
     <div class="booking-card">
-      <span class="status">Cancelled</span>
+        <span class="status cancelled">Cancelled</span>
       <h3>Soul Yoga – Vinyasa Class</h3>
       <div class="details"><i>📅</i>18 Dec 2025 – 18:00</div>
       <div class="details"><i>📍</i>21 Redchurch Street, Shoreditch, London E2 7DJ, United Kingdom</div>
-      <div class="policy" id="policy3">
-        <strong>Cancellation Policy:</strong><br>
-        Non-refundable booking. Please contact the studio directly for reschedule requests.
-      </div>
-      <div class="buttons">
-        <button onclick="togglePolicy('policy3')">View Policy</button>
-        <button>Add to Calendar</button>
+        <div class="buttons">
+          <button onclick="openBookingModal('booking5')">Book Again</button>
+        </div>
       </div>
     </div>
   </main>
 
-  <!-- JavaScript for policy toggle -->
+  <!-- Reschedule Modal -->
+  <div id="rescheduleModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('rescheduleModal')">&times;</span>
+      <h3>Reschedule Appointment</h3>
+      <p>Select a new date and time for your appointment.</p>
+      <div style="margin-top: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem;">New Date:</label>
+        <input type="date" style="width: 100%; padding: 0.5rem; background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 6px; color: #fff;">
+      </div>
+      <div style="margin-top: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem;">New Time:</label>
+        <select style="width: 100%; padding: 0.5rem; background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 6px; color: #fff;">
+          <option>10:00 AM</option>
+          <option>10:30 AM</option>
+          <option>11:00 AM</option>
+          <option>11:30 AM</option>
+          <option>2:00 PM</option>
+          <option>2:30 PM</option>
+          <option>3:00 PM</option>
+        </select>
+      </div>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <button onclick="confirmReschedule()" style="flex: 1;">Confirm Reschedule</button>
+        <button onclick="closeModal('rescheduleModal')" class="secondary" style="flex: 1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cancel Modal -->
+  <div id="cancelModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cancelModal')">&times;</span>
+      <h3>Cancel Appointment</h3>
+      <p>Are you sure you want to cancel this appointment?</p>
+      <div style="margin-top: 1rem; padding: 1rem; background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.3); border-radius: 8px;">
+        <strong>Cancellation Policy:</strong><br>
+        Free cancellation up to 24 hours before your appointment.<br>
+        After this period, a 50% charge applies.
+      </div>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <button onclick="confirmCancel()" class="secondary" style="flex: 1;">Yes, Cancel</button>
+        <button onclick="closeModal('cancelModal')" style="flex: 1;">Keep Appointment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
+  <div id="reviewModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('reviewModal')">&times;</span>
+      <h3>Leave a Review</h3>
+      <p>How was your experience?</p>
+      
+      <div class="star-rating">
+        <span class="star" onclick="setRating(1)">★</span>
+        <span class="star" onclick="setRating(2)">★</span>
+        <span class="star" onclick="setRating(3)">★</span>
+        <span class="star" onclick="setRating(4)">★</span>
+        <span class="star" onclick="setRating(5)">★</span>
+      </div>
+      
+      <div class="review-form">
+        <textarea placeholder="Tell us about your experience..."></textarea>
+        <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+          <button onclick="submitReview()" style="flex: 1;">Submit Review</button>
+          <button onclick="closeModal('reviewModal')" class="secondary" style="flex: 1;">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Book Again Modal -->
+  <div id="bookingModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('bookingModal')">&times;</span>
+      <h3>Book Again</h3>
+      <p>Would you like to book the same service again?</p>
+      <div style="margin-top: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem;">Select Date:</label>
+        <input type="date" style="width: 100%; padding: 0.5rem; background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 6px; color: #fff;">
+      </div>
+      <div style="margin-top: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem;">Select Time:</label>
+        <select style="width: 100%; padding: 0.5rem; background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 6px; color: #fff;">
+          <option>10:00 AM</option>
+          <option>10:30 AM</option>
+          <option>11:00 AM</option>
+          <option>11:30 AM</option>
+          <option>2:00 PM</option>
+          <option>2:30 PM</option>
+          <option>3:00 PM</option>
+        </select>
+      </div>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <button onclick="confirmBooking()" style="flex: 1;">Confirm Booking</button>
+        <button onclick="closeModal('bookingModal')" class="secondary" style="flex: 1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifications Modal -->
+  <div id="notificationsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('notificationsModal')">&times;</span>
+      <h3>Notifications</h3>
+      <div style="margin-top: 1rem;">
+        <div class="notification-item" id="notif1" data-tab="upcoming" data-action="view">
+          <div class="notification-content">
+            <strong>Appointment Reminder</strong><br>
+            <small>Your appointment at Fade District is tomorrow at 10:30 AM</small>
+          </div>
+          <button class="mark-read-btn" onclick="markAsRead('notif1', 'upcoming')">Mark as Read</button>
+        </div>
+        <div class="notification-item" id="notif2" data-tab="upcoming" data-action="view">
+          <div class="notification-content">
+            <strong>Booking Confirmed</strong><br>
+            <small>Your appointment at Glow Studio has been confirmed</small>
+          </div>
+          <button class="mark-read-btn" onclick="markAsRead('notif2', 'upcoming')">Mark as Read</button>
+        </div>
+        <div class="notification-item" id="notif3" data-tab="completed" data-action="review">
+          <div class="notification-content">
+            <strong>Review Request</strong><br>
+            <small>How was your experience at Royal Hair?</small>
+          </div>
+          <button class="mark-read-btn" onclick="markAsRead('notif3', 'completed')">Mark as Read</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
   <script>
-    function togglePolicy(id) {
-      const policy = document.getElementById(id);
-      policy.classList.toggle('show');
+    let currentRating = 0;
+    let unreadNotifications = 3;
+
+    function showTab(tabName) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Remove active class from all tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Show selected tab content
+      document.getElementById(tabName).classList.add('active');
+      
+      // Add active class to clicked button
+      event.target.classList.add('active');
+    }
+
+    function markAsRead(notificationId, targetTab) {
+      const notification = document.getElementById(notificationId);
+      const button = notification.querySelector('.mark-read-btn');
+      
+      // Mark as read
+      notification.classList.add('read');
+      button.textContent = 'Read';
+      button.disabled = true;
+      
+      // Decrease unread count
+      unreadNotifications--;
+      updateNotificationBadge();
+      
+      // Show toast message
+      showToast(`Notification marked as read. Switched to ${targetTab.charAt(0).toUpperCase() + targetTab.slice(1)} tab.`);
+      
+      // Close modal and switch to relevant tab
+      setTimeout(() => {
+        closeModal('notificationsModal');
+        showTab(targetTab);
+      }, 1000);
+    }
+
+    function updateNotificationBadge() {
+      const badge = document.querySelector('.notification-badge');
+      if (unreadNotifications > 0) {
+        badge.textContent = unreadNotifications;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+        // Stop bell animation when no notifications
+        document.querySelector('.notification-bell').style.animation = 'none';
+      }
+    }
+
+    function showToast(message) {
+      // Remove existing toast if any
+      const existingToast = document.querySelector('.toast');
+      if (existingToast) {
+        existingToast.remove();
+      }
+      
+      // Create new toast
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      // Show toast
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 100);
+      
+      // Hide toast after 3 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          toast.remove();
+        }, 400);
+      }, 3000);
+    }
+
+    function openRescheduleModal(bookingId) {
+      document.getElementById('rescheduleModal').style.display = 'block';
+    }
+
+    function openCancelModal(bookingId) {
+      document.getElementById('cancelModal').style.display = 'block';
+    }
+
+    function openReviewModal(bookingId) {
+      document.getElementById('reviewModal').style.display = 'block';
+      currentRating = 0;
+      updateStars();
+    }
+
+    function openBookingModal(bookingId) {
+      document.getElementById('bookingModal').style.display = 'block';
+    }
+
+    function openNotifications() {
+      document.getElementById('notificationsModal').style.display = 'block';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function setRating(rating) {
+      currentRating = rating;
+      updateStars();
+    }
+
+    function updateStars() {
+      const stars = document.querySelectorAll('.star');
+      stars.forEach((star, index) => {
+        if (index < currentRating) {
+          star.classList.add('active');
+        } else {
+          star.classList.remove('active');
+        }
+      });
+    }
+
+    function confirmReschedule() {
+      alert('Appointment rescheduled successfully!');
+      closeModal('rescheduleModal');
+    }
+
+    function confirmCancel() {
+      alert('Appointment cancelled successfully!');
+      closeModal('cancelModal');
+    }
+
+    function submitReview() {
+      alert('Thank you for your review!');
+      closeModal('reviewModal');
+    }
+
+    function confirmBooking() {
+      alert('Booking confirmed!');
+      closeModal('bookingModal');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modals = document.querySelectorAll('.modal');
+      modals.forEach(modal => {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
     }
   </script>
 
