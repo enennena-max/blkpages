@@ -149,6 +149,7 @@
       font-weight: 600;
       margin-bottom: 0.5rem;
       background: linear-gradient(90deg, #f2c94c, #fff);
+      background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -189,6 +190,16 @@
       color: #fff;
     }
 
+    /* ---------- Tab Counter Styling ---------- */
+    .tab-btn span {
+      color: #f2c94c;
+      font-weight: 600;
+      margin-left: 0.2rem;
+    }
+    .tab-btn.active span {
+      color: #f2c94c;
+    }
+
     /* ---------- Booking Cards ---------- */
     .booking-card {
       background: rgba(40, 40, 40, 0.7);
@@ -223,20 +234,26 @@
       position: absolute;
       top: 1.5rem;
       right: 1.5rem;
-      background: rgba(242, 201, 76, 0.15);
-      color: #f2c94c;
-      padding: 4px 10px;
-      border-radius: 10px;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
       font-size: 0.8rem;
+      font-weight: 600;
       text-transform: uppercase;
     }
+    .status.confirmed {
+      background: rgba(242, 201, 76, 0.2);
+      color: #f2c94c;
+      border: 1px solid rgba(242, 201, 76, 0.3);
+    }
     .status.completed {
-      background: rgba(46, 204, 113, 0.15);
+      background: rgba(46, 204, 113, 0.2);
       color: #2ecc71;
+      border: 1px solid rgba(46, 204, 113, 0.3);
     }
     .status.cancelled {
-      background: rgba(231, 76, 60, 0.15);
+      background: rgba(231, 76, 60, 0.2);
       color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.3);
     }
 
     .details {
@@ -278,6 +295,55 @@
     button.secondary:hover {
       background: #6c757d;
       color: #fff;
+    }
+    button.danger {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+    button.danger:hover {
+      background: #dc3545;
+      color: #fff;
+    }
+    button.gold {
+      background: #f2c94c;
+      color: #000;
+      border-color: #f2c94c;
+    }
+    button.gold:hover {
+      background: #e6b800;
+      color: #000;
+    }
+    .btn {
+      border: 1px solid #f2c94c;
+      background: transparent;
+      color: #f2c94c;
+      padding: 0.5rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+    }
+    .btn:hover {
+      background: #f2c94c;
+      color: #000;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    }
+    .btn.danger {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+    .btn.danger:hover {
+      background: #dc3545;
+      color: #fff;
+    }
+    .btn.gold {
+      background: #f2c94c;
+      color: #000;
+      border-color: #f2c94c;
+    }
+    .btn.gold:hover {
+      background: #e6b800;
+      color: #000;
     }
 
     /* ---------- Modal Styles ---------- */
@@ -494,82 +560,30 @@
 
     <!-- Tab Navigation -->
     <div class="tab-nav">
-      <button class="tab-btn active" onclick="showTab('upcoming')">Upcoming</button>
-      <button class="tab-btn" onclick="showTab('completed')">Completed</button>
-      <button class="tab-btn" onclick="showTab('cancelled')">Cancelled</button>
+      <button class="tab-btn active" id="tab-upcoming" onclick="showTab('upcoming')">
+        Upcoming (<span id="upcomingCount">0</span>)
+      </button>
+      <button class="tab-btn" id="tab-completed" onclick="showTab('completed')">
+        Completed (<span id="completedCount">0</span>)
+      </button>
+      <button class="tab-btn" id="tab-cancelled" onclick="showTab('cancelled')">
+        Cancelled (<span id="cancelledCount">0</span>)
+      </button>
     </div>
 
     <!-- Upcoming Tab -->
     <div id="upcoming" class="tab-content active">
-    <!-- Booking Card 1 -->
-    <div class="booking-card">
-      <span class="status">Pending</span>
-      <h3>Fade District – Skin Fade</h3>
-      <div class="details"><i>📅</i>28 Oct 2025 – 10:30 AM</div>
-      <div class="details"><i>📍</i>221B Baker Street, Marylebone, London NW1 6XE, United Kingdom</div>
-      <div class="buttons">
-          <button onclick="addToCalendar('booking1')">Add to Calendar</button>
-          <button onclick="viewBusinessProfile('fade-district')">View Business</button>
-          <button onclick="openRescheduleModal('booking1')">Reschedule</button>
-          <button onclick="openCancelModal('booking1')" class="secondary">Cancel Booking</button>
-      </div>
-    </div>
-
-    <!-- Booking Card 2 -->
-    <div class="booking-card">
-      <span class="status">Confirmed</span>
-      <h3>Glow Studio – Makeup Session</h3>
-      <div class="details"><i>📅</i>5 Nov 2025 – 14:00</div>
-      <div class="details"><i>📍</i>12 Market Street, Soho, London W1F 8DR, United Kingdom</div>
-        <div class="buttons">
-          <button onclick="addToCalendar('booking2')">Add to Calendar</button>
-          <button onclick="viewBusinessProfile('glow-studio')">View Business</button>
-          <button onclick="openRescheduleModal('booking2')">Reschedule</button>
-          <button onclick="openCancelModal('booking2')" class="secondary">Cancel Booking</button>
-        </div>
-      </div>
+      <!-- Dynamic content will be loaded here -->
     </div>
 
     <!-- Completed Tab -->
     <div id="completed" class="tab-content">
-      <!-- Booking Card 3 -->
-      <div class="booking-card">
-        <span class="status completed">Completed</span>
-        <h3>Royal Hair – Haircut & Style</h3>
-        <div class="details"><i>📅</i>15 Oct 2025 – 11:00 AM</div>
-        <div class="details"><i>📍</i>45 King Street, Covent Garden, London WC2E 8JZ, United Kingdom</div>
-        <div class="buttons">
-          <button onclick="viewBusinessProfile('royal-hair')">View Business</button>
-          <button onclick="openReviewModal('booking3')">Leave Review</button>
-          <button onclick="openBookingModal('booking3')">Book Again</button>
-        </div>
-      </div>
-
-      <!-- Booking Card 4 -->
-      <div class="booking-card">
-        <span class="status completed">Completed</span>
-        <h3>Beauty Lounge – Facial Treatment</h3>
-        <div class="details"><i>📅</i>8 Oct 2025 – 15:30</div>
-        <div class="details"><i>📍</i>78 Oxford Street, London W1D 1BS, United Kingdom</div>
-      <div class="buttons">
-          <button onclick="openReviewModal('booking4')">Leave Review</button>
-          <button onclick="openBookingModal('booking4')">Book Again</button>
-        </div>
-      </div>
+      <!-- Dynamic content will be loaded here -->
     </div>
 
     <!-- Cancelled Tab -->
     <div id="cancelled" class="tab-content">
-      <!-- Booking Card 5 -->
-    <div class="booking-card">
-        <span class="status cancelled">Cancelled</span>
-      <h3>Soul Yoga – Vinyasa Class</h3>
-      <div class="details"><i>📅</i>18 Dec 2025 – 18:00</div>
-      <div class="details"><i>📍</i>21 Redchurch Street, Shoreditch, London E2 7DJ, United Kingdom</div>
-        <div class="buttons">
-          <button onclick="openBookingModal('booking5')">Book Again</button>
-        </div>
-      </div>
+      <!-- Dynamic content will be loaded here -->
     </div>
   </main>
 
@@ -707,9 +721,183 @@
 
   <!-- JavaScript -->
   <script>
-    let currentRating = 0;
-    let unreadNotifications = 3;
+    // ==========================
+    // CONFIG
+    // ==========================
+    const API_BASE = 'http://localhost:3001';
+    const CUSTOMER_ID = 'replace-with-real-customer-id'; // from login
+    
+    // API INTEGRATION ACTIVE
+    console.log('🔗 API Integration: Loading bookings from /api/bookings endpoint');
 
+    // ==========================
+    // LOAD BOOKINGS DATA
+    // ==========================
+    async function loadBookings() {
+      try {
+        // Real API call
+        const res = await fetch(`${API_BASE}/api/bookings?customerId=${CUSTOMER_ID}`);
+        const data = await res.json();
+        renderBookings(data);
+      } catch (err) {
+        console.error('Bookings load failed:', err);
+        // Fallback to demo data if API fails
+        console.log('🎭 API failed, using demo data');
+        const demoBookings = [
+          {
+            id: "b1",
+            business_name: "Glow Studio",
+            service: "Makeup Session (Full Glam)",
+            date: "2025-11-05",
+            time: "14:00",
+            address: "12 Market Street, Soho, London W1",
+            status: "confirmed"
+          },
+          {
+            id: "b2",
+            business_name: "Fade District",
+            service: "Skin Fade",
+            date: "2025-10-28",
+            time: "10:30",
+            address: "221B Baker Street, Marylebone",
+            status: "cancelled"
+          }
+        ];
+        renderBookings(demoBookings);
+      }
+    }
+
+    // ==========================
+    // RENDER BOOKINGS
+    // ==========================
+    function renderBookings(bookings) {
+      const upcomingTab = document.getElementById('upcoming');
+      const completedTab = document.getElementById('completed');
+      const cancelledTab = document.getElementById('cancelled');
+
+      // Clear existing content
+      upcomingTab.innerHTML = '';
+      completedTab.innerHTML = '';
+      cancelledTab.innerHTML = '';
+
+      // Group bookings by status
+      const upcoming = bookings.filter(b => b.status === 'confirmed');
+      const completed = bookings.filter(b => b.status === 'completed');
+      const cancelled = bookings.filter(b => b.status === 'cancelled');
+
+      // Update counters
+      updateBookingCounts(bookings);
+
+      // Render each group
+      renderBookingGroup(upcomingTab, upcoming);
+      renderBookingGroup(completedTab, completed);
+      renderBookingGroup(cancelledTab, cancelled);
+    }
+
+    // ==========================
+    // UPDATE BOOKING COUNTERS
+    // ==========================
+    function updateBookingCounts(bookings) {
+      const counts = { upcoming: 0, completed: 0, cancelled: 0 };
+      
+      bookings.forEach(b => {
+        if (b.status === 'confirmed') counts.upcoming++;
+        else if (b.status === 'completed') counts.completed++;
+        else if (b.status === 'cancelled') counts.cancelled++;
+      });
+
+      // Update the counter displays
+      document.getElementById('upcomingCount').textContent = counts.upcoming;
+      document.getElementById('completedCount').textContent = counts.completed;
+      document.getElementById('cancelledCount').textContent = counts.cancelled;
+    }
+
+    function renderBookingGroup(container, bookings) {
+      if (bookings.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No bookings found.</p>';
+        return;
+      }
+
+      bookings.forEach(booking => {
+        const bookingCard = createBookingCard(booking);
+        container.appendChild(bookingCard);
+      });
+    }
+
+    function createBookingCard(booking) {
+      const card = document.createElement('div');
+      card.className = 'booking-card';
+      
+      const statusClass = booking.status === 'confirmed' ? 'confirmed' : 
+                        booking.status === 'completed' ? 'completed' : 'cancelled';
+      
+      // Format time for display (convert 24h to 12h format)
+      const timeDisplay = formatTime(booking.time);
+      
+      card.innerHTML = `
+        <span class="status ${statusClass}">${booking.status}</span>
+        <h3>${booking.business_name} – ${booking.service}</h3>
+        <div class="details"><i>📅</i>${formatDate(booking.date)} – ${timeDisplay}</div>
+        <div class="details"><i>📍</i>${booking.address}</div>
+        <div class="buttons">
+          ${getActionButtons(booking)}
+        </div>
+      `;
+      
+      return card;
+    }
+
+    function getActionButtons(booking) {
+      let buttons = '';
+      
+      // Generate business_id from business_name for demo purposes
+      const businessId = booking.business_name.toLowerCase().replace(/\s+/g, '-');
+      
+      if (booking.status === 'confirmed') {
+        buttons = `
+          <button class="btn gold" onclick="addToCalendar('${booking.id}')">Add to Calendar</button>
+          <button class="btn" onclick="viewBusinessProfile('${businessId}')">View Business</button>
+          <button class="btn" onclick="openRescheduleModal('${booking.id}')">Reschedule</button>
+          <button class="btn danger" onclick="openCancelModal('${booking.id}')">Cancel Booking</button>
+        `;
+      } else if (booking.status === 'completed') {
+        buttons = `
+          <button class="btn" onclick="viewBusinessProfile('${businessId}')">View Business</button>
+          <button class="btn gold" onclick="openReviewModal('${booking.id}')">Leave Review</button>
+          <button class="btn" onclick="bookAgain('${businessId}')">Book Again</button>
+        `;
+      } else if (booking.status === 'cancelled') {
+        buttons = `
+          <button class="btn" onclick="viewBusinessProfile('${businessId}')">View Business</button>
+          <button class="btn gold" onclick="bookAgain('${businessId}')">Book Again</button>
+        `;
+      }
+      
+      return buttons;
+    }
+
+    function formatTime(time24) {
+      // Convert 24h format (e.g., "14:00") to 12h format (e.g., "2:00 PM")
+      const [hours, minutes] = time24.split(':');
+      const hour = parseInt(hours);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const hour12 = hour % 12 || 12;
+      return `${hour12}:${minutes} ${ampm}`;
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-GB', { 
+        weekday: 'long', 
+        day: 'numeric', 
+        month: 'short', 
+        year: 'numeric' 
+      });
+    }
+
+    // ==========================
+    // TAB NAVIGATION
+    // ==========================
     function showTab(tabName) {
       // Hide all tab contents
       document.querySelectorAll('.tab-content').forEach(tab => {
@@ -725,8 +913,153 @@
       document.getElementById(tabName).classList.add('active');
       
       // Add active class to clicked button
-      event.target.classList.add('active');
+      document.getElementById(`tab-${tabName}`).classList.add('active');
     }
+
+    // ==========================
+    // ACTION FUNCTIONS (Same as Dashboard)
+    // ==========================
+    function addToCalendar(bookingId) {
+      // Find the booking data
+      const booking = findBookingById(bookingId);
+      if (!booking) {
+        showToast('Booking not found');
+        return;
+      }
+
+      // Generate ICS file using actual booking data
+      const title = `${booking.business_name} – ${booking.service}`;
+      const start = new Date(`${booking.date}T${booking.time}:00`);
+      const end = new Date(start.getTime() + 60 * 60 * 1000); // Add 1 hour
+      
+      function toICS(dt) {
+        return dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      }
+      
+      const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//BlkPages//Customer Dashboard//EN',
+        'BEGIN:VEVENT',
+        `DTSTART:${toICS(start)}`,
+        `DTEND:${toICS(end)}`,
+        `SUMMARY:${title}`,
+        `LOCATION:${booking.address}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\n');
+      
+      const blob = new Blob([ics], { type: 'text/calendar' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'appointment.ics';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      
+      showToast('Added to calendar successfully!');
+    }
+
+    function findBookingById(bookingId) {
+      // This would ideally be stored in a variable, but for now we'll use the demo data
+      const demoBookings = [
+        {
+          id: "b1",
+          business_name: "Glow Studio",
+          service: "Makeup Session (Full Glam)",
+          date: "2025-11-05",
+          time: "14:00",
+          address: "12 Market Street, Soho, London W1",
+          status: "confirmed"
+        },
+        {
+          id: "b2",
+          business_name: "Fade District",
+          service: "Skin Fade",
+          date: "2025-10-28",
+          time: "10:30",
+          address: "221B Baker Street, Marylebone",
+          status: "cancelled"
+        }
+      ];
+      return demoBookings.find(b => b.id === bookingId);
+    }
+
+    function viewBusinessProfile(businessId) {
+      window.location.href = `business-profile.html?id=${businessId}`;
+    }
+
+    function bookAgain(businessId) {
+      window.location.href = `booking.html?business=${businessId}`;
+    }
+
+    // ==========================
+    // MODAL FUNCTIONS (Same as Dashboard)
+    // ==========================
+    function openRescheduleModal(bookingId) {
+      document.getElementById('rescheduleModal').style.display = 'block';
+    }
+
+    function openCancelModal(bookingId) {
+      document.getElementById('cancelModal').style.display = 'block';
+    }
+
+    function openReviewModal(bookingId) {
+      document.getElementById('reviewModal').style.display = 'block';
+      currentRating = 0;
+      updateStars();
+    }
+
+    function openNotifications() {
+      document.getElementById('notificationsModal').style.display = 'block';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function confirmReschedule() {
+      closeModal('rescheduleModal');
+      showToast('Appointment rescheduled successfully!');
+    }
+
+    function confirmCancel() {
+      closeModal('cancelModal');
+      showToast('Booking cancelled successfully');
+    }
+
+    function submitReview() {
+      closeModal('reviewModal');
+      showToast('Review submitted successfully! +20 BlkPoints earned');
+    }
+
+    // ==========================
+    // REVIEW FUNCTIONS
+    // ==========================
+    let currentRating = 0;
+
+    function setRating(rating) {
+      currentRating = rating;
+      updateStars();
+    }
+
+    function updateStars() {
+      const stars = document.querySelectorAll('.star');
+      stars.forEach((star, index) => {
+        if (index < currentRating) {
+          star.classList.add('active');
+        } else {
+          star.classList.remove('active');
+        }
+      });
+    }
+
+    // ==========================
+    // NOTIFICATION FUNCTIONS
+    // ==========================
+    let unreadNotifications = 3;
 
     function markAsRead(notificationId, targetTab) {
       const notification = document.getElementById(notificationId);
@@ -763,6 +1096,9 @@
       }
     }
 
+    // ==========================
+    // TOAST NOTIFICATION
+    // ==========================
     function showToast(message) {
       // Remove existing toast if any
       const existingToast = document.querySelector('.toast');
@@ -790,67 +1126,10 @@
       }, 3000);
     }
 
-    function openRescheduleModal(bookingId) {
-      document.getElementById('rescheduleModal').style.display = 'block';
-    }
-
-    function openCancelModal(bookingId) {
-      document.getElementById('cancelModal').style.display = 'block';
-    }
-
-    function openReviewModal(bookingId) {
-      document.getElementById('reviewModal').style.display = 'block';
-      currentRating = 0;
-      updateStars();
-    }
-
-    function openBookingModal(bookingId) {
-      document.getElementById('bookingModal').style.display = 'block';
-    }
-
-    function openNotifications() {
-      document.getElementById('notificationsModal').style.display = 'block';
-    }
-
-    function closeModal(modalId) {
-      document.getElementById(modalId).style.display = 'none';
-    }
-
-    function setRating(rating) {
-      currentRating = rating;
-      updateStars();
-    }
-
-    function updateStars() {
-      const stars = document.querySelectorAll('.star');
-      stars.forEach((star, index) => {
-        if (index < currentRating) {
-          star.classList.add('active');
-        } else {
-          star.classList.remove('active');
-        }
-      });
-    }
-
-    function confirmReschedule() {
-      alert('Appointment rescheduled successfully!');
-      closeModal('rescheduleModal');
-    }
-
-    function confirmCancel() {
-      alert('Appointment cancelled successfully!');
-      closeModal('cancelModal');
-    }
-
-    function submitReview() {
-      alert('Thank you for your review!');
-      closeModal('reviewModal');
-    }
-
-    function confirmBooking() {
-      alert('Booking confirmed!');
-      closeModal('bookingModal');
-    }
+    // ==========================
+    // INITIALIZE
+    // ==========================
+    loadBookings();
 
     // Close modal when clicking outside
     window.onclick = function(event) {
