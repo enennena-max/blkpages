@@ -34,9 +34,18 @@ CREATE TABLE IF NOT EXISTS bookings (
     date DATE NOT NULL,
     time TIME NOT NULL,
     price DECIMAL(10,2) NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
+    start_time TIMESTAMP,
+    end_time TIMESTAMP,
     status VARCHAR(50) DEFAULT 'confirmed',
     can_cancel BOOLEAN DEFAULT true,
     stripe_payment_intent VARCHAR(255),
+    customer_email VARCHAR(255),
+    completed_at TIMESTAMP,
+    points_released BOOLEAN DEFAULT false,
+    cancelled_at TIMESTAMP,
+    refunded_at TIMESTAMP,
+    disputed BOOLEAN DEFAULT false,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -126,9 +135,9 @@ INSERT INTO business_loyalty (customer_id, business_id, stamps, goal) VALUES
 (2, 2, 7, 8)
 ON CONFLICT (customer_id, business_id) DO NOTHING;
 
-INSERT INTO bookings (customer_id, business_id, service, date, time, price, status, can_cancel) VALUES 
-(1, 1, 'Skin Fade', '2025-10-28', '10:30:00', 25.00, 'confirmed', true),
-(2, 2, 'Makeup Session', '2025-11-05', '14:00:00', 85.00, 'completed', false)
+INSERT INTO bookings (customer_id, business_id, service, date, time, price, total_amount, start_time, end_time, status, can_cancel, customer_email) VALUES 
+(1, 1, 'Skin Fade', '2025-10-28', '10:30:00', 25.00, 25.00, '2025-10-28 10:30:00', '2025-10-28 11:00:00', 'confirmed', true, 'test@example.com'),
+(2, 2, 'Makeup Session', '2025-11-05', '14:00:00', 85.00, 85.00, '2025-11-05 14:00:00', '2025-11-05 15:30:00', 'completed', false, 'customer@blkpages.com')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO notifications (customer_id, title, message, type, target) VALUES 
