@@ -1,0 +1,55 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BlkPages Admin — Reviews</title>
+<link rel="stylesheet" href="./admin.css"/>
+<script defer src="./admin.js"></script>
+<script>
+async function loadReviews(){
+  const data = await api("/reviews");
+  const tb = document.querySelector("tbody"); tb.innerHTML="";
+  if(!data.length){ tb.innerHTML = `<tr><td colspan="6">No pending reviews 🎉</td></tr>`; return; }
+  for(const r of data){
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r.id}</td>
+      <td>${r.business_name || "—"}</td>
+      <td>${r.user_email || r.user_id}</td>
+      <td>⭐ ${r.rating}</td>
+      <td>${(r.text||"").slice(0,90)}${(r.text||"").length>90?"…":""}</td>
+      <td><button class="btn gold" onclick="verifyReview('${r.id}')">Verify</button></td>
+    `;
+    tb.appendChild(tr);
+  }
+}
+async function verifyReview(id){
+  if(!confirm("Verify this review? Points will be released 24h after verification.")) return;
+  await api(`/reviews/${id}/verify`, { method:"POST" });
+  await loadReviews();
+}
+document.addEventListener("DOMContentLoaded", ()=>{ setActive("nav-reviews"); loadReviews(); });
+</script>
+</head><body>
+<div class="wrap">
+  <aside class="side">
+    <div class="brand">🛡️ <span>BlkPages Admin</span></div>
+    <nav class="nav">
+      <a id="nav-overview" href="./overview.html">📊 Overview</a>
+      <a id="nav-reviews" href="./reviews.html" class="active">🧾 Reviews</a>
+      <a id="nav-businesses" href="./businesses.html">🏢 Businesses</a>
+      <a id="nav-referrals" href="./referrals.html">🎁 Referrals</a>
+      <a id="nav-disputes" href="./disputes.html">⚖️ Disputes</a>
+      <a id="nav-adjustments" href="./adjustments.html">💎 Adjust Points</a>
+    </nav>
+  </aside>
+  <div>
+    <header><h2>Verify Reviews</h2></header>
+    <main>
+      <div class="toolbar"><span class="badge muted">Unverified reviews listed below</span></div>
+      <table>
+        <thead><tr><th>ID</th><th>Business</th><th>User</th><th>Rating</th><th>Review</th><th>Action</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </main>
+  </div>
+</div>
+</body></html>

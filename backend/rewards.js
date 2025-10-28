@@ -1,6 +1,7 @@
 // Rewards and loyalty system for BlkPages
 import db from './db.js';
 import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
 /**
  * Add BlkPoints to customer account
@@ -216,36 +217,172 @@ export async function getBusinessLoyaltyProgress(customerId, businessId) {
 }
 
 // ──────────────────────────────
-//  REFERRAL SYSTEM FUNCTIONS
+//  DYNAMIC REFERRAL CODE SYSTEM
+// ──────────────────────────────
+
+/**
+ * Get or create a dynamic referral code for user
+ * Each user has at most one active code at a time
+ * @param {number} userId - User ID
+ * @returns {Promise<string>} Active referral code
+ */
+export async function getOrCreateReferralCode(userId) {
+  try {
+    // Check if there's an active code
+    const { rows } = await db.query(
+      "SELECT code FROM referral_codes WHERE user_id=$1 AND status='active' LIMIT 1",
+      [userId]
+    );
+
+    if (rows.length) {
+      console.log(`✅ Found existing active referral code for user ${userId}: ${rows[0].code}`);
+      return rows[0].code;
+    }
+
+    // Generate a new one if none active
+    const code = `BLK-${nanoid(8).toUpperCase()}`; // e.g., BLK-3KXP7J2Z
+    await db.query(
+      "INSERT INTO referral_codes (user_id, code) VALUES ($1,$2)",
+      [userId, code]
+    );
+    
+    console.log(`✅ Generated new referral code for user ${userId}: ${code}`);
+    return code;
+  } catch (error) {
+    console.error(`❌ Error getting/creating referral code for user ${userId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Mark referral code as used and generate new one
+ * Called when someone uses the referral code
+ * @param {string} referralCode - The code that was used
+ * @param {string} refereeEmail - Email of person who used the code
+ * @returns {Promise<Object>} Result with referrer info
+ */
+export async function useReferralCode(referralCode, refereeEmail) {
+  try {
+    // Find the code owner
+    const { rows: codeOwner } = await db.query(
+      "SELECT user_id FROM referral_codes WHERE code=$1 AND status='active'",
+      [referralCode]
+    );
+    
+    if (!codeOwner.length) {
+      console.log(`ℹ️ Invalid or inactive referral code: ${referralCode}`);
+      return { success: false, reason: 'Invalid or inactive referral code' };
+    }
+    
+    const referrerId = codeOwner[0].user_id;
+    
+    // Check if referral already exists for this email
+    const { rows: existing } = await db.query(
+      "SELECT id FROM referrals WHERE referee_email=$1", 
+      [refereeEmail]
+    );
+    
+    if (existing.length) {
+      console.log(`ℹ️ Referral already exists for email: ${refereeEmail}`);
+      return { success: false, reason: 'Referral already exists' };
+    }
+    
+    // Create referral record
+    const { rows: referral } = await db.query(`
+      INSERT INTO referrals (referrer_id, referee_email, referral_code, status)
+      VALUES ($1, $2, $3, 'pending')
+      RETURNING *
+    `, [referrerId, refereeEmail, referralCode]);
+    
+    // Mark old code as used
+    await db.query(`
+      UPDATE referral_codes
+      SET status='used', used_at=NOW()
+      WHERE code=$1
+    `, [referralCode]);
+    
+    // Generate new code for referrer
+    const newCode = await getOrCreateReferralCode(referrerId);
+    
+    console.log(`🎉 Referral code ${referralCode} used by ${refereeEmail}, new code generated: ${newCode}`);
+    
+    return {
+      success: true,
+      referral: referral[0],
+      referrerId: referrerId,
+      newCode: newCode
+    };
+  } catch (error) {
+    console.error(`❌ Error using referral code ${referralCode}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Get user's current active referral code
+ * @param {number} userId - User ID
+ * @returns {Promise<string|null>} Active referral code or null
+ */
+export async function getCurrentReferralCode(userId) {
+  try {
+    const { rows } = await db.query(
+      "SELECT code FROM referral_codes WHERE user_id=$1 AND status='active' LIMIT 1",
+      [userId]
+    );
+    
+    return rows[0]?.code || null;
+  } catch (error) {
+    console.error(`❌ Error getting current referral code for user ${userId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Get referral code statistics for user
+ * @param {number} userId - User ID
+ * @returns {Promise<Object>} Referral code stats
+ */
+export async function getReferralCodeStats(userId) {
+  try {
+    const { rows: stats } = await db.query(`
+      SELECT 
+        COUNT(*) as total_codes,
+        COUNT(CASE WHEN status = 'used' THEN 1 END) as used_codes,
+        COUNT(CASE WHEN status = 'active' THEN 1 END) as active_codes
+      FROM referral_codes 
+      WHERE user_id = $1
+    `, [userId]);
+    
+    const { rows: referrals } = await db.query(`
+      SELECT COUNT(*) as total_referrals
+      FROM referrals 
+      WHERE referrer_id = $1
+    `, [userId]);
+    
+    return {
+      totalCodes: parseInt(stats[0].total_codes),
+      usedCodes: parseInt(stats[0].used_codes),
+      activeCodes: parseInt(stats[0].active_codes),
+      totalReferrals: parseInt(referrals[0].total_referrals)
+    };
+  } catch (error) {
+    console.error(`❌ Error getting referral code stats for user ${userId}:`, error);
+    throw error;
+  }
+}
+
+// ──────────────────────────────
+//  LEGACY REFERRAL FUNCTIONS (for backward compatibility)
 // ──────────────────────────────
 
 /**
  * Ensure user has a referral code, generate one if needed
+ * @deprecated Use getOrCreateReferralCode instead
  * @param {number} userId - User ID
  * @returns {Promise<string>} Referral code
  */
 export async function ensureReferralCode(userId) {
-  try {
-    const { rows } = await db.query(
-      "SELECT referral_code FROM users WHERE id=$1", 
-      [userId]
-    );
-    
-    if (!rows[0] || !rows[0].referral_code) {
-      const code = uuidv4();
-      await db.query(
-        "UPDATE users SET referral_code=$1 WHERE id=$2", 
-        [code, userId]
-      );
-      console.log(`✅ Generated referral code for user ${userId}: ${code}`);
-      return code;
-    }
-    
-    return rows[0].referral_code;
-  } catch (error) {
-    console.error(`❌ Error ensuring referral code for user ${userId}:`, error);
-    throw error;
-  }
+  return await getOrCreateReferralCode(userId);
 }
 
 /**

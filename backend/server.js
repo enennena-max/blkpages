@@ -14,8 +14,14 @@ import {
   getReferralStats,
   submitReview,
   verifyReview,
-  getReviewStats
+  getReviewStats,
+  getOrCreateReferralCode,
+  getCurrentReferralCode,
+  getReferralCodeStats,
+  useReferralCode
 } from "./rewards.js";
+import { attachUserFromAuth } from "./middleware/auth.js";
+import adminRoutes from "./routes/admin.js";
 
 dotenv.config();
 
@@ -33,6 +39,7 @@ const pool = new Pool({
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(attachUserFromAuth); // <- ensure req.user populated if Authorization present
 
 // ===== SOCKET.IO SETUP =====
 const server = createServer(app);
@@ -456,6 +463,107 @@ app.get('/api/referral/stats', async (req, res) => {
 });
 
 // ──────────────────────────────
+//  DYNAMIC REFERRAL CODE ENDPOINTS
+// ──────────────────────────────
+
+// Get or create dynamic referral code for dashboard
+app.get('/api/referral-code', async (req, res) => {
+  try {
+    const { customerId } = req.query;
+    
+    if (!customerId) {
+      return res.status(400).json({ error: 'Customer ID is required' });
+    }
+    
+    const code = await getOrCreateReferralCode(parseInt(customerId));
+    const referralUrl = `${process.env.FRONTEND_URL || 'https://blkpages.com'}/referral/${code}`;
+    
+    res.json({
+      success: true,
+      code,
+      referralUrl,
+      message: 'Invite friends and earn +100 BlkPoints when they complete their first booking!'
+    });
+  } catch (err) {
+    console.error('Error getting referral code:', err);
+    res.status(500).json({ error: 'Failed to get referral code' });
+  }
+});
+
+// Get current active referral code
+app.get('/api/referral-code/current', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+    
+    const code = await getCurrentReferralCode(parseInt(userId));
+    
+    res.json({
+      success: true,
+      code,
+      hasActiveCode: !!code
+    });
+  } catch (err) {
+    console.error('Error getting current referral code:', err);
+    res.status(500).json({ error: 'Failed to get current referral code' });
+  }
+});
+
+// Get referral code statistics
+app.get('/api/referral-code/stats', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+    
+    const stats = await getReferralCodeStats(parseInt(userId));
+    
+    res.json({
+      success: true,
+      stats
+    });
+  } catch (err) {
+    console.error('Error getting referral code stats:', err);
+    res.status(500).json({ error: 'Failed to get referral code stats' });
+  }
+});
+
+// Use referral code during registration (updated)
+app.post('/api/referral/use', async (req, res) => {
+  try {
+    const { referralCode, refereeEmail } = req.body;
+    
+    if (!referralCode || !refereeEmail) {
+      return res.status(400).json({ error: 'Referral code and email are required' });
+    }
+    
+    const result = await useReferralCode(referralCode, refereeEmail);
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        message: 'Referral code used successfully',
+        referrerId: result.referrerId,
+        newCode: result.newCode
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        reason: result.reason
+      });
+    }
+  } catch (err) {
+    console.error('Error using referral code:', err);
+    res.status(500).json({ error: 'Failed to use referral code' });
+  }
+});
+
+// ──────────────────────────────
 //  VERIFIED REVIEW ENDPOINTS
 // ──────────────────────────────
 
@@ -564,6 +672,9 @@ app.get('/api/reviews/user', async (req, res) => {
     res.status(500).json({ error: 'Failed to get user reviews' });
   }
 });
+
+// Mount admin routes (secure admin APIs)
+app.use("/api/admin", adminRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

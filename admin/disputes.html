@@ -1,0 +1,59 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BlkPages Admin — Disputes</title>
+<link rel="stylesheet" href="./admin.css"/>
+<script defer src="./admin.js"></script>
+<script>
+async function loadDisputes(){
+  const data=await api("/disputes");
+  const tb=document.querySelector("tbody");tb.innerHTML="";
+  if(!data.length){tb.innerHTML="<tr><td colspan='6'>No active disputes 🎉</td></tr>";return;}
+  for(const d of data){
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${d.id}</td>
+      <td>${d.customer_email||"—"}</td>
+      <td>${d.business_name||"—"}</td>
+      <td>£${d.total_amount}</td>
+      <td>${d.status}</td>
+      <td>
+        <button class='btn gold' onclick="resolveDispute('${d.id}')">Resolve</button>
+        <button class='btn danger' onclick="refund('${d.id}')">Refund</button>
+      </td>`;
+    tb.appendChild(tr);
+  }
+}
+async function resolveDispute(id){
+  if(!confirm("Mark this dispute as resolved?"))return;
+  await api(`/disputes/${id}/resolve`,{method:"POST"});
+  await loadDisputes();
+}
+async function refund(id){
+  if(!confirm("Issue refund for this booking? Points will be reversed."))return;
+  await api(`/disputes/${id}/refund`,{method:"POST"});
+  await loadDisputes();
+}
+document.addEventListener("DOMContentLoaded",()=>{setActive("nav-disputes");loadDisputes();});
+</script>
+</head><body>
+<div class="wrap">
+<aside class="side">
+  <div class="brand">🛡️ <span>BlkPages Admin</span></div>
+  <nav class="nav">
+    <a href="./overview.html">📊 Overview</a>
+    <a href="./reviews.html">🧾 Reviews</a>
+    <a href="./businesses.html">🏢 Businesses</a>
+    <a href="./referrals.html">🎁 Referrals</a>
+    <a id="nav-disputes" class="active" href="./disputes.html">⚖️ Disputes</a>
+    <a href="./adjustments.html">💎 Adjust Points</a>
+  </nav>
+</aside>
+<div>
+<header><h2>Disputes</h2></header>
+<main>
+  <table><thead>
+    <tr><th>ID</th><th>Customer</th><th>Business</th><th>Amount</th><th>Status</th><th>Actions</th></tr>
+  </thead><tbody></tbody></table>
+</main>
+</div></div>
+</body></html>

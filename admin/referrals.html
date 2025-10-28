@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BlkPages Admin — Referrals</title>
+<link rel="stylesheet" href="./admin.css"/>
+<script defer src="./admin.js"></script>
+<script>
+async function loadReferrals(){
+  const data = await api("/referrals");
+  const tb=document.querySelector("tbody");tb.innerHTML="";
+  if(!data.length){tb.innerHTML="<tr><td colspan='5'>No referrals found</td></tr>";return;}
+  for(const r of data){
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${r.id}</td>
+      <td>${r.referrer_email||"—"}</td>
+      <td>${r.referee_email||"—"}</td>
+      <td>${r.status}</td>
+      <td>
+        ${r.status!=="completed"
+          ? `<button class='btn gold' onclick="markComplete('${r.id}')">Mark Completed</button>`
+          : `<span class='badge ok'>Done</span>`}
+      </td>`;
+    tb.appendChild(tr);
+  }
+}
+async function markComplete(id){
+  if(!confirm("Confirm marking this referral as completed?"))return;
+  await api(`/referrals/${id}/complete`,{method:"POST"});
+  await loadReferrals();
+}
+document.addEventListener("DOMContentLoaded",()=>{setActive("nav-referrals");loadReferrals();});
+</script>
+</head><body>
+<div class="wrap">
+<aside class="side">
+  <div class="brand">🛡️ <span>BlkPages Admin</span></div>
+  <nav class="nav">
+    <a href="./overview.html">📊 Overview</a>
+    <a href="./reviews.html">🧾 Reviews</a>
+    <a href="./businesses.html">🏢 Businesses</a>
+    <a id="nav-referrals" class="active" href="./referrals.html">🎁 Referrals</a>
+    <a href="./disputes.html">⚖️ Disputes</a>
+    <a href="./adjustments.html">💎 Adjust Points</a>
+  </nav>
+</aside>
+<div>
+<header><h2>Referrals</h2></header>
+<main>
+  <table><thead>
+    <tr><th>ID</th><th>Referrer</th><th>Referee</th><th>Status</th><th>Action</th></tr>
+  </thead><tbody></tbody></table>
+</main>
+</div></div>
+</body></html>

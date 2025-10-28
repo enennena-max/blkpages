@@ -1,0 +1,288 @@
+<!-- Dashboard Referral Widget -->
+<!-- Include this in your main customer dashboard -->
+
+<div id="referral-widget" class="referral-card">
+  <div class="referral-header">
+    <h3>🎁 Invite & Earn</h3>
+    <p>Invite your friends to BlkPages and earn 100 BlkPoints when they complete their first booking.</p>
+  </div>
+  
+  <div class="referral-content">
+    <div class="referral-link-section">
+      <label>Your referral link:</label>
+      <div class="referral-link-container">
+        <input type="text" id="referralLink" readonly class="referral-link-input" />
+        <button id="copyLinkBtn" class="btn-copy">Copy Link</button>
+        <button id="shareBtn" class="btn-share">Share</button>
+      </div>
+    </div>
+    
+    <div class="referral-stats">
+      <div class="stat-item">
+        <span class="stat-number" id="totalReferrals">0</span>
+        <span class="stat-label">Total Referrals</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="completedReferrals">0</span>
+        <span class="stat-label">Completed</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" id="totalEarnings">0</span>
+        <span class="stat-label">BlkPoints Earned</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.referral-card {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border: 1px solid #d4af37;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
+}
+
+.referral-header h3 {
+  color: #d4af37;
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.referral-header p {
+  color: #a6a7ad;
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.referral-link-section {
+  margin-bottom: 20px;
+}
+
+.referral-link-section label {
+  display: block;
+  color: #ececf1;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.referral-link-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.referral-link-input {
+  flex: 1;
+  padding: 10px 12px;
+  background: #0f0f10;
+  border: 1px solid #26262b;
+  border-radius: 8px;
+  color: #ececf1;
+  font-size: 14px;
+  font-family: monospace;
+}
+
+.referral-link-input:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.btn-copy, .btn-share {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-copy {
+  background: #d4af37;
+  color: #000;
+}
+
+.btn-copy:hover {
+  background: #b8941f;
+  transform: translateY(-1px);
+}
+
+.btn-share {
+  background: #1b1b1f;
+  color: #ececf1;
+  border: 1px solid #26262b;
+}
+
+.btn-share:hover {
+  background: #26262b;
+  border-color: #d4af37;
+}
+
+.referral-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #26262b;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #d4af37;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #a6a7ad;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 768px) {
+  .referral-link-container {
+    flex-direction: column;
+  }
+  
+  .referral-stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+</style>
+
+<script>
+class ReferralWidget {
+  constructor(customerId, apiBase = '/api') {
+    this.customerId = customerId;
+    this.apiBase = apiBase;
+    this.init();
+  }
+
+  async init() {
+    await this.loadReferralData();
+    this.setupEventListeners();
+  }
+
+  async loadReferralData() {
+    try {
+      // Load referral code
+      const codeResponse = await fetch(`${this.apiBase}/referral-code?customerId=${this.customerId}`);
+      const codeData = await codeResponse.json();
+      
+      if (codeData.success) {
+        document.getElementById('referralLink').value = codeData.referralUrl;
+      }
+
+      // Load referral stats
+      const statsResponse = await fetch(`${this.apiBase}/referral/stats?userId=${this.customerId}`);
+      const statsData = await statsResponse.json();
+      
+      if (statsData.success) {
+        const stats = statsData.stats;
+        document.getElementById('totalReferrals').textContent = stats.totalReferrals;
+        document.getElementById('completedReferrals').textContent = stats.completedReferrals;
+        document.getElementById('totalEarnings').textContent = stats.totalEarnings;
+      }
+    } catch (error) {
+      console.error('Error loading referral data:', error);
+    }
+  }
+
+  setupEventListeners() {
+    // Copy link functionality
+    document.getElementById('copyLinkBtn').addEventListener('click', () => {
+      const linkInput = document.getElementById('referralLink');
+      linkInput.select();
+      linkInput.setSelectionRange(0, 99999); // For mobile devices
+      
+      navigator.clipboard.writeText(linkInput.value).then(() => {
+        this.showNotification('Link copied to clipboard!', 'success');
+      }).catch(() => {
+        // Fallback for older browsers
+        document.execCommand('copy');
+        this.showNotification('Link copied!', 'success');
+      });
+    });
+
+    // Share functionality
+    document.getElementById('shareBtn').addEventListener('click', () => {
+      const linkInput = document.getElementById('referralLink');
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'Join me on BlkPages!',
+          text: 'Earn rewards when you book services with BlkPages',
+          url: linkInput.value
+        }).catch(console.error);
+      } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(linkInput.value).then(() => {
+          this.showNotification('Link copied to clipboard!', 'success');
+        });
+      }
+    });
+  }
+
+  showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${type === 'success' ? '#2ecc71' : '#3498db'};
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+      notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+      notification.style.transform = 'translateX(100%)';
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
+  }
+
+  // Method to refresh data (call this when referral stats might have changed)
+  async refresh() {
+    await this.loadReferralData();
+  }
+}
+
+// Initialize the widget when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Replace 'CUSTOMER_ID' with actual customer ID from your system
+  const customerId = window.CUSTOMER_ID || '123'; // Get from your auth system
+  window.referralWidget = new ReferralWidget(customerId);
+});
+</script>
