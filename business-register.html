@@ -1,287 +1,765 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="bg-[#0A0A0A] text-white">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>List Your Business - BLKPAGES</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0A0A0A;
-        }
-
-        .gold-gradient-text {
-            background: linear-gradient(90deg, #FFD35C, #D4AF37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .hero-gradient-bg {
-             background: radial-gradient(circle at center, rgba(212,175,55,0.35) 0%, rgba(212,175,55,0.15) 35%, #0A0A0A 80%);
-        }
-        
-        .connect-gradient-bg {
-             background: linear-gradient(180deg, #1A1A1A 0%, #0A0A0A 100%);
-        }
-        
-        .cta-gradient-bg {
-             background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
-        }
-        
-        .gold-gradient-button {
-             background: linear-gradient(90deg, #ffcc00, #ffb700);
-        }
-        
-        .gold-gradient-button-hover:hover {
-             background: linear-gradient(90deg, #ffb700, #ffd700);
-        }
-
-        /* ===============================
-           🖋 BLKPAGES SEARCH SUBTEXT STYLE
-           =============================== */
-
-        .search-subtext {
-         margin-top: 35px; /* increased spacing below search bar */
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         flex-wrap: wrap;
-         gap: 6px;
-         font-size: 0.95rem;
-         color: #CFCFCF; /* text colour */
-         font-weight: 500;
-         letter-spacing: 0.2px;
-         text-align: center;
-        }
-
-        .search-subtext i {
-         color: #FFD700; /* icon gold */
-         font-size: 1rem;
-        }
-
-        /* Gold separator dot */
-        .dot-separator {
-         color: #D4AF37;
-         padding: 0 6px;
-        }
-
-        /* ✨ Optional subtle pulse animation for icons */
-        @keyframes goldPulse {
-         0% { opacity: 0.7; transform: scale(1); }
-         50% { opacity: 1; transform: scale(1.1); }
-         100% { opacity: 0.7; transform: scale(1); }
-        }
-
-        .search-subtext i {
-         animation: goldPulse 3s ease-in-out infinite;
-        }
-
-        /* 📱 Responsive for mobile */
-        @media (max-width: 600px) {
-         .search-subtext {
-           flex-direction: column;
-           gap: 4px;
-           font-size: 0.9rem;
-           margin-top: 25px; /* smaller space on mobile */
-         }
-         .dot-separator {
-           display: none;
-         }
-        }
-
-        /* Navigation Styles */
-        .nav-link {
-            transition: all 0.3s ease;
-        }
-        
-        .nav-link:hover {
-            color: #D4AF37 !important;
-        }
-        
-        /* Customer Menu Styles */
-        .customer-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            min-width: 150px;
-            z-index: 1000;
-            margin-top: 0.5rem;
-        }
-        
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .dropdown-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>List Your Business - BlkPages</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme:{extend:{colors:{gold:"#D4AF37", goldLight: "#E5C96A", blk:"#0A0A0A", grey:"#BFBFBF", fieldBg: "rgba(40,40,40,0.7)", fieldBorder: "rgba(255,255,255,0.18)"},boxShadow:{goldGlow:"0 0 25px rgba(212,175,55,.4)"}}}
+    }
+  </script>
+  <!-- Added Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Use Poppins font */
+    body{font-family:'Poppins', sans-serif;}
+    input,select,textarea{transition:all .25s ease;}
+    input:focus,select:focus,textarea:focus{border-color:#D4AF37!important;box-shadow:0 0 8px rgba(212,175,55,.6);outline:none;}
+    .plan.active, .addon.active{border-color:#D4AF37!important;box-shadow:0 0 20px rgba(212,175,55,.4);}
+    /* Screen-reader only class */
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }
+     /* Custom checkbox style */
+    .day-checkbox:checked {
+        background-color: #D4AF37;
+        border-color: #D4AF37;
+    }
+     /* Style addon descriptions */
+    .addon-desc {
+        flex-basis: 100%; /* Make description take full width below title */
+        margin-top: 0.25rem; /* Add some space below title */
+    }
+    /* Styles for feature lists inside plan cards */
+    ul.features {
+        list-style: none;
+        padding: 0;
+        margin: 15px 0; /* Add margin top/bottom */
+        text-align: left;
+        flex-grow: 1;
+    }
+    ul.features li {
+        display: flex;
+        align-items: center;
+        margin: 6px 0; /* Adjust spacing */
+        font-size: 0.8rem; /* Make features text slightly smaller */
+        color: #e6e6e6;
+    }
+    .tick {
+        color: #FFD700;
+        font-weight: 700;
+        margin-right: 8px; /* Adjust spacing */
+        min-width: 15px;
+    }
+    .cross {
+        color: #777;
+        font-weight: 700;
+        margin-right: 8px; /* Adjust spacing */
+        min-width: 15px;
+    }
+  </style>
 </head>
-<body class="text-white">
-    <header class="bg-[rgba(10,10,10,0.95)] backdrop-blur-md sticky top-0 z-50 border-b border-[#9C7C2E]">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between py-3">
-                <!-- Logo and Nav Links -->
-                <div class="flex items-center gap-8">
-                    <a href="index.html" class="text-2xl font-bold text-[#D4AF37] tracking-wide">BlkPages</a>
-                    <nav class="hidden md:flex items-center gap-6">
-                        <a href="index.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Home</a>
-                        <a href="search-results.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Browse</a>
-                        <a href="offers.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300">Offers</a>
-                        <a href="preview-test.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                            <i class="fas fa-flask mr-1"></i>Preview Test
-                        </a>
-                        <a href="demo-hub.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                            <i class="fas fa-cogs mr-1"></i>Demo Hub
-                        </a>
-                        <a href="dummy-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                            <i class="fas fa-rocket mr-1"></i>Demo Showcase
-                        </a>
-                        <a href="demo/contextual-banners-demo.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #F59E0B, #D97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                            <i class="fas fa-exclamation-triangle mr-1"></i>Banner Demo
-                        </a>
-                        <a href="business-profile.html" class="nav-link text-gray-400 hover:text-[#D4AF37] transition-colors duration-300" style="background: linear-gradient(135deg, #10B981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                            <i class="fas fa-clock mr-1"></i>WLO System
-                        </a>
-                    </nav>
-                </div>
+<body class="relative min-h-screen bg-blk text-white overflow-x-hidden">
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(212,175,55,.18)_0%,transparent_60%),radial-gradient(circle_at_80%_60%,rgba(212,175,55,.1)_0%,transparent_70%)] opacity-30"></div>
 
-                <!-- Action Buttons -->
-                <div class="hidden md:flex items-center gap-4">
-                    <!-- Basket Icon -->
-                    <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
-                        <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
-                        <span class="basket-count" id="basketCount" style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; border: 2px solid #1a1a1a;">0</span>
-                    </div>
-                    
-                    <!-- Sign In / Sign Up (for signed out users) -->
-                    <div class="auth-links" id="authLinks" style="align-items: center; gap: 0.5rem;">
-                        <button id="loginBtn" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm" onclick="redirectToLogin()">
-                            <i class="fas fa-sign-in-alt mr-1"></i>Sign In
-                        </button>
-                        <span class="text-gray-400">/</span>
-                        <a href="#" onclick="redirectToRegister()" class="text-white hover:text-[#D4AF37] transition-colors duration-300 text-sm">
-                            <i class="fas fa-user-plus mr-1"></i>Sign Up
-                        </a>
-                    </div>
-                    
-                    <!-- Customer Menu (for logged-in users) -->
-                    <div class="customer-menu" id="customerMenu" style="display: none; position: relative;">
-                        <button class="customer-initial" id="customerInitial" onclick="toggleCustomerMenu()" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0D9488, #10B981); color: white; border: none; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);">
-                            <span id="customerInitialText">U</span>
-                        </button>
-                        <div class="customer-dropdown" id="customerDropdown">
-                            <a href="customer-dashboard.html" class="dropdown-item">
-                                <i class="fas fa-tachometer-alt"></i>
-                                Dashboard
-                            </a>
-                            <a href="customer-dashboard.html" class="dropdown-item" onclick="redirectToAccountTab()">
-                                <i class="fas fa-cog"></i>
-                                Account Settings
-                            </a>
-                            <a href="#" onclick="signOut()" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt"></i>
-                                Sign Out
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- List Business Button -->
-                    <a href="business-register.html" class="text-gray-400 hover:text-green-400 transition-colors duration-300 font-medium text-sm">+ List Business</a>
-                </div>
+  <!-- NAV -->
+  <header class="relative z-10 border-b border-[#2a2a2a] bg-black/70 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center">
+      <span class="text-gold font-bold text-lg">BlkPages</span>
+      <nav class="flex flex-wrap gap-6 text-sm">
+        <a class="hover:text-gold" href="#">Home</a><a class="hover:text-gold" href="#">Browse</a>
+        <a class="hover:text-gold" href="#">Offers</a><a class="hover:text-gold" href="#">Showcase</a>
+      </nav>
+    </div>
+  </header>
 
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden">
-                    <button id="menu-btn" class="text-[#D4AF37] focus:outline-none" onclick="toggleMobileMenu()">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                    </button>
+  <!-- MAIN -->
+  <main class="relative z-10 max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- LEFT FORM -->
+    <form id="bizForm" class="bg-black/70 border border-[#2a2a2a] rounded-lg p-6 md:p-8 space-y-8 shadow-[0_0_40px_rgba(212,175,55,.07)]" novalidate>
+      <h1 class="text-2xl font-semibold text-white">Business Information</h1>
+      
+      <div>
+        <label for="businessName" class="sr-only">Business Name</label>
+        <input id="businessName" required name="businessName" placeholder="Business Name*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm">
+      </div>
+      
+      <div>
+        <label for="category" class="sr-only">Category</label>
+        <select id="category" required name="category" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm text-gray-400">
+          <option value="" class="text-gray-500">Select Category*</option>
+          <option class="text-white">Hair Salon</option>
+          <option class="text-white">Barber</option>
+          <option class="text-white">Nails & Beauty</option>
+          <option class="text-white">Makeup Artist</option>
+          <option class="text-white">Skin / Aesthetics</option>
+          <option class="text-white">Personal Trainer</option>
+          <option class="text-white">Other</option>
+        </select>
+      </div>
+
+      <div>
+          <label for="description" class="sr-only">Business Description</label>
+          <textarea id="description" required name="description" rows="3" placeholder="Business Description*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm"></textarea>
+      </div>
+      
+      <!-- CONTACT INFO -->
+      <div>
+            <h3 class="text-gold text-lg font-semibold mb-4">Contact Information</h3>
+            <div class="grid grid-cols-1 gap-5">
+              <div>
+                <label for="phone" class="sr-only">Phone Number</label>
+                <input id="phone" required name="phone" type="tel" placeholder="Phone Number*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm" />
+              </div>
+
+              <div>
+                <label for="email" class="sr-only">Email Address</label>
+                <input id="email" required type="email" name="email" placeholder="Email Address*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm" />
+              </div>
+
+              <div>
+                <label for="website" class="sr-only">Website (Optional)</label>
+                <input id="website" type="url" name="website" placeholder="Website (Optional)" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm" />
+              </div>
+            </div>
+       </div>
+
+       <!-- LOCATION -->
+       <div>
+            <h3 class="text-gold text-lg font-semibold mb-4">Location</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="md:col-span-2">
+                <label for="street" class="sr-only">Street Address</label>
+                <input id="street" required name="street" placeholder="Street Address*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm" />
+              </div>
+
+              <div>
+                <label for="city" class="sr-only">City</label>
+                <input id="city" required name="city" placeholder="City*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm" />
+              </div>
+
+              <div>
+                <label for="county" class="sr-only">County</label>
+                <input id="county" required name="county" placeholder="County / Borough*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm" />
+              </div>
+
+              <div>
+                <label for="postcode" class="sr-only">Postcode</label>
+                <input id="postcode" required name="postcode" placeholder="Postcode*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm" />
+              </div>
+
+              <div>
+                <label for="serviceArea" class="sr-only">Service Area</label>
+                <input id="serviceArea" required name="serviceArea" placeholder="Service Area (e.g. 10 mile radius)*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm" />
+              </div>
+            </div>
+       </div>
+
+        <!-- BUSINESS HOURS -->
+        <div>
+            <h3 class="text-gold text-lg font-semibold mb-4">Business Hours</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label for="openTime" class="text-sm font-medium text-gray-400 mb-1 block">Opening Time <span class="text-red-500">*</span></label>
+                <input id="openTime" required type="time" name="openTime" class="w-full bg-[#1a1a1a] border border-[#333] text-gray-400 text-sm rounded-md px-3 py-2.5" />
+              </div>
+
+              <div>
+                <label for="closeTime" class="text-sm font-medium text-gray-400 mb-1 block">Closing Time <span class="text-red-500">*</span></label>
+                <input id="closeTime" required type="time" name="closeTime" class="w-full bg-[#1a1a1a] border border-[#333] text-gray-400 text-sm rounded-md px-3 py-2.5" />
+              </div>
+
+              <!-- [UPDATED] Days Open Checkboxes -->
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-white mb-2">
+                    Days Open <span class="text-red-500">*</span>
+                </label>
+                <div id="daysOpenContainer" class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-3 mt-2 p-3 border border-transparent transition-all bg-[#1a1a1a] border-[#333] rounded-md">
+                    <label class="flex items-center space-x-2 cursor-pointer text-sm">
+                        <input type="checkbox" name="daysOpen" value="Monday"
+                            class="day-checkbox rounded bg-fieldBg border-fieldBorder text-gold focus:ring-gold">
+                        <span>Monday</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer text-sm">
+                        <input type="checkbox" name="daysOpen" value="Tuesday"
+                            class="day-checkbox rounded bg-fieldBg border-fieldBorder text-gold focus:ring-gold">
+                        <span>Tuesday</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer text-sm">
+                        <input type="checkbox" name="daysOpen" value="Wednesday"
+                            class="day-checkbox rounded bg-fieldBg border-fieldBorder text-gold focus:ring-gold">
+                        <span>Wednesday</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer text-sm">
+                        <input type="checkbox" name="daysOpen" value="Thursday"
+                            class="day-checkbox rounded bg-fieldBg border-fieldBorder text-gold focus:ring-gold">
+                        <span>Thursday</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer text-sm">
+                        <input type="checkbox" name="daysOpen" value="Friday"
+                            class="day-checkbox rounded bg-fieldBg border-fieldBorder text-gold focus:ring-gold">
+                        <span>Friday</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer text-sm">
+                        <input type="checkbox" name="daysOpen" value="Saturday"
+                            class="day-checkbox rounded bg-fieldBg border-fieldBorder text-gold focus:ring-gold">
+                        <span>Saturday</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer text-sm">
+                        <input type="checkbox" name="daysOpen" value="Sunday"
+                            class="day-checkbox rounded bg-fieldBg border-fieldBorder text-gold focus:ring-gold">
+                        <span>Sunday</span>
+                    </label>
                 </div>
+              </div>
             </div>
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden pb-4">
-                <a href="index.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Home</a>
-                <a href="search-results.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Browse</a>
-                <a href="offers.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]">Offers</a>
-                <a href="preview-test.html" class="block py-2 text-gray-400 hover:text-[#D4AF37]" style="background: linear-gradient(135deg, #FF3CAC, #784BA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">
-                    <i class="fas fa-flask mr-2"></i>Preview Test
-                </a>
-                <a href="business-register.html" class="block py-2 text-green-400 hover:text-green-300">
-                    <i class="fas fa-plus mr-2"></i>List Business
-                </a>
-                <a href="#" onclick="redirectToLogin()" class="block py-2 mt-2 text-gray-200 border border-[#9C7C2E] rounded-md text-center hover:bg-[#111111]">Sign In</a>
-                <a href="#" onclick="redirectToRegister()" class="block py-2 mt-2 text-black bg-gradient-to-r from-[#FFD35C] to-[#C68B1E] rounded-md text-center hover:opacity-90">Sign Up</a>
+       </div>
+
+      <!-- BOOKING POLICY -->
+       <div>
+            <h3 class="text-gold text-lg font-semibold mb-4">Booking Policy</h3>
+            <div class="grid grid-cols-1 gap-5">
+              <div>
+                <label for="cancellationPolicy" class="text-sm font-medium text-white mb-2 block">Cancellation Policy <span class="text-red-500">*</span></label>
+                <select id="cancellationPolicy" required name="cancellationPolicy" class="w-full bg-[#1a1a1a] border border-[#333] text-gray-400 text-sm rounded-md px-3 py-2.5">
+                  <option value="" class="text-gray-500">Select Policy*</option>
+                  <option class="text-white" value="flexible">Flexible</option>
+                  <option class="text-white" value="moderate">Moderate</option>
+                  <option class="text-white" value="strict">Strict</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="extraInfo" class="text-sm font-medium text-white mb-2 block">Additional Booking Information</label>
+                <textarea id="extraInfo" name="extraInfo" rows="3" class="w-full bg-[#1a1a1a] border border-[#333] text-white text-sm rounded-md px-3 py-2.5"
+                  placeholder="Any extra info customers should know (arrival time, policies, etc.)"></textarea>
+              </div>
+
+              <div>
+                <label for="paymentModel" class="block text-sm font-medium mb-2">Payment Model <span class="text-red-500">*</span></label>
+                <select required id="paymentModel" name="paymentModel" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm text-gray-400">
+                    <option value="" class="text-gray-500">Select Payment Model*</option>
+                    <option class="text-white" value="full_online">Full payment online</option>
+                    <option class="text-white" value="deposit_then_balance">Deposit online + pay balance at venue</option>
+                    <option class="text-white" value="in_person">Full payment at venue</option>
+                </select>
+                <p class="text-xs text-grey mt-2">How customers will pay for your services. <b>This cannot be changed after setup.</b></p>
+              </div>
             </div>
+       </div>
+
+        <!-- ACCOUNT INFO -->
+       <div>
+            <h3 class="text-gold text-lg font-semibold mb-4">Account Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div class="md:col-span-2">
+                <label for="ownerName" class="sr-only">Owner / Manager Name</label>
+                <input id="ownerName" required name="ownerName" placeholder="Owner / Manager Name*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm" />
+              </div>
+
+              <div>
+                <label for="password" class="sr-only">Password</label>
+                <input id="password" required type="password" name="password" minlength="6" placeholder="Password*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm" />
+              </div>
+
+              <div>
+                <label for="confirmPassword" class="sr-only">Confirm Password</label>
+                <input id="confirmPassword" required type="password" name="confirmPassword" minlength="6" placeholder="Confirm Password*" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm" />
+              </div>
+            </div>
+       </div>
+
+      <!-- PAYMENT INFO (hidden until needed) -->
+      <div id="paySection" class="hidden space-y-4 pt-4 border-t border-[#333]">
+        <h2 class="text-gold font-semibold">Payment Information</h2>
+        <div>
+            <label for="cardName" class="sr-only">Cardholder Name</label>
+            <input id="cardName" name="cardName" placeholder="Cardholder Name" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm">
         </div>
-    </header>
+        <div>
+            <label for="cardNumber" class="sr-only">Card Number</label>
+            <input id="cardNumber" name="cardNumber" placeholder="Card Number" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="cardExpiry" class="sr-only">Expiry MM/YY</label>
+            <input id="cardExpiry" name="cardExpiry" placeholder="Expiry MM/YY" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm">
+          </div>
+          <div>
+            <label for="cardCvv" class="sr-only">CVV</label>
+            <input id="cardCvv" name="cardCvv" placeholder="CVV" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm">
+          </div>
+        </div>
+        <div>
+            <label for="billingAddress" class="sr-only">Billing Address</label>
+            <input id="billingAddress" name="billingAddress" placeholder="Billing Address" class="w-full bg-[#1a1a1a] border border-[#333] rounded-md px-3 py-2 text-sm">
+        </div>
+        
+        <!-- Payment Summary -->
+        <div id="summary" class="border-t border-[#333] pt-4 text-sm space-y-1">
+          <p class="font-semibold text-gold">Payment Summary</p>
+          <p id="planSum">Plan: Free (£0)</p>
+          <p id="addonsSum">Add-ons: £0</p>
+          <p id="todaySum" class="font-semibold">Today: £0</p>
+          <p id="monthlySum">Recurring: £0/month</p>
+          <p id="yearLine" class="hidden text-grey text-xs">You've selected a yearly plan. You'll be charged yearly.</p>
+        </div>
+      </div>
+
+      <!-- Error Message Area -->
+       <p id="formErrorMsg" class="hidden text-[13px] text-yellow-400 font-medium flex items-start gap-2">
+            <span class="text-lg leading-none">⚠</span>
+            <span></span> <!-- Error text injected by JS -->
+       </p>
+
+      <button id="submitBtn" type="submit" class="w-full bg-gold text-black font-semibold py-3 rounded-md shadow-goldGlow hover:bg-[#E5C96A] transition">Create Business Listing</button>
+    </form>
+
+    <!-- RIGHT PLANS -->
+    <aside class="bg-black/70 border border-[#2a2a2a] rounded-lg p-6 md:p-8 shadow-[0_0_40px_rgba(212,175,55,.07)] space-y-8 h-fit">
+      <h2 class="text-xl font-semibold text-white mb-2">Choose Your Plan</h2>
+
+      <!-- FREE -->
+      <div class="plan border border-[#333] rounded-md p-4 cursor-pointer active" data-plan="free" data-price="0">
+        <p class="font-semibold">Free Listing</p>
+        <p class="text-xs text-grey">£0 / forever</p>
+        <!-- ADDED FEATURES -->
+        <ul class="features">
+          <li><span class="tick">✓</span>Business listing with category visibility</li>
+          <li><span class="tick">✓</span>Basic contact details</li>
+          <li><span class="tick">✓</span>Standard search placement</li>
+          <li><span class="cross">✗</span>Business logo and photo gallery</li>
+          <li><span class="cross">✗</span>Customer review highlights</li>
+          <li><span class="cross">✗</span>Booking system (basic or advanced)</li>
+          <li><span class="cross">✗</span>Analytics or insights</li>
+          <li><span class="cross">✗</span>Management dashboard</li>
+          <li><span class="cross">✗</span>Marketing tools</li>
+        </ul>
+        <button type="button" class="select-plan-btn mt-2 text-xs text-gold">✓ Selected</button>
+      </div>
+
+      <!-- STARTER -->
+      <div class="plan border border-[#333] rounded-md p-4 cursor-pointer" data-plan="starter" data-month="14.99" data-year="164.89">
+        <div class="flex justify-between items-center"><p class="font-semibold">Starter</p>
+          <label class="text-xs flex items-center gap-1 cursor-pointer"><input type="checkbox" class="yearToggle accent-gold h-3 w-3">Yearly<span class="text-[10px] text-gold">(Save £15)</span></label></div>
+        <p class="planPrice text-xs text-grey">£14.99 / mo</p>
+        <!-- ADDED FEATURES -->
+        <ul class="features">
+           <li><span class="tick">✓</span>Everything in Free</li>
+           <li><span class="tick">✓</span>Business logo and photo gallery (up to 3 photos)</li>
+           <li><span class="tick">✓</span>Customer review highlights</li>
+           <li><span class="tick">✓</span>Booking calendar with service management</li>
+           <li><span class="tick">✓</span>Automated email confirmations</li>
+           <li><span class="tick">✓</span>Customer management dashboard</li>
+           <li><span class="tick">✓</span>Priority placement in search</li>
+           <li><span class="tick">✓</span>Analytics (basic performance trends)</li>
+           <li><span class="cross">✗</span>Stripe integration (Full payment or deposits)</li>
+           <li><span class="cross">✗</span>SMS booking confirmations + reminders</li>
+        </ul>
+        <button type="button" class="select-plan-btn mt-2 text-xs text-gold">Select Plan</button>
+      </div>
+
+      <!-- PROFESSIONAL -->
+      <div class="plan border border-[#333] rounded-md p-4 cursor-pointer" data-plan="pro" data-month="28.99" data-year="318.89">
+        <div class="flex justify-between items-center"><p class="font-semibold">Professional</p>
+          <label class="text-xs flex items-center gap-1 cursor-pointer"><input type="checkbox" class="yearToggle accent-gold h-3 w-3">Yearly<span class="text-[10px] text-gold">(Save £29)</span></label></div>
+        <p class="planPrice text-xs text-grey">£28.99 / mo</p>
+        <!-- ADDED FEATURES -->
+         <ul class="features">
+           <li><span class="tick">✓</span>Everything in Starter</li>
+           <li><span class="tick">✓</span>Photo gallery (up to 10 photos)</li>
+           <li><span class="tick">✓</span>Advanced booking system with calendar sync</li>
+           <li><span class="tick">✓</span>Stripe integration (Full payment or Deposits 10–50%)</li>
+           <li><span class="tick">✓</span>SMS booking confirmations + reminders (50 texts)</li>
+           <li><span class="tick">✓</span>Customer management dashboard</li>
+           <li><span class="tick">✓</span>Business insights (bookings, revenue, busiest times)</li>
+        </ul>
+         <button type="button" class="select-plan-btn mt-2 text-xs text-gold">Select Plan</button>
+      </div>
+
+      <!-- ADD-ONS -->
+      <div>
+        <h3 class="text-gold font-semibold mb-2">Premium Add-Ons</h3>
+        <!-- Modified Addon structure -->
+        <div class="addon border border-[#333] rounded-md p-3 mb-2 cursor-pointer text-sm flex flex-wrap justify-between items-center" data-addon="sms" data-price="3">
+            <span class="font-medium">💬 Extra SMS</span>
+            <span class="text-xs text-grey">+£3/mo</span>
+            <p class="addon-desc text-xs text-grey w-full">Send appointment reminders + updates</p>
+            <button type="button" class="select-addon-btn text-xs text-gold mt-1">Add</button>
+        </div>
+        <div class="addon border border-[#333] rounded-md p-3 mb-2 cursor-pointer text-sm flex flex-wrap justify-between items-center" data-addon="featured" data-price="5">
+            <span class="font-medium">⭐ Featured Listing</span>
+            <span class="text-xs text-grey">+£5/mo</span>
+            <p class="addon-desc text-xs text-grey w-full">Priority placement in search results</p>
+            <button type="button" class="select-addon-btn text-xs text-gold mt-1">Add</button>
+        </div>
+        <div class="addon border border-[#333] rounded-md p-3 mb-2 cursor-pointer text-sm flex flex-wrap justify-between items-center" data-addon="social" data-price="4">
+            <span class="font-medium">🔗 Social Widget</span>
+            <span class="text-xs text-grey">+£4/mo</span>
+             <p class="addon-desc text-xs text-grey w-full">Social media booking link widget</p>
+            <button type="button" class="select-addon-btn text-xs text-gold mt-1">Add</button>
+        </div>
+         <div class="addon border border-[#333] rounded-md p-3 mb-2 cursor-pointer text-sm flex flex-wrap justify-between items-center" data-addon="loyalty" data-price="5">
+             <span class="font-medium">🏆 Loyalty Rewards</span>
+             <span class="text-xs text-grey">+£5/mo</span>
+             <p class="addon-desc text-xs text-grey w-full">Digital punch card system for retention</p>
+             <button type="button" class="select-addon-btn text-xs text-gold mt-1">Add</button>
+         </div>
+          <div class="addon border border-[#333] rounded-md p-3 mb-2 cursor-pointer text-sm flex flex-wrap justify-between items-center" data-addon="analytics" data-price="5">
+              <span class="font-medium">📊 Advanced Analytics</span>
+              <span class="text-xs text-grey">+£5/mo</span>
+              <p class="addon-desc text-xs text-grey w-full">Performance & trends analysis</p>
+              <button type="button" class="select-addon-btn text-xs text-gold mt-1">Add</button>
+          </div>
+           <div class="addon border border-[#333] rounded-md p-3 cursor-pointer text-sm flex flex-wrap justify-between items-center" data-addon="staff" data-price="2">
+               <span class="font-medium">👥 Multi-Staff</span>
+               <span class="text-xs text-grey">+£2/staff/mo</span>
+               <p class="addon-desc text-xs text-grey w-full">Per extra staff member scheduling</p>
+               <button type="button" class="select-addon-btn text-xs text-gold mt-1">Add</button>
+           </div>
+      </div>
+    </aside>
+  </main>
+   <!-- FOOTER -->
+  <footer class="relative z-10 bg-black/80 border-t border-[#2a2a2a] py-6 text-center text-sm text-grey">
+    <div class="flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto px-4">
+      <div class="text-white font-semibold">BlkPages</div>
+      <div>Quick Links</div>
+      <div>Legal</div>
+    </div>
+  </footer>
+
+  <script>
+    const plans = document.querySelectorAll('.plan');
+    const addons = document.querySelectorAll('.addon');
+    const toggles = document.querySelectorAll('.yearToggle');
+    const paySec = document.getElementById('paySection');
+    const planSum = document.getElementById('planSum');
+    const addonsSum = document.getElementById('addonsSum');
+    const todaySum = document.getElementById('todaySum');
+    const monthlySum = document.getElementById('monthlySum');
+    const yearLine = document.getElementById('yearLine');
+    const form = document.getElementById('bizForm');
+    const formErrorMsgElement = document.getElementById("formErrorMsg");
+    const formErrorMsgText = formErrorMsgElement.querySelector("span:last-child");
+    const submitBtn = document.getElementById("submitBtn");
+    const pwd = form.querySelector("#password"); // Use ID
+    const confPwd = form.querySelector("#confirmPassword"); // Use ID
+
+    let selPlan = 'free';
+    let yearMode = false;
+    let selAdd = []; // Store selected addon objects {name: 'sms', price: 3}
+    let planPrice = 0; // Price of the selected plan (monthly or yearly)
+    let addonTotal = 0; // Total monthly price of addons
+
+
+    function updateSummary() {
+        planPrice = 0;
+        let planTxt = 'Free (£0)';
+        let baseMonthly = 0; // Base monthly cost for recurring calc
+        const activePlan = document.querySelector('.plan.active');
+        
+        if (selPlan !== 'free') {
+            const planData = activePlan.dataset;
+            yearMode = activePlan.querySelector('.yearToggle')?.checked || false;
+            
+            if (yearMode) {
+                planPrice = parseFloat(planData.year);
+                baseMonthly = parseFloat(planData.month); // Still use monthly for recurring calc base
+                planTxt = `${activePlan.querySelector('p').textContent} (£${planPrice.toFixed(2)}/yr)`;
+                yearLine.classList.remove('hidden');
+            } else {
+                planPrice = parseFloat(planData.month);
+                baseMonthly = planPrice;
+                planTxt = `${activePlan.querySelector('p').textContent} (£${planPrice.toFixed(2)}/mo)`;
+                yearLine.classList.add('hidden');
+            }
+        } else {
+             yearLine.classList.add('hidden');
+             // Ensure yearMode is false if free plan is selected
+             yearMode = false;
+             // Uncheck any yearly toggles if free plan becomes active
+             toggles.forEach(t => t.checked = false);
+             plans.forEach(p => updatePlanDisplay(p)); // Update display price text
+        }
+
+        addonTotal = selAdd.reduce((sum, addon) => sum + parseFloat(addon.price), 0);
+
+        planSum.textContent = 'Plan: ' + planTxt;
+        // Update Addon summary text based on yearMode only if addons are selected
+         if (addonTotal > 0) {
+             // Addons are always monthly price, bill annually if yearMode
+            addonsSum.textContent = `Add-ons: £${(yearMode ? addonTotal * 12 : addonTotal).toFixed(2)} ${yearMode ? '/yr (billed annually)' : '/mo'}`;
+         } else {
+            addonsSum.textContent = `Add-ons: £0.00`;
+         }
+        
+        // Today's charge calculation
+        let todayCharge = 0;
+         if (yearMode && selPlan !== 'free') {
+             todayCharge = planPrice + addonTotal * 12; // Yearly plan + 12 months of addons upfront
+         } else {
+             todayCharge = planPrice + addonTotal; // Monthly plan + 1 month of addons (even if free plan, addons cost monthly)
+         }
+
+        todaySum.textContent = `Today: £${todayCharge.toFixed(2)}`;
+
+        // Recurring charge calculation
+        let recurringMonthly = baseMonthly + addonTotal; // Base monthly plan + monthly addons
+        if (selPlan === 'free') recurringMonthly = addonTotal; // Free plan only pays for addons
+
+        if (yearMode && selPlan !== 'free') {
+            // Calculate annual recurring (base plan annual price + 12 * monthly addon total)
+            let recurringAnnual = planPrice + (addonTotal * 12);
+            monthlySum.textContent = `Recurring: £${recurringAnnual.toFixed(2)}/year (renews annually)`;
+        } else if (recurringMonthly > 0) {
+             monthlySum.textContent = `Recurring: £${recurringMonthly.toFixed(2)}/month`;
+        } else {
+             monthlySum.textContent = `Recurring: £0/month`; // Handles Free plan with no addons
+        }
+
+
+        // Show payment section if there's a cost today
+        paySec.classList.toggle('hidden', todayCharge === 0);
+        // Also require payment fields if there's a cost
+        paySec.querySelectorAll('input').forEach(input => {
+            // Check if input exists before setting required
+            if(input) input.required = todayCharge > 0;
+        });
+
+    }
     
-    <!-- Main Content -->
-    <main class="min-h-screen">
-        <div class="container mx-auto px-4 py-8">
-            <!-- Navigation --><!-- Main Content --><main><div><h1>List Your Business</h1><p>Join the BLKPAGES community and connect with customers in your area</p><div><!-- Registration Form --><div><h2>Business Information</h2><form><!-- Business Details --><div><h3>Business Details</h3><div><label for="businessName">Business Name <span>*</span></label><input type="text" name="businessName" required></div><div><label for="category">Category <span>*</span></label><select name="category" required><option value="">Select Category</option><option value="hairdresser">Hairdresser</option><option value="barber">Barber</option><option value="beauty">Beauty Services</option></select></div><div><label for="description">Business Description <span>*</span></label><textarea name="description" rows="4" required placeholder="Tell customers about your business, services, and what makes you special..."></textarea><div>Describe your services, specialties, and what customers can expect.</div></div></div><!-- Contact Information --><div><h3>Contact Information</h3><div><div><label for="phone">Phone Number <span>*</span></label><input type="tel" name="phone" pattern="(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}" placeholder="+44 7123 456789 or 07123 456789" required></div><div><label for="email">Email Address <span>*</span></label><input type="email" name="email" required></div></div><div><label for="website">Website (Optional)</label><input type="url" name="website" placeholder="https://yourwebsite.com"></div></div><!-- Location --><div><h3>Location</h3><div><label for="address">Street Address <span>*</span></label><input type="text" name="address" required></div><div><div><label for="city">City <span>*</span></label><input type="text" name="city" required></div><div><label for="state">County <span>*</span></label><input type="text" name="state" required></div></div><div><div><label for="zipCode">Postcode <span>*</span></label><input type="text" name="zipCode" pattern="[A-Za-z]{1,2}[0-9Rr][0-9A-Za-z]? [0-9][ABD-HJLNP-UW-Zabd-hjlnp-uw-z]{2}" placeholder="e.g., SW1A 1AA" required></div><div><label for="serviceArea">Service Area</label><input type="text" name="serviceArea" placeholder="e.g., 10 miles radius"></div></div></div><!-- Business Hours --><div><h3>Business Hours</h3><div><div><label for="hoursStart">Opening Time</label><input type="time" name="hoursStart"></div><div><label for="hoursEnd">Closing Time</label><input type="time" name="hoursEnd"></div></div><div><label for="daysOpen">Days Open</label><select name="daysOpen" multiple><option value="monday">Monday</option><option value="tuesday">Tuesday</option><option value="wednesday">Wednesday</option><option value="thursday">Thursday</option><option value="friday">Friday</option><option value="saturday">Saturday</option><option value="sunday">Sunday</option></select><div>Hold Ctrl/Cmd to select multiple days</div></div></div><!-- Booking Policies --><div><h3>Booking Policies</h3><!-- Cancellation Policy --><div><label for="cancellationPolicy">Cancellation Policy <span>*</span></label><select name="cancellationPolicy" required onchange="updateCancellationPreview()"><option value="">Select Policy</option><option value="flexible">Flexible</option><option value="moderate">Moderate</option><option value="strict">Strict</option><option value="custom">Custom (Premium Only)</option></select><div>Choose a cancellation policy that works for your business.</div></div><!-- Policy Preview --><div><h4>Policy Preview</h4><div></div></div><!-- Custom Policy Editor (Premium Only) --><div><label for="customPolicyText">Custom Policy Text</label><textarea name="customPolicyText" rows="6" placeholder="Enter your custom cancellation policy..."></textarea><div>You can customize the policy text. Use [Business Name] to insert your business name automatically.</div></div><div><label for="bookingNotes">Additional Booking Information</label><textarea name="bookingNotes" rows="3" placeholder="Any additional information customers should know when booking (e.g., arrival time, what to bring, special requirements)"></textarea><div>Optional: Additional information to help customers prepare for their appointment.</div></div></div><!-- Payment Model --><div><h3>Payment Model</h3><div><label for="paymentModel">Payment Model <span>*</span></label><select name="paymentModel" required onchange="updatePaymentModel()"><option value="">Select Payment Model</option><option value="full-online">Full Payment Online</option><option value="deposit-balance">Deposit Online + Balance at Venue</option><option value="full-venue">Full Payment at Venue</option></select><div>Choose how customers will pay for your services. This cannot be changed after setup.</div></div><!-- Deposit Percentage (only shown for deposit + balance option) --><div><label for="depositPercentage">Deposit Percentage <span>*</span></label><select name="depositPercentage"><option value="">Select Deposit Percentage</option><option value="10">10%</option><option value="20">20%</option><option value="30">30%</option><option value="40">40%</option><option value="50">50%</option></select><div>Choose what percentage customers will pay as a deposit online.</div></div><!-- Payment Model Preview --><div><h4>Payment Model Preview</h4><div><!-- Preview content will be populated by JavaScript --></div></div></div><!-- Payment Information (for Starter and Professional packages) --><div><h3>Payment Information</h3><div><i></i><p>Secure payment processing. Your card details are encrypted and secure.</p></div><div><i></i><p>You've selected premium add-ons with your free plan. Payment is required for these additional features.</p></div><div><label for="cardNumber">Card Number <span>*</span></label><input type="text" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19"><div><i></i><i></i><i></i></div></div><div><div><label for="expiryDate">Expiry Date <span>*</span></label><input type="text" name="expiryDate" placeholder="MM/YY" maxlength="5"></div><div><label for="cvv">CVV <span>*</span></label><input type="text" name="cvv" placeholder="123" maxlength="4"></div></div><div><label for="cardholderName">Cardholder Name <span>*</span></label><input type="text" name="cardholderName" placeholder="Name as it appears on card"></div><div><label for="billingAddress">Billing Address <span>*</span></label><input type="text" name="billingAddress" placeholder="Street address"></div><div><div><label for="billingCity">City <span>*</span></label><input type="text" name="billingCity" placeholder="City"></div><div><label for="billingPostcode">Postcode <span>*</span></label><input type="text" name="billingPostcode" placeholder="SW1A 1AA"></div></div><div><h4>Payment Summary</h4><div><span>Selected Plan:</span><span>-</span></div><div><span>Monthly Cost:</span><span>-</span></div><div><div><span>Premium Add-ons:</span><span>-</span></div><div><span>Add-ons Cost:</span><span>-</span></div></div><div><span>Total Today:</span><span>-</span></div><div><span>Recurring Monthly:</span><span>-</span></div></div></div><!-- Account Information --><div><h3>Account Information</h3><div><label for="ownerName">Owner/Manager Name <span>*</span></label><input type="text" name="ownerName" required></div><div><div><label for="password">Password <span>*</span></label><input type="password" name="password" required></div><div><label for="confirmPassword">Confirm Password <span>*</span></label><input type="password" name="confirmPassword" required></div></div></div><button type="submit">Create Business Listing</button></form></div><!-- Subscription Tiers --><div><h2>Choose Your Plan</h2><div><!-- Free Tier --><div data-tier="free" onclick="selectTier('free')"><div><div>Free Listing</div><div>£0</div><div>Forever</div></div><ul><li><i></i> Business listing with category visibility</li><li><i></i> Basic contact details</li><li><i></i> Standard search placement</li><li><i></i> Business logo and photo gallery</li><li><i></i> Enhanced profile visibility</li><li><i></i> Customer review highlights</li><li><i></i> Basic booking system</li><li><i></i> Advanced booking system</li><li><i></i> Business insights</li></ul></div><!-- Starter Tier --><div data-tier="starter" onclick="selectTier('starter')"><div><div>Starter</div><div>£15</div><div>per month</div></div><ul><li><i></i> Business listing with category visibility</li><li><i></i> Basic contact details</li><li><i></i> Standard search placement</li><li><i></i> Business logo and photo gallery (up to 3 photos)</li><li><i></i> Enhanced profile visibility</li><li><i></i> Customer review highlights</li><li><i></i> Basic booking system</li><li><i></i> Advanced booking system</li><li><i></i> Business insights</li></ul></div><!-- Professional Tier --><div data-tier="professional" onclick="selectTier('professional')"><div><div>Professional</div><div>£29</div><div>per month</div></div><ul><li><i></i> Everything in Starter</li><li><i></i> Photo gallery (up to 10 photos)</li><li><i></i> Premium profile visibility</li><li><i></i> Advanced booking system with calendar sync</li><li><i></i> Stripe integration (Full payment or Deposits 10–50%)</li><li><i></i> SMS booking confirmations + reminders (X included)</li><li><i></i> Customer management dashboard (notes, history, analytics)</li><li><i></i> Business insights (bookings, revenue, busiest times)</li></ul></div></div><!-- Premium Add-Ons Section --><div><h3>Premium Add-Ons</h3><p>Enhance your business with these premium features</p><div><!-- SMS Credits --><div><div><div><i></i></div><div><h4>📲 Extra SMS Credits</h4><p>Send appointment reminders and updates to customers</p></div><div><span>£3</span><span>per 50 messages</span></div></div><div><button onclick="selectSMSAddon()"><i></i> Add to Plan </button></div></div><!-- Featured Listing --><div><div><div><i></i></div><div><h4>⭐ Featured Listing</h4><p>Get priority placement in search results</p></div><div><span>£5</span><span>/month</span></div></div><div><button onclick="selectFeaturedAddon()"><i></i> Add to Plan </button></div></div><!-- Social Media Widget --><div><div><div><i></i></div><div><h4>📸 Instagram/TikTok Widget</h4><p>Social media booking link widget</p></div><div><span>£4</span><span>/month</span></div></div><div><button onclick="selectSocialAddon()"><i></i> Add to Plan </button></div></div><!-- Loyalty Rewards --><div><div><div><i></i></div><div><h4>🎁 Customer Loyalty Rewards</h4><p>Digital punch card system for customer retention</p></div><div><span>£5</span><span>/month</span></div></div><div><button onclick="selectLoyaltyAddon()"><i></i> Add to Plan </button></div></div><!-- Advanced Analytics --><div><div><div><i></i></div><div><h4>📊 Advanced Analytics</h4><p>Performance & trends analysis</p></div><div><span>£5</span><span>/month</span></div></div><div><button onclick="selectAnalyticsAddon()"><i></i> Add to Plan </button></div></div><!-- Multi-Staff Scheduling --><div><div><div><i></i></div><div><h4>👥 Multi-Staff Scheduling</h4><p>Per extra staff member scheduling</p></div><div><span>£2</span><span>/month per staff</span></div></div><div><button onclick="selectStaffAddon()"><i></i> Add to Plan </button></div></div></div></div><div><p>By creating a listing, you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</p><p>You can upgrade or downgrade your plan at any time from your business dashboard.</p></div></div></div></div></main><!-- Validation Modal --><div><div><h3>⚠️ Required Fields Missing</h3><p>Please complete all required fields before submitting your listing.</p></div></div><!-- Footer --><!-- Business Manager Script --><script src="business-manager.js"></script><script> let selectedTier = 'free'; function selectTier(tier) { selectedTier = tier; document.querySelectorAll('.tier-card').forEach(card => card.classList.remove('selected')); document.querySelector(`[data-tier="${tier}"]`).classList.add('selected'); // Store selection in session storage sessionStorage.setItem('selectedPlan', tier); // Reorder plans to put selected plan at the top reorderPlans(tier); // Show/hide payment section based on tier togglePaymentSection(tier); // Update payment summary updatePaymentSummary(tier); } function reorderPlans(selectedTier) { const subscriptionTiers = document.querySelector('.subscription-tiers'); const selectedCard = document.querySelector(`[data-tier="${selectedTier}"]`); const allCards = Array.from(document.querySelectorAll('.tier-card')); // Remove the selected card from its current position selectedCard.remove(); // Insert the selected card at the top subscriptionTiers.insertBefore(selectedCard, subscriptionTiers.firstChild); // Add smooth transition selectedCard.style.transition = 'all 0.3s ease'; } // Cancellation Policy Templates const cancellationTemplates = { flexible: `[Business Name] – Cancellation Policy: You may cancel your booking up to 24 hours before your appointment for a full refund. Cancellations made within 24 hours and no-shows will be charged 100% of the service price. Refunds are returned to your original payment method within 5–10 business days.`, moderate: `[Business Name] – Cancellation Policy: You may cancel your booking up to 48 hours before your appointment for a full refund. Cancellations made within 48 hours will be charged 50% of the service price. No-shows will be charged 100% of the service price. Refunds are returned to your original payment method within 5–10 business days.`, strict: `[Business Name] – Cancellation Policy: This booking is non-refundable once confirmed. No-shows will be charged 100% of the service price. Refunds are returned to your original payment method within 5–10 business days.`, custom: `[Business Name] – Cancellation Policy: Cancellations: You may cancel your appointment up to [X hours/days] before the scheduled time for a full refund. Late Cancellations: Cancellations made within [X hours/days] will be charged [X%] of the service price. No-Shows: If you do not attend your appointment without notice, you will be charged [100%] of the service price. Refunds: Refunds (where applicable) will be processed back to your original payment method within [X working days].` }; // Update cancellation policy preview function updateCancellationPreview() { const policySelect = document.getElementById('cancellationPolicy'); const policyPreview = document.getElementById('policyPreview'); const policyContent = document.getElementById('policyContent'); const customEditor = document.getElementById('customPolicyEditor'); const customOption = document.getElementById('customOption'); const businessName = document.getElementById('businessName').value || '[Business Name]'; if (policySelect.value === '') { policyPreview.style.display = 'none'; customEditor.style.display = 'none'; return; } // Show custom option for premium tiers const selectedTier = document.querySelector('.tier-card.selected')?.getAttribute('data-tier'); if (selectedTier === 'professional') { customOption.style.display = 'block'; } else { customOption.style.display = 'none'; if (policySelect.value === 'custom') { policySelect.value = ''; return; } } if (policySelect.value === 'custom') { policyPreview.style.display = 'none'; customEditor.style.display = 'block'; // Pre-fill custom template const customText = document.getElementById('customPolicyText'); if (!customText.value) { customText.value = cancellationTemplates.custom.replace('[Business Name]', businessName); } } else { customEditor.style.display = 'none'; policyPreview.style.display = 'block'; // Show preview with business name const template = cancellationTemplates[policySelect.value]; policyContent.textContent = template.replace('[Business Name]', businessName); } } // Update preview when business name changes document.getElementById('businessName').addEventListener('input', function() { if (document.getElementById('policyPreview').style.display !== 'none') { updateCancellationPreview(); } }); // Payment Model Functions function updatePaymentModel() { const paymentModel = document.getElementById('paymentModel').value; const depositGroup = document.getElementById('depositPercentageGroup'); const paymentPreview = document.getElementById('paymentPreview'); const previewContent = document.getElementById('paymentPreviewContent'); if (paymentModel === '') { depositGroup.style.display = 'none'; paymentPreview.style.display = 'none'; return; } if (paymentModel === 'deposit-balance') { depositGroup.style.display = 'block'; document.getElementById('depositPercentage').required = true; } else { depositGroup.style.display = 'none'; document.getElementById('depositPercentage').required = false; } // Show preview paymentPreview.style.display = 'block'; // Update preview content based on selected model const businessName = document.getElementById('businessName').value || '[Business Name]'; const depositPercentage = document.getElementById('depositPercentage').value; let previewText = ''; switch (paymentModel) { case 'full-online': previewText = `Full Payment Online: • Customers pay the full service price online at booking • No additional payment required at the venue • Example: "Full payment of £70 due now."`; break; case 'deposit-balance': if (depositPercentage) { const depositAmount = Math.round(70 * (depositPercentage / 100)); // Using £70 as example const balanceAmount = 70 - depositAmount; previewText = `Deposit Online + Balance at Venue: • Customers pay ${depositPercentage}% deposit online (£${depositAmount}) • Remaining balance (£${balanceAmount}) paid at the venue • Example: "Pay £${depositAmount} now (${depositPercentage}%), balance £${balanceAmount} at the venue."`; } else { previewText = `Deposit Online + Balance at Venue: • Customers pay a percentage deposit online • Remaining balance paid at the venue • Select deposit percentage above to see example`; } break; case 'full-venue': previewText = `Full Payment at Venue: • No payment required online at booking • Full service price paid directly at the venue • Example: "No payment due now. Full balance of £70 payable at the venue."`; break; } previewContent.textContent = previewText; } // Update preview when deposit percentage changes document.getElementById('depositPercentage').addEventListener('change', function() { if (document.getElementById('paymentModel').value === 'deposit-balance') { updatePaymentModel(); } }); // Form Validation System class FormValidator { constructor() { this.baseRequiredFields = [ 'businessName', 'category', 'description', 'phone', 'email', 'address', 'city', 'state', 'zipCode', 'cancellationPolicy', 'paymentModel', 'ownerName', 'password', 'confirmPassword' ]; this.paymentFields = [ 'cardNumber', 'expiryDate', 'cvv', 'cardholderName', 'billingAddress', 'billingCity', 'billingPostcode' ]; this.requiredFields = [...this.baseRequiredFields]; this.firstEmptyField = null; this.init(); } init() { // Add event listeners to all form fields this.requiredFields.forEach(fieldId => { const field = document.getElementById(fieldId); if (field) { // Clear validation effects when user starts typing field.addEventListener('input', () => this.clearFieldValidation(field)); field.addEventListener('focus', () => this.clearFieldValidation(field)); } }); // Form submission handler document.getElementById('businessRegistrationForm').addEventListener('submit', (e) => { e.preventDefault(); this.validateForm(); }); } validateForm() { // Clear previous validation states this.clearAllValidation(); // Check for empty required fields const emptyFields = this.getEmptyRequiredFields(); if (emptyFields.length > 0) { this.showValidationError(emptyFields); return false; } // Additional validations if (!this.validatePasswords()) return false; if (!this.validatePostcode()) return false; if (!this.validatePhone()) return false; if (!this.validateDepositPercentage()) return false; if (!this.validatePaymentFields()) return false; // If all validations pass, proceed with form submission this.submitForm(); return true; } getEmptyRequiredFields() { const emptyFields = []; this.requiredFields.forEach(fieldId => { const field = document.getElementById(fieldId); if (field && !field.value.trim()) { emptyFields.push(field); } }); return emptyFields; } showValidationError(emptyFields) { // Add button feedback animation const submitBtn = document.getElementById('submitBtn'); submitBtn.classList.add('validation-feedback'); setTimeout(() => submitBtn.classList.remove('validation-feedback'), 600); // Highlight ALL empty fields simultaneously emptyFields.forEach((field, index) => { // Apply validation styling to ALL fields field.classList.add('validation-error'); this.addTooltip(field); // Add shake animation to first field only if (index === 0) { this.firstEmptyField = field; // Keep the shake animation on first field setTimeout(() => field.classList.remove('validation-error'), 500); // Re-add the validation styling after shake animation setTimeout(() => field.classList.add('validation-error'), 500); } }); // Show validation modal this.showValidationModal(); } addTooltip(field) { // Remove existing tooltip if any const existingTooltip = field.parentNode.querySelector('.validation-tooltip'); if (existingTooltip) { existingTooltip.remove(); } // Create new tooltip const tooltip = document.createElement('div'); tooltip.className = 'validation-tooltip'; tooltip.textContent = 'This field is required.'; // Add tooltip to form group field.parentNode.appendChild(tooltip); // Show tooltip with animation setTimeout(() => tooltip.classList.add('show'), 100); } showValidationModal() { const modal = document.getElementById('validationModal'); modal.classList.add('show'); // Auto-hide modal after 3 seconds setTimeout(() => { modal.classList.remove('show'); }, 3000); } clearFieldValidation(field) { // Remove validation error styling field.classList.remove('validation-error'); // Remove tooltip const tooltip = field.parentNode.querySelector('.validation-tooltip'); if (tooltip) { tooltip.classList.remove('show'); setTimeout(() => tooltip.remove(), 300); } } clearAllValidation() { // Clear all field validations document.querySelectorAll('.validation-error').forEach(field => { field.classList.remove('validation-error'); }); // Remove all tooltips document.querySelectorAll('.validation-tooltip').forEach(tooltip => { tooltip.remove(); }); // Hide modal document.getElementById('validationModal').classList.remove('show'); } addPaymentFieldsToValidation() { // Add payment fields to required fields if not already present this.paymentFields.forEach(fieldId => { if (!this.requiredFields.includes(fieldId)) { this.requiredFields.push(fieldId); } }); } removePaymentFieldsFromValidation() { // Remove payment fields from required fields this.requiredFields = this.requiredFields.filter(fieldId => !this.paymentFields.includes(fieldId) ); } validatePasswords() { const password = document.getElementById('password').value; const confirmPassword = document.getElementById('confirmPassword').value; if (password !== confirmPassword) { this.showFieldError('confirmPassword', 'Passwords do not match!'); return false; } return true; } validatePostcode() { const postcode = document.getElementById('zipCode').value; const ukPostcodeRegex = /^[A-Za-z]{1,2}[0-9Rr][0-9A-Za-z]? [0-9][ABD-HJLNP-UW-Zabd-hjlnp-uw-z]{2}$/; if (!ukPostcodeRegex.test(postcode)) { this.showFieldError('zipCode', 'Please enter a valid UK postcode (e.g., SW1A 1AA)'); return false; } return true; } validatePhone() { const phone = document.getElementById('phone').value; const ukPhoneRegex = /^(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}$/; if (!ukPhoneRegex.test(phone)) { this.showFieldError('phone', 'Please enter a valid UK phone number'); return false; } return true; } validateDepositPercentage() { const paymentModel = document.getElementById('paymentModel').value; const depositPercentage = document.getElementById('depositPercentage').value; if (paymentModel === 'deposit-balance' && !depositPercentage) { this.showFieldError('depositPercentage', 'Please select a deposit percentage'); return false; } return true; } validatePaymentFields() { // Only validate payment fields if they're visible (paid plans or free plan with add-ons) const paymentSection = document.getElementById('paymentSection'); if (paymentSection.style.display === 'none') { return true; } // Validate card number const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, ''); if (cardNumber.length < 13 || cardNumber.length > 19) { this.showFieldError('cardNumber', 'Please enter a valid card number'); return false; } // Validate expiry date const expiryDate = document.getElementById('expiryDate').value; const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/; if (!expiryRegex.test(expiryDate)) { this.showFieldError('expiryDate', 'Please enter a valid expiry date (MM/YY)'); return false; } // Validate CVV const cvv = document.getElementById('cvv').value; if (cvv.length < 3 || cvv.length > 4) { this.showFieldError('cvv', 'Please enter a valid CVV'); return false; } // Validate cardholder name const cardholderName = document.getElementById('cardholderName').value.trim(); if (cardholderName.length < 2) { this.showFieldError('cardholderName', 'Please enter the cardholder name'); return false; } return true; } showFieldError(fieldId, message) { const field = document.getElementById(fieldId); if (field) { this.highlightField(field); this.addCustomTooltip(field, message); field.focus(); } } addCustomTooltip(field, message) { // Remove existing tooltip if any const existingTooltip = field.parentNode.querySelector('.validation-tooltip'); if (existingTooltip) { existingTooltip.remove(); } // Create new tooltip with custom message const tooltip = document.createElement('div'); tooltip.className = 'validation-tooltip'; tooltip.textContent = message; // Add tooltip to form group field.parentNode.appendChild(tooltip); // Show tooltip with animation setTimeout(() => tooltip.classList.add('show'), 100); } submitForm() { // Collect form data const formData = { businessName: document.getElementById('businessName').value, category: document.getElementById('category').value, description: document.getElementById('description').value, phone: document.getElementById('phone').value, email: document.getElementById('email').value, website: document.getElementById('website').value, address: document.getElementById('address').value, city: document.getElementById('city').value, state: document.getElementById('state').value, zipCode: document.getElementById('zipCode').value, serviceArea: document.getElementById('serviceArea').value, hoursStart: document.getElementById('hoursStart').value, hoursEnd: document.getElementById('hoursEnd').value, daysOpen: Array.from(document.getElementById('daysOpen').selectedOptions).map(option => option.value), cancellationPolicy: document.getElementById('cancellationPolicy').value, customPolicyText: document.getElementById('customPolicyText').value, bookingNotes: document.getElementById('bookingNotes').value, paymentModel: document.getElementById('paymentModel').value, depositPercentage: document.getElementById('depositPercentage').value, ownerName: document.getElementById('ownerName').value, password: document.getElementById('password').value, selectedTier: selectedTier, loyaltyAddonSelected: sessionStorage.getItem('loyaltyAddonSelected') === 'true', // Payment information (if applicable) cardNumber: document.getElementById('cardNumber')?.value || '', expiryDate: document.getElementById('expiryDate')?.value || '', cvv: document.getElementById('cvv')?.value || '', cardholderName: document.getElementById('cardholderName')?.value || '', billingAddress: document.getElementById('billingAddress')?.value || '', billingCity: document.getElementById('billingCity')?.value || '', billingPostcode: document.getElementById('billingPostcode')?.value || '', // Calculate total costs monthlyCost: calculateMonthlyCost(selectedTier), addonsCost: calculateAddonsTotal(getSelectedAddons()), totalCost: calculateMonthlyCost(selectedTier) + calculateAddonsTotal(getSelectedAddons()) }; // Show loading state const submitBtn = document.getElementById('submitBtn'); submitBtn.disabled = true; submitBtn.innerHTML = '<i></i> Creating Listing...'; // Save business to the system setTimeout(() => { try { // Add business to the business manager const newBusiness = window.businessManager.addBusiness(formData); if (newBusiness) { // Store form data in localStorage for payment page (if needed) localStorage.setItem('businessRegistrationData', JSON.stringify(formData)); // Show success message const successMessage = `🎉 Congratulations! Your business "${newBusiness.name}" has been successfully registered and is now live on BLKPAGES! 📍 Your business will appear in: • ${newBusiness.category.charAt(0).toUpperCase() + newBusiness.category.slice(1)} category listings • Location: ${newBusiness.city}, ${newBusiness.state} • Search results for your area ${selectedTier === 'free' ? '💡 Upgrade to a paid plan to unlock features like photo galleries, online booking, and priority placement!' : '✨ Your premium features are now active!'}`; alert(successMessage); // Redirect based on subscription tier if (selectedTier === 'professional' || selectedTier === 'starter') { // For paid tiers, redirect to payment page window.location.href = 'business-payment.html'; } else { // For free tier, redirect to login window.location.href = 'business-login.html'; } } else { throw new Error('Failed to create business listing'); } } catch (error) { console.error('Error creating business:', error); alert('❌ There was an error creating your business listing. Please try again.'); submitBtn.disabled = false; submitBtn.innerHTML = 'Create Business Listing'; } }, 2000); } } // Initialize form validator const formValidator = new FormValidator(); // Initialize with selected plan from URL or session storage function initializePlanSelection() { // Check URL parameters first const urlParams = new URLSearchParams(window.location.search); const planFromUrl = urlParams.get('plan'); // Check session storage const planFromStorage = sessionStorage.getItem('selectedPlan'); // Use URL parameter if available, otherwise use session storage, otherwise default to free const selectedPlan = planFromUrl || planFromStorage || 'free'; // Store the selection in session storage sessionStorage.setItem('selectedPlan', selectedPlan); // Select the tier and reorder plans selectTier(selectedPlan); // Initialize add-on button states initializeAddonStates(); } function initializeAddonStates() { // Check all add-on states and update buttons const addons = [ { id: 'smsAddonBtn', key: 'smsAddonSelected' }, { id: 'featuredAddonBtn', key: 'featuredAddonSelected' }, { id: 'socialAddonBtn', key: 'socialAddonSelected' }, { id: 'loyaltyAddonBtn', key: 'loyaltyAddonSelected' }, { id: 'analyticsAddonBtn', key: 'analyticsAddonSelected' }, { id: 'staffAddonBtn', key: 'staffAddonSelected' } ]; addons.forEach(addon => { const isSelected = sessionStorage.getItem(addon.key) === 'true'; const button = document.getElementById(addon.id); if (isSelected && button) { button.innerHTML = '<i></i> Added to Plan'; button.classList.add('added'); } }); } // Initialize plan selection initializePlanSelection(); // Payment section functions function togglePaymentSection(tier) { const paymentSection = document.getElementById('paymentSection'); const freePlanAddonNotice = document.getElementById('freePlanAddonNotice'); const hasAddons = getSelectedAddons().length > 0; // Show payment section if: // 1. Paid plan (starter/professional) OR // 2. Free plan but has premium add-ons if (tier === 'starter' || tier === 'professional' || (tier === 'free' && hasAddons)) { paymentSection.style.display = 'block'; // Add payment fields to required fields for validation addPaymentFieldsToValidation(); // Show special notice for free plan with add-ons if (tier === 'free' && hasAddons) { freePlanAddonNotice.style.display = 'flex'; } else { freePlanAddonNotice.style.display = 'none'; } } else { paymentSection.style.display = 'none'; freePlanAddonNotice.style.display = 'none'; // Remove payment fields from required fields removePaymentFieldsFromValidation(); } } function updatePaymentSummary(tier) { const planName = document.getElementById('selectedPlanName'); const monthlyCost = document.getElementById('monthlyCost'); const totalToday = document.getElementById('totalToday'); const recurringMonthly = document.getElementById('recurringMonthly'); const addonsSection = document.getElementById('addonsSection'); const addonsList = document.getElementById('addonsList'); const addonsCost = document.getElementById('addonsCost'); const pricing = { 'free': { name: 'Free Listing', cost: 0 }, 'starter': { name: 'Starter Plan', cost: 15 }, 'professional': { name: 'Professional Plan', cost: 29 } }; const plan = pricing[tier]; if (plan) { planName.textContent = plan.name; monthlyCost.textContent = plan.cost > 0 ? `£${plan.cost}/month` : 'Free'; // Calculate add-ons const selectedAddons = getSelectedAddons(); const addonsTotal = calculateAddonsTotal(selectedAddons); // Show/hide add-ons section if (selectedAddons.length > 0) { addonsSection.style.display = 'block'; addonsList.textContent = selectedAddons.map(addon => addon.name).join(', '); addonsCost.textContent = `£${addonsTotal}/month`; } else { addonsSection.style.display = 'none'; } // Calculate totals const totalCost = plan.cost + addonsTotal; const recurringTotal = plan.cost + addonsTotal; totalToday.textContent = totalCost > 0 ? `£${totalCost}` : 'Free'; recurringMonthly.textContent = recurringTotal > 0 ? `£${recurringTotal}/month` : 'Free'; } } function getSelectedAddons() { const selectedAddons = []; // Check SMS add-on const smsSelected = sessionStorage.getItem('smsAddonSelected') === 'true'; if (smsSelected) { selectedAddons.push({ name: 'Extra SMS Credits', cost: 3 }); } // Check featured add-on const featuredSelected = sessionStorage.getItem('featuredAddonSelected') === 'true'; if (featuredSelected) { selectedAddons.push({ name: 'Featured Listing', cost: 5 }); } // Check social add-on const socialSelected = sessionStorage.getItem('socialAddonSelected') === 'true'; if (socialSelected) { selectedAddons.push({ name: 'Instagram/TikTok Widget', cost: 4 }); } // Check loyalty add-on const loyaltySelected = sessionStorage.getItem('loyaltyAddonSelected') === 'true'; if (loyaltySelected) { selectedAddons.push({ name: 'Customer Loyalty Rewards', cost: 5 }); } // Check analytics add-on const analyticsSelected = sessionStorage.getItem('analyticsAddonSelected') === 'true'; if (analyticsSelected) { selectedAddons.push({ name: 'Advanced Analytics', cost: 5 }); } // Check staff add-on const staffSelected = sessionStorage.getItem('staffAddonSelected') === 'true'; if (staffSelected) { selectedAddons.push({ name: 'Multi-Staff Scheduling', cost: 2 }); } return selectedAddons; } function calculateAddonsTotal(addons) { return addons.reduce((total, addon) => total + addon.cost, 0); } function calculateMonthlyCost(tier) { const pricing = { 'free': 0, 'starter': 15, 'professional': 29 }; return pricing[tier] || 0; } function addPaymentFieldsToValidation() { // Add payment fields to form validator formValidator.addPaymentFieldsToValidation(); // Add event listeners for payment field formatting formValidator.paymentFields.forEach(fieldId => { const field = document.getElementById(fieldId); if (field) { field.addEventListener('input', formatPaymentField); field.addEventListener('focus', () => formValidator.clearFieldValidation(field)); } }); } function removePaymentFieldsFromValidation() { // Remove payment fields from form validator formValidator.removePaymentFieldsFromValidation(); // Clear payment fields when hidden formValidator.paymentFields.forEach(fieldId => { const field = document.getElementById(fieldId); if (field) { field.value = ''; } }); } function formatPaymentField(event) { const field = event.target; const value = field.value; switch (field.id) { case 'cardNumber': // Format card number with spaces const cardNumber = value.replace(/\s/g, '').replace(/(.{4})/g, '$1 ').trim(); field.value = cardNumber; break; case 'expiryDate': // Format expiry date as MM/YY const expiry = value.replace(/\D/g, ''); if (expiry.length >= 2) { field.value = expiry.substring(0, 2) + '/' + expiry.substring(2, 4); } else { field.value = expiry; } break; case 'cvv': // Only allow numbers for CVV field.value = value.replace(/\D/g, ''); break; } } // Select loyalty add-on function function selectLoyaltyAddon() { const button = document.getElementById('loyaltyAddonBtn'); // Check if already added if (button.classList.contains('added')) { // Remove add-on const confirmed = confirm('Remove Loyalty Rewards Programme from your plan?\n\nThis will remove £5/month from your subscription.'); if (confirmed) { // Update button state button.innerHTML = '<i></i> Add to Plan'; button.classList.remove('added'); // Remove from session storage sessionStorage.removeItem('loyaltyAddonSelected'); // Update payment summary and toggle payment section updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Loyalty Rewards Programme removed from your plan.'); } return; } // Show confirmation const confirmed = confirm('Add Loyalty Rewards Programme to your plan?\n\nThis will add £5/month to your subscription.\n\nYou can manage this add-on in your business dashboard.'); if (confirmed) { // Update button state button.innerHTML = '<i></i> Added to Plan'; button.classList.add('added'); // Store selection in session storage sessionStorage.setItem('loyaltyAddonSelected', 'true'); // Update payment summary and toggle payment section updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Customer Loyalty Rewards added successfully!\n\nYou can configure your loyalty program after creating your business listing.'); } } // SMS Add-on function function selectSMSAddon() { const button = document.getElementById('smsAddonBtn'); if (button.classList.contains('added')) { const confirmed = confirm('Remove Extra SMS Credits from your plan?\n\nThis will remove £3 per 50 messages from your subscription.'); if (confirmed) { button.innerHTML = '<i></i> Add to Plan'; button.classList.remove('added'); sessionStorage.removeItem('smsAddonSelected'); updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Extra SMS Credits removed from your plan.'); } return; } const confirmed = confirm('Add Extra SMS Credits to your plan?\n\nThis will add £3 per 50 messages to your subscription.\n\nYou can manage this add-on in your business dashboard.'); if (confirmed) { button.innerHTML = '<i></i> Added to Plan'; button.classList.add('added'); sessionStorage.setItem('smsAddonSelected', 'true'); updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Extra SMS Credits added successfully!\n\nYou can configure your SMS settings after creating your business listing.'); } } // Featured Add-on function function selectFeaturedAddon() { const button = document.getElementById('featuredAddonBtn'); if (button.classList.contains('added')) { const confirmed = confirm('Remove Featured Listing from your plan?\n\nThis will remove £5/month from your subscription.'); if (confirmed) { button.innerHTML = '<i></i> Add to Plan'; button.classList.remove('added'); sessionStorage.removeItem('featuredAddonSelected'); updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Featured Listing removed from your plan.'); } return; } const confirmed = confirm('Add Featured Listing to your plan?\n\nThis will add £5/month to your subscription.\n\nYou can manage this add-on in your business dashboard.'); if (confirmed) { button.innerHTML = '<i></i> Added to Plan'; button.classList.add('added'); sessionStorage.setItem('featuredAddonSelected', 'true'); updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Featured Listing added successfully!\n\nYour business will get priority placement in search results.'); } } // Social Add-on function function selectSocialAddon() { const button = document.getElementById('socialAddonBtn'); if (button.classList.contains('added')) { const confirmed = confirm('Remove Instagram/TikTok Widget from your plan?\n\nThis will remove £4/month from your subscription.'); if (confirmed) { button.innerHTML = '<i></i> Add to Plan'; button.classList.remove('added'); sessionStorage.removeItem('socialAddonSelected'); updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Instagram/TikTok Widget removed from your plan.'); } return; } const confirmed = confirm('Add Instagram/TikTok Widget to your plan?\n\nThis will add £4/month to your subscription.\n\nYou can manage this add-on in your business dashboard.'); if (confirmed) { button.innerHTML = '<i></i> Added to Plan'; button.classList.add('added'); sessionStorage.setItem('socialAddonSelected', 'true'); updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Instagram/TikTok Widget added successfully!\n\nYou can configure your social media integration after creating your business listing.'); } } // Analytics Add-on function function selectAnalyticsAddon() { const button = document.getElementById('analyticsAddonBtn'); if (button.classList.contains('added')) { const confirmed = confirm('Remove Advanced Analytics from your plan?\n\nThis will remove £5/month from your subscription.'); if (confirmed) { button.innerHTML = '<i></i> Add to Plan'; button.classList.remove('added'); sessionStorage.removeItem('analyticsAddonSelected'); updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Advanced Analytics removed from your plan.'); } return; } const confirmed = confirm('Add Advanced Analytics to your plan?\n\nThis will add £5/month to your subscription.\n\nYou can manage this add-on in your business dashboard.'); if (confirmed) { button.innerHTML = '<i></i> Added to Plan'; button.classList.add('added'); sessionStorage.setItem('analyticsAddonSelected', 'true'); updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Advanced Analytics added successfully!\n\nYou can access detailed performance insights after creating your business listing.'); } } // Staff Add-on function function selectStaffAddon() { const button = document.getElementById('staffAddonBtn'); if (button.classList.contains('added')) { const confirmed = confirm('Remove Multi-Staff Scheduling from your plan?\n\nThis will remove £2/month per staff member from your subscription.'); if (confirmed) { button.innerHTML = '<i></i> Add to Plan'; button.classList.remove('added'); sessionStorage.removeItem('staffAddonSelected'); updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Multi-Staff Scheduling removed from your plan.'); } return; } const confirmed = confirm('Add Multi-Staff Scheduling to your plan?\n\nThis will add £2/month per staff member to your subscription.\n\nYou can manage this add-on in your business dashboard.'); if (confirmed) { button.innerHTML = '<i></i> Added to Plan'; button.classList.add('added'); sessionStorage.setItem('staffAddonSelected', 'true'); updatePaymentSummary(selectedTier); togglePaymentSection(selectedTier); alert('Multi-Staff Scheduling added successfully!\n\nYou can configure staff schedules after creating your business listing.'); } } </script>
-        </div>
-    </main>
-    
-    <footer class="bg-[#111111] py-12 px-4">
-        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-            <!-- About -->
-            <div>
-                <h3 class="text-lg font-bold text-[#D4AF37] mb-4">BlkPages</h3>
-                <p class="text-gray-400">Connecting you to businesses inspired by Black culture and creativity.</p>
-            </div>
-            <!-- Links -->
-            <div>
-                <h3 class="text-lg font-semibold text-gray-200 mb-4">Quick Links</h3>
-                <ul>
-                    <li class="mb-2"><a href="about.html" class="text-gray-400 hover:text-[#D4AF37]">About Us</a></li>
-                    <li class="mb-2"><a href="search-results.html" class="text-gray-400 hover:text-[#D4AF37]">Browse</a></li>
-                    <li class="mb-2"><a href="business-register.html" class="text-gray-400 hover:text-[#D4AF37]">List a Business</a></li>
-                    <li class="mb-2"><a href="contact.html" class="text-gray-400 hover:text-[#D4AF37]">Contact</a></li>
-                </ul>
-            </div>
-            <!-- Legal -->
-            <div>
-                <h3 class="text-lg font-semibold text-gray-200 mb-4">Legal</h3>
-                <ul>
-                    <li class="mb-2"><a href="privacy.html" class="text-gray-400 hover:text-[#D4AF37]">Privacy Policy</a></li>
-                    <li class="mb-2"><a href="terms.html" class="text-gray-400 hover:text-[#D4AF37]">Terms of Service</a></li>
-                </ul>
-            </div>
-            <!-- Social -->
-            <div>
-                <h3 class="text-lg font-semibold text-gray-200 mb-4">Connect With Us</h3>
-                <div class="flex gap-4">
-                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-[#D4AF37]"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="text-center text-gray-500 mt-8 pt-8 border-t border-gray-800">
-            <p>&copy; 2024 BlkPages. All rights reserved.</p>
-        </div>
-    </footer>
+    // Update plan price display based on toggle
+    function updatePlanDisplay(planElement) {
+        const planData = planElement.dataset;
+        const priceElement = planElement.querySelector('.planPrice');
+        const toggle = planElement.querySelector('.yearToggle');
+        if (!toggle || !priceElement) return; // Free plan has no toggle or price element like others
+
+        if (toggle.checked) {
+             priceElement.textContent = `£${planData.year} / yr (Save £${(parseFloat(planData.month)*12 - parseFloat(planData.year)).toFixed(2)})`;
+        } else {
+             priceElement.textContent = `£${planData.month} / mo`;
+        }
+    }
+
+
+    plans.forEach(p => {
+        // Initial display update
+        updatePlanDisplay(p); 
+        
+        p.onclick = (e) => {
+            // Prevent toggle click from selecting plan if it was the target
+            if (e.target.classList.contains('yearToggle') || e.target.closest('label')?.querySelector('.yearToggle')) {
+               return;
+            }
+            
+            // If clicking the already active plan, do nothing extra
+            if (p.classList.contains('active')) return;
+
+            plans.forEach(x => x.classList.remove('active'));
+            p.classList.add('active');
+            selPlan = p.dataset.plan;
+             // Update button text
+            plans.forEach(card => {
+                const btn = card.querySelector('.select-plan-btn');
+                if (btn) { // Check if button exists
+                    btn.textContent = card === p ? '✓ Selected' : 'Select Plan';
+                }
+            });
+            updateSummary();
+        };
+    });
+
+    toggles.forEach(t => {
+        t.onchange = () => {
+             const parentPlan = t.closest('.plan');
+             updatePlanDisplay(parentPlan); // Update text first
+             if(parentPlan.classList.contains('active')) {
+                updateSummary(); // Only update summary if active plan's toggle changed
+             }
+        };
+    });
+
+    addons.forEach(a => {
+        const btn = a.querySelector('.select-addon-btn');
+        a.onclick = (e) => {
+             // Allow clicking anywhere on card except button to toggle
+            if (e.target === btn) return; 
+             toggleAddon(a); // Use separate function
+        };
+        // Allow button itself to toggle too
+        btn.onclick = () => {
+             toggleAddon(a);
+        };
+    });
+
+    function toggleAddon(addonElement) {
+        const btn = addonElement.querySelector('.select-addon-btn');
+        const addonName = addonElement.dataset.addon;
+        const addonPrice = addonElement.dataset.price;
+        const existingIndex = selAdd.findIndex(x => x.name === addonName);
+
+        if (existingIndex > -1) { // If exists, remove it
+            selAdd.splice(existingIndex, 1);
+            addonElement.classList.remove('active');
+            btn.textContent = 'Add';
+        } else { // If not exists, add it
+            selAdd.push({ name: addonName, price: addonPrice });
+            addonElement.classList.add('active');
+            btn.textContent = '✓ Added';
+        }
+        updateSummary();
+    }
+
+
+    // --- Real-time Password Match Validation ---
+    function validatePasswords() {
+        // Make sure elements exist before accessing value
+        const pwdVal = pwd ? pwd.value : '';
+        const confPwdVal = confPwd ? confPwd.value : '';
+
+        if(pwd) pwd.classList.remove("border-red-500");
+        if(confPwd) confPwd.classList.remove("border-red-500");
+
+        if (pwdVal !== confPwdVal && confPwdVal.length > 0) {
+            if(pwd) pwd.classList.add("border-red-500");
+            if(confPwd) confPwd.classList.add("border-red-500");
+            return false;
+        }
+        return true;
+    }
+    if (confPwd) confPwd.addEventListener("input", validatePasswords);
+    if (pwd) pwd.addEventListener("input", validatePasswords);
+
+
+    // --- Form Submission Handler ---
+    form.onsubmit = async e => {
+        e.preventDefault();
+        formErrorMsgElement.classList.add("hidden"); // Reset error
+        let hasError = false;
+        let firstErrorField = null;
+
+        // 1. Basic required field check
+        const requiredFields = form.querySelectorAll("[required]");
+        requiredFields.forEach(field => {
+            field.classList.remove("border-red-500");
+             // Special check for select elements where placeholder is selected
+            if ( (field.tagName === 'SELECT' && field.value === "") || (!field.value || field.value.trim() === "")) {
+                 // Check if field is inside hidden payment section AND payment is required
+                if (!field.closest('#paySection') || paySec.querySelectorAll('[required]').length > 0) {
+                    hasError = true;
+                    field.classList.add("border-red-500");
+                    if (!firstErrorField) firstErrorField = field;
+                 } else {
+                     // If inside hidden payment section and NOT required, clear error
+                     field.classList.remove("border-red-500");
+                 }
+            }
+        });
+        
+         // 2. Check "Days Open" Checkboxes
+        const daysOpenCheckboxes = form.querySelectorAll('input[name="daysOpen"]:checked');
+        const daysOpenContainer = document.getElementById('daysOpenContainer'); 
+        if(daysOpenContainer) daysOpenContainer.classList.remove("border-red-500"); 
+        if (daysOpenCheckboxes.length === 0) {
+            hasError = true;
+            if(daysOpenContainer) daysOpenContainer.classList.add("border-red-500");
+             if (!firstErrorField && daysOpenContainer) firstErrorField = daysOpenContainer; // Scroll to container
+        }
+
+
+        // 3. Password match check
+        if (!validatePasswords()) {
+            hasError = true;
+            if (!firstErrorField && pwd) firstErrorField = pwd;
+        }
+
+        if (hasError) {
+             formErrorMsgText.textContent = "Please correct the errors highlighted above.";
+             formErrorMsgElement.classList.remove("hidden");
+             firstErrorField?.scrollIntoView({ behavior: "smooth", block: "center" });
+             return;
+        }
+
+        // --- If validation passes ---
+        updateSummary(); // Ensure summary is final before collecting
+
+        const formData = {
+            businessName: form.businessName?.value.trim() || '',
+            category: form.category?.value || '',
+            description: form.description?.value.trim() || '',
+            phone: form.phone?.value.trim() || '',
+            email: form.email?.value.trim() || '',
+            website: form.website?.value.trim() || '',
+            street: form.street?.value.trim() || '',
+            city: form.city?.value.trim() || '',
+            county: form.county?.value.trim() || '',
+            postcode: form.postcode?.value.trim() || '',
+            serviceArea: form.serviceArea?.value.trim() || '',
+            openTime: form.openTime?.value || '',
+            closeTime: form.closeTime?.value || '',
+            daysOpen: Array.from(daysOpenCheckboxes).map(cb => cb.value),
+            cancellationPolicy: form.cancellationPolicy?.value || '',
+            extraInfo: form.extraInfo?.value.trim() || '',
+            paymentModel: form.paymentModel?.value || '',
+            ownerName: form.ownerName?.value.trim() || '',
+            // Don't send password directly, handle securely on backend
+            // password: form.password.value, 
+            plan: selPlan,
+            yearly: yearMode,
+            addons: selAdd.map(x => x.name),
+            // Include payment details if section is visible (basic example)
+            cardName: paySec.classList.contains('hidden') ? null : form.cardName?.value.trim(),
+            cardNumber: paySec.classList.contains('hidden') ? null : form.cardNumber?.value.trim(),
+            cardExpiry: paySec.classList.contains('hidden') ? null : form.cardExpiry?.value.trim(),
+            cardCvv: paySec.classList.contains('hidden') ? null : form.cardCvv?.value.trim(),
+            billingAddress: paySec.classList.contains('hidden') ? null : form.billingAddress?.value.trim(),
+            // totals: { today: todaySum.textContent, recurring: monthlySum.textContent } // Optional: Send calculated totals
+        };
+        
+        console.log("Form Data Submitted:", formData); // Log for debugging
+
+        submitBtn.disabled = true;
+        submitBtn.classList.add("opacity-50","cursor-not-allowed");
+        submitBtn.textContent = "Processing...";
+
+        try {
+            // SIMULATE BACKEND REQUEST
+             await new Promise(resolve => setTimeout(resolve, 1500)); 
+            // Replace with actual fetch:
+            // const response = await fetch('/api/create-business',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(formData)});
+            // if (!response.ok) throw new Error('Network response was not ok');
+            // const result = await response.json();
+            // console.log('Success:', result);
+
+            alert('✅ Your BlkPages listing has been created! (DEMO)');
+             // window.location.href = '/dashboard'; // Redirect on real success
+
+        } catch (error) {
+            console.error('Submission Error:', error);
+            formErrorMsgText.textContent = "Submission failed. Please try again.";
+            formErrorMsgElement.classList.remove("hidden");
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("opacity-50","cursor-not-allowed");
+            submitBtn.textContent = "Create Business Listing";
+        }
+    };
+
+    updateSummary(); // Initial calculation
+  </script>
 </body>
 </html>
