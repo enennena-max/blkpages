@@ -10,6 +10,33 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 app.use(cors());
 app.use(express.json());
 
+// ===== SOCKET.IO SETUP =====
+const http = require('http');
+const { Server } = require('socket.io');
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CORS_ORIGIN || '*',
+    methods: ['GET', 'POST']
+  }
+});
+
+// When a user connects
+io.on('connection', (socket) => {
+  socket.on('register', ({ customerId }) => {
+    if (customerId) socket.join(`cust:${customerId}`);
+  });
+});
+
+// helper so you can emit updates easily from anywhere
+function emitToCustomer(customerId, event, payload) {
+  if (!customerId) return;
+  io.to(`cust:${customerId}`).emit(event, payload);
+}
+
+app.set('emitToCustomer', emitToCustomer);
+
 app.post("/bookings/new", async (req, res) => {
   try {
     const { business, services, total, date, time, customerEmail, isNewCustomer } = req.body;
@@ -118,4 +145,4 @@ async function getBusinessEmail(businessSlug) {
   return "owner@" + businessSlug + ".co.uk";
 }
 
-app.listen(4000, () => console.log("✅ BlkPages backend running on http://localhost:4000"));
+server.listen(4000, () => console.log("✅ BlkPages backend running on http://localhost:4000"));

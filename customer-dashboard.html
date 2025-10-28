@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BlkPages | Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <style>
     /* ---------- Global ---------- */
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -83,7 +84,7 @@
       }
     }
     .notification-bell::before {
-      content: "🔔";
+      content: "🔕";
       font-size: 1.2rem;
     }
     .notification-badge {
@@ -149,6 +150,7 @@
       font-weight: 600;
       margin-bottom: 0.5rem;
       background: linear-gradient(90deg, #f2c94c, #fff);
+      background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -218,6 +220,81 @@
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
     }
 
+    /* ---------- Card Class ---------- */
+    .card {
+      background: rgba(40, 40, 40, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s forwards;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 215, 0, 0.4);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
+    }
+    .card h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #f2c94c;
+    }
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #f8f8f8;
+    }
+    .card p {
+      margin: 0.5rem 0;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    /* ---------- Appointment Meta ---------- */
+    .appt-meta {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: rgba(25, 25, 25, 0.5);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+    }
+    .appt-meta p {
+      margin: 0.5rem 0;
+      color: #ddd;
+    }
+
+    /* ---------- Action Buttons ---------- */
+    .appt-actions {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .review-actions {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    /* ---------- Icon Classes ---------- */
+    .icon-business::before {
+      content: "🏢";
+      margin-right: 0.5rem;
+    }
+    .icon-points::before {
+      content: "🎁";
+      margin-right: 0.5rem;
+    }
+
     @keyframes fadeUp {
       to { opacity: 1; transform: translateY(0); }
     }
@@ -267,6 +344,155 @@
     button.secondary:hover {
       background: #6c757d;
       color: #fff;
+    }
+    button.danger {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+    button.danger:hover {
+      background: #dc3545;
+      color: #fff;
+    }
+    button.disabled {
+      border-color: #6c757d;
+      color: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    button.disabled:hover {
+      background: transparent;
+      color: #6c757d;
+      box-shadow: none;
+    }
+    button.small {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+    }
+    button.gold {
+      background: #f2c94c;
+      color: #000;
+      border-color: #f2c94c;
+    }
+    button.gold:hover {
+      background: #e6b800;
+      color: #000;
+    }
+    button.muted {
+      border-color: #6c757d;
+      color: #6c757d;
+    }
+    button.muted:hover {
+      background: #6c757d;
+      color: #fff;
+    }
+
+    /* ---------- Progress Bar ---------- */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(40, 40, 40, 0.8);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f2c94c, #e6b800);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    /* ---------- Status Classes ---------- */
+    .status {
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status.confirmed {
+      background: rgba(46, 204, 113, 0.2);
+      color: #2ecc71;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+    .status.pending {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+      border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+    .status.completed {
+      background: rgba(52, 152, 219, 0.2);
+      color: #3498db;
+      border: 1px solid rgba(52, 152, 219, 0.3);
+    }
+    .status.cancelled {
+      background: rgba(231, 76, 60, 0.2);
+      color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.3);
+    }
+
+    /* ---------- Divider ---------- */
+    .divider {
+      border: none;
+      height: 1px;
+      background: rgba(255, 215, 0, 0.2);
+      margin: 1rem 0;
+    }
+
+    /* ---------- Info Icon ---------- */
+    .info-icon {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      margin-left: 0.5rem;
+    }
+
+    /* ---------- Muted Text ---------- */
+    .muted {
+      color: #6c757d;
+      font-size: 0.85rem;
+    }
+
+    /* ---------- Demo Mode Badge ---------- */
+    .demo-badge {
+      background: linear-gradient(135deg, #f2c94c, #e6b800);
+      color: #000;
+      padding: 0.3rem 0.8rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(242, 201, 76, 0.3);
+      animation: demoGlow 2s ease-in-out infinite alternate;
+      border: 1px solid rgba(242, 201, 76, 0.5);
+    }
+    @keyframes demoGlow {
+      0% { 
+        box-shadow: 0 2px 8px rgba(242, 201, 76, 0.3);
+        transform: scale(1);
+      }
+      100% { 
+        box-shadow: 0 4px 16px rgba(242, 201, 76, 0.5);
+        transform: scale(1.02);
+      }
+    }
+
+    /* ---------- Star Rating ---------- */
+    .star {
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      color: #666;
+    }
+    .star:hover {
+      color: #f2c94c;
     }
 
     /* ---------- Modal Styles ---------- */
@@ -353,7 +579,7 @@
 
   <!-- Header with Notification Bell -->
   <div class="header">
-    <div></div>
+    <div class="demo-badge">Demo Mode</div>
     <div class="notification-bell" onclick="openNotifications()">
       <div class="notification-badge">3</div>
     </div>
@@ -362,10 +588,10 @@
   <!-- Sidebar -->
   <div class="sidebar">
     <h1>BlkPages</h1>
-    <a href="#" style="color: #f2c94c;">🏠 Dashboard</a>
-    <a href="bookings-page.html">📅 Bookings</a>
+    <a href="#" style="color: #f2c94c;">🏡 Dashboard</a>
+    <a href="bookings-page.html">📆 Bookings</a>
     <a href="payments-page.html">💳 Payments</a>
-    <a href="reviews-page.html">⭐ Reviews</a>
+    <a href="reviews-page.html">☆ Reviews</a>
     <a href="loyalty-page.html">🎁 Loyalty</a>
     <a href="profile-page.html">👤 Profile</a>
     <a href="messages-page.html">💬 Messages</a>
@@ -385,40 +611,70 @@
 
     <!-- Overview Tab -->
     <div id="overview" class="tab-content active">
-      <!-- Upcoming Booking Card -->
-      <div class="dashboard-card">
-        <h3>Next Appointment</h3>
-        <div class="details"><i>🏢</i><strong>Fade District</strong> – Skin Fade</div>
-        <div class="details"><i>📅</i>28 Oct 2025, 10:30 AM</div>
-        <div class="details"><i>📍</i>221B Baker Street, London NW1 6XE</div>
-        <div class="buttons">
-          <button onclick="viewDetails()">View Details</button>
-          <button onclick="openRescheduleModal()">Reschedule</button>
-          <button onclick="addToCalendar()">Add to Calendar</button>
-        </div>
-        <div style="margin-top: 1rem;">
-          <a href="bookings-page.html" style="color: #f2c94c; text-decoration: none;">View all bookings →</a>
-        </div>
-      </div>
+      <!-- DASHBOARD HOME CONTENT -->
+      <section id="dashboardHome" class="dashboard-section">
 
-      <!-- Loyalty Card -->
-      <div class="dashboard-card">
-        <h3>Your Loyalty</h3>
-        <div class="details"><i>🎯</i>You have <strong>240 points</strong> worth £12.00</div>
-        <div class="buttons">
-          <button onclick="viewRewards()">View Rewards</button>
-        </div>
-      </div>
+        <!-- ======= NEXT APPOINTMENT ======= -->
+        <div class="card next-appointment" id="nextApptCard">
+          <h2>Next Appointment</h2>
+          <div id="noApptMsg" hidden>
+            <p>You have no upcoming bookings.</p>
+            <button class="btn gold" onclick="window.location.href='/bookings.html'">Book Now</button>
+          </div>
 
-      <!-- Recent Payment Card -->
-      <div class="dashboard-card">
-        <h3>Recent Payment</h3>
-        <div class="details"><i>🏢</i><strong>Glow Studio – Makeup Session</strong></div>
-        <div class="details"><i>💰</i>£85.00 | 5 Nov 2025</div>
-        <div class="buttons">
-          <button onclick="openReceiptModal()">View Receipt</button>
+          <div id="apptInfo" hidden>
+            <h3 id="apptBusiness"></h3>
+            <p id="apptService"></p>
+            <div class="appt-meta">
+              <p><strong>Date:</strong> <span id="apptDate"></span> · <span id="apptTime"></span></p>
+              <p><strong>Price:</strong> £<span id="apptPrice"></span> (Paid)</p>
+              <p><strong>Address:</strong> <span id="apptAddress"></span></p>
+              <p><strong>Status:</strong> <span id="apptStatus" class="status"></span></p>
+            </div>
+
+            <div class="appt-actions">
+              <button class="btn gold" id="viewBusinessBtn">View Business Profile</button>
+              <button class="btn" onclick="addToCalendar()">Add to Calendar</button>
+              <button class="btn" id="rescheduleBtn" onclick="openRescheduleModal()">Reschedule</button>
+              <button id="cancelBtn" class="btn danger" onclick="openCancelModal()">Cancel Booking</button>
+              <button id="cancelInfo" class="btn disabled" onclick="openPolicyModal()" hidden>
+                Cancel Booking <span class="info-icon">?</span>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+
+        <!-- ======= LOYALTY & REWARDS ======= -->
+        <div class="card loyalty-card" id="loyaltyCard" hidden>
+          <h2>Loyalty & Rewards</h2>
+
+          <div id="bizLoyalty" hidden>
+            <h3><i class="icon-business"></i> <span id="bizName"></span> Loyalty</h3>
+            <p><span id="bizProgress"></span> of <span id="bizGoal"></span> visits completed</p>
+            <div class="progress-bar"><div id="bizProgressBar" class="progress-fill"></div></div>
+            <button class="btn small gold" id="viewBizRewards">View Business Rewards</button>
+            <hr class="divider" />
+          </div>
+
+          <div id="blkpointsSection">
+            <h3><i class="icon-points"></i> Your BlkPoints</h3>
+            <p>You have <span id="blkPoints"></span> points (£<span id="blkValue"></span>)</p>
+            <p id="blkThreshold" class="muted">You need at least 5000 points (£5) to redeem</p>
+            <button id="redeemBtn" class="btn small gold" onclick="openRedeemModal()" disabled>Not enough to redeem</button>
+          </div>
+        </div>
+
+        <!-- ======= REVIEW PROMPT ======= -->
+        <div id="reviewPrompt" class="card review-card" hidden>
+          <h2>How was your recent visit?</h2>
+          <p id="reviewText"></p>
+          <div class="review-actions">
+            <button class="btn gold" onclick="openReviewModal()">Leave a Review</button>
+            <button class="btn muted" onclick="dismissReviewPrompt()">Skip for now</button>
+          </div>
+        </div>
+
+      </section>
     </div>
 
     <!-- Recent Activity Tab -->
@@ -435,9 +691,9 @@
       <!-- Profile Summary Card -->
       <div class="dashboard-card">
         <h3>Profile Overview</h3>
-        <div class="details"><i>✅</i>Email verified</div>
+        <div class="details"><i>☑️</i>Email verified</div>
         <div class="details"><i>💳</i>Payment method saved</div>
-        <div class="details"><i>🔔</i>Notifications enabled</div>
+        <div class="details"><i>🔕</i>Notifications enabled</div>
         <div class="buttons">
           <button onclick="manageProfile()">Manage Profile</button>
         </div>
@@ -446,7 +702,7 @@
       <!-- Recent Reviews Card -->
       <div class="dashboard-card">
         <h3>Recent Reviews</h3>
-        <div class="details"><i>⭐</i>You've written <strong>3 reviews</strong> this month</div>
+        <div class="details"><i>☆</i>You've written <strong>3 reviews</strong> this month</div>
         <div class="details"><i>👍</i>Received <strong>12 helpful votes</strong></div>
         <div class="buttons">
           <button onclick="viewReviews()">View Reviews</button>
@@ -546,6 +802,70 @@
                 </div>
                 </div>
               </div>
+
+  <!-- Cancel Booking Modal -->
+  <div id="cancelModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cancelModal')">&times;</span>
+      <h3>Cancel Booking</h3>
+      <p>Are you sure you want to cancel your appointment at <strong>Glow Studio</strong>?</p>
+      <p style="color: #ffc107; font-size: 0.9rem;">This action cannot be undone.</p>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <button onclick="confirmCancel()" class="btn danger" style="flex: 1;">Yes, Cancel Booking</button>
+        <button onclick="closeModal('cancelModal')" class="btn secondary" style="flex: 1;">Keep Booking</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Policy Modal -->
+  <div id="policyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('policyModal')">&times;</span>
+      <h3>Cancellation Policy</h3>
+      <div style="margin-top: 1rem;">
+        <p><strong>Booking Cancellation Rules:</strong></p>
+        <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+          <li>Cancel up to 24 hours before: Full refund</li>
+          <li>Cancel within 24 hours: 50% refund</li>
+          <li>Cancel within 2 hours: No refund</li>
+          <li>No-show: No refund</li>
+        </ul>
+        <p style="color: #6c757d; font-size: 0.9rem;">Contact the business directly for special circumstances.</p>
+      </div>
+      <div style="margin-top: 1.5rem;">
+        <button onclick="closeModal('policyModal')" class="btn gold">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
+  <div id="reviewModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('reviewModal')">&times;</span>
+      <h3>Leave a Review</h3>
+      <div style="margin-top: 1rem;">
+        <p>How was your experience at <strong>Glow Studio</strong>?</p>
+        <div style="margin: 1rem 0;">
+          <label style="display: block; margin-bottom: 0.5rem;">Rating:</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <span onclick="setRating(1)" class="star" data-rating="1">⭐</span>
+            <span onclick="setRating(2)" class="star" data-rating="2">⭐</span>
+            <span onclick="setRating(3)" class="star" data-rating="3">⭐</span>
+            <span onclick="setRating(4)" class="star" data-rating="4">⭐</span>
+            <span onclick="setRating(5)" class="star" data-rating="5">⭐</span>
+          </div>
+        </div>
+        <div style="margin: 1rem 0;">
+          <label style="display: block; margin-bottom: 0.5rem;">Comment (optional):</label>
+          <textarea style="width: 100%; padding: 0.5rem; background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 6px; color: #fff; min-height: 80px;" placeholder="Share your experience..."></textarea>
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <button onclick="submitReview()" class="btn gold" style="flex: 1;">Submit Review</button>
+        <button onclick="closeModal('reviewModal')" class="btn secondary" style="flex: 1;">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <!-- JavaScript -->
   <script>
@@ -665,6 +985,49 @@
       alert('Notifications would open here');
     }
 
+    // Modal functions
+    function openCancelModal() {
+      document.getElementById('cancelModal').style.display = 'block';
+    }
+
+    function openPolicyModal() {
+      document.getElementById('policyModal').style.display = 'block';
+    }
+
+    function openReviewModal() {
+      document.getElementById('reviewModal').style.display = 'block';
+    }
+
+    function dismissReviewPrompt() {
+      document.getElementById('reviewPrompt').hidden = true;
+      showToast('Review prompt dismissed');
+    }
+
+    function confirmCancel() {
+      closeModal('cancelModal');
+      showToast('Booking cancelled successfully');
+      // In real app, this would update the booking status
+    }
+
+    function submitReview() {
+      closeModal('reviewModal');
+      showToast('Review submitted successfully! +20 BlkPoints earned');
+      // Hide the review prompt after submission
+      document.getElementById('reviewPrompt').hidden = true;
+    }
+
+    function setRating(rating) {
+      // Update star display
+      const stars = document.querySelectorAll('.star');
+      stars.forEach((star, index) => {
+        if (index < rating) {
+          star.style.color = '#f2c94c';
+        } else {
+          star.style.color = '#666';
+        }
+      });
+    }
+
     function closeModal(modalId) {
       document.getElementById(modalId).style.display = 'none';
     }
@@ -705,6 +1068,288 @@
         }
       });
     }
+
+    // ==========================
+    // CONFIG
+    // ==========================
+    const API_BASE = 'http://localhost:3001';
+    const CUSTOMER_ID = 'replace-with-real-customer-id'; // from login
+    
+    // DEMO MODE ACTIVE
+    console.log('🎭 DEMO MODE ACTIVE - Using fake data for preview');
+
+    // ==========================
+    // LOAD DASHBOARD DATA
+    // ==========================
+    async function loadDashboard() {
+      // DEMO MODE: Using fake data instead of API calls
+      console.log('🎭 Demo Mode: Loading fake dashboard data');
+      
+      try {
+        // Fake bookings data
+        const bookings = [{
+          id: 'demo-booking-1',
+          business_name: 'Glow Studio',
+          service: 'Makeup Session (Full Glam)',
+          date: '2025-11-05',
+          time: '2:00 PM',
+          price: 4800, // £48.00 in pence
+          address: '221B Baker Street, London NW1 6XE',
+          status: 'confirmed',
+          can_cancel: true,
+          business_id: 'glow-studio'
+        }];
+
+        // Fake loyalty data
+        const loyalty = {
+          blkpoints: {
+            points: 240,
+            value: 2.40
+          },
+          businessRewards: [{
+            business: 'Fade District',
+            stamps: 2,
+            goal: 5
+          }]
+        };
+
+        // Fake reviews data (empty to show review prompt)
+        const reviews = [];
+
+        renderNextAppointment(bookings);
+        renderLoyalty(loyalty);
+        renderReviewPrompt(bookings, reviews);
+
+        // TODO: Uncomment below when backend is ready
+        /*
+        const [bookingsRes, loyaltyRes, reviewsRes] = await Promise.all([
+          fetch(`${API_BASE}/api/bookings?customerId=${CUSTOMER_ID}`),
+          fetch(`${API_BASE}/api/loyalty?customerId=${CUSTOMER_ID}`),
+          fetch(`${API_BASE}/api/reviews?customerId=${CUSTOMER_ID}`)
+        ]);
+
+        const bookings = await bookingsRes.json();
+        const loyalty = await loyaltyRes.json();
+        const reviews = await reviewsRes.json();
+
+        renderNextAppointment(bookings);
+        renderLoyalty(loyalty);
+        renderReviewPrompt(bookings, reviews);
+        */
+      } catch (err) {
+        console.error('Dashboard load failed:', err);
+      }
+    }
+
+    // ==========================
+    // RENDER NEXT APPOINTMENT
+    // ==========================
+    function renderNextAppointment(bookings) {
+      const next = bookings.find(b => b.status !== 'cancelled');
+      const noAppt = document.getElementById('noApptMsg');
+      const info = document.getElementById('apptInfo');
+
+      if (!next) {
+        noAppt.hidden = false;
+        info.hidden = true;
+        return;
+      }
+
+      info.hidden = false;
+      noAppt.hidden = true;
+
+      document.getElementById('apptBusiness').textContent = next.business_name;
+      document.getElementById('apptService').textContent = next.service;
+      document.getElementById('apptDate').textContent = new Date(next.date).toDateString();
+      document.getElementById('apptTime').textContent = next.time;
+      document.getElementById('apptPrice').textContent = (next.price / 100).toFixed(2);
+      document.getElementById('apptAddress').textContent = next.address;
+      document.getElementById('apptStatus').textContent = next.status;
+      document.getElementById('apptStatus').className = `status ${next.status}`;
+
+      // Cancel button state
+      updateCancelButton(next.can_cancel);
+
+      // Business profile link
+      document.getElementById('viewBusinessBtn').onclick = () =>
+        window.location.href = `business-profile.html?id=${next.business_id}`;
+    }
+
+    // ==========================
+    // RENDER LOYALTY
+    // ==========================
+    function renderLoyalty(loyalty) {
+      const card = document.getElementById('loyaltyCard');
+      card.hidden = false;
+
+      // Business loyalty
+      if (loyalty.businessRewards && loyalty.businessRewards.length > 0) {
+        const biz = loyalty.businessRewards[0];
+        document.getElementById('bizName').textContent = biz.business;
+        document.getElementById('bizProgress').textContent = biz.stamps;
+        document.getElementById('bizGoal').textContent = biz.goal;
+        document.getElementById('bizProgressBar').style.width = `${(biz.stamps / biz.goal) * 100}%`;
+        document.getElementById('viewBizRewards').onclick = () =>
+          window.location.href = `loyalty-page.html?business=${encodeURIComponent(biz.business)}`;
+        document.getElementById('bizLoyalty').hidden = false;
+      }
+
+      // BlkPoints
+      const blk = loyalty.blkpoints || { points: 0, value: 0 };
+      updateBlkPoints(blk.points);
+    }
+
+    // ==========================
+    // RENDER REVIEW PROMPT
+    // ==========================
+    function renderReviewPrompt(bookings, reviews) {
+      // DEMO MODE: Show review prompt for Glow Studio
+      console.log('🎭 Demo Mode: Showing review prompt for Glow Studio');
+      
+      const card = document.getElementById('reviewPrompt');
+      const text = document.getElementById('reviewText');
+      text.innerHTML = `How was your visit to <strong>Glow Studio</strong>? Leave a quick review and earn +20 BlkPoints.`;
+      card.hidden = false;
+
+      // TODO: Uncomment below when backend is ready
+      /*
+      // show if last booking completed and not reviewed
+      const completed = bookings.filter(b => b.status === 'completed').sort((a,b) => new Date(b.date) - new Date(a.date))[0];
+      if (!completed) return;
+
+      const alreadyReviewed = reviews.some(r => r.business === completed.business_name);
+      if (alreadyReviewed) return;
+
+      const card = document.getElementById('reviewPrompt');
+      const text = document.getElementById('reviewText');
+      text.innerHTML = `Leave a quick review for <strong>${completed.business_name}</strong> and earn +20 BlkPoints.`;
+      card.hidden = false;
+      */
+    }
+
+    // ==========================
+    // UTILITIES
+    // ==========================
+    function updateCancelButton(canCancel) {
+      const cancelBtn = document.getElementById("cancelBtn");
+      const cancelInfo = document.getElementById("cancelInfo");
+      if (canCancel) {
+        cancelBtn.hidden = false;
+        cancelInfo.hidden = true;
+      } else {
+        cancelBtn.hidden = true;
+        cancelInfo.hidden = false;
+      }
+    }
+
+    function updateBlkPoints(points) {
+      const redeemBtn = document.getElementById("redeemBtn");
+      const thresholdText = document.getElementById("blkThreshold");
+      const blkPoints = document.getElementById("blkPoints");
+      const blkValue = document.getElementById("blkValue");
+
+      const value = (points / 1000 * 5).toFixed(2); // example conversion
+      blkPoints.textContent = points.toLocaleString();
+      blkValue.textContent = value;
+
+      if (points >= 5000) {
+        redeemBtn.disabled = false;
+        redeemBtn.textContent = "Redeem Points";
+        thresholdText.style.display = "none";
+      } else {
+        redeemBtn.disabled = true;
+        redeemBtn.textContent = "Not enough to redeem";
+        thresholdText.style.display = "block";
+      }
+    }
+
+    // ==========================
+    loadDashboard();
+    // ==========================
+
+    // ==========================
+    // SOCKET.IO CLIENT SETUP
+    // ==========================
+    let socket = null;
+
+    function initializeSocket() {
+      // DEMO MODE: Skip Socket.IO connection
+      console.log('🎭 Demo Mode: Skipping Socket.IO connection');
+      return;
+
+      // TODO: Uncomment below when backend is ready
+      /*
+      try {
+        socket = io(API_BASE, { 
+          transports: ['websocket'],
+          autoConnect: true
+        });
+
+        socket.on('connect', () => {
+          console.log('Connected to server:', socket.id);
+          // Register customer for real-time updates
+          socket.emit('register', { customerId: CUSTOMER_ID });
+        });
+
+        socket.on('disconnect', () => {
+          console.log('Disconnected from server');
+        });
+
+        // Listen for booking status changes
+        socket.on('booking_status_changed', (data) => {
+          console.log('Booking status changed:', data);
+          showToast(`Booking ${data.status}!`);
+          loadDashboard(); // Refresh the dashboard
+        });
+
+        // Listen for loyalty points updates
+        socket.on('loyalty_points_updated', (data) => {
+          console.log('Loyalty points updated:', data);
+          updateBlkPoints(data.points);
+          if (data.added && data.added > 0) {
+            showToast(`+${data.added} BlkPoints earned! ${data.reason || ''}`);
+          }
+        });
+
+        // Listen for new notifications
+        socket.on('new_notification', (data) => {
+          console.log('New notification:', data);
+          simulateNotification(data);
+        });
+
+        socket.on('connect_error', (error) => {
+          console.error('Socket connection error:', error);
+        });
+
+      } catch (error) {
+        console.error('Failed to initialize socket:', error);
+      }
+      */
+    }
+
+    // Simulate notification bell animation
+    function simulateNotification(notification) {
+      const bell = document.querySelector('.notification-bell');
+      const badge = document.querySelector('.notification-badge');
+      
+      if (bell && badge) {
+        // Update badge count
+        const currentCount = parseInt(badge.textContent) || 0;
+        badge.textContent = currentCount + 1;
+        
+        // Add animation
+        bell.style.animation = 'none';
+        setTimeout(() => {
+          bell.style.animation = 'bellPulse 0.5s ease-in-out 3';
+        }, 10);
+        
+        // Show toast notification
+        showToast(notification.title || 'New notification');
+      }
+    }
+
+    // Initialize socket when page loads
+    initializeSocket();
   </script>
 
 </body>

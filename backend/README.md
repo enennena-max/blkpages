@@ -1,261 +1,105 @@
-# Booking Link & WhatsApp Integration API
+# BlkPages Backend Setup
 
-This Node.js API provides booking link generation and WhatsApp integration for the BlkPages business directory platform.
+This backend provides the API and real-time functionality for BlkPages using Express.js, PostgreSQL, and Socket.IO.
 
 ## Features
 
-- **Booking Link Generation**: Create unique, secure booking links for customers
-- **WhatsApp Integration**: Send booking links via WhatsApp using Twilio API
-- **Booking Management**: Confirm, cancel, and track booking status
-- **Expiry Handling**: Automatic link expiration (24 hours default)
-- **Rate Limiting**: API protection with rate limiting
-- **Modular Design**: Easy to integrate with existing systems
+- ✅ Express.js REST API
+- ✅ PostgreSQL database integration
+- ✅ Socket.IO real-time updates
+- ✅ Stripe payment processing
+- ✅ Email notifications
+- ✅ Customer loyalty system
+- ✅ Booking management
+- ✅ Review system
+- ✅ Notification system
 
-## Setup Instructions
+## Quick Start
 
-### 1. Install Dependencies
+1. **Install Dependencies**
+   ```bash
+   cd backend
+   npm install
+   ```
 
-```bash
-cd backend
-npm install
-```
+2. **Database Setup**
+   - Create a PostgreSQL database
+   - Run the schema.sql file to create tables
+   - Set your DATABASE_URL in .env
 
-### 2. Environment Configuration
+3. **Environment Variables**
+   Create a `.env` file with:
+   ```
+   PORT=3001
+   DATABASE_URL=postgresql://username:password@localhost:5432/blkpages_db
+   STRIPE_SECRET_KEY=sk_test_your_key_here
+   SMTP_USER=your-email@gmail.com
+   SMTP_PASS=your-app-password
+   ```
 
-Copy the environment example file:
-
-```bash
-cp env.example .env
-```
-
-Edit `.env` with your configuration:
-
-```env
-# Twilio Configuration
-TWILIO_ACCOUNT_SID=your_twilio_account_sid
-TWILIO_AUTH_TOKEN=your_twilio_auth_token
-TWILIO_WHATSAPP_NUMBER=+447700900123
-
-# Frontend URL
-FRONTEND_URL=http://localhost:3000
-
-# Server Configuration
-PORT=3001
-NODE_ENV=development
-```
-
-### 3. Twilio WhatsApp Setup
-
-1. **Create Twilio Account**: Sign up at [twilio.com](https://www.twilio.com)
-2. **Get WhatsApp Sandbox**: 
-   - Go to Console > Messaging > Try it out > Send a WhatsApp message
-   - Follow the sandbox setup instructions
-3. **Get Credentials**:
-   - Account SID and Auth Token from Console Dashboard
-   - WhatsApp number from sandbox (usually +447700900123)
-
-### 4. Start the Server
-
-```bash
-# Development mode with auto-restart
-npm run dev
-
-# Production mode
-npm start
-```
-
-The API will be available at `http://localhost:3001`
+4. **Start the Server**
+   ```bash
+   npm start
+   # or for development
+   npm run dev
+   ```
 
 ## API Endpoints
 
-### Generate Booking Link
-```
-POST /api/generate-booking-link
-```
+### Bookings
+- `GET /api/bookings?customerId=123` - Get customer bookings
+- `POST /api/bookings` - Create new booking
+- `PUT /api/bookings/:id` - Update booking status
 
-**Request Body:**
-```json
-{
-  "businessId": "123",
-  "serviceId": "haircut",
-  "slotDateTime": "2025-01-15T14:00:00",
-  "customerPhone": "+1234567890",
-  "customerName": "John Doe",
-  "sendWhatsApp": true
-}
-```
+### Loyalty
+- `GET /api/loyalty?customerId=123` - Get loyalty data
+- `POST /api/loyalty/add-points` - Add loyalty points
 
-**Response:**
-```json
-{
-  "success": true,
-  "bookingLink": "http://localhost:3000/book?token=abc123&biz=123&slot=2025-01-15T14:00:00&service=haircut",
-  "whatsappLink": "https://wa.me/1234567890?text=...",
-  "message": "Hi! 👋 ...",
-  "whatsappSent": true,
-  "bookingData": { ... }
-}
-```
+### Reviews
+- `GET /api/reviews?customerId=123` - Get customer reviews
+- `POST /api/reviews` - Create new review
 
-### Get Booking Details
-```
-GET /api/booking/:token
-```
+### Notifications
+- `GET /api/notifications?customerId=123` - Get notifications
+- `POST /api/notifications` - Create notification
 
-### Confirm Booking
-```
-POST /api/booking/:token/confirm
-```
+## Socket.IO Events
 
-**Request Body:**
-```json
-{
-  "customerName": "John Doe",
-  "customerEmail": "john@example.com",
-  "specialRequests": "Please use organic products"
-}
-```
+### Client → Server
+- `register` - Register customer for updates: `{ customerId: "123" }`
 
-### Cancel Booking
-```
-POST /api/booking/:token/cancel
-```
+### Server → Client
+- `booking_status_changed` - Booking status updated
+- `loyalty_points_updated` - Loyalty points changed
+- `new_notification` - New notification received
 
-### Get Business Bookings
-```
-GET /api/business/:businessId/bookings
-```
+## Real-time Updates
 
-## Frontend Integration
+The backend automatically emits real-time updates when:
+- Booking status changes (confirmed, cancelled, completed)
+- Loyalty points are added/updated
+- New notifications are created
+- Reviews are submitted
 
-### Business Interface
-- **File**: `business-booking-manager.html`
-- **Purpose**: Form for businesses to generate booking links
-- **Features**: Customer details, service selection, WhatsApp options
+## Database Schema
 
-### Customer Interface
-- **File**: `customer-booking.html`
-- **Purpose**: Customer booking confirmation page
-- **Features**: Booking details, confirmation form, expiry timer
+See `schema.sql` for the complete database structure including:
+- Customers, Businesses, Bookings
+- Payments, Loyalty, Reviews
+- Notifications and Transactions
 
-### Dashboard Integration
-- Added "Generate Booking Link" button to business dashboard
-- Links to the booking manager interface
+## Development
 
-## WhatsApp Message Templates
+- Uses ES modules (`import/export`)
+- Includes error handling and logging
+- CORS enabled for frontend integration
+- WebSocket transport for Socket.IO
+- Health check endpoint at `/health`
 
-### Booking Link Message
-```
-Hi! 👋 
+## Production Notes
 
-Royal Hair Studio has reserved a booking for you:
-
-📅 *Service:* Haircut & Style
-🕐 *Date & Time:* Monday, January 15, 2025 at 02:00 PM
-
-Click the link below to confirm your appointment:
-[BOOKING_LINK]
-
-This link is valid for 24 hours. Please confirm to secure your slot! ✨
-```
-
-### Confirmation Message
-```
-✅ *Booking Confirmed!*
-
-Thank you for confirming your appointment with Royal Hair Studio.
-
-📅 *Service:* Haircut & Style
-🕐 *Date & Time:* Monday, January 15, 2025 at 02:00 PM
-
-We look forward to seeing you! If you need to reschedule, please contact us directly.
-
-Royal Hair Studio 💫
-```
-
-## Security Features
-
-- **Unique Tokens**: SHA-256 hashed booking tokens
-- **Expiry Handling**: Automatic link expiration
-- **Rate Limiting**: 100 requests per 15 minutes per IP
-- **Input Validation**: Required field validation
-- **CORS Protection**: Configurable CORS settings
-
-## Database Integration
-
-Currently uses in-memory storage. To integrate with your database:
-
-1. Replace `Map` objects with database calls
-2. Add database connection in the API
-3. Update CRUD operations for bookings and business data
-
-Example with MongoDB:
-```javascript
-const mongoose = require('mongoose');
-const Booking = require('./models/Booking');
-
-// Replace bookings.set() with:
-await Booking.create(bookingData);
-
-// Replace bookings.get() with:
-const booking = await Booking.findOne({ token });
-```
-
-## Testing
-
-Test the API endpoints using curl or Postman:
-
-```bash
-# Generate booking link
-curl -X POST http://localhost:3001/api/generate-booking-link \
-  -H "Content-Type: application/json" \
-  -d '{
-    "businessId": "123",
-    "serviceId": "haircut",
-    "slotDateTime": "2025-01-15T14:00:00",
-    "customerPhone": "+1234567890",
-    "customerName": "John Doe",
-    "sendWhatsApp": false
-  }'
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Twilio Authentication Error**
-   - Verify Account SID and Auth Token
-   - Check WhatsApp number format (+447700900123)
-
-2. **CORS Errors**
-   - Update FRONTEND_URL in .env
-   - Check CORS configuration
-
-3. **WhatsApp Not Sending**
-   - Verify Twilio WhatsApp sandbox setup
-   - Check phone number format (international format)
-   - Ensure WhatsApp Business API is enabled
-
-### Debug Mode
-
-Enable debug logging:
-```bash
-DEBUG=* npm run dev
-```
-
-## Production Deployment
-
-1. **Environment Variables**: Set production values
-2. **Database**: Replace in-memory storage with database
-3. **HTTPS**: Use HTTPS for production
-4. **Rate Limiting**: Adjust rate limits for production load
-5. **Monitoring**: Add logging and monitoring
-
-## Support
-
-For issues or questions:
-- Check the Twilio documentation
-- Review API logs
-- Test with sandbox environment first
-- Verify all environment variables are set
-
+- Set `NODE_ENV=production`
+- Use SSL for PostgreSQL in production
+- Configure proper CORS origins
+- Set up Stripe webhook endpoints
+- Use environment-specific email settings
