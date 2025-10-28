@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlkPages | My Account</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- Global ---------- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at top left, #1a1a1a, #0d0d0d);
+      color: #f8f8f8;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(242, 201, 76, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.02) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(242, 201, 76, 0.01) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+      animation: subtleGlow 8s ease-in-out infinite;
+    }
+    @keyframes subtleGlow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* ---------- Header with Notification Bell ---------- */
+    .header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 240px;
+      background: rgba(25, 25, 25, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+    .notification-bell {
+      position: relative;
+      background: rgba(242, 201, 76, 0.2);
+      border: 2px solid rgba(242, 201, 76, 0.4);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: bellPulse 3s infinite;
+      box-shadow: 0 0 20px rgba(242, 201, 76, 0.3);
+    }
+    .notification-bell:hover {
+      background: rgba(242, 201, 76, 0.3);
+      transform: scale(1.1) rotate(10deg);
+      box-shadow: 0 0 30px rgba(242, 201, 76, 0.5);
+    }
+    @keyframes bellPulse {
+      0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(242, 201, 76, 0.4);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 0 0 15px rgba(242, 201, 76, 0);
+        transform: scale(1.05);
+      }
+    }
+    .notification-bell::before {
+      content: "🔔";
+      font-size: 1.2rem;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+      animation: badgeBounce 2s infinite;
+    }
+    @keyframes badgeBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 240px;
+      background: rgba(25, 25, 25, 0.8);
+      backdrop-filter: blur(8px);
+      border-right: 1px solid rgba(255, 215, 0, 0.2);
+      padding: 2rem 1rem;
+    }
+    .sidebar h1 {
+      color: #f2c94c;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      letter-spacing: 0.5px;
+    }
+    .sidebar a {
+      display: block;
+      color: #ddd;
+      text-decoration: none;
+      margin: 1rem 0;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .sidebar a:hover {
+      color: #f2c94c;
+    }
+
+    /* ---------- Main ---------- */
+    main {
+      margin-left: 260px;
+      margin-top: 80px;
+      padding: 3rem 4rem;
+    }
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #f2c94c, #fff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.sub {
+      color: #bfbfbf;
+      margin-bottom: 2rem;
+    }
+
+    /* ---------- Account Layout ---------- */
+    .account-container {
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: 1fr;
+    }
+
+    /* ---------- Section Cards ---------- */
+    .section-card {
+      background: rgba(40, 40, 40, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .section-card h3 {
+      color: #f2c94c;
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ---------- Info Items ---------- */
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: rgba(25, 25, 25, 0.5);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+    .info-item:hover {
+      border-color: rgba(255, 215, 0, 0.3);
+      transform: translateX(5px);
+    }
+    .info-content {
+      flex: 1;
+    }
+    .info-content h4 {
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    .info-content p {
+      color: #999;
+      font-size: 0.9rem;
+    }
+    .info-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* ---------- Toggle Switches ---------- */
+    .toggle-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background: rgba(25, 25, 25, 0.5);
+      border: 1px solid rgba(255, 215, 0, 0.1);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    .toggle-info h4 {
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    .toggle-info p {
+      color: #999;
+      font-size: 0.9rem;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 24px;
+      background: #333;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .toggle-switch.active {
+      background: #f2c94c;
+    }
+    .toggle-switch::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+    .toggle-switch.active::before {
+      transform: translateX(26px);
+    }
+
+    /* ---------- Button Styles ---------- */
+    .btn {
+      border: 1px solid #f2c94c;
+      background: transparent;
+      color: #f2c94c;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    .btn:hover {
+      background: #f2c94c;
+      color: #000;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    }
+    .btn.gold {
+      background: #f2c94c;
+      color: #000;
+      border-color: #f2c94c;
+    }
+    .btn.gold:hover {
+      background: #e6b800;
+      color: #000;
+    }
+    .btn.secondary {
+      border-color: #6c757d;
+      color: #6c757d;
+    }
+    .btn.secondary:hover {
+      background: #6c757d;
+      color: #fff;
+    }
+    .btn.danger {
+      border-color: #dc3545;
+      color: #dc3545;
+    }
+    .btn.danger:hover {
+      background: #dc3545;
+      color: #fff;
+    }
+    .btn.small {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    /* ---------- Modal Styles ---------- */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+    }
+    .modal-content {
+      background: rgba(25, 25, 25, 0.95);
+      margin: 5% auto;
+      padding: 2rem;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+      animation: modalSlideIn 0.3s ease;
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+    }
+    .close:hover {
+      color: #f2c94c;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #f2c94c;
+      font-weight: 500;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.5rem;
+      background: rgba(40, 40, 40, 0.8);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 6px;
+      color: #fff;
+      font-family: inherit;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #f2c94c;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 800px) {
+      .sidebar { width: 180px; }
+      main { margin-left: 200px; padding: 2rem; }
+      .header { left: 180px; }
+    }
+    @media (max-width: 600px) {
+      .sidebar { display: none; }
+      main { margin: 0; margin-top: 80px; padding: 1.5rem; }
+      .header { left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header with Notification Bell -->
+  <div class="header">
+    <div></div>
+    <div class="notification-bell" onclick="openNotifications()">
+      <div class="notification-badge">2</div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h1>BlkPages</h1>
+    <a href="customer-dashboard.html">🏠 Dashboard</a>
+    <a href="bookings-page.html">Bookings</a>
+    <a href="payments-page.html">Payments</a>
+    <a href="reviews-page.html">Reviews</a>
+    <a href="loyalty-page.html">Loyalty</a>
+    <a href="messages-page.html">Messages</a>
+    <a href="#" style="color: #f2c94c;">My Account</a>
+  </div>
+
+  <!-- Main content -->
+  <main>
+    <h2>My Account</h2>
+    <p class="sub">Manage your personal information, preferences, and account settings.</p>
+
+    <div class="account-container">
+      <!-- Personal Information -->
+      <div class="section-card">
+        <h3>👤 Personal Information</h3>
+        <div class="info-item">
+          <div class="info-content">
+            <h4>Full Name</h4>
+            <p>John Doe</p>
+          </div>
+          <div class="info-actions">
+            <button class="btn small" onclick="openEditPersonalModal()">Edit</button>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-content">
+            <h4>Email Address</h4>
+            <p>john.doe@email.com</p>
+          </div>
+          <div class="info-actions">
+            <button class="btn small" onclick="openEditPersonalModal()">Edit</button>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-content">
+            <h4>Phone Number</h4>
+            <p>+44 7700 900123</p>
+          </div>
+          <div class="info-actions">
+            <button class="btn small" onclick="openEditPersonalModal()">Edit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Billing Address -->
+      <div class="section-card">
+        <h3>🏠 Billing Address</h3>
+        <div class="info-item">
+          <div class="info-content">
+            <h4>Current Address</h4>
+            <p>123 Main Street<br>London, SW1A 1AA<br>United Kingdom</p>
+          </div>
+          <div class="info-actions">
+            <button class="btn small" onclick="openEditBillingModal()">Edit Address</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications & Preferences -->
+      <div class="section-card">
+        <h3>🔔 Notifications & Preferences</h3>
+        <div class="toggle-container">
+          <div class="toggle-info">
+            <h4>Booking Updates</h4>
+            <p>Get notified about appointment confirmations and changes</p>
+          </div>
+          <div class="toggle-switch active" onclick="toggleNotification(this, 'booking')"></div>
+        </div>
+        <div class="toggle-container">
+          <div class="toggle-info">
+            <h4>Loyalty Rewards</h4>
+            <p>Receive updates about points earned and rewards available</p>
+          </div>
+          <div class="toggle-switch active" onclick="toggleNotification(this, 'loyalty')"></div>
+        </div>
+        <div class="toggle-container">
+          <div class="toggle-info">
+            <h4>Promotions</h4>
+            <p>Get notified about special offers and discounts</p>
+          </div>
+          <div class="toggle-switch" onclick="toggleNotification(this, 'promotions')"></div>
+        </div>
+        <div style="margin-top: 1.5rem;">
+          <button class="btn gold" onclick="savePreferences()">Save Preferences</button>
+        </div>
+      </div>
+
+      <!-- Security -->
+      <div class="section-card">
+        <h3>🔒 Security</h3>
+        <div class="info-item">
+          <div class="info-content">
+            <h4>Password</h4>
+            <p>Last changed: October 15, 2025</p>
+          </div>
+          <div class="info-actions">
+            <button class="btn small" onclick="openChangePasswordModal()">Change Password</button>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-content">
+            <h4>Active Devices</h4>
+            <p>iPhone 15 Pro • MacBook Pro • iPad Air</p>
+          </div>
+          <div class="info-actions">
+            <button class="btn small" onclick="openManageDevicesModal()">Manage Devices</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Management -->
+      <div class="section-card">
+        <h3>🧾 Account Management</h3>
+        <div class="info-item">
+          <div class="info-content">
+            <h4>Member Since</h4>
+            <p>January 15, 2024</p>
+          </div>
+          <div class="info-actions">
+            <button class="btn small danger" onclick="openDeactivateModal()">Deactivate Account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Edit Personal Information Modal -->
+  <div id="editPersonalModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('editPersonalModal')">&times;</span>
+      <h3>Edit Personal Information</h3>
+      <div class="form-group">
+        <label>Full Name:</label>
+        <input type="text" value="John Doe">
+      </div>
+      <div class="form-group">
+        <label>Email Address:</label>
+        <input type="email" value="john.doe@email.com">
+      </div>
+      <div class="form-group">
+        <label>Phone Number:</label>
+        <input type="tel" value="+44 7700 900123">
+      </div>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <button onclick="savePersonalInfo()" class="btn gold" style="flex: 1;">Save Changes</button>
+        <button onclick="closeModal('editPersonalModal')" class="btn secondary" style="flex: 1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Billing Address Modal -->
+  <div id="editBillingModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('editBillingModal')">&times;</span>
+      <h3>Edit Billing Address</h3>
+      <div class="form-group">
+        <label>Street Address:</label>
+        <input type="text" value="123 Main Street">
+      </div>
+      <div class="form-group">
+        <label>City:</label>
+        <input type="text" value="London">
+      </div>
+      <div class="form-group">
+        <label>Postal Code:</label>
+        <input type="text" value="SW1A 1AA">
+      </div>
+      <div class="form-group">
+        <label>Country:</label>
+        <input type="text" value="United Kingdom">
+      </div>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <button onclick="saveBillingAddress()" class="btn gold" style="flex: 1;">Save Address</button>
+        <button onclick="closeModal('editBillingModal')" class="btn secondary" style="flex: 1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div id="changePasswordModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('changePasswordModal')">&times;</span>
+      <h3>Change Password</h3>
+      <div class="form-group">
+        <label>Current Password:</label>
+        <input type="password" placeholder="Enter current password">
+      </div>
+      <div class="form-group">
+        <label>New Password:</label>
+        <input type="password" placeholder="Enter new password">
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password:</label>
+        <input type="password" placeholder="Confirm new password">
+      </div>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <button onclick="changePassword()" class="btn gold" style="flex: 1;">Change Password</button>
+        <button onclick="closeModal('changePasswordModal')" class="btn secondary" style="flex: 1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Devices Modal -->
+  <div id="manageDevicesModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('manageDevicesModal')">&times;</span>
+      <h3>Manage Devices</h3>
+      <div style="margin-top: 1rem;">
+        <div class="info-item">
+          <div class="info-content">
+            <h4>iPhone 15 Pro</h4>
+            <p>Last active: Today at 2:30 PM</p>
+          </div>
+          <div class="info-actions">
+            <button class="btn small danger" onclick="removeDevice('iphone')">Remove</button>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-content">
+            <h4>MacBook Pro</h4>
+            <p>Last active: Yesterday at 6:45 PM</p>
+          </div>
+          <div class="info-actions">
+            <button class="btn small danger" onclick="removeDevice('macbook')">Remove</button>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-content">
+            <h4>iPad Air</h4>
+            <p>Last active: 3 days ago</p>
+          </div>
+          <div class="info-actions">
+            <button class="btn small danger" onclick="removeDevice('ipad')">Remove</button>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem;">
+        <button onclick="closeModal('manageDevicesModal')" class="btn" style="width: 100%;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deactivate Account Modal -->
+  <div id="deactivateModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('deactivateModal')">&times;</span>
+      <h3>Deactivate Account</h3>
+      <p style="margin: 1rem 0; color: #999;">Are you sure you want to deactivate your account? This action will:</p>
+      <ul style="margin: 1rem 0; padding-left: 1.5rem; color: #999;">
+        <li>Cancel all upcoming appointments</li>
+        <li>Remove access to your account</li>
+        <li>Delete your personal data after 30 days</li>
+      </ul>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <button onclick="confirmDeactivate()" class="btn danger" style="flex: 1;">Yes, Deactivate</button>
+        <button onclick="closeModal('deactivateModal')" class="btn secondary" style="flex: 1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // ==========================
+    // ACCOUNT FUNCTIONS
+    // ==========================
+    
+    function openEditPersonalModal() {
+      document.getElementById('editPersonalModal').style.display = 'block';
+    }
+
+    function openEditBillingModal() {
+      document.getElementById('editBillingModal').style.display = 'block';
+    }
+
+    function openChangePasswordModal() {
+      document.getElementById('changePasswordModal').style.display = 'block';
+    }
+
+    function openManageDevicesModal() {
+      document.getElementById('manageDevicesModal').style.display = 'block';
+    }
+
+    function openDeactivateModal() {
+      document.getElementById('deactivateModal').style.display = 'block';
+    }
+
+    function openNotifications() {
+      alert('Notifications would open here');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    // ==========================
+    // NOTIFICATION TOGGLES
+    // ==========================
+    
+    function toggleNotification(element, type) {
+      element.classList.toggle('active');
+      console.log(`${type} notifications: ${element.classList.contains('active') ? 'enabled' : 'disabled'}`);
+    }
+
+    function savePreferences() {
+      alert('Preferences saved successfully!');
+    }
+
+    // ==========================
+    // FORM SUBMISSIONS
+    // ==========================
+    
+    function savePersonalInfo() {
+      alert('Personal information updated successfully!');
+      closeModal('editPersonalModal');
+    }
+
+    function saveBillingAddress() {
+      alert('Billing address updated successfully!');
+      closeModal('editBillingModal');
+    }
+
+    function changePassword() {
+      alert('Password changed successfully!');
+      closeModal('changePasswordModal');
+    }
+
+    function removeDevice(deviceId) {
+      if (confirm('Are you sure you want to remove this device?')) {
+        alert('Device removed successfully!');
+      }
+    }
+
+    function confirmDeactivate() {
+      if (confirm('Are you absolutely sure you want to deactivate your account? This action cannot be undone.')) {
+        alert('Account deactivation request submitted. You will receive an email confirmation shortly.');
+        closeModal('deactivateModal');
+      }
+    }
+
+    // ==========================
+    // MODAL MANAGEMENT
+    // ==========================
+    
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modals = document.querySelectorAll('.modal');
+      modals.forEach(modal => {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
