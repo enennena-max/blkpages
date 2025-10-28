@@ -2,476 +2,169 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BlkPages — Customer Dashboard</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlkPages | Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* =========================================================
-       BLKPAGES DASHBOARD - Multi-Page Layout with Fade Transitions
-       ========================================================= */
-
+    /* ---------- Global ---------- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      color: #fff;
+      font-family: "Poppins", sans-serif;
       background: radial-gradient(circle at top left, #1a1a1a, #0d0d0d);
+      color: #f8f8f8;
       overflow-x: hidden;
       min-height: 100vh;
+      position: relative;
     }
-
-    /* Overall layout wrapper */
-    .dashboard-layout {
-      display: flex;
-      min-height: 100vh;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      width: 250px;
-      min-width: 230px;
-      background: #1a1a1a;
-      height: 100vh;
-      padding: 25px 20px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    body::before {
+      content: '';
       position: fixed;
       top: 0;
       left: 0;
-    }
-
-    .logo {
-      color: gold;
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 25px;
-    }
-
-    /* Sidebar inner links */
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      flex-grow: 1;
-    }
-
-    .sidebar li {
-      margin: 15px 0;
-    }
-
-    .sidebar a {
-      text-decoration: none;
-      color: #ccc;
-      transition: 0.2s;
-    }
-
-    .sidebar a.active,
-    .sidebar a:hover {
-      color: gold;
-    }
-
-    .logout {
-      color: #999;
-      text-decoration: none;
-      margin-top: auto;
-      font-size: 0.9rem;
-    }
-
-    /* Main content */
-    main {
-      margin-left: 250px; /* space for sidebar */
-      flex: 1;
-      padding: 3rem 4rem;
-      box-sizing: border-box;
-      min-height: 100vh;
-      display: flex;
-      justify-content: flex-start;
-      align-items: flex-start;
-    }
-
-    /* Section box */
-    .dashboard-section {
-      background: rgba(40, 40, 40, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 215, 0, 0.15);
-      padding: 2rem;
-      border-radius: 14px;
       width: 100%;
-      max-width: 900px;
-      box-sizing: border-box;
-      margin: 0 auto;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(242, 201, 76, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.02) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(242, 201, 76, 0.01) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+      animation: subtleGlow 8s ease-in-out infinite;
+    }
+    @keyframes subtleGlow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
     }
 
-    /* Fade transition */
-    .fade {
-      transition: opacity 0.3s ease;
-    }
-
-    .fade-in {
-      opacity: 1;
-    }
-
-    .fade-out {
-      opacity: 0;
-    }
-
-    /* Hamburger menu button */
-    .menu-toggle {
-      display: none;
+    /* ---------- Header with Notification Bell ---------- */
+    .header {
       position: fixed;
-      top: 15px;
-      left: 15px;
-      background: gold;
-      border: none;
-      color: #000;
-      font-size: 1.5rem;
-      padding: 8px 12px;
-      border-radius: 5px;
+      top: 0;
+      right: 0;
+      left: 240px;
+      background: rgba(25, 25, 25, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+    .notification-bell {
+      position: relative;
+      background: rgba(242, 201, 76, 0.2);
+      border: 2px solid rgba(242, 201, 76, 0.4);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      z-index: 1001;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: bellPulse 3s infinite;
+      box-shadow: 0 0 20px rgba(242, 201, 76, 0.3);
     }
-
-    /* Sidebar default */
-    .sidebar {
-      transition: transform 0.3s ease;
+    .notification-bell:hover {
+      background: rgba(242, 201, 76, 0.3);
+      transform: scale(1.1) rotate(10deg);
+      box-shadow: 0 0 30px rgba(242, 201, 76, 0.5);
     }
-
-    /* For mobile view */
-    @media (max-width: 900px) {
-      .menu-toggle {
-        display: block;
+    @keyframes bellPulse {
+      0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(242, 201, 76, 0.4);
+        transform: scale(1);
       }
+      50% { 
+        box-shadow: 0 0 0 15px rgba(242, 201, 76, 0);
+        transform: scale(1.05);
+      }
+    }
+    .notification-bell::before {
+      content: "🔔";
+      font-size: 1.2rem;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+      animation: badgeBounce 2s infinite;
+    }
+    @keyframes badgeBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
 
+    /* ---------- Sidebar ---------- */
       .sidebar {
         position: fixed;
-        top: 0;
         left: 0;
-        width: 230px;
-        height: 100vh;
-        background: #1a1a1a;
-        transform: translateX(-100%);
-        z-index: 1000;
-        box-shadow: 2px 0 10px rgba(0,0,0,0.4);
-      }
-
-      .sidebar.open {
-        transform: translateX(0);
-      }
-
-      main {
-        margin-left: 0;
-        padding: 80px 20px 20px 20px; /* add top padding so content isn't hidden behind toggle */
-      }
+      top: 0;
+      height: 100%;
+      width: 240px;
+      background: rgba(25, 25, 25, 0.8);
+      backdrop-filter: blur(8px);
+      border-right: 1px solid rgba(255, 215, 0, 0.2);
+      padding: 2rem 1rem;
     }
-
-    .dashboard-section h2 {
-      margin: 0 0 10px 0;
+    .sidebar h1 {
+      color: #f2c94c;
       font-size: 1.5rem;
-      color: #fff;
-    }
-
-    .dashboard-section p {
-      margin: 0 0 20px 0;
-      color: #ccc;
-      font-size: 0.9rem;
-    }
-
-    .loading {
-      color: #888;
-      font-style: italic;
-      text-align: center;
-      padding: 50px 0;
-    }
-
-    /* Button styles */
-    button {
-      background: gold;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      color: #000;
-      margin-right: 8px;
-      transition: opacity 0.2s;
-    }
-
-    button:hover {
-      opacity: 0.85;
-    }
-
-    .btn {
-      background: gold;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      color: #000;
-      margin-right: 8px;
-      text-decoration: none;
-      display: inline-block;
-      transition: opacity 0.2s;
-    }
-
-    .btn:hover {
-      opacity: 0.85;
-    }
-
-    .btn.secondary {
-      background: #333;
-      color: #fff;
-      border: 1px solid #555;
-    }
-
-    .btn.secondary:hover {
-      background: #444;
-    }
-
-    /* Card styling */
-    .booking-card, 
-    .payment-card, 
-    .review-card {
-      background: #222;
-      padding: 15px;
-      border-radius: 8px;
-      margin-top: 12px;
-      border-left: 3px solid gold;
-    }
-
-    .booking-card h3,
-    .payment-card h3,
-    .review-card h3 {
-      margin: 0 0 8px 0;
-      color: #fff;
-      font-size: 1.1rem;
-    }
-
-    .booking-card p,
-    .payment-card p,
-    .review-card p {
-      margin: 0 0 8px 0;
-      color: #ccc;
-      font-size: 0.9rem;
-    }
-
-    .payment-summary,
-    .review-summary {
-      background: #222;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      border-left: 3px solid gold;
-    }
-
-    .payment-summary p,
-    .review-summary p {
-      margin: 5px 0;
-      color: #ccc;
-    }
-
-    .review-form {
-      background: #222;
-      padding: 20px;
-      border-radius: 8px;
-      margin-top: 15px;
-      border-left: 3px solid gold;
-    }
-
-    .review-form h4 {
-      margin: 0 0 15px 0;
-      color: #fff;
-    }
-
-    .review-form input,
-    .review-form select,
-    .review-form textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      background: #333;
-      border: 1px solid #555;
-      border-radius: 5px;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    .review-form input:focus,
-    .review-form select:focus,
-    .review-form textarea:focus {
-      outline: none;
-      border-color: gold;
-    }
-
-    .review-form textarea {
-      height: 80px;
-      resize: vertical;
-    }
-
-    .btn {
-      background: gold;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      color: #000;
-      margin-right: 8px;
-      text-decoration: none;
-      display: inline-block;
-      transition: opacity 0.2s;
-    }
-
-    .btn:hover {
-      opacity: 0.85;
-    }
-
-    .btn.secondary {
-      background: #333;
-      color: #fff;
-      border: 1px solid #555;
-    }
-
-    .btn.secondary:hover {
-      background: #444;
-    }
-
-    /* Fade effect */
-    .fade {
-      opacity: 1;
-      transition: opacity 0.3s ease;
-    }
-
-    .fade-out {
-      opacity: 0;
-    }
-
-    .fade-in {
-      opacity: 1;
-    }
-
-    .loading {
-      color: #888;
-      font-style: italic;
-      text-align: center;
-      padding: 50px 0;
-    }
-
-    /* Card styling */
-    .booking-card, 
-    .payment-card, 
-    .review-card {
-      background: #222;
-      padding: 15px;
-      border-radius: 8px;
-      margin-top: 12px;
-      border-left: 3px solid gold;
-    }
-
-    .booking-card h3,
-    .payment-card h3,
-    .review-card h3 {
-      margin: 0 0 8px 0;
-      color: #fff;
-      font-size: 1.1rem;
-    }
-
-    .booking-card p,
-    .payment-card p,
-    .review-card p {
-      margin: 0 0 8px 0;
-      color: #ccc;
-      font-size: 0.9rem;
-    }
-
-    .payment-summary,
-    .review-summary {
-      background: #222;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      border-left: 3px solid gold;
-    }
-
-    .payment-summary p,
-    .review-summary p {
-      margin: 5px 0;
-      color: #ccc;
-    }
-
-    .review-form {
-      background: #222;
-      padding: 20px;
-      border-radius: 8px;
-      margin-top: 15px;
-      border-left: 3px solid gold;
-    }
-
-    .review-form h4 {
-      margin: 0 0 15px 0;
-      color: #fff;
-    }
-
-    .review-form input,
-    .review-form select,
-    .review-form textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      background: #333;
-      border: 1px solid #555;
-      border-radius: 5px;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    .review-form input:focus,
-    .review-form select:focus,
-    .review-form textarea:focus {
-      outline: none;
-      border-color: gold;
-    }
-
-    .review-form textarea {
-      height: 80px;
-      resize: vertical;
-    }
-
-    /* Enhanced Booking Card Styles */
-    .page-header {
       margin-bottom: 2rem;
+      letter-spacing: 0.5px;
+    }
+    .sidebar a {
+      display: block;
+      color: #ddd;
+      text-decoration: none;
+      margin: 1rem 0;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .sidebar a:hover {
+      color: #f2c94c;
     }
 
-    .page-header h2 {
-      margin: 0 0 0.5rem 0;
+    /* ---------- Main ---------- */
+    main {
+      margin-left: 260px;
+      margin-top: 80px;
+      padding: 3rem 4rem;
+    }
+    h2 {
       font-size: 2rem;
       font-weight: 600;
+      margin-bottom: 0.5rem;
       background: linear-gradient(90deg, #f2c94c, #fff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
-    .page-header .muted {
-      margin: 0;
+    p.sub {
       color: #bfbfbf;
-      font-size: 1rem;
+      margin-bottom: 2rem;
     }
 
-    .bookings-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .booking-card {
+    /* ---------- Dashboard Cards ---------- */
+    .dashboard-card {
       background: rgba(40, 40, 40, 0.7);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 215, 0, 0.15);
       border-radius: 14px;
       padding: 1.5rem;
+      margin-bottom: 1.5rem;
       transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
       position: relative;
       overflow: hidden;
@@ -479,8 +172,7 @@
       transform: translateY(20px);
       animation: fadeUp 0.7s forwards;
     }
-
-    .booking-card:hover {
+    .dashboard-card:hover {
       transform: translateY(-6px);
       border-color: rgba(255, 215, 0, 0.4);
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
@@ -490,83 +182,30 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .booking-card.status-pending {
-      border-color: rgba(255, 165, 0, 0.3);
-    }
-
-    .booking-card.status-confirmed {
-      border-color: rgba(76, 175, 80, 0.3);
-    }
-
-    .booking-card.status-cancelled {
-      border-color: rgba(244, 67, 54, 0.3);
-    }
-
-    .card-header h3 {
-      margin: 0 0 0.4rem 0;
-      color: #fff;
+    .dashboard-card h3 {
       font-size: 1.2rem;
       font-weight: 600;
+      margin-bottom: 0.4rem;
     }
 
-    .card-header h3 span {
-      color: #ccc;
-      font-weight: 400;
-    }
-
-    .status {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      background: rgba(242, 201, 76, 0.15);
-      color: #f2c94c;
-      padding: 4px 10px;
-      border-radius: 10px;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-
-    .card-meta {
-      margin-bottom: 1rem;
-    }
-
-    .card-meta p {
+    .details {
       margin: 0.6rem 0;
       color: #ccc;
       font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
-
-    .card-meta i {
+    .details i {
+      margin-right: 0.5rem;
       color: #f2c94c;
     }
 
-    .card-meta .pending {
-      color: #ffa500;
-      font-weight: 600;
-    }
-
-    .card-meta .confirmed {
-      color: #4caf50;
-      font-weight: 600;
-    }
-
-    .card-meta .cancelled {
-      color: #f44336;
-      font-weight: 600;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 0.8rem;
-      flex-wrap: wrap;
+    /* ---------- Buttons ---------- */
+    .buttons {
       margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
     }
-
-    .card-actions .btn {
+    button {
       border: 1px solid #f2c94c;
       background: transparent;
       color: #f2c94c;
@@ -575,1032 +214,358 @@
       font-weight: 500;
       cursor: pointer;
       transition: background 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
-      font-size: 0.9rem;
     }
-
-    .card-actions .btn:hover {
+    button:hover {
       background: #f2c94c;
       color: #000;
       box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
     }
-
-    .card-actions .btn.secondary {
-      border-color: #666;
-      color: #ccc;
+    button.secondary {
+      border-color: #6c757d;
+      color: #6c757d;
     }
-
-    .card-actions .btn.secondary:hover {
-      background: #666;
+    button.secondary:hover {
+      background: #6c757d;
       color: #fff;
-      box-shadow: 0 0 10px rgba(102, 102, 102, 0.4);
     }
 
-    /* Cancellation Policy */
-    .policy {
-      margin-top: 0.8rem;
-      font-size: 0.85rem;
-      color: #d4d4d4;
-      line-height: 1.4;
-      border-top: 1px solid rgba(255, 215, 0, 0.1);
-      padding-top: 0.8rem;
-      display: none;
-      animation: slideDown 0.3s ease forwards;
-    }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .policy.show { display: block; }
-
-    /* Modal Styles */
+    /* ---------- Modal Styles ---------- */
     .modal {
-      background: rgba(0, 0, 0, 0.8);
-      border: none;
-      padding: 0;
-      max-width: 90vw;
-      max-height: 90vh;
-      border-radius: 12px;
-    }
-
-    .modal::backdrop {
-      background: rgba(0, 0, 0, 0.6);
-    }
-
-    .modal-content {
-      background: #222;
-      border-radius: 12px;
-      overflow: hidden;
-      min-width: 400px;
-    }
-
-    .modal-header {
-      background: #333;
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #555;
-    }
-
-    .modal-header h3 {
-      margin: 0;
-      color: #fff;
-      font-size: 1.3rem;
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      color: #ccc;
-      font-size: 1.5rem;
-      cursor: pointer;
-      padding: 0;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      transition: all 0.2s ease;
-    }
-
-    .modal-close:hover {
-      background: #444;
-      color: #fff;
-    }
-
-    .modal-body {
-      padding: 20px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: #ccc;
-      font-weight: 500;
-    }
-
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 12px;
-      background: #333;
-      border: 1px solid #555;
-      border-radius: 6px;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-      font-size: 0.9rem;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: gold;
-    }
-
-    .form-group textarea {
-      height: 80px;
-      resize: vertical;
-    }
-
-    .error-message {
-      color: #f44336;
-      font-size: 0.9rem;
-      margin-top: 10px;
-      padding: 8px;
-      background: rgba(244, 67, 54, 0.1);
-      border-radius: 4px;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      margin-top: 20px;
-    }
-
-    .modal-actions .btn {
-      padding: 10px 20px;
-      font-size: 0.9rem;
-    }
-
-    /* Notification Widget */
-    .notif-wrapper { 
+      display: none;
       position: fixed;
-      top: 20px;
-      right: 20px;
       z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
     }
-
-    .notif-btn {
+    .modal-content {
+      background: rgba(25, 25, 25, 0.95);
+      margin: 5% auto;
+      padding: 2rem;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
       position: relative;
-      background: #222;
-      border: 1px solid #555;
-      border-radius: 50%;
-      width: 45px; 
-      height: 45px;
-      display: grid; 
-      place-items: center;
-      color: #ccc;
-      cursor: pointer;
-      transition: 0.2s;
+      animation: modalSlideIn 0.3s ease;
     }
-
-    .notif-btn:hover { 
-      color: gold; 
-      border-color: gold; 
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); 
-    }
-
-    .notif-badge {
-      position: absolute;
-      top: 8px; 
-      right: 8px;
-      width: 12px; 
-      height: 12px;
-      background: gold;
-      border-radius: 50%;
-      animation: notifPulse 1.2s infinite;
-    }
-
-    @keyframes notifPulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.4); opacity: 0.6; }
-    }
-
-    .notif-dropdown {
-      position: absolute;
-      top: 50px; 
-      right: 0;
-      width: 300px;
-      background: #222;
-      border: 1px solid #555;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      overflow: hidden;
-      z-index: 200;
-      animation: notifSlideDown 0.2s ease-out;
-    }
-
-    @keyframes notifSlideDown {
-      from { opacity: 0; transform: translateY(-10px); }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-50px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
-    .notif-head {
-      font-weight: 700;
-      padding: 15px;
-      border-bottom: 1px solid #555;
-      background: #333;
-      color: #fff;
-      font-size: 14px;
-    }
-
-    .notif-list {
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .notif-item {
-      padding: 12px 15px;
-      border-bottom: 1px solid #333;
-      font-size: 13px;
-      color: #ccc;
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
       cursor: pointer;
-      transition: background 0.15s ease;
-      position: relative;
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+    }
+    .close:hover {
+      color: #f2c94c;
     }
 
-    .notif-item.unread { 
-      color: #fff; 
-      background: rgba(255, 215, 0, 0.1); 
-      border-left: 3px solid gold;
+    /* ---------- Toast Notification ---------- */
+    .toast {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      background: linear-gradient(135deg, rgba(40, 40, 40, 0.95) 0%, rgba(25, 25, 25, 0.95) 100%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      color: #f8f8f8;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      z-index: 1001;
+      transform: translateX(400px);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .toast.show {
+      transform: translateX(0);
+    }
+    .toast::before {
+      content: '✓';
+      color: #2ecc71;
+      font-weight: bold;
+      margin-right: 0.5rem;
     }
 
-    .notif-item:hover { 
-      background: #333; 
-    }
-
-    .notif-item:last-child { 
-      border-bottom: none; 
-    }
-
-    .notif-content {
-      margin-left: 8px;
-    }
-
-    .notif-text {
-      font-weight: 500;
-      margin-bottom: 4px;
-      line-height: 1.3;
-    }
-
-    .notif-time {
-      font-size: 11px;
-      color: #888;
-    }
-
-    .notif-foot {
-      text-align: center;
-      padding: 10px;
-      border-top: 1px solid #555;
-      background: #333;
-    }
-
-    .notif-empty {
-      padding: 30px 20px;
-      text-align: center;
-      color: #888;
-      font-size: 12px;
-    }
-
-    /* Mobile responsiveness */
+    /* ---------- Responsive ---------- */
     @media (max-width: 800px) {
       .sidebar { width: 180px; }
       main { margin-left: 200px; padding: 2rem; }
+      .header { left: 180px; }
     }
     @media (max-width: 600px) {
       .sidebar { display: none; }
-      main { margin: 0; padding: 1.5rem; }
-      
-      .notif-dropdown {
-        width: 280px;
-        right: -10px;
-      }
-      
-      .dashboard-section {
-        padding: 1.5rem;
-      }
-      
-      .booking-card {
-        padding: 1rem;
-      }
-      
-      .card-actions {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-      
-      .card-actions .btn {
-        width: 100%;
-        text-align: center;
-      }
+      main { margin: 0; margin-top: 80px; padding: 1.5rem; }
+      .header { left: 0; }
     }
   </style>
 </head>
   <body>
-    <!-- Hamburger menu button (mobile only) -->
-    <button class="menu-toggle" id="menuToggle">☰</button>
 
-    <div class="dashboard-layout">
-      <aside class="sidebar" id="sidebar">
-        <div class="logo">BlkPages</div>
-        <ul>
-          <li><a href="#" class="nav-link active">🏠 Dashboard</a></li>
-          <li><a href="bookings-page.html" class="nav-link">📅 Bookings</a></li>
-          <li><a href="payments-page.html" class="nav-link">💳 Payments</a></li>
-          <li><a href="reviews-page.html" class="nav-link">⭐ Reviews</a></li>
-          <li><a href="loyalty-page.html" class="nav-link">🎁 Loyalty</a></li>
-          <li><a href="#profile" class="nav-link">👤 Profile</a></li>
-          <li><a href="messages-page.html" class="nav-link">💬 Messages</a></li>
-        </ul>
-        <a href="../index.html" class="logout">↩ Logout</a>
-      </aside>
-
-    <main id="dashboard-content" class="fade">
-      <div class="loading">Loading...</div>
-    </main>
-  </div>
-
-  <!-- Notification Widget -->
-  <div class="notif-wrapper" id="notifWrapper">
-    <button class="notif-btn" id="notifBtn" aria-label="Notifications">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
-        <path d="M12 22a2 2 0 002-2H10a2 2 0 002 2zM18 16v-5a6 6 0 00-12 0v5l-2 2v1h16v-1l-2-2z"
-              stroke="currentColor" stroke-width="1.6" fill="currentColor"/>
-      </svg>
-      <span class="notif-badge" id="notifBadge" hidden></span>
-    </button>
-
-    <div class="notif-dropdown" id="notifDropdown" hidden>
-      <div class="notif-head">Notifications</div>
-      <div class="notif-list" id="notifList"></div>
-      <div class="notif-foot">
-        <button class="btn small" id="notifClear">Mark all read</button>
-      </div>
+  <!-- Header with Notification Bell -->
+  <div class="header">
+    <div></div>
+    <div class="notification-bell" onclick="openNotifications()">
+      <div class="notification-badge">3</div>
     </div>
   </div>
 
-  <!-- Modal Dialogs -->
-  <dialog id="modal-view" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Booking Details</h3>
-        <button id="close-view" class="modal-close">&times;</button>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h1>BlkPages</h1>
+    <a href="#" style="color: #f2c94c;">🏠 Dashboard</a>
+    <a href="bookings-page.html">📅 Bookings</a>
+    <a href="payments-page.html">💳 Payments</a>
+    <a href="reviews-page.html">⭐ Reviews</a>
+    <a href="loyalty-page.html">🎁 Loyalty</a>
+    <a href="profile-page.html">👤 Profile</a>
+    <a href="messages-page.html">💬 Messages</a>
+  </div>
+
+  <!-- Main content -->
+  <main>
+    <h2>Welcome back, Guest 👋</h2>
+    <p class="sub">Here's a quick look at your account today.</p>
+
+    <!-- Upcoming Booking Card -->
+    <div class="dashboard-card">
+      <h3>Next Appointment</h3>
+      <div class="details"><i>🏢</i><strong>Fade District</strong> – Skin Fade</div>
+      <div class="details"><i>📅</i>28 Oct 2025, 10:30 AM</div>
+      <div class="details"><i>📍</i>221B Baker Street, London NW1 6XE</div>
+      <div class="buttons">
+        <button onclick="viewDetails()">View Details</button>
+        <button onclick="openRescheduleModal()">Reschedule</button>
+        <button onclick="addToCalendar()">Add to Calendar</button>
       </div>
-      <div class="modal-body">
-        <div id="view-info"></div>
+      <div style="margin-top: 1rem;">
+        <a href="bookings-page.html" style="color: #f2c94c; text-decoration: none;">View all bookings →</a>
+    </div>
+  </div>
+
+    <!-- Loyalty Card -->
+    <div class="dashboard-card">
+      <h3>Your Loyalty</h3>
+      <div class="details"><i>🎯</i>You have <strong>240 points</strong> worth £12.00</div>
+      <div class="buttons">
+        <button onclick="viewRewards()">View Rewards</button>
+      </div>
+      </div>
+
+    <!-- Recent Payment Card -->
+    <div class="dashboard-card">
+      <h3>Recent Payment</h3>
+      <div class="details"><i>🏢</i><strong>Glow Studio – Makeup Session</strong></div>
+      <div class="details"><i>💰</i>£85.00 | 5 Nov 2025</div>
+      <div class="buttons">
+        <button onclick="openReceiptModal()">View Receipt</button>
+      </div>
+          </div>
+
+    <!-- Messages Card -->
+    <div class="dashboard-card">
+      <h3>Messages</h3>
+      <div class="details"><i>💬</i>You have <strong>2 unread messages</strong></div>
+      <div class="buttons">
+        <button onclick="goToMessages()">Go to Messages</button>
+          </div>
+          </div>
+
+    <!-- Profile Summary Card -->
+    <div class="dashboard-card">
+      <h3>Profile Overview</h3>
+      <div class="details"><i>✅</i>Email verified</div>
+      <div class="details"><i>💳</i>Payment method saved</div>
+      <div class="details"><i>🔔</i>Notifications enabled</div>
+      <div class="buttons">
+        <button onclick="manageProfile()">Manage Profile</button>
       </div>
     </div>
-  </dialog>
+  </main>
 
-  <dialog id="modal-reschedule" class="modal">
+  <!-- Reschedule Modal -->
+  <div id="rescheduleModal" class="modal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3>Reschedule Booking</h3>
-        <button id="cancel-reschedule" class="modal-close">&times;</button>
+      <span class="close" onclick="closeModal('rescheduleModal')">&times;</span>
+      <h3>Reschedule Appointment</h3>
+      <div style="margin-top: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem;">New Date:</label>
+        <input type="date" style="width: 100%; padding: 0.5rem; background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 6px; color: #fff;">
       </div>
-      <div class="modal-body">
-        <form id="reschedule-form">
-          <div class="form-group">
-            <label for="new-date">New Date</label>
-            <input type="date" id="new-date" required>
+      <div style="margin-top: 1rem;">
+        <label style="display: block; margin-bottom: 0.5rem;">New Time:</label>
+        <select style="width: 100%; padding: 0.5rem; background: rgba(40, 40, 40, 0.8); border: 1px solid rgba(255, 215, 0, 0.2); border-radius: 6px; color: #fff;">
+          <option>10:00 AM</option>
+          <option>10:30 AM</option>
+          <option>11:00 AM</option>
+          <option>11:30 AM</option>
+          <option>2:00 PM</option>
+          <option>2:30 PM</option>
+          <option>3:00 PM</option>
+        </select>
           </div>
-          <div class="form-group">
-            <label for="new-time">New Time</label>
-            <input type="time" id="new-time" required>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <button onclick="confirmReschedule()" style="flex: 1;">Confirm Reschedule</button>
+        <button onclick="closeModal('rescheduleModal')" class="secondary" style="flex: 1;">Cancel</button>
           </div>
-          <div id="reschedule-error" class="error-message" hidden></div>
-          <div class="modal-actions">
-            <button type="submit" class="btn">Reschedule</button>
-            <button type="button" class="btn secondary" onclick="document.getElementById('modal-reschedule').close()">Cancel</button>
-          </div>
-        </form>
       </div>
     </div>
-  </dialog>
 
-  <dialog id="modal-cancel" class="modal">
+  <!-- Receipt Modal -->
+  <div id="receiptModal" class="modal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3>Cancel Booking</h3>
-        <button id="close-cancel" class="modal-close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form id="cancel-form">
-          <div class="form-group">
-            <label for="cancel-reason">Reason for cancellation (optional)</label>
-            <textarea id="cancel-reason" placeholder="Please let us know why you're cancelling..."></textarea>
-          </div>
-          <div class="modal-actions">
-            <button type="submit" class="btn" style="background: #f44336;">Cancel Booking</button>
-            <button type="button" class="btn secondary" onclick="document.getElementById('modal-cancel').close()">Keep Booking</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </dialog>
+      <span class="close" onclick="closeModal('receiptModal')">&times;</span>
+      <h3>Payment Receipt</h3>
+      <div style="margin-top: 1rem; padding: 1rem; background: rgba(40, 40, 40, 0.5); border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span>Service:</span>
+          <span>Glow Studio – Makeup Session</span>
+                </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span>Amount:</span>
+          <span>£85.00</span>
+                </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span>VAT (20%):</span>
+          <span>£17.00</span>
+                </div>
+        <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255, 215, 0, 0.2); padding-top: 0.5rem;">
+          <strong>Total:</strong>
+          <strong>£102.00</strong>
+                </div>
+              </div>
+      <div style="margin-top: 1rem;">
+        <button onclick="downloadReceipt()">Download Receipt</button>
+                </div>
+                </div>
+              </div>
 
+  <!-- JavaScript -->
   <script>
-    // =========================================================
-    // MOBILE MENU TOGGLE
-    // =========================================================
-    const menuToggle = document.getElementById("menuToggle");
-    const sidebar = document.getElementById("sidebar");
-
-    if (menuToggle && sidebar) {
-      menuToggle.addEventListener("click", () => {
-        sidebar.classList.toggle("open");
-      });
-
-      // Auto-close the sidebar after a navigation click (mobile)
-      document.querySelectorAll(".nav-link").forEach(link => {
-        link.addEventListener("click", () => {
-          sidebar.classList.remove("open");
-        });
-      });
+    function viewDetails() {
+      window.location.href = 'bookings-page.html';
     }
 
-    // =========================================================
-    // POLICY TOGGLE FUNCTIONALITY
-    // =========================================================
-    function togglePolicy(id) {
-      const policy = document.getElementById(id);
-      policy.classList.toggle('show');
+    function openRescheduleModal() {
+      document.getElementById('rescheduleModal').style.display = 'block';
     }
 
-    // =========================================================
-    // ENHANCED BOOKING ACTIONS WITH MODAL DIALOGS
-    // =========================================================
-    document.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-action]");
-      if (!btn) return;
-      const card = btn.closest(".booking-card");
-      const id = card?.dataset.id;
-      const action = btn.dataset.action;
+    function confirmReschedule() {
+      closeModal('rescheduleModal');
+      showToast('Appointment rescheduled successfully!');
+    }
+
+    function addToCalendar() {
+      // Generate ICS file
+      const title = 'Fade District – Skin Fade';
+      const start = new Date('2025-10-28T10:30:00');
+      const end = new Date('2025-10-28T11:00:00');
       
-      if (action === "view") openView(card);
-      if (action === "reschedule") openReschedule(card);
-      if (action === "cancel") openCancel(card);
-      if (action === "ics") downloadICS(card);
-    });
-
-    /* View Details */
-    function openView(card) {
-      const modal = document.getElementById("modal-view");
-      const info = document.getElementById("view-info");
-      const business = card.querySelector("h3").innerText;
-      const date = card.querySelector(".fa-calendar").parentElement.textContent.trim();
-      const address = card.querySelector(".fa-location-dot").parentElement.textContent.trim();
-      const status = card.querySelector(".fa-clock").parentElement.textContent.trim();
-
-      info.innerHTML = `
-        <p><strong>${business}</strong></p>
-        <p>${date}</p>
-        <p>${address}</p>
-        <p>${status}</p>
-      `;
-      modal.showModal();
-      document.getElementById("close-view").onclick = () => modal.close();
+      function toICS(dt) {
+        return dt.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      }
+      
+      const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//BlkPages//Customer Dashboard//EN',
+        'BEGIN:VEVENT',
+        `DTSTART:${toICS(start)}`,
+        `DTEND:${toICS(end)}`,
+        `SUMMARY:${title}`,
+        'LOCATION:221B Baker Street, London NW1 6XE',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\n');
+      
+      const blob = new Blob([ics], { type: 'text/calendar' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'appointment.ics';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      
+      showToast('Added to calendar successfully!');
     }
 
-    /* Reschedule */
-    function openReschedule(card) {
-      const modal = document.getElementById("modal-reschedule");
-      modal.showModal();
+    function viewRewards() {
+      window.location.href = 'loyalty-page.html';
+    }
 
-      document.getElementById("cancel-reschedule").onclick = () => modal.close();
+    function openReceiptModal() {
+      document.getElementById('receiptModal').style.display = 'block';
+    }
+
+    function downloadReceipt() {
+      showToast('Receipt downloaded successfully!');
+      closeModal('receiptModal');
+    }
+
+    function goToMessages() {
+      window.location.href = 'messages-page.html';
+    }
+
+    function manageProfile() {
+      window.location.href = 'profile-page.html';
+    }
+
+    function openNotifications() {
+      alert('Notifications would open here');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function showToast(message) {
+      // Remove existing toast if any
+      const existingToast = document.querySelector('.toast');
+      if (existingToast) {
+        existingToast.remove();
+      }
       
-      document.getElementById("reschedule-form").onsubmit = (e) => {
-        e.preventDefault();
-        const date = document.getElementById("new-date").value;
-        const time = document.getElementById("new-time").value;
-        const error = document.getElementById("reschedule-error");
-        if (!date || !time) {
-          error.textContent = "Please select a valid date and time.";
-          error.hidden = false;
-          return;
+      // Create new toast
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      // Show toast
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 100);
+      
+      // Hide toast after 3 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          toast.remove();
+        }, 400);
+      }, 3000);
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modals = document.querySelectorAll('.modal');
+      modals.forEach(modal => {
+        if (event.target === modal) {
+          modal.style.display = 'none';
         }
-        modal.close();
-        alert(`Rescheduled for ${date} at ${time}`);
-      };
+      });
     }
-
-    /* Cancel Booking */
-    function openCancel(card) {
-      const modal = document.getElementById("modal-cancel");
-      modal.showModal();
-
-      document.getElementById("close-cancel").onclick = () => modal.close();
-
-      document.getElementById("cancel-form").onsubmit = (e) => {
-        e.preventDefault();
-        const reason = document.getElementById("cancel-reason").value;
-        modal.close();
-        card.classList.remove("status-confirmed", "status-pending");
-        card.classList.add("status-cancelled");
-        card.querySelector(".pending, .confirmed").textContent = "Cancelled";
-        alert(`Booking cancelled${reason ? ` (Reason: ${reason})` : ""}`);
-      };
-    }
-
-    /* Add to Calendar */
-    function downloadICS(card) {
-      const name = card.querySelector("h3").innerText;
-      const dateText = card.querySelector(".fa-calendar").parentElement.textContent;
-      const dateMatch = dateText.match(/(\d{1,2} [A-Za-z]+ \d{4}) — (\d{2}:\d{2})/);
-      if (!dateMatch) return alert("Invalid date format");
-
-      const [_, d, t] = dateMatch;
-      const start = new Date(`${d} ${t}`);
-      const end = new Date(start.getTime() + 60 * 60000);
-      const startStr = start.toISOString().replace(/[-:]/g, "").split(".")[0];
-      const endStr = end.toISOString().replace(/[-:]/g, "").split(".")[0];
-      
-      const ics = `BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-SUMMARY:${name}
-DTSTART:${startStr}
-DTEND:${endStr}
-DESCRIPTION:Appointment via BlkPages
-END:VEVENT
-END:VCALENDAR`;
-
-      const blob = new Blob([ics], { type: "text/calendar" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `${name}.ics`;
-      link.click();
-    }
-
-    // =========================================================
-    // BLKPAGES DASHBOARD - Page Switching & Fade Transitions
-    // =========================================================
-
-    class Dashboard {
-      constructor() {
-        this.currentPage = 'bookings';
-        this.isLoading = false;
-        this.pages = {
-          bookings: this.getBookingsContent(),
-          payments: this.getPaymentsContent(),
-          reviews: this.getReviewsContent(),
-          loyalty: this.getLoyaltyContent(),
-          profile: this.getProfileContent(),
-          messages: this.getMessagesContent()
-        };
-        
-        this.init();
-      }
-
-      init() {
-        this.setupNavigation();
-        this.loadPage('bookings');
-        this.setupNotifications();
-      }
-
-      setupNavigation() {
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        navLinks.forEach(link => {
-          link.addEventListener('click', (e) => {
-            const href = link.getAttribute('href');
-            
-            // If it's a hash link (like #profile), handle it internally
-            if (href.startsWith('#')) {
-              e.preventDefault();
-              const page = href.substring(1);
-              this.switchPage(page);
-            }
-            // If it's just "#" (Dashboard link), prevent default and stay on dashboard
-            else if (href === '#') {
-              e.preventDefault();
-              // Stay on current dashboard page
-            }
-            // If it's a direct page link (like payments-page.html), let it navigate normally
-            // No preventDefault() needed - browser will handle the navigation
-          });
-        });
-      }
-
-      async switchPage(pageName) {
-        if (this.isLoading || pageName === this.currentPage) return;
-        
-        this.isLoading = true;
-        this.currentPage = pageName;
-        
-        // Update active navigation
-        this.updateActiveNav(pageName);
-        
-        // Fade out current content
-        await this.fadeOut();
-        
-        // Load new page
-        this.loadPage(pageName);
-        
-        // Fade in new content
-        await this.fadeIn();
-        
-        this.isLoading = false;
-      }
-
-      updateActiveNav(pageName) {
-        document.querySelectorAll('.nav-link').forEach(link => {
-          link.classList.remove('active');
-          if (link.getAttribute('href') === `#${pageName}`) {
-            link.classList.add('active');
-          }
-        });
-      }
-
-      loadPage(pageName) {
-        const content = this.pages[pageName];
-        document.getElementById('dashboard-content').innerHTML = content;
-      }
-
-      async fadeOut() {
-        const content = document.getElementById('dashboard-content');
-        content.style.opacity = '0';
-        content.style.transform = 'translateY(20px)';
-        
-        return new Promise(resolve => {
-          setTimeout(resolve, 200);
-        });
-      }
-
-      async fadeIn() {
-        const content = document.getElementById('dashboard-content');
-        content.style.opacity = '1';
-        content.style.transform = 'translateY(0)';
-        
-        return new Promise(resolve => {
-          setTimeout(resolve, 200);
-        });
-      }
-
-      // Page Content Methods
-      getBookingsContent() {
-        return `
-          <section class="dashboard-section bookings">
-            <header class="page-header">
-              <h2>Your Bookings</h2>
-              <p class="muted">Manage and track your upcoming and past appointments.</p>
-            </header>
-
-            <div class="bookings-list">
-              <div class="booking-card status-pending">
-                <span class="status">Pending</span>
-                <div class="card-header">
-                  <h3>Fade District <span>– Skin Fade</span></h3>
-                </div>
-                <div class="card-meta">
-                  <p><i class="fa-regular fa-calendar"></i> 28 Oct 2025 – 10:30 AM</p>
-                  <p><i class="fa-solid fa-location-dot"></i> 221B Baker Street, Marylebone, London NW1 6XE, United Kingdom</p>
-                </div>
-                <div class="policy" id="policy1">
-                  <strong>Cancellation Policy:</strong><br>
-                  Free cancellation up to 24 hours before your appointment.<br>
-                  After this period, a 50% charge applies.
-                </div>
-                <div class="card-actions">
-                  <button class="btn" onclick="togglePolicy('policy1')">View Policy</button>
-                  <button class="btn" data-action="view">View Details</button>
-                  <button class="btn" data-action="reschedule">Reschedule</button>
-                  <button class="btn secondary" data-action="ics">📅 Add to Calendar</button>
-                </div>
-              </div>
-
-              <div class="booking-card status-confirmed">
-                <span class="status">Confirmed</span>
-                <div class="card-header">
-                  <h3>Glow Studio <span>– Makeup Session</span></h3>
-                </div>
-                <div class="card-meta">
-                  <p><i class="fa-regular fa-calendar"></i> 5 Nov 2025 – 14:00</p>
-                  <p><i class="fa-solid fa-location-dot"></i> 12 Market Street, Soho, London W1F 8DR, United Kingdom</p>
-                </div>
-                <div class="policy" id="policy2">
-                  <strong>Cancellation Policy:</strong><br>
-                  Cancellations accepted up to 12 hours in advance. No refund for missed appointments.
-                </div>
-                <div class="card-actions">
-                  <button class="btn" onclick="togglePolicy('policy2')">View Policy</button>
-                  <button class="btn" data-action="view">View Details</button>
-                  <button class="btn" data-action="reschedule">Reschedule</button>
-                  <button class="btn secondary" data-action="ics">📅 Add to Calendar</button>
-                </div>
-              </div>
-
-              <div class="booking-card status-cancelled">
-                <span class="status">Cancelled</span>
-                <div class="card-header">
-                  <h3>Soul Yoga <span>– Vinyasa Class</span></h3>
-                </div>
-                <div class="card-meta">
-                  <p><i class="fa-regular fa-calendar"></i> 18 Dec 2025 – 18:00</p>
-                  <p><i class="fa-solid fa-location-dot"></i> 21 Redchurch Street, Shoreditch, London E2 7DJ, United Kingdom</p>
-                </div>
-                <div class="policy" id="policy3">
-                  <strong>Cancellation Policy:</strong><br>
-                  Non-refundable booking. Please contact the studio directly for reschedule requests.
-                </div>
-                <div class="card-actions">
-                  <button class="btn" onclick="togglePolicy('policy3')">View Policy</button>
-                  <button class="btn" data-action="view">View Details</button>
-                  <button class="btn secondary" data-action="ics">📅 Add to Calendar</button>
-                </div>
-              </div>
-            </div>
-          </section>
-        `;
-      }
-
-      getPaymentsContent() {
-        return `
-          <section class="dashboard-section">
-            <h2>💳 Payment History</h2>
-            <p>View all your transactions and receipts.</p>
-
-            <div class="payment-summary">
-              <p><strong>Total Payments:</strong> 2</p>
-              <p><strong>Refunds:</strong> 1</p>
-              <p><strong>Total Spent:</strong> £70.00</p>
-            </div>
-
-            <div class="payment-card">
-              <h3>Glow Studio</h3>
-              <p>2025-10-22 — Visa •••• 1234</p>
-              <p><strong>Amount:</strong> £48.00</p>
-              <p><strong>Status:</strong> Paid</p>
-              <button onclick="dashboard.viewReceipt('P-101')">View Receipt</button>
-            </div>
-
-            <div class="payment-card">
-              <h3>Soul Yoga</h3>
-              <p>2025-09-18 — Visa •••• 1234</p>
-              <p><strong>Amount:</strong> £15.00</p>
-              <p><strong>Status:</strong> Refunded</p>
-              <button onclick="dashboard.viewReceipt('P-102')">View Receipt</button>
-            </div>
-
-            <div class="payment-card">
-              <h3>Fade District</h3>
-              <p>2025-08-01 — Apple Pay</p>
-              <p><strong>Amount:</strong> £22.00</p>
-              <p><strong>Status:</strong> Paid</p>
-              <button onclick="dashboard.viewReceipt('P-103')">View Receipt</button>
-            </div>
-          </section>
-        `;
-      }
-
-      getReviewsContent() {
-        return `
-          <section class="dashboard-section">
-            <h2>⭐ Reviews & Ratings</h2>
-            <p>Share your experiences and read reviews from other customers.</p>
-
-            <div class="review-summary">
-              <p><strong>Reviews Written:</strong> 1</p>
-              <p><strong>Average Rating:</strong> 5.0</p>
-              <p><strong>Helpful Votes:</strong> 3</p>
-            </div>
-
-            <div class="review-card">
-              <h3>Fade District</h3>
-              <p>"Clean cut, great vibe." ★★★★★</p>
-              <p><strong>Date:</strong> 2025-08-02</p>
-              <button>Edit Review</button>
-            </div>
-
-            <div class="review-form">
-              <h4>Write a new review</h4>
-              <input type="text" placeholder="Business name" id="reviewBusiness">
-              <select id="reviewRating">
-                <option>⭐ 1</option>
-                <option>⭐⭐ 2</option>
-                <option>⭐⭐⭐ 3</option>
-                <option>⭐⭐⭐⭐ 4</option>
-                <option selected>⭐⭐⭐⭐⭐ 5</option>
-              </select>
-              <textarea placeholder="Share a few words..." id="reviewText"></textarea>
-              <button onclick="dashboard.submitReview()">Submit Review</button>
-            </div>
-          </section>
-        `;
-      }
-
-      getLoyaltyContent() {
-        return `
-          <section class="dashboard-section">
-            <h2>🎁 Loyalty & Rewards</h2>
-            <p>Earn points, unlock perks, and enjoy exclusive benefits.</p>
-
-            <div class="payment-summary">
-              <p><strong>BlkPoints:</strong> 240</p>
-              <p><strong>Current Tier:</strong> Bronze</p>
-              <p><strong>Points to Next Tier:</strong> 60</p>
-            </div>
-
-            <div class="booking-card">
-              <h3>Your BlkPoints</h3>
-              <p>Earn points when you book local businesses. Redeem for perks.</p>
-              <div style="margin: 15px 0; text-align: center;">
-                <div style="width: 90px; height: 90px; border-radius: 50%; border: 6px solid gold; display: inline-grid; place-items: center; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);">
-                  <div style="font-weight: 800; font-size: 18px;">240</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="booking-card">
-              <h3>Refer friends</h3>
-              <p>Share your code. When they book, you both get perks.</p>
-              <div style="display: flex; gap: 8px; margin-top: 8px;">
-                <input type="text" value="AMINA-UK-7X3" readonly style="flex: 1; padding: 8px; background: #333; border: 1px solid #555; border-radius: 5px; color: #fff;">
-                <button onclick="dashboard.copyReferralCode()">Copy</button>
-              </div>
-            </div>
-          </section>
-        `;
-      }
-
-      getProfileContent() {
-        return `
-          <section class="dashboard-section">
-            <h2>👤 Profile Settings</h2>
-            <p>Manage your personal information and account preferences.</p>
-
-            <div class="payment-summary">
-              <p><strong>Member Since:</strong> 2024</p>
-              <p><strong>Total Bookings:</strong> 3</p>
-              <p><strong>Favorite Businesses:</strong> 3</p>
-            </div>
-
-            <div class="review-form">
-              <h4>Personal Information</h4>
-              <input type="text" placeholder="Name" value="Amina" id="profileName">
-              <input type="email" placeholder="Email" value="amina@example.com" id="profileEmail">
-              <input type="tel" placeholder="Phone" id="profilePhone">
-              <input type="text" placeholder="Location" id="profileLocation">
-              <textarea placeholder="Preferences, interests..." id="profilePreferences"></textarea>
-              <button onclick="dashboard.saveProfile()">Save Changes</button>
-              <button class="btn secondary" onclick="dashboard.resetProfile()">Reset</button>
-            </div>
-          </section>
-        `;
-      }
-
-      getMessagesContent() {
-        return `
-          <section class="dashboard-section">
-            <h2>💬 Messages & Notifications</h2>
-            <p>Stay updated with messages from businesses and important notifications.</p>
-
-            <div class="payment-summary">
-              <p><strong>Unread Messages:</strong> 2</p>
-              <p><strong>Notifications:</strong> 3</p>
-              <p><strong>Upcoming Bookings:</strong> 2</p>
-            </div>
-
-            <div class="booking-card">
-              <h3>Glow Studio</h3>
-              <p>"Your booking is confirmed. See you soon!"</p>
-              <p><strong>Time:</strong> 2025-10-22 09:10</p>
-              <button>Reply</button>
-            </div>
-
-            <div class="booking-card">
-              <h3>BlkPages</h3>
-              <p>"New loyalty perk unlocked. Check your dashboard."</p>
-              <p><strong>Time:</strong> 2025-10-21 17:42</p>
-              <button>View Perks</button>
-            </div>
-          </section>
-        `;
-      }
-
-      // Action Methods
-      viewReceipt(id) {
-        alert(`Opening receipt for payment ${id}`);
-      }
-
-      submitReview() {
-        const business = document.getElementById('reviewBusiness')?.value;
-        const rating = document.getElementById('reviewRating')?.value;
-        const text = document.getElementById('reviewText')?.value;
-        
-        if (!business || !text) {
-          alert('Please fill in all fields');
-          return;
-        }
-        
-        alert(`Review submitted for ${business}: ${rating} - ${text}`);
-        document.getElementById('reviewText').value = '';
-      }
-
-      copyReferralCode() {
-        navigator.clipboard.writeText('AMINA-UK-7X3');
-        alert('Referral code copied to clipboard!');
-      }
-
-      saveProfile() {
-        alert('Profile saved successfully!');
-      }
-
-      resetProfile() {
-        document.getElementById('profileName').value = 'Amina';
-        document.getElementById('profileEmail').value = 'amina@example.com';
-        document.getElementById('profilePhone').value = '';
-        document.getElementById('profileLocation').value = '';
-        document.getElementById('profilePreferences').value = '';
-      }
-
-      setupNotifications() {
-        // Notification system setup
-        const notifBtn = document.getElementById('notifBtn');
-        const notifDropdown = document.getElementById('notifDropdown');
-        const notifList = document.getElementById('notifList');
-        const notifBadge = document.getElementById('notifBadge');
-        const notifClear = document.getElementById('notifClear');
-
-        if (!notifBtn) return;
-
-        // Demo notifications
-        const notifications = [
-          { 
-            id: 1, 
-            title: "Your booking with Glow Studio is confirmed", 
-            time: "2 hours ago",
-            unread: true
-          },
-          { 
-            id: 2, 
-            title: "You earned 10 BlkPoints", 
-            time: "1 day ago",
-            unread: true
-          },
-          { 
-            id: 3, 
-            title: "Payment received for Fade District", 
-            time: "2 days ago",
-            unread: false
-          }
-        ];
-
-        // Render notifications
-        const renderNotifications = () => {
-          notifList.innerHTML = '';
-          let unreadCount = 0;
-
-          notifications.forEach(notif => {
-            const item = document.createElement('div');
-            item.className = `notif-item ${notif.unread ? 'unread' : ''}`;
-            item.innerHTML = `
-              <div class="notif-content">
-                <div class="notif-text">${notif.title}</div>
-                <div class="notif-time">${notif.time}</div>
-              </div>
-            `;
-            
-            item.addEventListener('click', () => {
-              notif.unread = false;
-              renderNotifications();
-            });
-            
-            notifList.appendChild(item);
-            if (notif.unread) unreadCount++;
-          });
-
-          notifBadge.hidden = unreadCount === 0;
-        };
-
-        // Event listeners
-        notifBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          notifDropdown.hidden = !notifDropdown.hidden;
-          if (!notifDropdown.hidden) {
-            renderNotifications();
-          }
-        });
-
-        notifClear.addEventListener('click', (e) => {
-          e.stopPropagation();
-          notifications.forEach(n => n.unread = false);
-          renderNotifications();
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-          if (!notifBtn.contains(e.target) && !notifDropdown.contains(e.target)) {
-            notifDropdown.hidden = true;
-          }
-        });
-
-        // Initial render
-        renderNotifications();
-      }
-    }
-
-    // Initialize dashboard when DOM is loaded
-    let dashboard;
-    document.addEventListener('DOMContentLoaded', () => {
-      dashboard = new Dashboard();
-    });
   </script>
+
 </body>
 </html>
