@@ -900,12 +900,13 @@
       <aside class="sidebar" id="sidebar">
         <div class="logo">BlkPages</div>
         <ul>
-          <li><a href="#bookings" class="nav-link active">📅 Bookings</a></li>
-          <li><a href="#payments" class="nav-link">💳 Payments</a></li>
-          <li><a href="#reviews" class="nav-link">⭐ Reviews</a></li>
-          <li><a href="#loyalty" class="nav-link">🎁 Loyalty</a></li>
+          <li><a href="#" class="nav-link active">🏠 Dashboard</a></li>
+          <li><a href="bookings-page.html" class="nav-link">📅 Bookings</a></li>
+          <li><a href="payments-page.html" class="nav-link">💳 Payments</a></li>
+          <li><a href="reviews-page.html" class="nav-link">⭐ Reviews</a></li>
+          <li><a href="loyalty-page.html" class="nav-link">🎁 Loyalty</a></li>
           <li><a href="#profile" class="nav-link">👤 Profile</a></li>
-          <li><a href="#messages" class="nav-link">💬 Messages</a></li>
+          <li><a href="messages-page.html" class="nav-link">💬 Messages</a></li>
         </ul>
         <a href="../index.html" class="logout">↩ Logout</a>
       </aside>
@@ -1158,9 +1159,21 @@ END:VCALENDAR`;
         
         navLinks.forEach(link => {
           link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const page = link.getAttribute('href').substring(1);
-            this.switchPage(page);
+            const href = link.getAttribute('href');
+            
+            // If it's a hash link (like #profile), handle it internally
+            if (href.startsWith('#')) {
+              e.preventDefault();
+              const page = href.substring(1);
+              this.switchPage(page);
+            }
+            // If it's just "#" (Dashboard link), prevent default and stay on dashboard
+            else if (href === '#') {
+              e.preventDefault();
+              // Stay on current dashboard page
+            }
+            // If it's a direct page link (like payments-page.html), let it navigate normally
+            // No preventDefault() needed - browser will handle the navigation
           });
         });
       }
