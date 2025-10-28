@@ -10,6 +10,8 @@ class CustomerAuth {
         this.checkAuthStatus();
         this.loadBasket();
         this.storeReturnUrl();
+        this.handleUrlParameters(); // Add URL parameter handling
+        this.ensureDefaultContext(); // Add default context handling
     }
 
     setupEventListeners() {
@@ -151,6 +153,7 @@ class CustomerAuth {
     }
 
     async handleLogin(e) {
+        console.log('handleLogin called', e);
         e.preventDefault();
         this.clearErrors();
 
@@ -159,8 +162,11 @@ class CustomerAuth {
         const password = formData.get('password');
         const rememberMe = formData.get('rememberMe');
 
+        console.log('Login attempt:', { email, password: password ? '***' : 'empty', rememberMe: !!rememberMe });
+
         // Validation
         if (!email || !password) {
+            console.log('Validation failed: missing email or password');
             this.showError('emailError', 'Please enter both email and password.');
             return;
         }
@@ -171,6 +177,8 @@ class CustomerAuth {
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing In...';
             submitBtn.disabled = true;
+
+            console.log('Starting login process...');
 
             // Simulate API call
             await this.simulateApiCall(1500);
@@ -186,6 +194,8 @@ class CustomerAuth {
                 createdAt: new Date().toISOString()
             };
 
+            console.log('Login successful, user created:', user);
+
             // Login successful
             this.currentUser = user;
             this.saveAuthState(user, rememberMe);
@@ -196,15 +206,19 @@ class CustomerAuth {
             // Show success message
             alert('✅ Login successful! You can now access the customer dashboard.');
             
+            console.log('Redirecting after login...');
             this.redirectAfterLogin();
 
         } catch (error) {
+            console.error('Login error:', error);
             this.showError('emailError', 'Login failed. Please try again.');
         } finally {
             // Reset button
             const submitBtn = e.target.querySelector('button[type="submit"]');
-            submitBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
-            submitBtn.disabled = false;
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
+                submitBtn.disabled = false;
+            }
         }
     }
 
@@ -478,25 +492,162 @@ class CustomerAuth {
     }
 
     redirectAfterLogin() {
-        // Get return URL from localStorage
-        const returnUrl = localStorage.getItem('returnUrl') || 'index.html';
+        // Use smart redirect system
+        const redirectUrl = this.getRedirectUrl();
+        console.log(`Redirecting to: ${redirectUrl}`);
+        console.log(`Current URL: ${window.location.href}`);
+        console.log(`Current pathname: ${window.location.pathname}`);
         
-        // Clear return URL
-        localStorage.removeItem('returnUrl');
+        // Handle basket restoration for booking context
+        this.handleBasketRestoration();
         
-        // Redirect to previous page
-        window.location.href = returnUrl;
+        // Add a small delay to ensure everything is processed
+        setTimeout(() => {
+            console.log(`About to redirect to: ${redirectUrl}`);
+            window.location.href = redirectUrl;
+        }, 100);
     }
 
     redirectToOrigin() {
-        // Get return URL from localStorage
-        const returnUrl = localStorage.getItem('returnUrl') || 'index.html';
+        // Use smart redirect system
+        const redirectUrl = this.getRedirectUrl();
+        console.log(`Redirecting to: ${redirectUrl}`);
         
-        // Clear return URL
-        localStorage.removeItem('returnUrl');
+        // Handle basket restoration for booking context
+        this.handleBasketRestoration();
         
-        // Redirect to previous page
-        window.location.href = returnUrl;
+        window.location.href = redirectUrl;
+    }
+
+    /**
+     * Handle basket restoration for booking context
+     */
+    handleBasketRestoration() {
+        const authContext = localStorage.getItem('authContext');
+        
+        if (authContext === 'booking') {
+            // For booking context, ensure basket data is preserved
+            const bookingBasket = localStorage.getItem('bookingBasket');
+            if (bookingBasket) {
+                console.log('Preserving booking basket for restoration:', bookingBasket);
+                // The basket will be restored by the booking page itself
+            }
+        }
+    }
+
+    /**
+     * Handle URL parameters for auto-filling forms
+     */
+    handleUrlParameters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        const password = urlParams.get('password');
+        const firstName = urlParams.get('firstName');
+        const lastName = urlParams.get('lastName');
+        const phone = urlParams.get('phone');
+        
+        if (email || password || firstName || lastName || phone) {
+            console.log('URL parameters detected, auto-filling form:', { email, password, firstName, lastName, phone });
+            
+            // Wait for DOM to be ready
+            setTimeout(() => {
+                this.fillFormFromUrlParams({ email, password, firstName, lastName, phone });
+            }, 100);
+        }
+    }
+
+    /**
+     * Ensure default context is set for direct access to auth pages
+     */
+    ensureDefaultContext() {
+        // If no context is set and we're on an auth page, set default to navigation
+        const authContext = localStorage.getItem('authContext');
+        const currentPage = window.location.pathname || window.location.href;
+        
+        if (!authContext && (currentPage.includes('customer-login') || currentPage.includes('customer-register'))) {
+            console.log('No context set, defaulting to navigation context');
+            localStorage.setItem('authContext', 'navigation');
+            // Set return URL to home if not already set
+            if (!localStorage.getItem('returnUrl')) {
+                localStorage.setItem('returnUrl', 'index.html');
+            }
+        }
+    }
+
+    /**
+     * Fill form fields from URL parameters
+     */
+    fillFormFromUrlParams(params) {
+        const { email, password, firstName, lastName, phone } = params;
+        
+        // Find form elements
+        const emailInput = document.getElementById('email') || document.querySelector('input[name="email"]');
+        const passwordInput = document.getElementById('password') || document.querySelector('input[name="password"]');
+        const firstNameInput = document.getElementById('firstName') || document.querySelector('input[name="firstName"]');
+        const lastNameInput = document.getElementById('lastName') || document.querySelector('input[name="lastName"]');
+        const phoneInput = document.getElementById('mobile') || document.querySelector('input[name="phone"]');
+        const confirmPasswordInput = document.getElementById('confirmPassword') || document.querySelector('input[name="confirmPassword"]');
+        const acceptTermsCheckbox = document.getElementById('acceptTerms') || document.querySelector('input[name="acceptTerms"]');
+        const rememberMeCheckbox = document.getElementById('rememberMe') || document.querySelector('input[name="rememberMe"]');
+        
+        // Fill fields if they exist and have values
+        if (email && emailInput) {
+            emailInput.value = email;
+            emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+            console.log('Auto-filled email from URL');
+        }
+        
+        if (password && passwordInput) {
+            passwordInput.value = password;
+            passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
+            console.log('Auto-filled password from URL');
+        }
+        
+        if (firstName && firstNameInput) {
+            firstNameInput.value = firstName;
+            firstNameInput.dispatchEvent(new Event('input', { bubbles: true }));
+            console.log('Auto-filled firstName from URL');
+        }
+        
+        if (lastName && lastNameInput) {
+            lastNameInput.value = lastName;
+            lastNameInput.dispatchEvent(new Event('input', { bubbles: true }));
+            console.log('Auto-filled lastName from URL');
+        }
+        
+        if (phone && phoneInput) {
+            phoneInput.value = phone;
+            phoneInput.dispatchEvent(new Event('input', { bubbles: true }));
+            console.log('Auto-filled phone from URL');
+        }
+        
+        // Auto-fill confirm password if password is provided
+        if (password && confirmPasswordInput) {
+            confirmPasswordInput.value = password;
+            confirmPasswordInput.dispatchEvent(new Event('input', { bubbles: true }));
+            console.log('Auto-filled confirmPassword from URL');
+        }
+        
+        // Auto-check terms if this looks like demo credentials
+        if (email === 'customer@example.com' && acceptTermsCheckbox) {
+            acceptTermsCheckbox.checked = true;
+            acceptTermsCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+            console.log('Auto-checked acceptTerms for demo credentials');
+        }
+        
+        // Auto-check remember me for login forms
+        if (email === 'customer@example.com' && rememberMeCheckbox) {
+            rememberMeCheckbox.checked = true;
+            rememberMeCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+            console.log('Auto-checked rememberMe for demo credentials');
+        }
+        
+        // Clear URL parameters after filling
+        if (window.history && window.history.replaceState) {
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+            console.log('Cleared URL parameters');
+        }
     }
 
     updateLoginUI(user) {
@@ -526,10 +677,77 @@ class CustomerAuth {
             const currentUrl = window.location.pathname;
             // Don't store auth pages as return URLs
             if (!currentUrl.includes('customer-login') && !currentUrl.includes('customer-register')) {
-                localStorage.setItem('returnUrl', currentUrl);
+                // If it's a file:// URL, extract just the filename
+                if (window.location.href.includes('file://')) {
+                    const urlParts = window.location.href.split('/');
+                    const filename = urlParts[urlParts.length - 1];
+                    localStorage.setItem('returnUrl', filename);
+                } else {
+                    localStorage.setItem('returnUrl', currentUrl);
+                }
             } else {
                 localStorage.setItem('returnUrl', 'index.html');
             }
+        }
+    }
+
+    /**
+     * Store return URL for specific scenarios
+     * @param {string} url - URL to return to after authentication
+     * @param {string} context - Context of the authentication (e.g., 'booking', 'navigation')
+     */
+    setReturnUrl(url, context = 'navigation') {
+        // If it's a file:// URL, extract just the filename
+        let cleanUrl = url;
+        if (url && url.includes('file://')) {
+            const urlParts = url.split('/');
+            cleanUrl = urlParts[urlParts.length - 1];
+        }
+        
+        localStorage.setItem('returnUrl', cleanUrl);
+        localStorage.setItem('authContext', context);
+        console.log(`Return URL set: ${cleanUrl} (context: ${context})`);
+    }
+
+    /**
+     * Get the appropriate redirect URL based on context
+     * @returns {string} URL to redirect to
+     */
+    getRedirectUrl() {
+        const returnUrl = localStorage.getItem('returnUrl');
+        const authContext = localStorage.getItem('authContext');
+        
+        console.log('getRedirectUrl called:', { returnUrl, authContext });
+        
+        // Clear stored values
+        localStorage.removeItem('returnUrl');
+        localStorage.removeItem('authContext');
+        
+        // Handle different contexts
+        if (authContext === 'booking') {
+            console.log('Booking context - returning to booking page');
+            return returnUrl || 'booking.html';
+        } else if (authContext === 'navigation') {
+            console.log('Navigation context - returning to customer dashboard');
+            return 'customer-dashboard.html';
+        } else {
+            console.log('Default context - processing return URL');
+            // Default behavior - return to stored URL or home
+            // If returnUrl is a full file path, extract just the filename
+            if (returnUrl && returnUrl.includes('file://')) {
+                const urlParts = returnUrl.split('/');
+                const filename = urlParts[urlParts.length - 1];
+                console.log('Extracted filename from file URL:', filename);
+                return filename || 'index.html';
+            }
+            console.log('Using return URL as-is:', returnUrl);
+            // If we're on an auth page and no specific context, default to customer dashboard
+            const currentPage = window.location.pathname || window.location.href;
+            if (currentPage.includes('customer-login') || currentPage.includes('customer-register')) {
+                console.log('On auth page with no context, defaulting to customer dashboard');
+                return 'customer-dashboard.html';
+            }
+            return returnUrl || 'index.html';
         }
     }
 
@@ -631,36 +849,131 @@ const customerAuth = new CustomerAuth();
 
 // Demo credentials function
 function fillDemoCredentials() {
-    const firstNameInput = document.getElementById('firstName');
-    const lastNameInput = document.getElementById('lastName');
+    console.log('fillDemoCredentials called');
+    
+    // Try to find elements by ID first, then by name as fallback
+    const firstNameInput = document.getElementById('firstName') || document.querySelector('input[name="firstName"]');
+    const lastNameInput = document.getElementById('lastName') || document.querySelector('input[name="lastName"]');
     const fullNameInput = document.querySelector('input[type="text"]:not([id="firstName"]):not([id="lastName"])');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-    const mobileInput = document.getElementById('mobile');
-    const acceptTermsCheckbox = document.getElementById('acceptTerms');
-    const rememberMeCheckbox = document.getElementById('rememberMe');
+    const emailInput = document.getElementById('email') || document.querySelector('input[name="email"]');
+    const passwordInput = document.getElementById('password') || document.querySelector('input[name="password"]');
+    const confirmPasswordInput = document.getElementById('confirmPassword') || document.querySelector('input[name="confirmPassword"]');
+    const mobileInput = document.getElementById('mobile') || document.querySelector('input[name="phone"]');
+    const acceptTermsCheckbox = document.getElementById('acceptTerms') || document.querySelector('input[name="acceptTerms"]');
+    const rememberMeCheckbox = document.getElementById('rememberMe') || document.querySelector('input[name="rememberMe"]');
+    
+    console.log('Found elements:', {
+        firstNameInput: !!firstNameInput,
+        lastNameInput: !!lastNameInput,
+        emailInput: !!emailInput,
+        passwordInput: !!passwordInput,
+        confirmPasswordInput: !!confirmPasswordInput,
+        mobileInput: !!mobileInput,
+        acceptTermsCheckbox: !!acceptTermsCheckbox,
+        rememberMeCheckbox: !!rememberMeCheckbox
+    });
+    
+    // Add visual feedback
+    const demoBtn = document.getElementById('demoCredentialsBtn');
+    if (demoBtn) {
+        demoBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Filling...';
+        demoBtn.disabled = true;
+    }
     
     // Fill registration form fields (detailed form)
-    if (firstNameInput) firstNameInput.value = 'John';
-    if (lastNameInput) lastNameInput.value = 'Doe';
-    if (fullNameInput && !firstNameInput) fullNameInput.value = 'John Doe';
-    if (emailInput) emailInput.value = 'customer@example.com';
-    if (passwordInput) passwordInput.value = 'Password123';
-    if (confirmPasswordInput) confirmPasswordInput.value = 'Password123';
-    if (mobileInput) mobileInput.value = '07123456789';
-    if (acceptTermsCheckbox) acceptTermsCheckbox.checked = true;
+    if (firstNameInput) {
+        firstNameInput.value = 'John';
+        firstNameInput.dispatchEvent(new Event('input', { bubbles: true }));
+        firstNameInput.style.borderColor = '#10B981';
+        console.log('Filled firstName');
+    }
+    if (lastNameInput) {
+        lastNameInput.value = 'Doe';
+        lastNameInput.dispatchEvent(new Event('input', { bubbles: true }));
+        lastNameInput.style.borderColor = '#10B981';
+        console.log('Filled lastName');
+    }
+    if (fullNameInput && !firstNameInput) {
+        fullNameInput.value = 'John Doe';
+        fullNameInput.dispatchEvent(new Event('input', { bubbles: true }));
+        fullNameInput.style.borderColor = '#10B981';
+        console.log('Filled fullName');
+    }
+    if (emailInput) {
+        emailInput.value = 'customer@example.com';
+        emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+        emailInput.style.borderColor = '#10B981';
+        console.log('Filled email');
+    }
+    if (passwordInput) {
+        passwordInput.value = 'Password123';
+        passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
+        passwordInput.style.borderColor = '#10B981';
+        console.log('Filled password');
+    }
+    if (confirmPasswordInput) {
+        confirmPasswordInput.value = 'Password123';
+        confirmPasswordInput.dispatchEvent(new Event('input', { bubbles: true }));
+        confirmPasswordInput.style.borderColor = '#10B981';
+        console.log('Filled confirmPassword');
+    }
+    if (mobileInput) {
+        mobileInput.value = '07123456789';
+        mobileInput.dispatchEvent(new Event('input', { bubbles: true }));
+        mobileInput.style.borderColor = '#10B981';
+        console.log('Filled mobile');
+    }
+    if (acceptTermsCheckbox) {
+        acceptTermsCheckbox.checked = true;
+        acceptTermsCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+        console.log('Checked acceptTerms');
+    }
     
     // Fill login form fields
-    if (emailInput && !firstNameInput && !fullNameInput) emailInput.value = 'customer@example.com';
-    if (passwordInput && !confirmPasswordInput) passwordInput.value = 'Password123';
-    if (rememberMeCheckbox) rememberMeCheckbox.checked = true;
+    if (emailInput && !firstNameInput && !fullNameInput) {
+        emailInput.value = 'customer@example.com';
+        emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+        emailInput.style.borderColor = '#10B981';
+        console.log('Filled login email');
+    }
+    if (passwordInput && !confirmPasswordInput) {
+        passwordInput.value = 'Password123';
+        passwordInput.dispatchEvent(new Event('input', { bubbles: true }));
+        passwordInput.style.borderColor = '#10B981';
+        console.log('Filled login password');
+    }
+    if (rememberMeCheckbox) {
+        rememberMeCheckbox.checked = true;
+        rememberMeCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+        console.log('Checked rememberMe');
+    }
     
     // Clear any existing errors
     const errorElements = document.querySelectorAll('.error-message');
     errorElements.forEach(element => {
         element.textContent = '';
     });
+    
+    // Reset button after a short delay
+    setTimeout(() => {
+        if (demoBtn) {
+            demoBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Demo Credentials Applied!';
+            demoBtn.style.backgroundColor = '#10B981';
+            demoBtn.style.borderColor = '#10B981';
+            demoBtn.style.color = 'white';
+            
+            // Reset button after 2 seconds
+            setTimeout(() => {
+                demoBtn.innerHTML = '<i class="fas fa-magic mr-2"></i> Use Demo Credentials';
+                demoBtn.style.backgroundColor = '';
+                demoBtn.style.borderColor = '';
+                demoBtn.style.color = '';
+                demoBtn.disabled = false;
+            }, 2000);
+        }
+    }, 500);
+    
+    console.log('Demo credentials filled successfully');
 }
 
 // Debug function to check authentication status
@@ -686,3 +999,23 @@ function debugAuthStatus() {
 window.customerAuth = customerAuth;
 window.fillDemoCredentials = fillDemoCredentials;
 window.debugAuthStatus = debugAuthStatus;
+window.handleLogin = (e) => customerAuth.handleLogin(e);
+window.handleRegistration = (e) => customerAuth.handleRegistration(e);
+window.setAuthReturnUrl = (url, context) => customerAuth.setReturnUrl(url, context);
+
+// Test function accessibility
+console.log('fillDemoCredentials function available:', typeof window.fillDemoCredentials);
+
+// Add event listener as backup for demo credentials button
+document.addEventListener('DOMContentLoaded', function() {
+    const demoBtn = document.getElementById('demoCredentialsBtn');
+    if (demoBtn) {
+        console.log('Demo credentials button found, adding event listener');
+        demoBtn.addEventListener('click', function(e) {
+            console.log('Demo credentials button clicked via event listener');
+            fillDemoCredentials();
+        });
+    } else {
+        console.log('Demo credentials button not found');
+    }
+});

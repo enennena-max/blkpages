@@ -157,6 +157,46 @@
       margin-bottom: 2rem;
     }
 
+    /* ---------- Tab Navigation ---------- */
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      background: rgba(40, 40, 40, 0.5);
+      padding: 0.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.1);
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #ccc;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .tab-btn.active {
+      background: rgba(242, 201, 76, 0.15);
+      color: #f2c94c;
+      border: 1px solid rgba(242, 201, 76, 0.3);
+    }
+    .tab-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    /* ---------- Tab Content ---------- */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
     /* ---------- Dashboard Cards ---------- */
     .dashboard-card {
       background: rgba(40, 40, 40, 0.7);
@@ -336,58 +376,116 @@
     <h2>Welcome back, Guest 👋</h2>
     <p class="sub">Here's a quick look at your account today.</p>
 
-    <!-- Upcoming Booking Card -->
-    <div class="dashboard-card">
-      <h3>Next Appointment</h3>
-      <div class="details"><i>🏢</i><strong>Fade District</strong> – Skin Fade</div>
-      <div class="details"><i>📅</i>28 Oct 2025, 10:30 AM</div>
-      <div class="details"><i>📍</i>221B Baker Street, London NW1 6XE</div>
-      <div class="buttons">
-        <button onclick="viewDetails()">View Details</button>
-        <button onclick="openRescheduleModal()">Reschedule</button>
-        <button onclick="addToCalendar()">Add to Calendar</button>
-      </div>
-      <div style="margin-top: 1rem;">
-        <a href="bookings-page.html" style="color: #f2c94c; text-decoration: none;">View all bookings →</a>
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+      <button class="tab-btn" onclick="showTab('activity')">Recent Activity</button>
+      <button class="tab-btn" onclick="showTab('actions')">Quick Actions</button>
     </div>
-  </div>
 
-    <!-- Loyalty Card -->
-    <div class="dashboard-card">
-      <h3>Your Loyalty</h3>
-      <div class="details"><i>🎯</i>You have <strong>240 points</strong> worth £12.00</div>
-      <div class="buttons">
-        <button onclick="viewRewards()">View Rewards</button>
+    <!-- Overview Tab -->
+    <div id="overview" class="tab-content active">
+      <!-- Upcoming Booking Card -->
+      <div class="dashboard-card">
+        <h3>Next Appointment</h3>
+        <div class="details"><i>🏢</i><strong>Fade District</strong> – Skin Fade</div>
+        <div class="details"><i>📅</i>28 Oct 2025, 10:30 AM</div>
+        <div class="details"><i>📍</i>221B Baker Street, London NW1 6XE</div>
+        <div class="buttons">
+          <button onclick="viewDetails()">View Details</button>
+          <button onclick="openRescheduleModal()">Reschedule</button>
+          <button onclick="addToCalendar()">Add to Calendar</button>
+        </div>
+        <div style="margin-top: 1rem;">
+          <a href="bookings-page.html" style="color: #f2c94c; text-decoration: none;">View all bookings →</a>
+        </div>
       </div>
+
+      <!-- Loyalty Card -->
+      <div class="dashboard-card">
+        <h3>Your Loyalty</h3>
+        <div class="details"><i>🎯</i>You have <strong>240 points</strong> worth £12.00</div>
+        <div class="buttons">
+          <button onclick="viewRewards()">View Rewards</button>
+        </div>
       </div>
 
-    <!-- Recent Payment Card -->
-    <div class="dashboard-card">
-      <h3>Recent Payment</h3>
-      <div class="details"><i>🏢</i><strong>Glow Studio – Makeup Session</strong></div>
-      <div class="details"><i>💰</i>£85.00 | 5 Nov 2025</div>
-      <div class="buttons">
-        <button onclick="openReceiptModal()">View Receipt</button>
+      <!-- Recent Payment Card -->
+      <div class="dashboard-card">
+        <h3>Recent Payment</h3>
+        <div class="details"><i>🏢</i><strong>Glow Studio – Makeup Session</strong></div>
+        <div class="details"><i>💰</i>£85.00 | 5 Nov 2025</div>
+        <div class="buttons">
+          <button onclick="openReceiptModal()">View Receipt</button>
+        </div>
       </div>
-          </div>
+    </div>
 
-    <!-- Messages Card -->
-    <div class="dashboard-card">
-      <h3>Messages</h3>
-      <div class="details"><i>💬</i>You have <strong>2 unread messages</strong></div>
-      <div class="buttons">
-        <button onclick="goToMessages()">Go to Messages</button>
-          </div>
-          </div>
+    <!-- Recent Activity Tab -->
+    <div id="activity" class="tab-content">
+      <!-- Messages Card -->
+      <div class="dashboard-card">
+        <h3>Messages</h3>
+        <div class="details"><i>💬</i>You have <strong>2 unread messages</strong></div>
+        <div class="buttons">
+          <button onclick="goToMessages()">Go to Messages</button>
+        </div>
+      </div>
 
-    <!-- Profile Summary Card -->
-    <div class="dashboard-card">
-      <h3>Profile Overview</h3>
-      <div class="details"><i>✅</i>Email verified</div>
-      <div class="details"><i>💳</i>Payment method saved</div>
-      <div class="details"><i>🔔</i>Notifications enabled</div>
-      <div class="buttons">
-        <button onclick="manageProfile()">Manage Profile</button>
+      <!-- Profile Summary Card -->
+      <div class="dashboard-card">
+        <h3>Profile Overview</h3>
+        <div class="details"><i>✅</i>Email verified</div>
+        <div class="details"><i>💳</i>Payment method saved</div>
+        <div class="details"><i>🔔</i>Notifications enabled</div>
+        <div class="buttons">
+          <button onclick="manageProfile()">Manage Profile</button>
+        </div>
+      </div>
+
+      <!-- Recent Reviews Card -->
+      <div class="dashboard-card">
+        <h3>Recent Reviews</h3>
+        <div class="details"><i>⭐</i>You've written <strong>3 reviews</strong> this month</div>
+        <div class="details"><i>👍</i>Received <strong>12 helpful votes</strong></div>
+        <div class="buttons">
+          <button onclick="viewReviews()">View Reviews</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions Tab -->
+    <div id="actions" class="tab-content">
+      <!-- Quick Booking Card -->
+      <div class="dashboard-card">
+        <h3>Quick Book</h3>
+        <div class="details"><i>⚡</i>Book your favorite services instantly</div>
+        <div class="buttons">
+          <button onclick="quickBook()">Book Haircut</button>
+          <button onclick="quickBook()">Book Facial</button>
+          <button onclick="quickBook()">Book Massage</button>
+        </div>
+      </div>
+
+      <!-- Loyalty Actions Card -->
+      <div class="dashboard-card">
+        <h3>Loyalty Actions</h3>
+        <div class="details"><i>🎁</i>Redeem points for rewards</div>
+        <div class="details"><i>📱</i>Share referral code</div>
+        <div class="buttons">
+          <button onclick="redeemPoints()">Redeem Points</button>
+          <button onclick="shareReferral()">Share Code</button>
+        </div>
+      </div>
+
+      <!-- Support Card -->
+      <div class="dashboard-card">
+        <h3>Support & Help</h3>
+        <div class="details"><i>❓</i>Need assistance?</div>
+        <div class="buttons">
+          <button onclick="contactSupport()">Contact Support</button>
+          <button onclick="viewFAQ()">View FAQ</button>
+        </div>
       </div>
     </div>
   </main>
@@ -451,6 +549,24 @@
 
   <!-- JavaScript -->
   <script>
+    function showTab(tabName) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Remove active class from all tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Show selected tab content
+      document.getElementById(tabName).classList.add('active');
+      
+      // Add active class to clicked button
+      event.target.classList.add('active');
+    }
+
     function viewDetails() {
       window.location.href = 'bookings-page.html';
     }
@@ -519,6 +635,30 @@
 
     function manageProfile() {
       window.location.href = 'profile-page.html';
+    }
+
+    function viewReviews() {
+      window.location.href = 'reviews-page.html';
+    }
+
+    function quickBook() {
+      showToast('Quick booking feature coming soon!');
+    }
+
+    function redeemPoints() {
+      window.location.href = 'loyalty-page.html';
+    }
+
+    function shareReferral() {
+      showToast('Referral code copied to clipboard!');
+    }
+
+    function contactSupport() {
+      window.location.href = 'messages-page.html';
+    }
+
+    function viewFAQ() {
+      showToast('FAQ page coming soon!');
     }
 
     function openNotifications() {
