@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - BlkPages (Demo)</title>
+    <style>
+        :root {
+            --gold: #FFD700;
+            --gold-hover: #FFC700;
+            --ink: #ffffff;
+            --muted: #cccccc;
+            --border: #333333;
+            --bg: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        .wrap {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .panel {
+            background: #111;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .step.active {
+            color: var(--gold);
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #333;
+            color: #666;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .step.active .step-number {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .step-label {
+            margin-right: 20px;
+        }
+
+        .btn {
+            background: var(--gold);
+            color: #111;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 5px;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: var(--gold-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--ink);
+        }
+
+        .point-btn {
+            margin: 5px;
+            padding: 8px 12px;
+            background: #000;
+            color: #fff;
+            border: 1px solid var(--gold);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .point-btn:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .point-btn.selected {
+            background: var(--gold);
+            color: #000;
+        }
+
+        .error {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .success {
+            color: #4caf50;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .demo-notice {
+            background: #1a1a1a;
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--gold);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #111;
+            color: var(--ink);
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <!-- Progress Steps -->
+        <div class="progress-steps">
+            <div class="step">
+                <span class="step-number">1</span>
+                <span class="step-label">Booking</span>
+            </div>
+            <div class="step active">
+                <span class="step-number">2</span>
+                <span class="step-label">Payment</span>
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <span class="step-label">Confirmation</span>
+            </div>
+        </div>
+
+        <!-- Demo Notice -->
+        <div class="demo-notice">
+            <strong>🚀 Demo Mode</strong> - This is a working demo with mock data. No real payments are processed.
+        </div>
+
+        <!-- Booking Summary -->
+        <div class="panel">
+            <h3>Booking Summary</h3>
+            <div id="bookingSummary">
+                <p><strong>Services:</strong> <span id="services">Beard Trim, Haircut</span></p>
+                <p><strong>Date:</strong> <span id="bookingDate">30 Oct 2025</span></p>
+                <p><strong>Time:</strong> <span id="bookingTime">2:30 PM</span></p>
+                <p><strong>Duration:</strong> <span id="duration">45 minutes</span></p>
+                <p><strong>Subtotal:</strong> £<span id="subtotal">100.00</span></p>
+                <p id="blkpointsDiscount" style="display: none;"><strong>BlkPoints Discount:</strong> -£<span id="discountAmount">0.00</span></p>
+                <p><strong>Total Due:</strong> £<span id="totalDue">100.00</span></p>
+            </div>
+        </div>
+
+        <!-- BlkPoints Section -->
+        <div class="panel">
+            <h3>Use your BlkPoints</h3>
+            <p>You have <span id="totalPoints">2400</span> points (<span id="pointsValue">£24.00</span>).</p>
+            
+            <div id="pointsSelector" style="margin: 15px 0;">
+                <button class="point-btn" data-points="500">Use £5 (500 pts)</button>
+                <button class="point-btn" data-points="1000">Use £10 (1000 pts)</button>
+                <button class="point-btn" data-points="1500">Use £15 (1500 pts)</button>
+                <button class="point-btn" data-points="2000">Use £20 (2000 pts)</button>
+            </div>
+            
+            <button id="applyBlkPoints" class="btn-secondary">Apply BlkPoints</button>
+            <button id="removeBlkPoints" class="btn-secondary" style="display:none;">Remove BlkPoints</button>
+            
+            <p id="blkError" class="error" style="display:none;"></p>
+        </div>
+
+        <!-- Payment Details -->
+        <div class="panel">
+            <h3>Payment Details</h3>
+            <div class="demo-notice" style="margin-bottom: 20px;">
+                <strong>Demo Card:</strong> 4242 4242 4242 4242 | Exp: 12/27 | CVV: 123
+            </div>
+            
+            <div class="form-group">
+                <label>Card Number</label>
+                <input type="text" id="cardNumber" value="4242 4242 4242 4242" readonly>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>Expiry Date</label>
+                    <input type="text" id="expiry" value="12/27" readonly>
+                </div>
+                <div class="form-group">
+                    <label>CVV</label>
+                    <input type="text" id="cvv" value="123" readonly>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Cardholder Name</label>
+                <input type="text" id="cardName" value="Demo User" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label>Billing Address</label>
+                <input type="text" id="billingAddress" value="221B Baker Street, London NW1 6XE" readonly>
+            </div>
+
+            <button id="completePayment" class="btn" style="width: 100%; margin-top: 20px;">
+                💸 Complete Payment
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Demo payment logic
+        let appliedPoints = 0;
+        let baseTotal = 100;
+        const pointValue = 0.01; // 1 point = £0.01
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load booking data from localStorage if available
+            const bookingData = JSON.parse(localStorage.getItem('bookingSummary') || '{}');
+            if (bookingData && Object.keys(bookingData).length > 0) {
+                document.getElementById('services').textContent = bookingData.services || 'Beard Trim, Haircut';
+                document.getElementById('bookingDate').textContent = bookingData.dateFormatted || '30 Oct 2025';
+                document.getElementById('bookingTime').textContent = bookingData.timeFormatted || '2:30 PM';
+                document.getElementById('duration').textContent = (bookingData.duration || 45) + ' minutes';
+                baseTotal = bookingData.total || 100;
+                document.getElementById('subtotal').textContent = baseTotal.toFixed(2);
+                updateTotal();
+            }
+
+            // Setup BlkPoints buttons
+            setupBlkPointsButtons();
+            
+            // Setup payment button
+            document.getElementById('completePayment').addEventListener('click', processPayment);
+        });
+
+        function setupBlkPointsButtons() {
+            const buttons = document.querySelectorAll('.point-btn');
+            const applyBtn = document.getElementById('applyBlkPoints');
+            const removeBtn = document.getElementById('removeBlkPoints');
+            const errorEl = document.getElementById('blkError');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove selected class from all buttons
+                    buttons.forEach(b => b.classList.remove('selected'));
+                    // Add selected class to clicked button
+                    this.classList.add('selected');
+                });
+            });
+
+            applyBtn.addEventListener('click', function() {
+                const selectedBtn = document.querySelector('.point-btn.selected');
+                if (!selectedBtn) {
+                    errorEl.textContent = 'Please select how many BlkPoints to use.';
+                    errorEl.style.display = 'block';
+                    return;
+                }
+
+                appliedPoints = parseInt(selectedBtn.dataset.points);
+                const discount = appliedPoints * pointValue;
+                
+                // Show discount
+                document.getElementById('blkpointsDiscount').style.display = 'block';
+                document.getElementById('discountAmount').textContent = discount.toFixed(2);
+                
+                // Update total
+                updateTotal();
+                
+                // Hide apply button, show remove button
+                applyBtn.style.display = 'none';
+                removeBtn.style.display = 'inline-block';
+                
+                // Hide error
+                errorEl.style.display = 'none';
+            });
+
+            removeBtn.addEventListener('click', function() {
+                // Reset applied points
+                appliedPoints = 0;
+                
+                // Hide discount
+                document.getElementById('blkpointsDiscount').style.display = 'none';
+                
+                // Update total
+                updateTotal();
+                
+                // Show apply button, hide remove button
+                applyBtn.style.display = 'inline-block';
+                removeBtn.style.display = 'none';
+                
+                // Remove selected class from all buttons
+                buttons.forEach(b => b.classList.remove('selected'));
+            });
+        }
+
+        function updateTotal() {
+            const discount = appliedPoints * pointValue;
+            const total = Math.max(baseTotal - discount, 0);
+            document.getElementById('totalDue').textContent = total.toFixed(2);
+        }
+
+        function processPayment() {
+            const btn = document.getElementById('completePayment');
+            const originalText = btn.textContent;
+            
+            // Show processing state
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                // Show success
+                btn.textContent = 'Payment Successful!';
+                btn.style.background = '#4caf50';
+                
+                // Redirect to success page after a moment
+                setTimeout(() => {
+                    // Clear booking data
+                    localStorage.removeItem('bookingSummary');
+                    // Redirect to success page
+                    window.location.href = 'payment-success.html';
+                }, 1500);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

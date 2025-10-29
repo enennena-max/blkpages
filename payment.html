@@ -284,6 +284,89 @@
 
     .back-link:hover {
       text-decoration: underline;
+    }
+
+    /* Stripe Elements styling */
+    .card-icons {
+      text-align: center;
+      font-size: 1.5rem;
+      margin: 10px 0;
+      opacity: 0.7;
+    }
+
+    #payment-element {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #111;
+    }
+
+    #billingName, #billingLine1, #billingPost {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid var(--border);
+            border-radius: 8px;
+      background: #111;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    #billingName:focus, #billingLine1:focus, #billingPost:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .secure-msg {
+      margin-top: 10px;
+      color: #bbb;
+            font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin-top: 14px;
+      opacity: 0.9;
+    }
+    .trust-badges img {
+      height: 26px;
+      filter: brightness(0) invert(1);
+      opacity: 0.85;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .trust-badges img:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+
+    .point-btn {
+      margin: 5px;
+      padding: 8px 12px;
+      background: #000;
+      color: #fff;
+      border: 1px solid var(--gold);
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .point-btn:hover {
+      background: rgba(255, 215, 0, 0.1);
+    }
+
+    .point-btn.selected {
+      background: var(--gold);
+      color: #000;
+    }
+
+    .error {
+      color: #ff6b6b;
+      font-size: 14px;
         }
     </style>
 </head>
@@ -319,68 +402,49 @@
           <span>Total Due</span>
           <span id="finalTotal">£0.00</span>
                 </div>
+        <!-- New simplified summary mirror -->
+        <div id="paymentSummary" style="margin-top:12px"></div>
+        <h3 style="margin-top:10px">Total Due</h3>
+        <h2 id="totalDue">£0.00</h2>
                     </div>
                     
-      <!-- BlkPoints Redemption -->
+      <!-- BlkPoints Section -->
       <div class="panel">
-        <div class="blkpoints-checkout" id="blkpointsSection">
-          <h4>Use your BlkPoints</h4>
-          <p>You have <strong id="userPointsDisplay">0</strong> points (£<span id="userPointsValue">0.00</span>).</p>
-          
-          <input
-            type="number"
-            id="pointsInput"
-            placeholder="Enter points to redeem"
-            min="0"
-            oninput="validateInput()"
-          />
-          
-          <div id="validationMessage"></div>
-          
-          <button
-            id="applyBtn"
-            onclick="applyBlkPoints()"
-            disabled
-            class="disabled"
-          >
-            Apply BlkPoints
-                        </button>
-                        </div>
+        <h3>Use your BlkPoints</h3>
+        <p>You have <span id="totalPoints">0</span> points (<span id="pointsValue">£0.00</span>).</p>
+        
+        <div id="pointsSelector" style="margin: 15px 0;">
+          <!-- Points buttons will be generated dynamically -->
                     </div>
                     
-      <!-- Payment Details -->
+        <button id="applyBlkPoints" class="btn-secondary">Apply BlkPoints</button>
+        <button id="removeBlkPoints" class="btn-secondary" style="display:none;">Remove BlkPoints</button>
+        
+        <p id="blkError" class="error" style="display:none;"></p>
+                    </div>
+                    
+      <!-- Stripe Payment Element -->
       <div class="panel">
-        <h2>Payment Details</h2>
-        <form id="paymentForm">
-          <div class="form-group">
-            <label>Card Number</label>
-            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" 
-                   oninput="formatCardNumber(this)">
+        <h3>Payment Details</h3>
+        <div class="card-icons" aria-hidden="true">💳 💠 🏦</div>
+
+        <!-- Stripe mounts here -->
+        <div id="payment-element"></div>
+
+        <!-- Billing extras you still want to collect -->
+        <input id="billingName" placeholder="Cardholder Name" autocomplete="name" />
+        <input id="billingLine1" placeholder="Billing Address" autocomplete="address-line1" />
+        <input id="billingPost" placeholder="Postcode" autocomplete="postal-code" />
+
+        <button id="completePayment" disabled>💸 Complete Secure Payment</button>
+        <p class="secure-msg">🔒 All payments are encrypted and processed securely by Stripe.</p>
+        <div class="trust-badges" aria-label="Accepted payment methods">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Mastercard-logo.png" alt="Mastercard" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo_%282018%29.svg" alt="American Express" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" />
+        </div>
                 </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Expiry Date</label>
-              <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" 
-                     oninput="formatExpiry(this)">
-            </div>
-            <div class="form-group">
-              <label>CVV</label>
-              <input type="text" id="cvv" placeholder="123" maxlength="4" 
-                     oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-            </div>
-        </div>
-
-          <div class="form-group">
-            <label>Cardholder Name</label>
-            <input type="text" id="cardName" placeholder="John Doe">
-        </div>
-
-          <button type="submit" id="payBtn" class="btn">
-            Pay Now
-          </button>
-        </form>
-            </div>
 
       <div class="loading" id="processing">
         <div class="spinner"></div>
@@ -487,8 +551,14 @@
     }
   </style>
 
+  <!-- Stripe + Firebase SDKs -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="firebase-config.js"></script>
+  <!-- BlkPoints validation helpers -->
   <script src="blkpoints-validation.js"></script>
-    <script>
+  <!-- Firebase + Stripe Integration (gated) -->
+  <script type="module" src="payment-stripe-firebase.js"></script>
+  <script>
     // Get booking data (prefer sessionStorage for same-tab navigation)
     const rawData = sessionStorage.getItem("bookingSummary") || localStorage.getItem("bookingSummary");
     
@@ -532,6 +602,7 @@
     let blkPointsDiscount = 0;
     let appliedPoints = 0;
     let userPoints = 2400; // Mock - would come from API
+    let originalUserPoints = 2400; // baseline for recalculating on reselection
     
     // Load user points from API (with fallback for local testing)
     async function loadUserPoints() {
@@ -543,6 +614,7 @@
           // Use mock data for local file testing
           console.log('Running locally - using mock points data');
           userPoints = 2400; // Mock points for testing
+          originalUserPoints = userPoints;
           updatePointsDisplay();
           return;
         }
@@ -554,6 +626,7 @@
         if (response.ok) {
           const data = await response.json();
           userPoints = data.balance || data.points || 2400;
+          originalUserPoints = userPoints;
         } else {
           // Fallback to mock data if API fails
           userPoints = 2400;
@@ -562,13 +635,16 @@
         console.warn('Error loading points (using fallback):', error.message);
         // Use mock data as fallback
         userPoints = 2400;
+        originalUserPoints = userPoints;
       }
       updatePointsDisplay();
     }
 
     function updatePointsDisplay() {
-      document.getElementById('userPointsDisplay').textContent = userPoints.toLocaleString();
-      document.getElementById('userPointsValue').textContent = (userPoints * 0.01).toFixed(2);
+      const ptsEl = document.getElementById('totalPoints');
+      const valEl = document.getElementById('pointsValue');
+      if (ptsEl) ptsEl.textContent = userPoints.toLocaleString();
+      if (valEl) valEl.textContent = (userPoints * 0.01).toFixed(2);
       updateSummary();
     }
 
@@ -620,99 +696,127 @@
       
       summaryDiv.innerHTML = html;
       document.getElementById('finalTotal').textContent = `£${finalTotal.toFixed(2)}`;
+      // Keep mirrored Total Due in sync
+      const totalDueEl = document.getElementById('totalDue');
+      if (totalDueEl) totalDueEl.textContent = `£${finalTotal.toFixed(2)}`;
     }
+    // New dynamic BlkPoints selector UI (in £5 increments)
+    function setupDynamicBlkpointsSection() {
+      const pointsSelector = document.getElementById('pointsSelector');
+      const applyBtnNew = document.getElementById('applyBlkPoints');
+      const blkErr = document.getElementById('blkError');
+      const removeBtn = document.getElementById('removeBlkPoints');
+      const paymentSummaryDiv = document.getElementById('paymentSummary');
+      const totalDueMirror = document.getElementById('totalDue');
+      if (!pointsSelector || !applyBtnNew) return;
+      const pointsToCashRate = 0.01; // 1 point = £0.01
+      const verifiedMobile = true; // TODO: replace with real verification status
 
-    function validateInput() {
-      const input = document.getElementById('pointsInput');
-      const pointsToRedeem = parseInt(input.value || '0', 10);
-      const messageDiv = document.getElementById('validationMessage');
-      const applyBtn = document.getElementById('applyBtn');
-
-      if (pointsToRedeem === 0) {
-        messageDiv.innerHTML = '';
-        applyBtn.disabled = true;
-        applyBtn.className = 'disabled';
-        return;
-      }
-
-      // Use validation helper if available, otherwise do basic checks
-      let validationError = '';
-      if (typeof getBlkPointsError === 'function') {
-        validationError = getBlkPointsError({
-          bookingAmountGBP: bookingTotal,
-          pointsToRedeem: pointsToRedeem,
-          userPoints: userPoints
+      // Render simple list of services and amounts in the mirror summary
+      if (paymentSummaryDiv) {
+        let sHtml = '';
+        bookingServices.forEach(s => {
+          sHtml += `<div class="summary-line"><span>${s.name}</span><span>£${Number(s.price||0).toFixed(2)}</span></div>`;
         });
-      } else {
-        // Fallback validation if script didn't load
-        if (pointsToRedeem < 500) {
-          validationError = 'You need at least £5 (500 points) to redeem.';
-        } else if (pointsToRedeem > userPoints) {
-          validationError = `You don't have enough BlkPoints. You have ${userPoints} points.`;
-        }
+        paymentSummaryDiv.innerHTML = sHtml || '<p>No booking data found. Please start a new booking.</p>';
       }
 
-      if (validationError) {
-        messageDiv.innerHTML = `<p class="error-msg">${validationError}</p>`;
-        applyBtn.disabled = true;
-        applyBtn.className = 'disabled';
-        setPaymentDisabled(true);
-      } else {
-        const redeemValue = (pointsToRedeem * 0.01).toFixed(2);
-        messageDiv.innerHTML = `<p class="success-msg">✓ You can redeem £${redeemValue}.</p>`;
-        applyBtn.disabled = false;
-        applyBtn.className = '';
-        setPaymentDisabled(false);
-      }
-    }
-
-    function applyBlkPoints() {
-      const pointsToRedeem = parseInt(document.getElementById('pointsInput').value, 10);
-      
-      // Use validation helper if available, otherwise do basic checks
-      let validationError = '';
-      if (typeof getBlkPointsError === 'function') {
-        validationError = getBlkPointsError({
-          bookingAmountGBP: bookingTotal,
-          pointsToRedeem: pointsToRedeem,
-          userPoints: userPoints
+      // Build selectable £5 increments based on current userPoints
+      pointsSelector.innerHTML = '';
+      const maxCash = userPoints * pointsToCashRate;
+      const increments = Math.floor(maxCash / 5);
+      let selectedCashValue = 0;
+      for (let i = 1; i <= increments; i++) {
+        const btn = document.createElement('button');
+        const cashValue = i * 5;
+        btn.textContent = `Use £${cashValue}`;
+        btn.className = 'point-btn';
+        btn.addEventListener('click', () => {
+          selectedCashValue = cashValue;
+          document.querySelectorAll('.point-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          applyBtnNew.disabled = false; // allow re-apply when selection changes
+          blkErr.style.display = 'none';
         });
-      } else {
-        // Fallback validation if script didn't load
-        if (pointsToRedeem < 500) {
-          validationError = 'You need at least £5 (500 points) to redeem.';
-        } else if (pointsToRedeem > userPoints) {
-          validationError = `You don't have enough BlkPoints. You have ${userPoints} points.`;
+        pointsSelector.appendChild(btn);
+      }
+
+      applyBtnNew.addEventListener('click', () => {
+        // Basic checks
+        if (!verifiedMobile) {
+          blkErr.textContent = '⚠️ Please verify your mobile number in your dashboard before using BlkPoints.';
+          blkErr.style.display = 'block';
+          return;
         }
-      }
+        // Convert selected £ to points
+        if (!selectedCashValue) {
+          blkErr.textContent = 'Please select how many BlkPoints to use.';
+          blkErr.style.display = 'block';
+          return;
+        }
 
-      if (validationError) {
-        alert(validationError);
-        return;
-      }
+        // Cap redemption to the booking total (can't pay below £0)
+        const cashCap = Math.min(selectedCashValue, bookingTotal);
+        const pointsToRedeem = Math.round(cashCap / pointsToCashRate);
 
-      appliedPoints = pointsToRedeem;
-      blkPointsDiscount = pointsToRedeem * 0.01;
-      userPoints -= pointsToRedeem;
-      
-      updatePointsDisplay();
-      document.getElementById('pointsInput').value = '';
-      document.getElementById('validationMessage').innerHTML = `<p class="success-msg">✓ Applied ${pointsToRedeem} points (£${blkPointsDiscount.toFixed(2)}) discount!</p>`;
-      document.getElementById('applyBtn').disabled = true;
-      document.getElementById('applyBtn').className = 'disabled';
-      document.getElementById('applyBtn').textContent = 'Applied';
+        // Frontend validation using shared helper if available
+        let validationError = '';
+        if (typeof getBlkPointsError === 'function') {
+          validationError = getBlkPointsError({
+            bookingAmountGBP: bookingTotal,
+            pointsToRedeem,
+            userPoints
+          });
+        }
+
+        if (validationError) {
+          blkErr.textContent = `⚠️ ${validationError}`;
+          blkErr.style.display = 'block';
+          return;
+        }
+        blkErr.style.display = 'none';
+
+        // Recalculate from original baseline so re-applying is idempotent
+        appliedPoints = pointsToRedeem;
+        blkPointsDiscount = pointsToRedeem * pointsToCashRate;
+        userPoints = Math.max(0, originalUserPoints - pointsToRedeem);
+
+        updatePointsDisplay(); // Refresh main summary and points
+
+        // Also update the mirrored total
+        const newTotal = Math.max(0, (bookingTotal - blkPointsDiscount));
+        if (totalDueMirror) totalDueMirror.textContent = `£${newTotal.toFixed(2)}`;
+
+        // Lock selection after apply: disable apply and point buttons; show Remove to undo
+        applyBtnNew.disabled = true;
+        document.querySelectorAll('.point-btn').forEach(b => b.disabled = true);
+        if (removeBtn) removeBtn.style.display = 'inline-block';
+      });
+
+      // Allow removing applied BlkPoints and restore totals/points
+      if (removeBtn) {
+        removeBtn.addEventListener('click', () => {
+          // Reset applied state
+          appliedPoints = 0;
+          blkPointsDiscount = 0;
+          userPoints = originalUserPoints;
+
+          // Clear selection highlight and re-enable buttons
+          document.querySelectorAll('.point-btn').forEach(b => { b.classList.remove('selected'); b.disabled = false; });
+
+          // Update UI
+          updatePointsDisplay();
+          updateSummary();
+          if (totalDueMirror) totalDueMirror.textContent = `£${bookingTotal.toFixed(2)}`;
+
+          // Buttons state
+          applyBtnNew.disabled = false;
+          removeBtn.style.display = 'none';
+        });
+      }
     }
 
-    function setPaymentDisabled(disabled) {
-      const payBtn = document.getElementById('payBtn');
-      if (disabled) {
-        payBtn.disabled = true;
-        payBtn.textContent = 'Fix BlkPoints issue to continue';
-      } else {
-        payBtn.disabled = false;
-        payBtn.textContent = 'Pay Now';
-      }
-    }
+    // Removed old numeric input-based redemption UI and helpers
 
     // Card formatting
     function formatCardNumber(input) {
@@ -729,8 +833,9 @@
       input.value = value;
     }
 
-    // Payment form submission
-    document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+    // Payment form submission (guard if legacy form exists)
+    const legacyForm = document.getElementById('paymentForm');
+    if (legacyForm) legacyForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
@@ -785,6 +890,26 @@
 
     // Initialize - wait for DOM and localStorage
     function initializePage() {
+      // Pre-fill demo card details so Pay Now works immediately
+      const cardNumberEl = document.getElementById('cardNumber');
+      const expiryEl = document.getElementById('expiry');
+      const cvvEl = document.getElementById('cvv');
+      const cardNameEl = document.getElementById('cardName');
+      const billingEl = document.getElementById('billingAddress');
+      if (cardNumberEl) cardNumberEl.value = '4242 4242 4242 4242';
+      if (expiryEl) expiryEl.value = '12/27';
+      if (cvvEl) cvvEl.value = '123';
+      if (cardNameEl) cardNameEl.value = 'Demo User';
+      if (billingEl) billingEl.value = '221B Baker Street, London NW1 6XE';
+
+      const fillBtn = document.getElementById('fillDemo');
+      if (fillBtn) fillBtn.onclick = () => {
+        if (cardNumberEl) cardNumberEl.value = '4242 4242 4242 4242';
+        if (expiryEl) expiryEl.value = '12/27';
+        if (cvvEl) cvvEl.value = '123';
+        if (cardNameEl) cardNameEl.value = 'Demo User';
+        if (billingEl) billingEl.value = '221B Baker Street, London NW1 6XE';
+      };
       // Re-check localStorage in case data wasn't loaded properly
       const freshSummary = JSON.parse(localStorage.getItem('bookingSummary') || '{}');
       const freshData = JSON.parse(localStorage.getItem('bookingData') || '{}');
@@ -814,7 +939,7 @@
       
       loadUserPoints();
       updateSummary();
-      validateInput();
+      setupDynamicBlkpointsSection();
     }
     
     // Run initialization
@@ -836,9 +961,27 @@
         blkPointsDiscount = 0;
         appliedPoints = 0;
         updateSummary();
-        validateInput();
       }
     });
   </script>
+  <style>
+  /* New optional styles for simplified section */
+  #blkpoints-section, #paymentDetails {
+    border: 1px solid #ffd700;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+  }
+  .point-btn {
+    margin: 5px;
+    padding: 8px 12px;
+    background: black;
+    color: white;
+    border: 1px solid #ffd700;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .point-btn.selected { background: #ffd700; color: black; }
+  </style>
 </body>
 </html>
