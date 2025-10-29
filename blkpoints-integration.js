@@ -14,6 +14,8 @@ const REDEMPTION_CAP_POINTS = 5000; // £50
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 const POINT_RATE = 1; // 1 point per £1 spent
 const POINT_VALUE = 0.01; // 1 point = £0.01
+const MIN_REDEEM_VALUE = 5; // £5 minimum redemption
+const MIN_REDEEM_POINTS = MIN_REDEEM_VALUE / POINT_VALUE; // 500 points
 const CONFIRM_DELAY_MS = 24 * 60 * 60 * 1000; // 24 hours
 const REFERRAL_BONUS_POINTS = 100;
 
@@ -414,5 +416,12 @@ module.exports = {
   redeemBlkPoints,
   completeBooking,
   getUserBlkPointsStatus,
-  sendLoyaltyEmail
+  sendLoyaltyEmail,
+  // Constants for frontend use
+  POINT_VALUE,
+  POINT_RATE,
+  MIN_REDEEM_POINTS,
+  MIN_REDEEM_VALUE,
+  REDEMPTION_CAP_POINTS,
+  REFERRAL_BONUS_POINTS
 };

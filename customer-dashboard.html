@@ -731,25 +731,13 @@
           <div class="referral-link-section">
             <label>Your referral link:</label>
             <div class="referral-link-container">
-              <input type="text" id="referralLink" readonly class="referral-link-input" />
+              <input type="text" id="referralLink" readonly class="referral-link-input" placeholder="Loading your referral link..." />
               <button id="copyLinkBtn" class="btn-copy">Copy Link</button>
               <button id="shareBtn" class="btn-share">Share</button>
             </div>
-          </div>
-          
-          <div class="referral-stats">
-            <div class="stat-item">
-              <span class="stat-number" id="totalReferrals">0</span>
-              <span class="stat-label">Total Referrals</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-number" id="completedReferrals">0</span>
-              <span class="stat-label">Completed</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-number" id="totalEarnings">0</span>
-              <span class="stat-label">BlkPoints Earned</span>
-            </div>
+            <p style="color: #999; font-size: 0.85rem; margin-top: 12px; text-align: center;">
+              💡 Click the <a href="loyalty-page.html" style="color: #f2c94c; text-decoration: underline;">Loyalty</a> section to see a breakdown of your referrals and earnings.
+            </p>
           </div>
         </div>
       </div>
@@ -769,7 +757,7 @@
         <div id="blkpointsSection">
           <h3><i class="icon-points"></i> Your BlkPoints</h3>
           <p>You have <span id="blkPoints"></span> points (£<span id="blkValue"></span>)</p>
-          <p id="blkThreshold" class="muted">You need at least 5000 points (£5) to redeem</p>
+          <p id="blkThreshold" class="muted">You need at least 500 points (£5.00) to redeem</p>
           <button id="redeemBtn" class="btn small gold" onclick="openRedeemModal()" disabled>Not enough to redeem</button>
       </div>
     </div>
@@ -911,6 +899,14 @@
 
   <!-- JavaScript -->
   <script>
+    // ==========================
+    // BlkPoints Constants (must match backend)
+    // ==========================
+    const POINT_VALUE = 0.01; // 1 point = £0.01 (1p)
+    const MIN_REDEEM_VALUE = 5; // £5 minimum redemption
+    const MIN_REDEEM_POINTS = MIN_REDEEM_VALUE / POINT_VALUE; // 500 points
+    const POINT_RATE = 1; // 1 point per £1 spent
+    const REVIEW_BONUS_POINTS = 25; // Points earned for verified review
 
     function viewDetails() {
       window.location.href = 'bookings-page.html';
@@ -1000,7 +996,7 @@
 
     function submitReview() {
       closeModal('reviewModal');
-      showToast('Review submitted successfully! +20 BlkPoints earned');
+      showToast(`Review submitted successfully! +${REVIEW_BONUS_POINTS} BlkPoints earned`);
       // Hide the review prompt after submission
       document.getElementById('reviewPrompt').hidden = true;
     }
@@ -1084,46 +1080,86 @@
 
       async loadReferralData() {
         try {
-          // DEMO MODE: Use fake data for preview
-          if (CUSTOMER_ID === 'replace-with-real-customer-id') {
-            console.log('🎭 Demo Mode: Loading fake referral data');
-            this.loadDemoReferralData();
-            return;
+          const linkInput = document.getElementById('referralLink');
+          if (!linkInput) return;
+
+          // Get auth token
+          const authToken = localStorage.getItem('auth_token') || 
+                           localStorage.getItem('authToken') || 
+                           localStorage.getItem('token') || '';
+
+          // Try to fetch real referral link from API (preferred - ensures consistency)
+          try {
+            const linkResponse = await fetch('/api/user/referral-link', {
+              headers: {
+                'Authorization': `Bearer ${authToken}`
+              }
+            });
+
+            if (linkResponse.ok) {
+              const data = await linkResponse.json();
+              if (data.referral_link) {
+                linkInput.value = data.referral_link;
+                console.log('✅ Dashboard: Referral link from API:', data.referral_link);
+                return; // Success - exit early
+              }
+            } else {
+              console.log('Dashboard: Link API returned status:', linkResponse.status);
+            }
+          } catch (apiError) {
+            console.log('Dashboard: Link API call failed:', apiError);
           }
 
-          // Load referral code
-          const codeResponse = await fetch(`${this.apiBase}/referral-code?customerId=${this.customerId}`);
-          const codeData = await codeResponse.json();
-          
-          if (codeData.success) {
-            document.getElementById('referralLink').value = codeData.referralUrl;
+          // Fallback: Try to get code and use SAME link construction as backend would
+          try {
+            const codeResponse = await fetch('/api/user/referral-code', {
+              headers: {
+                'Authorization': `Bearer ${authToken}`
+              }
+            });
+
+            if (codeResponse.ok) {
+              const data = await codeResponse.json();
+              if (data.referral_link) {
+                // Use the link provided by the API to ensure consistency
+                linkInput.value = data.referral_link;
+                console.log('✅ Dashboard: Referral link from code API:', data.referral_link);
+                return;
+              } else if (data.referral_code) {
+                // Last resort: construct from code using same origin
+                const baseUrl = window.location.origin;
+                const constructed = `${baseUrl}/signup?ref=${data.referral_code}`;
+                linkInput.value = constructed;
+                console.log('⚠️ Dashboard: Constructed link from code:', constructed);
+                return;
+              }
+            } else {
+              console.log('Dashboard: Code API returned status:', codeResponse.status);
+            }
+          } catch (codeError) {
+            console.log('Dashboard: Code fetch failed:', codeError);
           }
 
-          // Load referral stats
-          const statsResponse = await fetch(`${this.apiBase}/referral/stats?userId=${this.customerId}`);
-          const statsData = await statsResponse.json();
-          
-          if (statsData.success) {
-            const stats = statsData.stats;
-            document.getElementById('totalReferrals').textContent = stats.totalReferrals;
-            document.getElementById('completedReferrals').textContent = stats.completedReferrals;
-            document.getElementById('totalEarnings').textContent = stats.totalEarnings;
-          }
+          // Final fallback: Demo data (use same origin for consistency)
+          this.loadDemoReferralData();
+          console.log('⚠️ Dashboard: Using demo referral link');
         } catch (error) {
-          console.error('Error loading referral data:', error);
-          // Fallback to demo data
+          console.error('Dashboard: Error loading referral data:', error);
           this.loadDemoReferralData();
         }
+        
+        // Log final value for debugging
+        const finalLink = document.getElementById('referralLink').value;
+        console.log('✅ Dashboard: Final referral link:', finalLink);
       }
 
       loadDemoReferralData() {
-        // Demo referral code
-        document.getElementById('referralLink').value = 'https://blkpages.com/referral/BLK-DEMO123';
-        
-        // Demo stats
-        document.getElementById('totalReferrals').textContent = '3';
-        document.getElementById('completedReferrals').textContent = '2';
-        document.getElementById('totalEarnings').textContent = '200';
+        const linkInput = document.getElementById('referralLink');
+        if (linkInput) {
+          // Use same base URL construction as loyalty page
+          const baseUrl = window.location.origin;
+          linkInput.value = `${baseUrl}/signup?ref=BLK-DEMO123`;
+        }
       }
 
       setupEventListeners() {
@@ -1337,7 +1373,7 @@
       
       const card = document.getElementById('reviewPrompt');
       const text = document.getElementById('reviewText');
-      text.innerHTML = `How was your visit to <strong>Glow Studio</strong>? Leave a quick review and earn +20 BlkPoints.`;
+      text.innerHTML = `How was your visit to <strong>Glow Studio</strong>? Leave a quick review and earn +${REVIEW_BONUS_POINTS} BlkPoints.`;
       card.hidden = false;
 
       // TODO: Uncomment below when backend is ready
@@ -1351,7 +1387,7 @@
 
       const card = document.getElementById('reviewPrompt');
       const text = document.getElementById('reviewText');
-      text.innerHTML = `Leave a quick review for <strong>${completed.business_name}</strong> and earn +20 BlkPoints.`;
+      text.innerHTML = `Leave a quick review for <strong>${completed.business_name}</strong> and earn +${REVIEW_BONUS_POINTS} BlkPoints.`;
       card.hidden = false;
       */
     }
@@ -1377,11 +1413,13 @@
       const blkPoints = document.getElementById("blkPoints");
       const blkValue = document.getElementById("blkValue");
 
-      const value = (points / 1000 * 5).toFixed(2); // example conversion
+      // Calculate value correctly: 1 point = £0.01
+      const value = (points * POINT_VALUE).toFixed(2);
       blkPoints.textContent = points.toLocaleString();
       blkValue.textContent = value;
 
-      if (points >= 5000) {
+      // Check against minimum redemption threshold
+      if (points >= MIN_REDEEM_POINTS) {
         redeemBtn.disabled = false;
         redeemBtn.textContent = "Redeem Points";
         thresholdText.style.display = "none";
@@ -1389,7 +1427,15 @@
         redeemBtn.disabled = true;
         redeemBtn.textContent = "Not enough to redeem";
         thresholdText.style.display = "block";
+        // Update threshold message
+        const remaining = MIN_REDEEM_POINTS - points;
+        thresholdText.textContent = `You need at least ${MIN_REDEEM_POINTS} points (£${MIN_REDEEM_VALUE.toFixed(2)}) to redeem. ${remaining > 0 ? `Need ${remaining} more points.` : ''}`;
       }
+    }
+
+    function openRedeemModal() {
+      // Redirect to loyalty page for full redemption experience
+      window.location.href = 'loyalty-page.html';
     }
 
     // ==========================

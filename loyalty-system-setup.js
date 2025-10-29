@@ -23,6 +23,7 @@ const socketIo = require('socket.io');
 // Import our loyalty modules
 const loyaltyEngine = require('./loyalty-engine');
 const blkpointsIntegration = require('./blkpoints-integration');
+const blkpointsService = require('./blkpoints-service');
 
 // Mock database connection (replace with your actual database)
 const mockDb = {
@@ -60,6 +61,9 @@ const generalRateLimit = rateLimit({
 });
 
 app.use('/api', generalRateLimit);
+
+// Attach database to app.locals for service access
+app.locals.db = mockDb;
 
 // =====================================================
 // 🔐 Authentication Middleware (Mock)
@@ -308,9 +312,10 @@ app.post('/api/user/verify-otp', rateLimit({ windowMs: 15 * 60 * 1000, max: 5 })
 app.get('/api/loyalty/status', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
-    const status = await blkpointsIntegration.getUserBlkPointsStatus(userId, mockDb);
+    const status = await blkpointsService.getBlkPointsStatus(userId, mockDb);
     const user = mockDb.users.get(userId) || {};
     res.json({
+      balance: status.points,
       ...status,
       marketing_opt_in: !!user.marketing_opt_in,
       marketing_opt_in_updated: user.marketing_opt_in_updated || null
@@ -321,36 +326,41 @@ app.get('/api/loyalty/status', authenticateToken, async (req, res) => {
   }
 });
 
-// Redeem BlkPoints
+// Redeem BlkPoints (using new clean service)
 app.post('/api/loyalty/redeem', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
-    const { selectedPoints } = req.body;
+    const { selectedPoints, bookingAmountGBP } = req.body;
     
-    const validation = await blkpointsIntegration.validateBlkPointsRedemption(userId, selectedPoints, mockDb);
-    
-    if (!validation.success) {
-      return res.status(400).json(validation);
+    if (!selectedPoints || typeof selectedPoints !== 'number') {
+      return res.status(400).json({
+        success: false,
+        error: 'Points amount required'
+      });
     }
     
-    // Process redemption
-    mockDb.blkpoints_ledger.push({
-      id: `tx-${Date.now()}`,
-      user_id: userId,
-      points_change: -selectedPoints,
-      type: 'redeem',
-      status: 'pending',
-      notes: 'BlkPoints redemption applied at checkout',
-      created_at: new Date()
-    });
+    // Generate idempotency key
+    const idem = `redeem-${userId}-${Date.now()}`;
+    
+    // Use new service - includes all validation (mobile, balance, cap, minimum order value)
+    const valueGBP = await blkpointsService.redeemPoints(
+      { userId, points: selectedPoints, idem, bookingAmountGBP },
+      mockDb
+    );
     
     res.json({
       success: true,
-      message: `£${(selectedPoints * 0.01).toFixed(2)} BlkPoints discount applied.`
+      redeemedPoints: selectedPoints,
+      valueGBP: +valueGBP.toFixed(2),
+      message: `£${valueGBP.toFixed(2)} BlkPoints discount applied.`
     });
   } catch (error) {
     console.error('Error processing redemption:', error);
-    res.status(500).json({ error: 'Failed to process redemption' });
+    res.status(400).json({
+      success: false,
+      error: error.message || 'Failed to process redemption',
+      code: error.code || 'REDEMPTION_FAILED'
+    });
   }
 });
 
@@ -369,8 +379,13 @@ app.post('/api/bookings/complete', authenticateToken, async (req, res) => {
       completed_at: new Date()
     });
     
-    // Award BlkPoints (pending for 24 hours)
-    await blkpointsIntegration.earnBlkPoints(userId, bookingId, netAmount, mockDb);
+    // Award BlkPoints using new service (immediate confirmation for demo)
+    const idem = `booking-${bookingId}-${userId}`;
+    await blkpointsService.earnOnCompletedBooking(
+      { userId, amountGBP: netAmount, bookingId, idem },
+      mockDb
+    );
+    
     // Trigger referral logic (pending bonus for referrer on first completed booking)
     await handleReferralOnBookingComplete(userId, bookingId, mockDb);
     
@@ -551,17 +566,18 @@ app.post('/api/auth/signup', async (req, res) => {
 const REFERRAL_BONUS_POINTS = 100;
 
 async function handleReferralOnBookingComplete(refereeId, bookingId, db) {
-  const referee = db.users.get(refereeId);
+  const referee = db.users instanceof Map ? db.users.get(refereeId) : await db.users.findUnique({ where: { id: refereeId } });
   if (!referee || !referee.referred_by) {
     console.log(`⚠️ No referrer found for user ${refereeId}`);
     return;
   }
 
-  const referrer = db.users.get(referee.referred_by);
+  const referrerId = referee.referred_by;
+  const referrer = db.users instanceof Map ? db.users.get(referrerId) : await db.users.findUnique({ where: { id: referrerId } });
   
   // 🔐 Safety: skip if referrer or referee missing
   if (!referrer) {
-    console.log(`⚠️ Referrer ${referee.referred_by} not found`);
+    console.log(`⚠️ Referrer ${referrerId} not found`);
     return;
   }
 
@@ -580,52 +596,44 @@ async function handleReferralOnBookingComplete(refereeId, bookingId, db) {
     return;
   }
 
-  // Check if referral bonus already awarded for this referee
-  const existingBonus = db.blkpoints_ledger.find(tx => 
-    tx.type === 'referral' && 
-    tx.user_id === referrer.id &&
-    tx.notes && tx.notes.includes(`referee:${refereeId}`)
-  );
-  
-  if (existingBonus) {
-    console.log(`⚠️ Referral bonus already exists for referee ${refereeId}`);
-    return;
-  }
-
-  // 🧾 Create pending bonus
-  const referralTx = {
-    id: `tx-ref-${Date.now()}`,
-    user_id: referrer.id,
-    booking_id: bookingId,
-    points_change: REFERRAL_BONUS_POINTS,
-    type: 'referral',
-    status: 'pending',
-    notes: `Referral bonus pending — referee:${refereeId} booking:${bookingId}`,
-    created_at: new Date()
-  };
-  db.blkpoints_ledger.push(referralTx);
-
-  // Update referral record
-  if (!db.referrals) db.referrals = [];
-  
-  // Find existing referral record or create new one
-  let referralRecord = db.referrals.find(r => 
-    r.referrer_id === referrer.id && r.referee_id === referee.id
-  );
-  
-  if (referralRecord) {
-    referralRecord.status = 'completed';
-    referralRecord.updated_at = new Date();
-  } else {
-    db.referrals.push({
-      id: `ref-upd-${Date.now()}`,
-      referrer_id: referrer.id,
-      referee_id: referee.id,
-      referral_code: referrer.referral_code || '',
-      status: 'completed',
-      created_at: new Date(),
-      updated_at: new Date()
-    });
+  // Use new service for referral bonus (with idempotency)
+  const idem = `referral-${refereeId}-${bookingId}`;
+  try {
+    await blkpointsService.earnOnReferralCompleted(
+      { userId: referrerId, referredUserId: refereeId, bookingId, idem },
+      db
+    );
+    
+    console.log(`✅ Referral bonus awarded: ${referrerId} earned from ${refereeId}'s first booking`);
+    
+    // Update referral record (for tracking)
+    if (!db.referrals) db.referrals = [];
+    
+    let referralRecord = db.referrals.find(r => 
+      r.referrer_id === referrerId && r.referee_id === refereeId
+    );
+    
+    if (referralRecord) {
+      referralRecord.status = 'completed';
+      referralRecord.updated_at = new Date();
+    } else {
+      db.referrals.push({
+        id: `ref-${Date.now()}`,
+        referrer_id: referrerId,
+        referee_id: refereeId,
+        referral_code: referrer.referral_code || '',
+        status: 'completed',
+        created_at: new Date(),
+        updated_at: new Date()
+      });
+    }
+  } catch (error) {
+    // Service handles duplicate idempotency keys silently
+    if (error.message && error.message.includes('idempotency')) {
+      console.log(`⚠️ Duplicate referral bonus prevented (idempotency): ${idem}`);
+    } else {
+      console.error(`❌ Error awarding referral bonus:`, error);
+    }
   }
 
   // Send real-time notification to referrer
@@ -812,6 +820,16 @@ app.get('/email-preview', (req, res) => {
 // Serve device fingerprint script
 app.get('/device-fingerprint.js', (req, res) => {
   res.sendFile(path.join(__dirname, 'device-fingerprint.js'));
+});
+
+// Serve BlkPoints validation helper script
+app.get('/blkpoints-validation.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'blkpoints-validation.js'));
+});
+
+// Serve checkout example
+app.get('/checkout-example', (req, res) => {
+  res.sendFile(path.join(__dirname, 'checkout-blkpoints-example.html'));
 });
 
 // Serve admin referrals dashboard

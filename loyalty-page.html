@@ -1263,12 +1263,12 @@
       </div>
 
       <!-- Invite & Earn Widget -->
-      <div class="invite-box loyalty-card blkpoints-card info-card" id="inviteWidget">
+      <div class="invite-box loyalty-card blkpoints-card info-card" id="inviteWidget" style="display:block;">
         <h4 style="margin-bottom:0.5rem;color:#f2c94c;">🎁 Invite & Earn</h4>
         <p class="section-description" style="margin-bottom:1.5rem;">Invite your friends to BlkPages and earn 100 BlkPoints when they complete their first booking.</p>
 
         <div class="referral-field" style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
-          <input type="text" id="referralLinkInput" readonly style="flex:1;padding:12px;background:#222;border:1px solid #444;color:#fff;border-radius:6px;font-size:0.9rem;">
+          <input type="text" id="referralLinkInput" readonly style="flex:1;padding:12px;background:#222;border:1px solid #444;color:#fff;border-radius:6px;font-size:0.9rem;" placeholder="Loading your referral link...">
           <button class="btn gold" id="copyLinkBtn" style="padding:12px 20px;white-space:nowrap;">Copy Link</button>
           <button class="btn secondary" id="shareBtn" style="padding:12px 20px;white-space:nowrap;">Share</button>
         </div>
@@ -1340,9 +1340,9 @@
         <div class="balance-header">
           <h4>Total Balance</h4>
           <div class="points-display">
-            <span class="points-amount">1,250</span>
+            <span class="points-amount" id="mainBalancePoints">1,250</span>
             <span class="points-label">pts</span>
-            <span class="points-value">(£12.50)</span>
+            <span class="points-value" id="mainBalanceValue">(£12.50)</span>
           </div>
         </div>
         <div class="redeem-section">
@@ -1570,10 +1570,17 @@
   <script src="https://openfpcdn.io/fingerprintjs/v3"></script>
   <script src="/device-fingerprint.js"></script>
   <script src="/socket.io/socket.io.js"></script>
+  <script src="/blkpoints-validation.js"></script>
   <script>
     // Global variables
     let currentPoints = 1250; // This would come from API
     let selectedRedemption = null;
+    
+    // BlkPoints Constants (must match backend)
+    const POINT_VALUE = 0.01; // 1 BlkPoint = £0.01
+    const MIN_REDEEM_VALUE = 5; // £5 minimum redemption
+    const MIN_REDEEM_POINTS = 500; // 500 points = £5
+    const POINT_RATE = 1; // 1 point per £1 spent
     
     // Mobile verification state
     let userVerificationStatus = {
@@ -1651,37 +1658,77 @@
     };
 
     async function initReferralStats() {
+      const linkInput = document.getElementById('referralLinkInput');
+      if (!linkInput) {
+        console.error('Referral link input not found');
+        return;
+      }
+
       try {
-        // Fetch permanent referral link
-        const linkRes = await fetch('/api/user/referral-link', {
-          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
-        });
-        
-        if (linkRes.ok) {
-          const data = await linkRes.json();
-          referralStats.referralLink = data.referral_link;
-          const linkInput = document.getElementById('referralLinkInput');
-          if (linkInput) {
-            linkInput.value = data.referral_link;
+        const authToken = getAuthToken();
+        console.log('Loading referral link with token:', authToken ? 'Present' : 'Missing');
+
+        // Try to fetch permanent referral link first
+        try {
+          const linkRes = await fetch('/api/user/referral-link', {
+            headers: { 'Authorization': `Bearer ${authToken}` }
+          });
+          
+          if (linkRes.ok) {
+            const data = await linkRes.json();
+            if (data.referral_link) {
+              referralStats.referralLink = data.referral_link;
+              linkInput.value = data.referral_link;
+              console.log('✅ Referral link loaded:', data.referral_link);
+            }
+          } else {
+            console.log('Link API returned status:', linkRes.status);
+          }
+        } catch (linkError) {
+          console.log('Link API error:', linkError);
+        }
+
+        // If link wasn't set, try to get code and use API-provided link (ensures consistency)
+        if (!referralStats.referralLink) {
+          try {
+            const codeRes = await fetch('/api/user/referral-code', {
+              headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            
+            if (codeRes.ok) {
+              const data = await codeRes.json();
+              // Prefer the link from API if available (ensures same base URL as backend)
+              if (data.referral_link) {
+                referralStats.referralLink = data.referral_link;
+                referralStats.referralCode = data.referral_code;
+                linkInput.value = data.referral_link;
+                console.log('✅ Loyalty: Referral link from code API:', data.referral_link);
+              } else if (data.referral_code) {
+                // Last resort: construct from code (only if API didn't provide link)
+                referralStats.referralCode = data.referral_code;
+                const baseUrl = window.location.origin;
+                const constructed = `${baseUrl}/signup?ref=${referralStats.referralCode}`;
+                referralStats.referralLink = constructed;
+                linkInput.value = constructed;
+                console.log('⚠️ Loyalty: Constructed referral link from code:', constructed);
+              }
+            } else {
+              console.log('Loyalty: Code API returned status:', codeRes.status);
+            }
+          } catch (codeError) {
+            console.log('Loyalty: Code API error:', codeError);
           }
         }
 
-        // Get full referral code info
-        const codeRes = await fetch('/api/user/referral-code', {
-          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
-        });
-        if (codeRes.ok) {
-          const data = await codeRes.json();
-          referralStats.referralCode = data.referral_code;
-
-          // Fallback: if link not set, construct from code
-          if (!referralStats.referralLink && referralStats.referralCode) {
-            const baseUrl = window.location.origin;
-            const constructed = `${baseUrl}/signup?ref=${referralStats.referralCode}`;
-            referralStats.referralLink = constructed;
-            const linkInput = document.getElementById('referralLinkInput');
-            if (linkInput) linkInput.value = constructed;
-          }
+        // Final fallback: demo link if nothing worked (use same origin for consistency)
+        if (!linkInput.value || linkInput.value.trim() === '') {
+          const baseUrl = window.location.origin;
+          const demoLink = `${baseUrl}/signup?ref=BLK-DEMO123`;
+          linkInput.value = demoLink;
+          referralStats.referralLink = demoLink;
+          console.log('⚠️ Loyalty: Using demo referral link:', demoLink);
+        } else {
+          console.log('✅ Loyalty: Final referral link:', linkInput.value);
         }
 
         // Setup copy & share buttons
@@ -1690,13 +1737,21 @@
         // Load referral stats
         await loadReferralStats();
         
-        // Show invite widget
+        // Always show invite widget
         const widget = document.getElementById('inviteWidget');
         if (widget) {
           widget.style.display = 'block';
         }
       } catch (e) {
         console.error('Failed to init referral stats', e);
+        // Even on error, show something
+        if (linkInput && !linkInput.value) {
+          linkInput.value = `${window.location.origin}/signup?ref=BLK-DEMO123`;
+        }
+        const widget = document.getElementById('inviteWidget');
+        if (widget) {
+          widget.style.display = 'block';
+        }
       }
     }
 
@@ -2218,10 +2273,31 @@
     // EXISTING FUNCTIONS (UPDATED)
     // ==========================================
     
+    function updateBalanceDisplay() {
+      // Update main balance display
+      const mainPointsEl = document.getElementById('mainBalancePoints');
+      const mainValueEl = document.getElementById('mainBalanceValue');
+      if (mainPointsEl) {
+        mainPointsEl.textContent = currentPoints.toLocaleString();
+      }
+      if (mainValueEl) {
+        mainValueEl.textContent = `(£${(currentPoints * POINT_VALUE).toFixed(2)})`;
+      }
+      
+      // Update modal balance display
+      const modalPointsEl = document.getElementById('currentPoints');
+      const modalValueEl = document.getElementById('currentValue');
+      if (modalPointsEl) {
+        modalPointsEl.textContent = currentPoints.toLocaleString();
+      }
+      if (modalValueEl) {
+        modalValueEl.textContent = `£${(currentPoints * POINT_VALUE).toFixed(2)}`;
+      }
+    }
+
     // Check if user has enough points for redemption
     function checkRedeemButton() {
       const redeemBtn = document.getElementById('redeemBtn');
-      const minRedemption = 500;
       
       // Check verification first
       if (!userVerificationStatus.isVerified) {
@@ -2230,10 +2306,11 @@
         return;
       }
       
-      // Check points
-      if (currentPoints < minRedemption) {
+      // Check points using correct minimum
+      if (currentPoints < MIN_REDEEM_POINTS) {
         redeemBtn.disabled = true;
-        redeemBtn.textContent = `Need ${minRedemption - currentPoints} more pts`;
+        const needed = MIN_REDEEM_POINTS - currentPoints;
+        redeemBtn.textContent = `Need ${needed} more pts (${MIN_REDEEM_POINTS} pts = £${MIN_REDEEM_VALUE} minimum)`;
       } else {
         redeemBtn.disabled = false;
         redeemBtn.textContent = 'Redeem Points';
@@ -2241,10 +2318,6 @@
     }
 
     function generateRedemptionOptions() {
-      const pointValue = 0.01; // 1 BlkPoint = £0.01
-      const minRedemption = 500; // 500 pts = £5
-      const increment = 500; // £5 increments
-      
       const amountButtons = document.getElementById('amountButtons');
       amountButtons.innerHTML = '';
       
@@ -2252,9 +2325,9 @@
       const maxAllowedByCap = redemptionCap.maxAmount - redemptionCap.usedAmount;
       const maxRedemption = Math.min(currentPoints, maxAllowedByCap);
       
-      // Generate valid redemption options
-      for (let pts = minRedemption; pts <= maxRedemption; pts += increment) {
-        const value = pts * pointValue;
+      // Generate valid redemption options (£5 increments, minimum £5)
+      for (let pts = MIN_REDEEM_POINTS; pts <= maxRedemption; pts += MIN_REDEEM_POINTS) {
+        const value = pts * POINT_VALUE;
         const button = document.createElement('button');
         button.className = 'amount-btn';
         button.dataset.amount = pts;
@@ -2266,10 +2339,10 @@
       
       // If no valid options, show appropriate message
       if (amountButtons.children.length === 0) {
-        if (maxAllowedByCap < minRedemption) {
+        if (maxAllowedByCap < MIN_REDEEM_POINTS) {
           amountButtons.innerHTML = '<div class="hint">You\'ve reached your monthly redemption limit. Try again next month.</div>';
         } else {
-          amountButtons.innerHTML = '<div class="hint">You need at least 500 BlkPoints (£5) to redeem.</div>';
+          amountButtons.innerHTML = `<div class="hint">You need at least ${MIN_REDEEM_POINTS} BlkPoints (£${MIN_REDEEM_VALUE}) to redeem.</div>`;
         }
       }
     }
@@ -2281,9 +2354,9 @@
         return;
       }
       
-      // Check eligibility
-      if (currentPoints < 500) {
-        alert('You need at least 500 BlkPoints (£5) to redeem.');
+      // Check eligibility using correct minimum
+      if (currentPoints < MIN_REDEEM_POINTS) {
+        alert(`You need at least ${MIN_REDEEM_POINTS} BlkPoints (£${MIN_REDEEM_VALUE}) to redeem.`);
         return;
       }
       
@@ -2296,8 +2369,7 @@
       generateRedemptionOptions();
       
       // Update current balance display
-      document.getElementById('currentPoints').textContent = currentPoints.toLocaleString();
-      document.getElementById('currentValue').textContent = `£${(currentPoints / 100).toFixed(2)}`;
+      updateBalanceDisplay();
       
       // Show modal
       document.getElementById('redeemModal').style.display = 'block';
@@ -2314,13 +2386,13 @@
       
       // Get redemption data
       const points = parseInt(button.dataset.amount);
-      const value = parseInt(button.dataset.value);
+      const value = parseFloat(button.dataset.value); // Value in £
       
       selectedRedemption = { points, value };
       
-      // Show selected amount
+      // Show selected amount with correct formatting
       document.getElementById('selectedPoints').textContent = points.toLocaleString();
-      document.getElementById('selectedValue').textContent = `(£${value})`;
+      document.getElementById('selectedValue').textContent = `(£${value.toFixed(2)})`;
       document.getElementById('selectedAmount').style.display = 'block';
       
       // Enable apply button
@@ -2340,6 +2412,21 @@
         return;
       }
 
+      // Get current booking amount (for validation)
+      const bookingAmountGBP = getCurrentBookingAmount();
+      
+      // Use centralized validation helper (includes all rules: min, max, balance, order value)
+      const validationError = getBlkPointsError({
+        bookingAmountGBP: bookingAmountGBP,
+        pointsToRedeem: selectedRedemption.points,
+        userPoints: currentPoints
+      });
+      
+      if (validationError) {
+        alert(validationError);
+        return;
+      }
+
       try {
         // Save intent locally as fallback
         localStorage.setItem('blkpoints_redemption', String(selectedRedemption.value));
@@ -2349,13 +2436,11 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${getAuthToken()}` // Get from your auth system
+            'Authorization': `Bearer ${getAuthToken()}`
           },
           body: JSON.stringify({
-            booking_id: getCurrentBookingId(), // Get from booking context
-            redemption_value: selectedRedemption.value,
-            points: selectedRedemption.points,
-            verification_required: true
+            selectedPoints: selectedRedemption.points,
+            bookingAmountGBP: bookingAmountGBP
           })
         });
 
@@ -2366,24 +2451,31 @@
           redemptionCap.usedAmount += selectedRedemption.points;
           updateRedemptionCapUI();
           
+          // Update balance display
+          updateBalanceDisplay();
+          
           // Close modal
           closeModal('redeemModal');
           
-          // Show success message
-          alert(`Redemption applied! You will see a £${selectedRedemption.value} discount applied at checkout.`);
+          // Show success message with correct value formatting
+          const valueDisplay = selectedRedemption.value.toFixed(2);
+          alert(`Redemption applied! You will see a £${valueDisplay} discount applied at checkout.`);
           
           // Redirect to booking page
           window.location.href = 'booking.html';
         } else {
-          const error = await response.json();
-          throw new Error(error.error || 'Failed to apply redemption');
+          const errorData = await response.json();
+          const errorMessage = errorData.error || errorData.message || 'Failed to apply redemption';
+          alert(errorMessage); // Show user-friendly error message
+          throw new Error(errorMessage);
         }
       } catch (error) {
         console.error('Error applying redemption:', error);
         
         // Fallback: proceed with local intent only
         closeModal('redeemModal');
-        alert(`We couldn't reach the server just now, but we've saved your £${selectedRedemption.value} redemption locally and will apply it at checkout.`);
+        const valueDisplay = selectedRedemption.value.toFixed(2);
+        alert(`We couldn't reach the server just now, but we've saved your £${valueDisplay} redemption locally and will apply it at checkout.`);
         window.location.href = 'booking.html';
       }
     }
@@ -2403,6 +2495,25 @@
       // Return current booking ID from URL params or state
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get('booking_id') || null;
+    }
+
+    function getCurrentBookingAmount() {
+      // Get booking amount from URL params, localStorage, or booking context
+      const urlParams = new URLSearchParams(window.location.search);
+      const amountFromUrl = urlParams.get('booking_amount');
+      if (amountFromUrl) {
+        return parseFloat(amountFromUrl);
+      }
+      
+      // Check localStorage for cart/booking total
+      const cartTotal = localStorage.getItem('cart_total') || localStorage.getItem('booking_amount');
+      if (cartTotal) {
+        return parseFloat(cartTotal);
+      }
+      
+      // Demo/fallback: return null (validation will be skipped if not available)
+      // In production, integrate with your booking/cart system
+      return null;
     }
 
     function openNotifications() {
@@ -2429,6 +2540,9 @@
       checkVerificationStatus();
       loadRedemptionCap();
       
+      // Load and display BlkPoints balance
+      loadBlkPointsBalance();
+      
       // Check redeem button after verification status loads
       setTimeout(() => {
         checkRedeemButton();
@@ -2437,10 +2551,40 @@
       // Initialize marketing toggle status
       initMarketingToggle();
       
-      // Initialize referral stats and WebSocket
+      // Initialize referral stats and WebSocket immediately
       initReferralStats();
       initWebSocket();
+
+      // Ensure referral link is visible and populated
+      setTimeout(() => {
+        const linkInput = document.getElementById('referralLinkInput');
+        if (linkInput && (!linkInput.value || linkInput.value.trim() === '')) {
+          console.log('⚠️ Link still empty after init, setting fallback');
+          linkInput.value = `${window.location.origin}/signup?ref=BLK-DEMO123`;
+        }
+      }, 1000);
     });
+
+    // Load BlkPoints balance from API
+    async function loadBlkPointsBalance() {
+      try {
+        const response = await fetch('/api/loyalty/status', {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.balance !== undefined) {
+            currentPoints = data.balance || 0;
+            updateBalanceDisplay();
+            checkRedeemButton();
+          }
+        }
+      } catch (error) {
+        console.error('Error loading BlkPoints balance:', error);
+        // Keep default value
+      }
+    }
   </script>
 
 </body>

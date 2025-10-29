@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlkPages Checkout - BlkPoints Example</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0d0d0d;
+      color: #f8f8f8;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .blkpoints-checkout {
+      background: rgba(40, 40, 40, 0.7);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .blkpoints-checkout h4 {
+      color: #f2c94c;
+      margin: 0 0 1rem 0;
+    }
+    .blkpoints-checkout input {
+      width: 100%;
+      padding: 0.75rem;
+      background: rgba(25, 25, 25, 0.8);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 8px;
+      color: #f8f8f8;
+      font-size: 1rem;
+      margin: 0.5rem 0;
+    }
+    .blkpoints-checkout input:focus {
+      outline: none;
+      border-color: #f2c94c;
+      box-shadow: 0 0 0 2px rgba(242, 201, 76, 0.2);
+    }
+    .blkpoints-checkout .error-msg {
+      color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+    .blkpoints-checkout .success-msg {
+      color: #2ecc71;
+      background: rgba(46, 204, 113, 0.1);
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+    .blkpoints-checkout button {
+      width: 100%;
+      padding: 0.75rem;
+      background: #f2c94c;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background 0.2s;
+    }
+    .blkpoints-checkout button:hover:not(:disabled) {
+      background: #e6b800;
+    }
+    .blkpoints-checkout button.disabled {
+      background: #6c757d;
+      color: #999;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .booking-summary {
+      background: rgba(40, 40, 40, 0.7);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .alert {
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+    .alert.error-banner {
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      color: #ff6b6b;
+    }
+  </style>
+</head>
+<body>
+  <h1>Checkout Example</h1>
+  
+  <div class="booking-summary">
+    <h3>Booking Summary</h3>
+    <p>Service: Haircut & Styling</p>
+    <p><strong>Total: £<span id="bookingTotal">20.00</span></strong></p>
+    <input type="range" id="bookingTotalSlider" min="5" max="100" step="0.5" value="20" 
+           oninput="updateBookingTotal(this.value)">
+  </div>
+
+  <div id="blkpointsComponent"></div>
+
+  <script src="/blkpoints-validation.js"></script>
+  <script>
+    // Mock user data
+    const userPoints = 2400; // User has 2400 points (£24.00)
+    let bookingTotal = 20.00;
+
+    function updateBookingTotal(value) {
+      bookingTotal = parseFloat(value);
+      document.getElementById('bookingTotal').textContent = bookingTotal.toFixed(2);
+      renderBlkPointsComponent();
+    }
+
+    function renderBlkPointsComponent() {
+      const container = document.getElementById('blkpointsComponent');
+      
+      container.innerHTML = `
+        <div class="blkpoints-checkout">
+          <h4>Use your BlkPoints</h4>
+          <p>You have <strong>${userPoints}</strong> points (£${(userPoints * 0.01).toFixed(2)}).</p>
+          
+          <input
+            type="number"
+            id="pointsInput"
+            placeholder="Enter points to redeem"
+            min="0"
+            max="${userPoints}"
+            oninput="validateInput()"
+          />
+          
+          <div id="validationMessage"></div>
+          
+          <button
+            id="applyBtn"
+            onclick="applyBlkPoints()"
+            disabled
+            class="disabled"
+          >
+            Fix issue to continue
+          </button>
+        </div>
+      `;
+    }
+
+    function validateInput() {
+      const input = document.getElementById('pointsInput');
+      const pointsToRedeem = parseInt(input.value || '0', 10);
+      const messageDiv = document.getElementById('validationMessage');
+      const applyBtn = document.getElementById('applyBtn');
+
+      if (pointsToRedeem === 0) {
+        messageDiv.innerHTML = '';
+        applyBtn.disabled = true;
+        applyBtn.className = 'disabled';
+        applyBtn.textContent = 'Enter points to redeem';
+        return;
+      }
+
+      // Use centralized validation
+      const validationError = getBlkPointsError({
+        bookingAmountGBP: bookingTotal,
+        pointsToRedeem: pointsToRedeem,
+        userPoints: userPoints
+      });
+
+      if (validationError) {
+        messageDiv.innerHTML = `<p class="error-msg">${validationError}</p>`;
+        applyBtn.disabled = true;
+        applyBtn.className = 'disabled';
+        applyBtn.textContent = 'Fix issue to continue';
+      } else {
+        const redeemValue = (pointsToRedeem * 0.01).toFixed(2);
+        messageDiv.innerHTML = `<p class="success-msg">✓ You can redeem £${redeemValue}.</p>`;
+        applyBtn.disabled = false;
+        applyBtn.className = '';
+        applyBtn.textContent = 'Apply BlkPoints';
+      }
+    }
+
+    function applyBlkPoints() {
+      const pointsToRedeem = parseInt(document.getElementById('pointsInput').value, 10);
+      
+      if (!pointsToRedeem) {
+        alert('Please enter points to redeem');
+        return;
+      }
+
+      // Final validation
+      const validationError = getBlkPointsError({
+        bookingAmountGBP: bookingTotal,
+        pointsToRedeem: pointsToRedeem,
+        userPoints: userPoints
+      });
+
+      if (validationError) {
+        alert(validationError);
+        return;
+      }
+
+      // In production, this would call your API
+      alert(`Applied ${pointsToRedeem} points (£${(pointsToRedeem * 0.01).toFixed(2)}) to booking!`);
+      
+      // Redirect to payment or update booking total
+      const newTotal = (bookingTotal - (pointsToRedeem * 0.01)).toFixed(2);
+      document.getElementById('bookingTotal').textContent = newTotal;
+    }
+
+    // Initialize
+    renderBlkPointsComponent();
+  </script>
+</body>
+</html>
+
