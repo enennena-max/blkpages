@@ -1,381 +1,1021 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BlkPages Business Dashboard</title>
-<style>
-  :root {
-    --bg-main:#0a0a0a;
-    --bg-panel:#141414;
-    --bg-panel-grad:radial-gradient(circle at 20% 20%,rgba(212,175,55,0.07)0%,rgba(0,0,0,0)60%);
-    --border-gold-strong:rgba(212,175,55,0.45);
-    --border-gold-soft:rgba(212,175,55,0.2);
-    --gold:#d4af37;
-    --gold-soft:rgba(212,175,55,0.7);
-    --text-primary:#fff;
-    --text-dim:#8e8e8e;
-    --text-soft:#cfcfcf;
-    --radius-card:10px;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;font-family:"Poppins",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    background-color:var(--bg-main);color:var(--text-primary);display:flex;min-height:100vh
-  }
-  /* SIDEBAR */
-  .sidebar{
-    width:240px;background:linear-gradient(to bottom right,rgba(20,20,20,0.9),rgba(0,0,0,0.6));
-    border-right:1px solid var(--border-gold-soft);padding:20px 20px 40px;display:flex;flex-direction:column;gap:24px
-  }
-  .brand-block{display:flex;align-items:center;gap:8px;font-weight:600;font-size:1rem;color:var(--gold)}
-  .nav-block{display:flex;flex-direction:column;gap:8px}
-  .nav-item{
-    display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.02);
-    border:1px solid transparent;border-radius:var(--radius-card);color:var(--text-soft);
-    font-size:.95rem;padding:12px 14px;cursor:pointer;transition:.2s all ease
-  }
-  .nav-item:first-child{
-    text-shadow:0 0 8px rgba(212,175,55,0.6);
-    filter:drop-shadow(0 0 4px rgba(212,175,55,0.4));
-  }
-  .nav-item:hover{
-    background:rgba(212,175,55,0.07);border-color:var(--border-gold-strong);
-    box-shadow:0 0 16px rgba(212,175,55,0.3);color:var(--text-primary);
-    text-shadow:0 0 8px rgba(212,175,55,0.6);
-    filter:drop-shadow(0 0 4px rgba(212,175,55,0.4));
-  }
-  .logout{margin-top:auto;border-top:1px solid rgba(255,255,255,0.05);padding-top:20px;opacity:.8}
-
-  /* MAIN AREA */
-  .main-area{flex:1;display:flex;flex-direction:column;min-width:0}
-
-  /* TOP BAR */
-  .topbar{
-    display:flex;align-items:center;justify-content:space-between;padding:24px 24px 16px;
-    border-bottom:1px solid var(--border-gold-soft);
-    background:radial-gradient(circle at 10% 0%,rgba(212,175,55,0.08)0%,rgba(0,0,0,0)60%)
-  }
-  .dashboard-title{font-size:1.6rem;font-weight:600;line-height:1.2;color:var(--gold);text-shadow:0 0 8px rgba(212,175,55,0.4)}
-  .dashboard-plan-label{font-size:.8rem;color:var(--text-dim)}
-  .topbar-right{display:flex;align-items:center;gap:12px}
-  .plan-switcher{
-    background:transparent;border:1px solid var(--border-gold-strong);
-    color:var(--gold);border-radius:var(--radius-card);
-    font-weight:600;font-size:.9rem;padding:8px 12px;cursor:pointer;outline:none;transition:.2s
-  }
-  .plan-switcher:hover{background:rgba(212,175,55,0.07);box-shadow:0 0 12px rgba(212,175,55,0.3)}
-  .plan-switcher option{background:#000;color:var(--gold)}
-  .upgrade-btn{
-    background:transparent;border:1px solid var(--border-gold-strong);
-    border-radius:var(--radius-card);color:var(--gold);
-    font-weight:600;font-size:.9rem;padding:10px 16px;cursor:pointer;transition:.2s
-  }
-  .upgrade-btn:hover{background:rgba(212,175,55,0.07);box-shadow:0 0 16px rgba(212,175,55,0.4)}
-  .user-avatar{
-    width:36px;height:36px;border-radius:8px;background:radial-gradient(circle at 30% 30%,rgba(212,175,55,0.5),rgba(0,0,0,0.2)60%);
-    border:1px solid var(--border-gold-soft);display:flex;align-items:center;justify-content:center;
-    color:var(--gold);font-size:.8rem;font-weight:600
-  }
-
-  /* CARDS & GRIDS */
-  .dashboard-section{display:none;padding:24px}
-  .dashboard-section.active{display:block}
-  .top-stats-row,.mid-row,.bottom-row{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:24px
-  }
-  .panel-card,.card-box,.insight-box{
-    background:var(--bg-panel);background-image:var(--bg-panel-grad);
-    border:1px solid var(--border-gold-soft);border-radius:var(--radius-card);
-    padding:18px 20px;color:var(--text-primary)
-  }
-  .panel-heading{font-size:.8rem;color:var(--text-dim);margin-bottom:6px;font-weight:500}
-  .panel-main-value{color:var(--gold);font-size:1.4rem;font-weight:600}
-  .panel-desc{color:var(--text-soft);font-size:.8rem;margin-top:6px}
-  .card-header-line{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
-  .card-title{display:flex;align-items:center;gap:8px;font-weight:500}
-  .card-metric{font-size:1.4rem;font-weight:600;color:var(--gold)}
-  .spark{width:8px;height:8px;background:var(--gold);border-radius:2px;box-shadow:0 0 8px rgba(212,175,55,0.8)}
-  .card-subtext{font-size:.85rem;color:var(--text-soft);line-height:1.5}
-  .insight-label{font-size:.8rem;color:var(--text-dim)}
-  .insight-value{font-size:1.2rem;font-weight:600;color:var(--gold);margin-top:4px}
-  .insight-extra{font-size:.75rem;color:var(--text-soft)}
-
-  /* LOCKED PANELS */
-  .locked{filter:grayscale(.6) brightness(.6);position:relative}
-  .locked::after{
-    content:"🔒 Upgrade to unlock";position:absolute;inset:0;
-    border-radius:var(--radius-card);background:rgba(0,0,0,0.75);
-    border:1px solid var(--border-gold-strong);color:var(--gold);
-    display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.8rem
-  }
-
-  /* CHARTS */
-  .chart-box{background:rgba(0,0,0,0.4);border:1px solid var(--border-gold-soft);border-radius:var(--radius-card);padding:12px;margin-top:12px}
-  .chart-placeholder{width:100%;height:60px;position:relative;border-left:1px solid rgba(212,175,55,0.3);border-bottom:1px solid rgba(212,175,55,0.3)}
-  .chart-line{position:absolute;left:0;right:0;top:15px;height:2px;background:linear-gradient(to right,rgba(212,175,55,0)0%,rgba(212,175,55,0.8)30%,rgba(212,175,55,0.4)100%);transform:skewY(-5deg)}
-  .chart-bar{position:absolute;bottom:0;width:10px;background:var(--gold);border-radius:2px 2px 0 0}
-  .chart-bar.b1{left:15%;height:20px}.chart-bar.b2{left:30%;height:35px}.chart-bar.b3{left:45%;height:15px}.chart-bar.b4{left:60%;height:40px}.chart-bar.b5{left:75%;height:28px}
-
-  /* RESPONSIVE */
-  @media(max-width:800px){.sidebar{display:none}.dashboard-title{font-size:1.3rem}.topbar{padding:20px 16px 12px}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlkPages Business Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="url-plan-support.js"></script>
+  <style>
+    body {
+      background-color: #0A0A0A;
+      color: #D4AF37;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      color: rgba(212,175,55,0.75);
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .sidebar-link:hover {
+      color: #D4AF37;
+      background: rgba(212,175,55,0.1);
+    }
+    .active {
+      background: rgba(212,175,55,0.15);
+      color: #D4AF37;
+      border-left: 3px solid #D4AF37;
+    }
+    .sidebar-link svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
+    .card {
+      background: #111;
+      border: 1px solid rgba(212,175,55,0.3);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      border-color: #D4AF37;
+      box-shadow: 0 0 15px rgba(212,175,55,0.25);
+    }
+    .fade {
+      animation: fadeIn 0.4s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    .locked {
+      filter: grayscale(0.6) brightness(0.6);
+      position: relative;
+    }
+    .locked::after {
+      content: "🔐 Upgrade to unlock";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.75);
+      border: 1px solid rgba(212,175,55,0.45);
+      color: #D4AF37;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 16px;
+      cursor: pointer;
+    }
+    .plan-indicator {
+      font-size: 0.8rem;
+      color: rgba(212,175,55,0.7);
+      margin-top: 4px;
+    }
+    .upgrade-card {
+      background: rgba(212,175,55,0.1);
+      border: 1px solid rgba(212,175,55,0.5);
+    }
+  </style>
 </head>
-<body>
 
-  <aside class="sidebar">
-    <div class="brand-block"><span>📒</span><span>BlkPages</span></div>
-    <div class="nav-block">
-      <div class="nav-item">🏠 Dashboard</div>
-      <div class="nav-item">📅 Bookings</div>
-      <div class="nav-item">💬 Reviews</div>
-      <div class="nav-item">📊 Insights</div>
-      <div class="nav-item">👤 Profile</div>
+<body class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-black border-r border-[#D4AF37]/30 flex flex-col justify-between">
+    <div>
+      <div class="p-6 text-2xl font-bold text-[#D4AF37]">BlkPages</div>
+      <nav class="px-3 space-y-1" id="sidebar-nav">
+        <div class="sidebar-link active" data-section="dashboard">
+          <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75l9-7.5 9 7.5V21a.75.75 0 01-.75.75H3.75A.75.75 0 013 21V9.75z" />
+          </svg>
+          <span>Dashboard</span>
+        </div>
+        <div class="sidebar-link" data-section="bookings">
+          <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10m-11 8h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          <span>Bookings</span>
+        </div>
+        <div class="sidebar-link" data-section="reviews">
+          <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+          </svg>
+          <span>Reviews</span>
+        </div>
+        <div class="sidebar-link" data-section="insights">
+          <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18" />
+          </svg>
+          <span>Insights</span>
+        </div>
+        <div class="sidebar-link" data-section="profile">
+          <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 12c2.28 0 4-1.72 4-4s-1.72-4-4-4-4 1.72-4 4 1.72 4 4 4zm0 2c-3.33 0-6 2.67-6 6v1h12v-1c0-3.33-2.67-6-6-6z" />
+          </svg>
+          <span>Profile</span>
+        </div>
+        <div class="sidebar-link" data-section="settings">
+          <svg fill="none" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.591 1.066c1.543-.942 3.42.935 2.478 2.478a1.724 1.724 0 001.066 2.591c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.591c.942 1.543-.935 3.42-2.478 2.478a1.724 1.724 0 00-2.591 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.591-1.066c-1.543.942-3.42-.935-2.478-2.478a1.724 1.724 0 00-1.066-2.591c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.591c-.942-1.543.935-3.42 2.478-2.478.882.538 2.034.176 2.591-1.066z" />
+          </svg>
+          <span>Settings</span>
+        </div>
+      </nav>
     </div>
-    <div class="logout nav-block"><div class="nav-item">🚪 Logout</div></div>
+    <div class="p-6">
+      <button class="text-[#D4AF37]/70 hover:text-[#D4AF37] font-semibold">Logout</button>
+    </div>
   </aside>
 
-  <main class="main-area">
-    <header class="topbar">
+  <!-- Main Content -->
+  <main class="flex-1 p-8 space-y-6">
+    <header class="flex justify-between items-center">
       <div>
-        <div class="dashboard-title">Business Dashboard</div>
-        <div class="dashboard-plan-label" id="planLabel">Plan: —</div>
+        <h1 class="text-3xl font-bold text-[#D4AF37]">Business Dashboard</h1>
+        <div class="plan-indicator" id="planLabel">Plan: —</div>
       </div>
-      <div class="topbar-right">
-        <select id="planSwitcher" class="plan-switcher">
-          <option value="free">Free</option>
-          <option value="starter">Starter</option>
-          <option value="pro">Professional</option>
+      <div class="flex items-center gap-4">
+        <select id="planSwitcher" class="bg-black text-[#D4AF37] border border-[#D4AF37]/40 px-3 py-2 rounded-md">
+          <option value="free">Free Plan</option>
+          <option value="starter">Starter Plan</option>
+          <option value="pro">Professional Plan</option>
         </select>
-        <button class="upgrade-btn" id="upgradeBtn">Upgrade</button>
-        <div class="user-avatar">SB</div>
+        <button id="upgradeBtn" class="bg-[#D4AF37] text-black px-4 py-2 font-semibold rounded-md hover:bg-yellow-500 transition">Upgrade</button>
       </div>
     </header>
 
-    <!-- ===== FREE DASHBOARD (Your simplified version) ===== -->
-    <section class="dashboard-section active" id="dash-free">
-      <div class="panel-card">
-        <div class="panel-heading">Your Plan</div>
-        <div class="panel-main-value">Free</div>
-        <div class="panel-desc">Perfect for getting started. Basic listing only.</div>
-      </div>
-
-      <div class="card-box">
-        <div class="card-header-line"><div class="card-title"><div class="spark"></div>Your Listing</div></div>
-        <div class="card-subtext">
-          <strong>Business Name:</strong> Your Business Ltd<br>
-          <strong>Contact:</strong> hello@yourbusiness.com / 01234 567890<br>
-          <strong>Location:</strong> 123 Main Street, London<br><br>
-          This is what customers see on BlkPages.<br>
-          Upgrade to add photos, services, and opening hours.
-        </div>
-      </div>
-
-      <div class="card-box locked">
-        <div class="card-header-line"><div class="card-title"><div class="spark"></div>Bookings & Calendar</div></div>
-        <div class="card-subtext">Take online appointments and manage services in one place.</div>
-      </div>
-
-      <div class="card-box" style="text-align:center;">
-        <div class="card-header-line" style="justify-content:center;">
-          <div class="card-title"><div class="spark"></div>Unlock More Tools</div>
-        </div>
-        <div class="card-subtext" style="margin-bottom:16px;">
-          Manage bookings, collect reviews, and gain insights with the Starter Plan.
-        </div>
-        <button class="upgrade-btn" onclick="window.location.href='pricing.html'">Upgrade to Starter</button>
-      </div>
-    </section>
-
-    <!-- ===== STARTER DASHBOARD ===== -->
-    <section class="dashboard-section" id="dash-starter">
-      <div class="top-stats-row">
-        <div class="panel-card">
-          <div class="panel-heading">Your Plan</div>
-          <div class="panel-main-value">Starter</div>
-          <div class="panel-desc">£14.99 / month</div>
-        </div>
-        <div class="panel-card">
-          <div class="panel-heading">Customer Reviews</div>
-          <div class="panel-main-value">4.8★</div>
-          <div class="panel-desc">32 recent reviews</div>
-        </div>
-        <div class="panel-card">
-          <div class="panel-heading">Priority in Search</div>
-          <div class="panel-main-value">Top 10%</div>
-          <div class="panel-desc">Your listing is boosted in results</div>
-        </div>
-      </div>
-
-      <div class="mid-row">
-        <div class="card-box">
-          <div class="card-header-line">
-            <div class="card-title"><div class="spark"></div>Bookings</div>
-            <div class="card-metric">216</div>
-          </div>
-          <div class="card-subtext">
-            Confirmed bookings this month. Calendar & service management are active.
-          </div>
-          <div class="card-subtext" style="margin-top:12px; font-size:0.8rem; color:var(--text-soft);">
-            Next booking: Tue 14:30 — Beard Trim (£25)
-          </div>
-        </div>
-
-        <div class="card-box locked" data-lock="pro">
-          <div class="card-header-line">
-            <div class="card-title"><div class="spark"></div>Payments & Deposits</div>
-            <div class="card-metric">—</div>
-          </div>
-          <div class="card-subtext">
-            Take card deposits (10–50%), reduce no-shows, get paid ahead.
-          </div>
-        </div>
-      </div>
-
-      <div class="bottom-row">
-        <div class="insight-box">
-          <div class="insight-label">Returning Clients</div>
-          <div class="insight-value">42%</div>
-          <div class="insight-extra">Customers who've booked 2+ times this month.</div>
-        </div>
-        <div class="insight-box">
-          <div class="insight-label">Top Day</div>
-          <div class="insight-value">Sat</div>
-          <div class="insight-extra">Your busiest day for bookings.</div>
-        </div>
-        <div class="insight-box locked" data-lock="pro">
-          <div class="insight-label">SMS Reminders</div>
-          <div class="insight-value">—</div>
-          <div class="insight-extra">Send automatic SMS confirmations + reminders.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== PROFESSIONAL DASHBOARD ===== -->
-    <section class="dashboard-section" id="dash-pro">
-      <div class="top-stats-row">
-        <div class="panel-card">
-          <div class="panel-heading">Average Rating</div>
-          <div class="panel-main-value">4.9 ★</div>
-          <div class="panel-desc">Across all verified reviews</div>
-        </div>
-        <div class="panel-card">
-          <div class="panel-heading">Total Reviews</div>
-          <div class="panel-main-value">87</div>
-          <div class="panel-desc">Customer feedback received</div>
-        </div>
-        <div class="panel-card">
-          <div class="panel-heading">Profile Views (30 days)</div>
-          <div class="panel-main-value">1,264</div>
-          <div class="panel-desc">Your visibility on BlkPages</div>
-        </div>
-        <div class="panel-card">
-          <div class="panel-heading">Bookings This Month</div>
-          <div class="panel-main-value">216</div>
-          <div class="panel-desc">Confirmed appointments</div>
-        </div>
-      </div>
-
-      <div class="mid-row">
-        <div class="card-box">
-          <div class="card-header-line">
-            <div class="card-title"><div class="spark"></div>SMS Credits</div>
-            <div class="card-metric">38 / 50</div>
-          </div>
-          <div class="card-subtext">Automated confirmations & reminders.<br><span style="color:var(--gold)">Resets monthly</span>.</div>
-        </div>
-        <div class="card-box">
-          <div class="card-header-line">
-            <div class="card-title"><div class="spark"></div>Loyalty Rewards</div>
-            <div class="card-metric">Active</div>
-          </div>
-          <div class="card-subtext">62 customers enrolled • Next reward: <span style="color:var(--gold)">Free Cut</span></div>
-        </div>
-      </div>
-
-      <div class="bottom-row">
-        <div class="insight-box">
-          <div class="insight-label">Payment Model</div>
-          <div class="insight-value">Stripe (10–50% deposit)</div>
-          <div class="insight-extra">Connected on 21 Oct 2025</div>
-        </div>
-        <div class="insight-box">
-          <div class="insight-label">Cancellation Policy</div>
-          <div class="insight-value">24 hrs notice</div>
-          <div class="insight-extra">Deposit forfeiture on no-shows</div>
-        </div>
-        <div class="insight-box">
-          <div class="insight-label">Active Add-Ons</div>
-          <div class="insight-value">3</div>
-          <div class="insight-extra">Loyalty, Reviews Pro, Analytics+</div>
-        </div>
-      </div>
-
-      <div class="mid-row" style="margin-top: 24px;">
-        <div class="card-box">
-          <div class="card-header-line">
-            <div class="card-title"><div class="spark"></div>Bookings & Revenue</div>
-            <div class="card-metric">£4,370</div>
-          </div>
-          <div class="card-subtext">Last 30 days revenue.</div>
-          <div class="chart-box">
-            <div class="chart-placeholder">
-              <div class="chart-line"></div>
-              <div class="chart-bar b1"></div><div class="chart-bar b2"></div><div class="chart-bar b3"></div><div class="chart-bar b4"></div><div class="chart-bar b5"></div>
+    <!-- Dashboard Sections -->
+    <div id="dashboard" class="section fade">
+      <!-- Free Plan Dashboard -->
+      <div class="dashboard-section" id="dash-free">
+        <div class="card">
+          <h2 class="text-xl font-semibold mb-3">Free Plan Overview</h2>
+          <p class="text-sm text-[#D4AF37]/80 mb-4">Welcome to BlkPages! Here's what you can do with your free plan.</p>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+            <div class="card text-center">
+              <h3 class="text-sm text-[#D4AF37]/70">Profile Views</h3>
+              <p class="text-2xl font-bold">182</p>
+              <p class="text-xs text-[#D4AF37]/60">Last 30 days</p>
+            </div>
+            <div class="card text-center">
+              <h3 class="text-sm text-[#D4AF37]/70">Your Plan</h3>
+              <p class="text-2xl font-bold">Free</p>
+              <p class="text-xs text-[#D4AF37]/60">£0 forever</p>
+            </div>
+            <div class="card text-center locked" data-lock="starter">
+              <h3 class="text-sm text-[#D4AF37]/70">Bookings</h3>
+              <p class="text-2xl font-bold">—</p>
+              <p class="text-xs text-[#D4AF37]/60">Upgrade to unlock</p>
+            </div>
+            <div class="card text-center locked" data-lock="starter">
+              <h3 class="text-sm text-[#D4AF37]/70">Reviews</h3>
+              <p class="text-2xl font-bold">—</p>
+              <p class="text-xs text-[#D4AF37]/60">Upgrade to unlock</p>
             </div>
           </div>
         </div>
-        <div class="card-box">
-          <div class="card-header-line">
-            <div class="card-title"><div class="spark"></div>Customer Reviews</div>
-            <div class="card-metric">4.9★</div>
+        <div class="card upgrade-card">
+          <h2 class="text-xl font-semibold mb-3">Upgrade to Starter</h2>
+          <p class="text-sm text-[#D4AF37]/80 mb-4">Unlock bookings, calendar management, and customer reviews.</p>
+          <button class="bg-[#D4AF37] text-black px-4 py-2 font-semibold rounded-md hover:bg-yellow-500 transition" data-upgrade>Upgrade Now</button>
+        </div>
+      </div>
+
+      <!-- Starter Plan Dashboard -->
+      <div class="dashboard-section" id="dash-starter">
+        <div class="card">
+          <h2 class="text-xl font-semibold mb-3">Starter Plan Overview</h2>
+          <p class="text-sm text-[#D4AF37]/80 mb-4">Great! You have access to bookings and reviews.</p>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+            <div class="card text-center">
+              <h3 class="text-sm text-[#D4AF37]/70">Total Reviews</h3>
+              <p class="text-2xl font-bold">32</p>
+              <p class="text-xs text-[#D4AF37]/60">4.8★ average</p>
+            </div>
+            <div class="card text-center">
+              <h3 class="text-sm text-[#D4AF37]/70">Bookings</h3>
+              <p class="text-2xl font-bold">216</p>
+              <p class="text-xs text-[#D4AF37]/60">This month</p>
+            </div>
+            <div class="card text-center">
+              <h3 class="text-sm text-[#D4AF37]/70">Profile Views</h3>
+              <p class="text-2xl font-bold">1,234</p>
+              <p class="text-xs text-[#D4AF37]/60">Last 30 days</p>
+            </div>
+            <div class="card text-center locked" data-lock="pro">
+              <h3 class="text-sm text-[#D4AF37]/70">Payments</h3>
+              <p class="text-2xl font-bold">—</p>
+              <p class="text-xs text-[#D4AF37]/60">Upgrade to unlock</p>
+            </div>
           </div>
-          <div class="card-subtext">87 public reviews. Avg response time: 1h 12m.</div>
-          <div class="chart-box">
-            <div class="chart-placeholder">
-              <div class="chart-line" style="top:25px;"></div>
-              <div class="chart-bar b1" style="height:30px;"></div><div class="chart-bar b2" style="height:40px;"></div><div class="chart-bar b3" style="height:33px;"></div><div class="chart-bar b4" style="height:45px;"></div><div class="chart-bar b5" style="height:38px;"></div>
+        </div>
+        <div class="card upgrade-card">
+          <h2 class="text-xl font-semibold mb-3">Upgrade to Professional</h2>
+          <p class="text-sm text-[#D4AF37]/80 mb-4">Unlock payments, SMS reminders, and advanced analytics.</p>
+          <button class="bg-[#D4AF37] text-black px-4 py-2 font-semibold rounded-md hover:bg-yellow-500 transition" data-upgrade>Upgrade Now</button>
+        </div>
+      </div>
+
+      <!-- Professional Plan Dashboard -->
+      <div class="dashboard-section" id="dash-pro">
+        <div class="card">
+          <h2 class="text-xl font-semibold mb-3">Professional Overview</h2>
+          <p class="text-sm text-[#D4AF37]/80 mb-4">Welcome back! Here's a quick overview of your activity.</p>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+            <div class="card text-center">
+              <h3 class="text-sm text-[#D4AF37]/70">Total Reviews</h3>
+              <p class="text-2xl font-bold">127</p>
+              <p class="text-xs text-[#D4AF37]/60">4.9★ average</p>
+            </div>
+            <div class="card text-center">
+              <h3 class="text-sm text-[#D4AF37]/70">Average Rating</h3>
+              <p class="text-2xl font-bold">4.9</p>
+              <p class="text-xs text-[#D4AF37]/60">Across all reviews</p>
+            </div>
+            <div class="card text-center">
+              <h3 class="text-sm text-[#D4AF37]/70">Profile Views</h3>
+              <p class="text-2xl font-bold">1,234</p>
+              <p class="text-xs text-[#D4AF37]/60">Last 30 days</p>
+            </div>
+            <div class="card text-center">
+              <h3 class="text-sm text-[#D4AF37]/70">Bookings This Month</h3>
+              <p class="text-2xl font-bold">89</p>
+              <p class="text-xs text-[#D4AF37]/60">Confirmed appointments</p>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <div class="card">
+            <h3 class="text-lg font-semibold mb-3">SMS Credits</h3>
+            <p class="text-2xl font-bold mb-2">38 / 50</p>
+            <p class="text-sm text-[#D4AF37]/70">Automated confirmations & reminders</p>
+          </div>
+          <div class="card">
+            <h3 class="text-lg font-semibold mb-3">Loyalty Rewards</h3>
+            <p class="text-2xl font-bold mb-2">Active</p>
+            <p class="text-sm text-[#D4AF37]/70">62 customers enrolled</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="bookings" class="section hidden fade">
+      <!-- BOOKINGS TAB (Starter Package) -->
+      <section class="min-h-screen w-full bg-[#0A0A0A] text-white p-6 md:p-8 font-sans">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          <div>
+            <h1 class="text-2xl font-semibold text-white tracking-tight flex items-center gap-2">
+              <span>Bookings</span>
+              <span class="text-[11px] font-medium bg-[#1a1a1a] border border-[#333] text-[#D4AF37] px-2 py-0.5 rounded-full leading-none uppercase">
+                Starter
+              </span>
+            </h1>
+            <p class="text-sm text-gray-400 mt-1">
+              View, confirm, reschedule and manage all upcoming appointments.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 sm:items-center">
+            <!-- Search -->
+            <div class="relative">
+              <input
+                id="bookingSearchInput"
+                type="text"
+                class="w-full sm:w-64 bg-[#1a1a1a] border border-[#333] text-white text-sm rounded-lg pl-9 pr-3 py-2.5 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#D4AF37] focus:border-[#D4AF37]"
+                placeholder="Search by client, service..."
+              />
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs">
+                🔍
+              </span>
+            </div>
+
+            <!-- Add Booking button -->
+            <button
+              onclick="openNewBookingModal()"
+              class="whitespace-nowrap inline-flex items-center justify-center rounded-lg text-sm font-medium bg-[#D4AF37] text-black px-4 py-2.5 hover:opacity-90 transition"
+            >
+              + Add Booking
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <!-- Total Bookings (all time / this month) -->
+          <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Total Bookings (Oct)</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="statTotalBookings" class="text-2xl font-semibold text-white">0</span>
+              <span class="text-[11px] text-[#D4AF37] bg-[#1a1a1a] border border-[#333] rounded px-2 py-0.5 leading-none">Live</span>
+            </div>
+          </div>
+
+          <!-- Bookings Today -->
+          <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Bookings Today</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="statTodayBookings" class="text-2xl font-semibold text-white">0</span>
+              <span class="text-[11px] text-gray-400 leading-none">For <span id="todayLabel"></span></span>
+            </div>
+          </div>
+
+          <!-- Pending / Upcoming -->
+          <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Pending / Upcoming</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="statPending" class="text-2xl font-semibold text-white">0</span>
+              <span class="text-[11px] text-gray-400 leading-none">Awaiting confirm</span>
+            </div>
+          </div>
+
+          <!-- Cancelled / No-Show -->
+          <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Cancelled / No-Show</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="statCancelled" class="text-2xl font-semibold text-white">0</span>
+              <span class="text-[11px] text-gray-400 leading-none">This month</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters row -->
+        <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4 mb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <div class="flex flex-col sm:flex-row gap-4 flex-1">
+            <!-- Status filter -->
+            <div class="flex-1 min-w-[140px]">
+              <label class="text-[11px] text-gray-500 uppercase tracking-wide mb-1 block">Status</label>
+              <select
+                id="filterStatus"
+                class="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+              >
+                <option value="all">All</option>
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <!-- Date filter (basic, for future extension) -->
+            <div class="flex-1 min-w-[140px]">
+              <label class="text-[11px] text-gray-500 uppercase tracking-wide mb-1 block">Date</label>
+              <input
+                id="filterDate"
+                type="date"
+                class="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+              />
+            </div>
+          </div>
+
+          <div class="text-[10px] text-gray-500 flex flex-wrap items-center gap-2">
+            <span class="hidden sm:inline text-gray-400">Legend:</span>
+            <span class="flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-[#D4AF37]"></span><span>Confirmed</span>
+            </span>
+            <span class="flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-[#444]"></span><span>Pending</span>
+            </span>
+            <span class="flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-[#7a1f1f]"></span><span>Cancelled</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Bookings table card -->
+        <div class="bg-[#111] border border-[#2a2a2a] rounded-xl overflow-hidden">
+          <!-- table header -->
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between p-4 border-b border-[#2a2a2a]">
+            <div>
+              <h2 class="text-sm font-medium text-white">All Bookings</h2>
+              <p class="text-[11px] text-gray-500">Live list of upcoming and recent bookings</p>
+            </div>
+            <div class="text-[11px] text-gray-500 mt-3 md:mt-0">
+              <span id="tableCount">0</span> total
+            </div>
+          </div>
+
+          <!-- table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-[12px] text-gray-300 min-w-[700px]">
+              <thead class="uppercase text-[10px] text-gray-500 bg-[#1a1a1a] border-b border-[#2a2a2a]">
+                <tr>
+                  <th class="px-4 py-3 font-medium">Date</th>
+                  <th class="px-4 py-3 font-medium">Time</th>
+                  <th class="px-4 py-3 font-medium">Client</th>
+                  <th class="px-4 py-3 font-medium">Service</th>
+                  <th class="px-4 py-3 font-medium">Staff</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                  <th class="px-4 py-3 font-medium">Price</th>
+                  <th class="px-4 py-3 font-medium text-right">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody id="bookingsTableBody" class="divide-y divide-[#1f1f1f]">
+                <!-- rows injected by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Settings footer shortcut -->
+        <div class="text-[12px] text-gray-400 text-center mt-8">
+          <button
+            class="underline hover:text-[#D4AF37] transition"
+            onclick="alert('Open Booking Settings: hours, cancellation rules, etc.')"
+          >
+            Configure booking hours, cancellation rules & policies →
+          </button>
+        </div>
+      </section>
+
+      <!-- ======================== -->
+      <!-- ADD BOOKING MODAL        -->
+      <!-- ======================== -->
+      <div
+        id="newBookingModal"
+        class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/70 p-4"
+      >
+        <div class="bg-[#0F0F0F] border border-[#2a2a2a] rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 text-[13px]">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h2 class="text-white text-base font-semibold">Add New Booking</h2>
+              <p class="text-[11px] text-gray-500">Manual booking entry for walk-ins / phone calls</p>
+            </div>
+            <button
+              onclick="closeNewBookingModal()"
+              class="text-gray-500 hover:text-white text-sm"
+            >✕</button>
+          </div>
+
+          <div class="space-y-4 text-[13px]">
+            <div class="flex flex-col">
+              <label class="text-[11px] text-gray-400 uppercase mb-1">Client Name *</label>
+              <input id="newClient" class="bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-white text-[13px] focus:outline-none focus:ring-1 focus:ring-[#D4AF37]" placeholder="e.g. Sarah Jones" />
+            </div>
+
+            <div class="flex flex-col">
+              <label class="text-[11px] text-gray-400 uppercase mb-1">Contact (Phone or Email) *</label>
+              <input id="newContact" class="bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-white text-[13px] focus:outline-none focus:ring-1 focus:ring-[#D4AF37]" placeholder="e.g. 07700 123456" />
+            </div>
+
+            <div class="flex flex-col">
+              <label class="text-[11px] text-gray-400 uppercase mb-1">Service *</label>
+              <input id="newService" class="bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-white text-[13px] focus:outline-none focus:ring-1 focus:ring-[#D4AF37]" placeholder="e.g. Silk Press" />
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+              <div class="flex-1 flex flex-col">
+                <label class="text-[11px] text-gray-400 uppercase mb-1">Date *</label>
+                <input id="newDate" type="date" class="bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-white text-[13px] focus:outline-none focus:ring-1 focus:ring-[#D4AF37]" />
+              </div>
+              <div class="flex-1 flex flex-col">
+                <label class="text-[11px] text-gray-400 uppercase mb-1">Time *</label>
+                <input id="newTime" type="time" class="bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-white text-[13px] focus:outline-none focus:ring-1 focus:ring-[#D4AF37]" />
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+              <div class="flex-1 flex flex-col">
+                <label class="text-[11px] text-gray-400 uppercase mb-1">Staff *</label>
+                <input id="newStaff" class="bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-white text-[13px] focus:outline-none focus:ring-1 focus:ring-[#D4AF37]" placeholder="e.g. Tasha" />
+              </div>
+
+              <div class="flex-1 flex flex-col">
+                <label class="text-[11px] text-gray-400 uppercase mb-1">Price (£)*</label>
+                <input id="newPrice" type="number" min="0" class="bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-white text-[13px] focus:outline-none focus:ring-1 focus:ring-[#D4AF37]" placeholder="45" />
+              </div>
+            </div>
+
+            <div class="flex flex-col">
+              <label class="text-[11px] text-gray-400 uppercase mb-1">Status *</label>
+              <select id="newStatus" class="bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-white text-[13px] focus:outline-none focus:ring-1 focus:ring-[#D4AF37]">
+                <option>Pending</option>
+                <option>Confirmed</option>
+                <option>Cancelled</option>
+              </select>
+            </div>
+
+            <div class="flex gap-3 pt-4">
+              <button
+                onclick="saveNewBooking()"
+                class="flex-1 inline-flex items-center justify-center bg-[#D4AF37] text-black text-sm font-medium px-4 py-2.5 rounded-lg hover:opacity-90 transition"
+              >
+                Save Booking
+              </button>
+              <button
+                onclick="closeNewBookingModal()"
+                class="flex-1 inline-flex items-center justify-center bg-[#1a1a1a] border border-[#333] text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:border-[#D4AF37] hover:text-[#D4AF37] transition"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </section>
+
+      <!-- ======================== -->
+      <!-- BOOKINGS JAVASCRIPT     -->
+      <!-- ======================== -->
+      <script>
+        // -----------------------------
+        // 1. MOCK DATA
+        // -----------------------------
+        const todayISO = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const readableToday = new Date().toLocaleDateString('en-GB', {
+          weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+        });
+
+        // This array simulates bookings pulled from backend
+        // status can be 'Pending' | 'Confirmed' | 'Cancelled'
+        let bookings = [
+          {
+            date: todayISO, // today
+            time: '09:00',
+            client: 'Sarah Jones',
+            service: 'Silk Press',
+            staff: 'Tasha',
+            status: 'Pending',
+            price: 45
+          },
+          {
+            date: todayISO, // today
+            time: '09:00',
+            client: 'Amira Patel',
+            service: 'Full Set Gel Nails',
+            staff: 'Rae',
+            status: 'Confirmed',
+            price: 32
+          },
+          {
+            date: todayISO, // today
+            time: '11:30',
+            client: 'Leah Mensah',
+            service: 'Knotless Braids (Mid Back)',
+            staff: 'Tasha',
+            status: 'Confirmed',
+            price: 85
+          },
+          {
+            date: '2025-10-31',
+            time: '09:00',
+            client: 'Michael K',
+            service: 'Beard Trim',
+            staff: 'Jay',
+            status: 'Cancelled',
+            price: 15
+          }
+        ];
+
+        // -----------------------------
+        // 2. RENDER HELPERS
+        // -----------------------------
+
+        function renderStatusBadge(status){
+          if(status === 'Confirmed'){
+            return `
+              <span class="inline-flex items-center gap-1 text-[11px] font-medium text-black bg-[#D4AF37] rounded px-2 py-1 border border-[#D4AF37]">
+                <span class="w-1.5 h-1.5 rounded-full bg-black"></span>
+                ${status}
+              </span>
+            `;
+          }
+          if(status === 'Pending'){
+            return `
+              <span class="inline-flex items-center gap-1 text-[11px] font-medium text-[#444] bg-[#2a2a2a] rounded px-2 py-1 border border-[#444]">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#444]"></span>
+                ${status}
+              </span>
+            `;
+          }
+          // Cancelled
+          return `
+            <span class="inline-flex items-center gap-1 text-[11px] font-medium text-red-500 bg-[#1a0f0f] rounded px-2 py-1 border border-[#7a1f1f]">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#7a1f1f]"></span>
+              ${status}
+            </span>
+          `;
+        }
+
+        function actionButtonsHTML(index, status){
+          // if cancelled, maybe only "Reinstate"? For now allow all.
+          return `
+            <div class="flex flex-col items-end gap-1">
+              <button class="text-[#D4AF37] hover:underline text-[12px]" onclick="confirmBooking(${index})">Confirm</button>
+              <button class="text-[12px] text-gray-300 hover:underline" onclick="cancelBooking(${index})">Cancel</button>
+              <button class="text-[12px] text-gray-500 hover:underline" onclick="alert('Reschedule flow for ${bookings[index].client}')">Reschedule</button>
+            </div>
+          `;
+        }
+
+        // Convert YYYY-MM-DD to e.g. "28 Oct 2025"
+        function prettyDate(iso){
+          const d = new Date(iso + 'T00:00:00');
+          return d.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+          });
+        }
+
+        // -----------------------------
+        // 3. RENDER TABLE + STATS
+        // -----------------------------
+        function renderTable(){
+          const tbody = document.getElementById('bookingsTableBody');
+          tbody.innerHTML = '';
+
+          const searchVal = document.getElementById('bookingSearchInput').value.toLowerCase().trim();
+          const statusFilter = document.getElementById('filterStatus').value;
+          const dateFilter = document.getElementById('filterDate').value; // "" or "YYYY-MM-DD"
+
+          const filtered = bookings.filter((b)=> {
+            // search match
+            const sMatch =
+              b.client.toLowerCase().includes(searchVal) ||
+              b.service.toLowerCase().includes(searchVal);
+
+            if(!sMatch) return false;
+
+            // status match
+            if(statusFilter !== 'all' && b.status !== statusFilter) return false;
+
+            // date match (optional)
+            if(dateFilter && b.date !== dateFilter) return false;
+
+            return true;
+          });
+
+          // inject rows
+          filtered.forEach((b, index)=>{
+            const rowHTML = `
+              <tr class="hover:bg-[#1a1a1a]/60 transition">
+                <td class="px-4 py-3 text-white">${prettyDate(b.date)}</td>
+                <td class="px-4 py-3 text-white">${b.time}</td>
+                <td class="px-4 py-3 text-white font-medium">${b.client}</td>
+                <td class="px-4 py-3 text-gray-300">${b.service}</td>
+                <td class="px-4 py-3 text-gray-300">${b.staff}</td>
+                <td class="px-4 py-3">${renderStatusBadge(b.status)}</td>
+                <td class="px-4 py-3 text-white font-medium">£${b.price}</td>
+                <td class="px-4 py-3 text-right">
+                  ${actionButtonsHTML(index, b.status)}
+                </td>
+              </tr>
+            `;
+            tbody.insertAdjacentHTML('beforeend', rowHTML);
+          });
+
+          // update stats after render
+          updateStats(filtered.length);
+        }
+
+        function updateStats(currentTableCount){
+          // total bookings (just array length)
+          document.getElementById('statTotalBookings').textContent = bookings.length;
+
+          // pending
+          const pendingCount = bookings.filter(b=> b.status === 'Pending').length;
+          document.getElementById('statPending').textContent = pendingCount;
+
+          // cancelled
+          const cancelledCount = bookings.filter(b=> b.status === 'Cancelled').length;
+          document.getElementById('statCancelled').textContent = cancelledCount;
+
+          // today count
+          const todayCount = bookings.filter(b=> b.date === todayISO).length;
+          document.getElementById('statTodayBookings').textContent = todayCount;
+          document.getElementById('todayLabel').textContent = readableToday;
+
+          // table row count (after filters)
+          document.getElementById('tableCount').textContent = currentTableCount;
+        }
+
+        // -----------------------------
+        // 4. BUTTON ACTIONS
+        // -----------------------------
+        function confirmBooking(i){
+          bookings[i].status = 'Confirmed';
+          renderTable();
+        }
+        function cancelBooking(i){
+          bookings[i].status = 'Cancelled';
+          renderTable();
+        }
+
+        // -----------------------------
+        // 5. ADD BOOKING MODAL LOGIC
+        // -----------------------------
+        const newBookingModal = document.getElementById('newBookingModal');
+
+        function openNewBookingModal() {
+          newBookingModal.classList.remove('hidden');
+          newBookingModal.classList.add('flex');
+        }
+        function closeNewBookingModal() {
+          newBookingModal.classList.add('hidden');
+          newBookingModal.classList.remove('flex');
+        }
+
+        function saveNewBooking(){
+          const client = document.getElementById('newClient').value.trim();
+          const contact = document.getElementById('newContact').value.trim(); // not used yet but would be saved backend
+          const service = document.getElementById('newService').value.trim();
+          const date = document.getElementById('newDate').value;
+          const time = document.getElementById('newTime').value;
+          const staff = document.getElementById('newStaff').value.trim();
+          const price = parseFloat(document.getElementById('newPrice').value || '0');
+          const status = document.getElementById('newStatus').value;
+
+          if(!client || !contact || !service || !date || !time || !staff || !price || !status){
+            alert('Please fill all required fields.');
+            return;
+          }
+
+          bookings.push({
+            date,
+            time,
+            client,
+            service,
+            staff,
+            status,
+            price
+          });
+
+          closeNewBookingModal();
+          clearNewBookingForm();
+          renderTable();
+        }
+
+        function clearNewBookingForm(){
+          document.getElementById('newClient').value = '';
+          document.getElementById('newContact').value = '';
+          document.getElementById('newService').value = '';
+          document.getElementById('newDate').value = '';
+          document.getElementById('newTime').value = '';
+          document.getElementById('newStaff').value = '';
+          document.getElementById('newPrice').value = '';
+          document.getElementById('newStatus').value = 'Pending';
+        }
+
+        // -----------------------------
+        // 6. INIT + EVENT LISTENERS
+        // -----------------------------
+        function initBookingsUI(){
+          // hook up listeners
+          document.getElementById('bookingSearchInput').addEventListener('input', renderTable);
+          document.getElementById('filterStatus').addEventListener('change', renderTable);
+          document.getElementById('filterDate').addEventListener('change', renderTable);
+
+          renderTable();
+        }
+
+        // Initialize when bookings section is shown
+        document.addEventListener('DOMContentLoaded', function() {
+          // Check if we're on the bookings section and initialize
+          const bookingsSection = document.getElementById('bookings');
+          if (bookingsSection && !bookingsSection.classList.contains('hidden')) {
+            initBookingsUI();
+          }
+        });
+
+        // Also initialize when section becomes visible
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+              const bookingsSection = document.getElementById('bookings');
+              if (bookingsSection && !bookingsSection.classList.contains('hidden')) {
+                initBookingsUI();
+              }
+            }
+          });
+        });
+
+        // Start observing
+        const bookingsSection = document.getElementById('bookings');
+        if (bookingsSection) {
+          observer.observe(bookingsSection, { attributes: true });
+        }
+      </script>
+    </div>
+
+    <div id="reviews" class="section hidden fade">
+      <div class="card">
+        <h2 class="text-xl font-semibold mb-3">Customer Reviews</h2>
+        <p class="text-sm text-[#D4AF37]/70">View and reply to customer feedback.</p>
+      </div>
+    </div>
+
+    <div id="insights" class="section hidden fade">
+      <div class="card">
+        <h2 class="text-xl font-semibold mb-3">Insights</h2>
+        <p class="text-sm text-[#D4AF37]/70">Track analytics, conversions, and performance trends.</p>
+      </div>
+    </div>
+
+    <div id="profile" class="section hidden fade">
+      <div class="card">
+        <h2 class="text-xl font-semibold mb-3">Profile & Listing</h2>
+        <p class="text-sm text-[#D4AF37]/70">Edit your business details and profile settings.</p>
+      </div>
+    </div>
+
+    <div id="settings" class="section hidden fade">
+      <div class="card">
+        <h2 class="text-xl font-semibold mb-3">Settings</h2>
+        <p class="text-sm text-[#D4AF37]/70">Configure payment models, policies, and integrations.</p>
+      </div>
+    </div>
   </main>
 
-<script>
-  const params=new URLSearchParams(window.location.search);
-  let currentPlan=params.get("plan")||"free";
-  
-  // Update plan label
-  document.getElementById("planLabel").textContent="Plan: "+currentPlan.charAt(0).toUpperCase()+currentPlan.slice(1);
-  
-  // Set plan switcher
-  const planSwitcher=document.getElementById("planSwitcher");
-  planSwitcher.value=currentPlan;
-  
-  // Show/hide sections based on plan
-  document.querySelectorAll('.dashboard-section').forEach(section => {
-    section.classList.remove('active');
-  });
-  document.getElementById('dash-' + currentPlan).classList.add('active');
-  
-  // Update locked elements based on plan
-  document.querySelectorAll('.locked').forEach(element => {
-    const requiredTier = element.getAttribute("data-lock");
-    if (currentPlan === "pro" || (currentPlan === "starter" && requiredTier === "starter")) {
-      element.classList.remove('locked');
-    } else {
-      element.classList.add('locked');
-    }
-  });
-  
-  // Plan switcher event
-  planSwitcher.addEventListener("change",e=>{
-    const val=e.target.value;
-    const base=window.location.href.split("?")[0];
-    window.location.href=`${base}?plan=${val}`;
-  });
-</script>
+  <!-- Upgrade Modal -->
+  <div id="upgradeModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#111] border border-[#D4AF37]/40 rounded-lg p-6 max-w-md w-full mx-4">
+      <h2 class="text-xl font-bold text-[#D4AF37] mb-2">Upgrade your plan</h2>
+      <p class="text-sm text-[#D4AF37]/80 mb-6">
+        Unlock bookings, deposits, SMS reminders and full business insights.  
+        You're a few steps away from running your business on autopilot.
+      </p>
+      <div class="flex flex-col gap-3">
+        <button id="modalViewPlansBtn" class="bg-[#D4AF37] text-black px-4 py-2 font-semibold rounded-md hover:bg-yellow-500 transition">
+          View Plans
+        </button>
+        <button id="closeModalBtn" class="text-[#D4AF37]/70 hover:text-[#D4AF37] font-semibold">
+          Not now
+        </button>
+      </div>
+    </div>
+  </div>
 
+  <!-- JavaScript for dynamic section switching and plan management -->
+  <script>
+    let currentPlan = "pro"; // Default plan
+    
+    document.addEventListener("DOMContentLoaded", () => {
+      const links = document.querySelectorAll('.sidebar-link');
+      const sections = document.querySelectorAll('.section');
+      const planSwitcher = document.getElementById("planSwitcher");
+      const planLabelEl = document.getElementById("planLabel");
+      const dashboards = {
+        free: document.getElementById("dash-free"),
+        starter: document.getElementById("dash-starter"),
+        pro: document.getElementById("dash-pro")
+      };
+      
+      const allLockedElements = document.querySelectorAll("[data-lock]");
+      const upgradeBtn = document.getElementById("upgradeBtn");
+      const upgradeModal = document.getElementById("upgradeModal");
+      const closeModalBtn = document.getElementById("closeModalBtn");
+      const modalViewPlansBtn = document.getElementById("modalViewPlansBtn");
+      const upgradeTriggers = document.querySelectorAll("#upgradeBtn, [data-upgrade]");
+
+      // Section switching
+      links.forEach(link => {
+        link.addEventListener('click', () => {
+          // remove active
+          links.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+
+          // show corresponding section
+          const target = link.dataset.section;
+          sections.forEach(sec => {
+            sec.classList.add('hidden');
+            if (sec.id === target) sec.classList.remove('hidden');
+          });
+        });
+      });
+
+      function updateDashboardView(plan) {
+        if (!dashboards[plan]) {
+          plan = "free";
+        }
+        currentPlan = plan;
+        
+        // Update plan label
+        const planLabelText = {
+          free: "Plan: Free",
+          starter: "Plan: Starter", 
+          pro: "Plan: Professional",
+        };
+        if (planLabelEl) {
+          planLabelEl.textContent = planLabelText[plan] || "Plan: —";
+        }
+
+        // Show/hide dashboards
+        Object.values(dashboards).forEach(dash => {
+          if (dash) dash.style.display = "none";
+        });
+        if (dashboards[plan]) {
+          dashboards[plan].style.display = "block";
+        }
+
+        // Update locked elements
+        allLockedElements.forEach(el => {
+          const requiredTier = el.getAttribute("data-lock");
+          el.classList.add("locked");
+
+          if (plan === "pro") {
+            el.classList.remove("locked");
+          } else if (plan === "starter") {
+            if (requiredTier === "starter") {
+              el.classList.remove("locked");
+            }
+          }
+        });
+        
+        // Update upgrade button
+        if (upgradeBtn) {
+          if (plan === "pro") {
+            upgradeBtn.style.display = "none";
+          } else {
+            upgradeBtn.style.display = "block";
+          }
+        }
+      }
+
+      // Get plan from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      let planFromUrl = urlParams.get("plan");
+      
+      currentPlan = "pro"; // Default
+      if (planFromUrl && dashboards[planFromUrl]) {
+        currentPlan = planFromUrl;
+      }
+      
+      // Set dropdown and update view
+      if (planSwitcher) {
+        planSwitcher.value = currentPlan;
+      }
+      updateDashboardView(currentPlan);
+
+      // Plan switcher event
+      if (planSwitcher) {
+        planSwitcher.addEventListener("change", (e) => {
+          const newPlan = e.target.value;
+          updateDashboardView(newPlan);
+          
+          // Update URL
+          if (window.history.replaceState) {
+            const base = window.location.href.split("?")[0];
+            const newUrl = new URL(base, window.location.origin);
+            newUrl.searchParams.set("plan", newPlan);
+            window.history.replaceState({ path: newUrl.href }, '', newUrl.href);
+          }
+        });
+      }
+
+      // Modal functions
+      function openUpgradeModal() {
+        if (currentPlan === "pro") return;
+        upgradeModal.classList.remove("hidden");
+      }
+
+      function closeUpgradeModal() {
+        upgradeModal.classList.add("hidden");
+      }
+      
+      // Event listeners
+      upgradeTriggers.forEach(btn => {
+        btn.addEventListener("click", openUpgradeModal);
+      });
+      
+      if (closeModalBtn) {
+        closeModalBtn.addEventListener("click", closeUpgradeModal);
+      }
+      
+      if (modalViewPlansBtn) {
+        modalViewPlansBtn.addEventListener("click", () => {
+          console.log("Redirecting to pricing page...");
+          closeUpgradeModal();
+        });
+      }
+
+      // Close modal on background click
+      upgradeModal.addEventListener("click", (e) => {
+        if (e.target === upgradeModal) {
+          closeUpgradeModal();
+        }
+      });
+
+      // Escape key to close modal
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !upgradeModal.classList.contains("hidden")) {
+          closeUpgradeModal();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
