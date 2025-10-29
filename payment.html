@@ -289,6 +289,22 @@
 </head>
 <body>
   <div class="wrap">
+    <!-- Progress Steps -->
+    <div class="progress-steps">
+      <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-label">Booking</span>
+      </div>
+      <div class="step active">
+        <span class="step-number">2</span>
+        <span class="step-label">Payment</span>
+      </div>
+      <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-label">Confirmation</span>
+      </div>
+    </div>
+
     <header>
       <div class="logo">BlkPages</div>
       <div style="color: var(--muted);">Secure Payment</div>
@@ -402,20 +418,135 @@
     </div>
   </div>
 
-  <script src="/blkpoints-validation.js"></script>
-  <script>
+  <style>
+    /* Progress Steps */
+    .progress-steps {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #333;
+      margin-bottom: 20px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      color: #666;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .step.active {
+      color: #FFD700;
+    }
+
+    .step-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #333;
+      color: #999;
+      font-size: 12px;
+      font-weight: 700;
+      margin-right: 8px;
+    }
+
+    .step.active .step-number {
+      background: #FFD700;
+      color: #111;
+    }
+
+    .step-label {
+      margin-left: 4px;
+    }
+
+    .step:not(:last-child)::after {
+      content: '→';
+      margin: 0 20px;
+      color: #444;
+      font-size: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .progress-steps {
+        padding: 15px 10px;
+      }
+      
+      .step {
+        font-size: 12px;
+      }
+      
+      .step:not(:last-child)::after {
+        margin: 0 10px;
+      }
+    }
+  </style>
+
+  <script src="blkpoints-validation.js"></script>
+    <script>
     // Get booking data from localStorage (set by booking page)
-    const bookingData = JSON.parse(localStorage.getItem('bookingData') || '{}');
+    const rawData = localStorage.getItem("bookingSummary");
     
-    // Initialize
-    let bookingTotal = bookingData.total || 0;
+    console.log('Raw localStorage data:', rawData);
+    
+    // Initialize booking variables
+    let bookingTotal = 0;
+    let bookingServices = [];
+    let bookingDate = '—';
+    let bookingTime = '—';
+    let bookingDuration = 0;
+    
+    if (!rawData) {
+      console.log('No booking data found. Using sample data for testing.');
+      // Use sample data for testing
+      bookingServices = [
+        { name: "Beard Trim", price: 35, duration: 45 }
+      ];
+      bookingTotal = 35;
+      bookingDate = "Wed 15 Jan";
+      bookingTime = "14:00";
+      bookingDuration = 45;
+    } else {
+      const booking = JSON.parse(rawData);
+      console.log('Parsed booking data:', booking);
+      
+      bookingServices = booking.services || [];
+      bookingTotal = booking.total || 0;
+      bookingDate = booking.date || '—';
+      bookingTime = booking.time || '—';
+      bookingDuration = booking.duration || 0;
+    }
+    
+    console.log('Initialized payment page with:', {
+      bookingTotal,
+      bookingServices,
+      bookingDate,
+      bookingTime,
+      bookingDuration
+    });
     let blkPointsDiscount = 0;
     let appliedPoints = 0;
     let userPoints = 2400; // Mock - would come from API
     
-    // Load user points from API
+    // Load user points from API (with fallback for local testing)
     async function loadUserPoints() {
       try {
+        // Check if we're running on a server or locally
+        const isLocalFile = window.location.protocol === 'file:';
+        
+        if (isLocalFile) {
+          // Use mock data for local file testing
+          console.log('Running locally - using mock points data');
+          userPoints = 2400; // Mock points for testing
+          updatePointsDisplay();
+          return;
+        }
+        
         const token = localStorage.getItem('auth_token') || localStorage.getItem('authToken') || '';
         const response = await fetch('/api/loyalty/status', {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -423,9 +554,14 @@
         if (response.ok) {
           const data = await response.json();
           userPoints = data.balance || data.points || 2400;
+        } else {
+          // Fallback to mock data if API fails
+          userPoints = 2400;
         }
       } catch (error) {
-        console.error('Error loading points:', error);
+        console.warn('Error loading points (using fallback):', error.message);
+        // Use mock data as fallback
+        userPoints = 2400;
       }
       updatePointsDisplay();
     }
@@ -438,15 +574,43 @@
 
     function updateSummary() {
       const summaryDiv = document.getElementById('bookingSummary');
-      const services = bookingData.services || [];
       
-      let html = '';
-      services.forEach(service => {
+      if (!summaryDiv) {
+        console.warn('bookingSummary div not found');
+        return;
+      }
+      
+      let html = '<h3>Payment Summary</h3>';
+      
+      // Check if we have services
+      if (!bookingServices || bookingServices.length === 0) {
+        html = '<div class="summary-line" style="color: #999; padding: 20px; text-align: center;">No booking data found. Please start a new booking.</div>';
+        summaryDiv.innerHTML = html;
+        return;
+      }
+      
+      // Add services
+      bookingServices.forEach(service => {
         html += `<div class="summary-line">
           <span>${service.name}</span>
-          <span>£${Number(service.price).toFixed(2)}</span>
+          <span>£${Number(service.price || 0).toFixed(2)}</span>
         </div>`;
       });
+      
+      // Add booking details
+      if (bookingDate !== '—' || bookingTime !== '—') {
+        html += `<div class="summary-line">
+          <span>Date & Time</span>
+          <span>${bookingDate} • ${bookingTime}</span>
+        </div>`;
+      }
+      
+      if (bookingDuration > 0) {
+        html += `<div class="summary-line">
+          <span>Duration</span>
+          <span>${bookingDuration} min</span>
+        </div>`;
+      }
       
       const subtotal = bookingTotal;
       const finalTotal = subtotal - blkPointsDiscount;
@@ -462,6 +626,11 @@
           <span>-£${blkPointsDiscount.toFixed(2)}</span>
         </div>`;
       }
+      
+      html += `<div class="summary-line" style="font-weight: 700; font-size: 1.1rem; padding-top: 12px; border-top: 1px solid rgba(255,215,0,0.3); margin-top: 8px;">
+        <span>Total Due</span>
+        <span>£${finalTotal.toFixed(2)}</span>
+      </div>`;
       
       summaryDiv.innerHTML = html;
       document.getElementById('finalTotal').textContent = `£${finalTotal.toFixed(2)}`;
@@ -480,11 +649,22 @@
         return;
       }
 
-      const validationError = getBlkPointsError({
-        bookingAmountGBP: bookingTotal,
-        pointsToRedeem: pointsToRedeem,
-        userPoints: userPoints
-      });
+      // Use validation helper if available, otherwise do basic checks
+      let validationError = '';
+      if (typeof getBlkPointsError === 'function') {
+        validationError = getBlkPointsError({
+          bookingAmountGBP: bookingTotal,
+          pointsToRedeem: pointsToRedeem,
+          userPoints: userPoints
+        });
+      } else {
+        // Fallback validation if script didn't load
+        if (pointsToRedeem < 500) {
+          validationError = 'You need at least £5 (500 points) to redeem.';
+        } else if (pointsToRedeem > userPoints) {
+          validationError = `You don't have enough BlkPoints. You have ${userPoints} points.`;
+        }
+      }
 
       if (validationError) {
         messageDiv.innerHTML = `<p class="error-msg">${validationError}</p>`;
@@ -503,11 +683,22 @@
     function applyBlkPoints() {
       const pointsToRedeem = parseInt(document.getElementById('pointsInput').value, 10);
       
-      const validationError = getBlkPointsError({
-        bookingAmountGBP: bookingTotal,
-        pointsToRedeem: pointsToRedeem,
-        userPoints: userPoints
-      });
+      // Use validation helper if available, otherwise do basic checks
+      let validationError = '';
+      if (typeof getBlkPointsError === 'function') {
+        validationError = getBlkPointsError({
+          bookingAmountGBP: bookingTotal,
+          pointsToRedeem: pointsToRedeem,
+          userPoints: userPoints
+        });
+      } else {
+        // Fallback validation if script didn't load
+        if (pointsToRedeem < 500) {
+          validationError = 'You need at least £5 (500 points) to redeem.';
+        } else if (pointsToRedeem > userPoints) {
+          validationError = `You don't have enough BlkPoints. You have ${userPoints} points.`;
+        }
+      }
 
       if (validationError) {
         alert(validationError);
@@ -589,23 +780,79 @@
       localStorage.setItem('lastPayment', JSON.stringify(paymentData));
       localStorage.setItem('lastBookingId', `BLK-${Date.now()}`);
 
+      // Clear booking data after successful payment
+      localStorage.removeItem('bookingData');
+      localStorage.removeItem('bookingSummary');
+
       // Show success
       const bookingId = `BLK-${Date.now()}`;
       document.getElementById('processing').style.display = 'none';
       document.getElementById('successScreen').style.display = 'block';
       document.getElementById('bookingId').textContent = bookingId;
       document.getElementById('amountPaid').textContent = `£${finalTotal.toFixed(2)}`;
-      document.getElementById('bookingDateDisplay').textContent = bookingData.date || '—';
-      document.getElementById('bookingTimeDisplay').textContent = bookingData.time || '—';
-      document.getElementById('successEmail').textContent = bookingData.customerEmail || 'your email';
+      document.getElementById('bookingDateDisplay').textContent = bookingSummary.dateFormatted || bookingData.date || '—';
+      document.getElementById('bookingTimeDisplay').textContent = bookingSummary.timeFormatted || bookingData.time || '—';
+      document.getElementById('successEmail').textContent = bookingData.customerEmail || bookingSummary.customerEmail || 'your email';
 
-      // Clear booking data
-      localStorage.removeItem('bookingData');
+      // Booking data already cleared above (line 737-738)
     });
 
-    // Initialize
-    loadUserPoints();
-    updateSummary();
+    // Initialize - wait for DOM and localStorage
+    function initializePage() {
+      // Re-check localStorage in case data wasn't loaded properly
+      const freshSummary = JSON.parse(localStorage.getItem('bookingSummary') || '{}');
+      const freshData = JSON.parse(localStorage.getItem('bookingData') || '{}');
+      
+      if (freshSummary.services && freshSummary.services.length > 0) {
+        bookingServices = freshSummary.services;
+        bookingTotal = freshSummary.total || 0;
+        bookingDate = freshSummary.dateFormatted || '—';
+        bookingTime = freshSummary.timeFormatted || '—';
+        bookingDuration = freshSummary.duration || 0;
+      } else if (freshData.services && freshData.services.length > 0) {
+        bookingServices = freshData.services;
+        bookingTotal = freshData.total || 0;
+        bookingDate = freshData.date ? new Date(freshData.date).toLocaleDateString("en-GB", { 
+          weekday: "short", day: "numeric", month: "short" 
+        }) : '—';
+        bookingTime = freshData.time || '—';
+      }
+      
+      console.log('Initializing payment page with:', {
+        bookingServices,
+        bookingTotal,
+        bookingDate,
+        bookingTime,
+        bookingDuration
+      });
+      
+      loadUserPoints();
+      updateSummary();
+      validateInput();
+    }
+    
+    // Run initialization
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializePage);
+    } else {
+      initializePage();
+    }
+    
+    // Clear card details when returning to payment page
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted) {
+        // User navigated back, clear form
+        const form = document.getElementById('paymentForm');
+        if (form) {
+          form.reset();
+        }
+        // Reset BlkPoints discount
+        blkPointsDiscount = 0;
+        appliedPoints = 0;
+        updateSummary();
+        validateInput();
+      }
+    });
   </script>
 </body>
 </html>

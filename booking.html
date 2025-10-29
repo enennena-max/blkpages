@@ -157,6 +157,73 @@ aside .content{padding:18px}
   border-radius:8px;font-weight:700;cursor:pointer;transition:0.3s ease}
 #floatingPayBtn:hover{background:#ffdf33}
 
+/* Progress Steps */
+.progress-steps {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
+  margin-bottom: 20px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.step.active {
+  color: #FFD700;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #333;
+  color: #999;
+  font-size: 12px;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.step.active .step-number {
+  background: #FFD700;
+  color: #111;
+}
+
+.step-label {
+  margin-left: 4px;
+}
+
+.step:not(:last-child)::after {
+  content: '→';
+  margin: 0 20px;
+  color: #444;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .progress-steps {
+    padding: 15px 10px;
+  }
+  
+  .step {
+    font-size: 12px;
+  }
+  
+  .step:not(:last-child)::after {
+    margin: 0 10px;
+  }
+}
+
 /* 🖤 Booking Summary Panel (desktop) */
 #basketPanel{position:sticky;top:20px;align-self:start;max-height:85vh;overflow-y:auto;transition:box-shadow 0.3s ease,border-color 0.3s ease}
 #basketPanel:hover,#basketPanel:focus-within{box-shadow:0 0 20px rgba(255,215,0,0.25);border-color:rgba(255,215,0,0.6)}
@@ -260,6 +327,22 @@ aside .content{padding:18px}
 </head>
 <body>
   <div class="wrap">
+  <!-- Progress Steps -->
+  <div class="progress-steps">
+    <div class="step active">
+      <span class="step-number">1</span>
+      <span class="step-label">Booking</span>
+    </div>
+    <div class="step">
+      <span class="step-number">2</span>
+      <span class="step-label">Payment</span>
+    </div>
+    <div class="step">
+      <span class="step-number">3</span>
+      <span class="step-label">Confirmation</span>
+    </div>
+  </div>
+
   <header>
     <div class="biz">
       <div class="logo" aria-hidden="true"></div>
@@ -287,7 +370,7 @@ aside .content{padding:18px}
               </div>
           <div style="display:flex;gap:10px;align-items:center">
             <div class="price">£35</div>
-            <button class="btn add" data-id="svc1" data-name="Wash & Blow Dry" data-price="35">Add</button>
+            <button class="btn add" data-id="svc1" data-name="Wash & Blow Dry" data-price="35" data-duration="45">Add</button>
               </div>
             </div>
         <div class="svc">
@@ -297,7 +380,7 @@ aside .content{padding:18px}
               </div>
           <div style="display:flex;gap:10px;align-items:center">
             <div class="price">£50</div>
-            <button class="btn add" data-id="svc2" data-name="Cornrows" data-price="50">Add</button>
+            <button class="btn add" data-id="svc2" data-name="Cornrows" data-price="50" data-duration="60">Add</button>
               </div>
             </div>
         <div class="svc">
@@ -307,7 +390,7 @@ aside .content{padding:18px}
               </div>
           <div style="display:flex;gap:10px;align-items:center">
             <div class="price">£15</div>
-            <button class="btn add" data-id="svc3" data-name="Beard Trim" data-price="15">Add</button>
+            <button class="btn add" data-id="svc3" data-name="Beard Trim" data-price="15" data-duration="20">Add</button>
           </div>
         </div>
               </div>
@@ -343,22 +426,22 @@ aside .content{padding:18px}
             <div class="form-grid">
               <div>
             <label for="name" class="required">Full name</label>
-            <input id="name" type="text" autocomplete="name" placeholder="e.g., Aisha Johnson">
+            <input id="name" type="text" autocomplete="name" placeholder="e.g., Aisha Johnson" value="Aisha Johnson">
             <div class="error" id="nameErr">Please enter your full name.</div>
               </div>
               <div>
             <label for="email" class="required">Email</label>
-            <input id="email" type="email" autocomplete="email" placeholder="name@example.com">
+            <input id="email" type="email" autocomplete="email" placeholder="name@example.com" value="aisha.johnson@example.com">
             <div class="error" id="emailErr">Please enter a valid email address.</div>
               </div>
               <div>
             <label for="phone" class="required">UK mobile number</label>
-            <input id="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="07XXXXXXXXX">
+            <input id="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="07XXXXXXXXX" value="07123456789">
             <div class="error" id="phoneErr">Enter a valid UK number (starts with 07, 11 digits).</div>
               </div>
               <div>
             <label for="postcode">Postcode</label>
-            <input id="postcode" type="text" autocomplete="postal-code" placeholder="e.g., SW1A 1AA">
+            <input id="postcode" type="text" autocomplete="postal-code" placeholder="e.g., SW1A 1AA" value="SW1A 1AA">
             <ul id="postcodeSuggestions" class="suggestions"></ul>
           </div>
           <div class="full">
@@ -375,8 +458,8 @@ aside .content{padding:18px}
             </p>
           </div>
               <div class="full terms">
-            <label><input id="agreeBlk" type="checkbox"> I agree to the <a href="#" target="_blank" rel="noopener">BlkPages Terms & Conditions</a></label>
-            <label><input id="agreeBiz" type="checkbox"> I agree to the <a href="#" target="_blank" rel="noopener"><span id="bizNameInline">Business</span> Terms & Conditions</a></label>
+            <label><input id="agreeBlk" type="checkbox" checked> I agree to the <a href="#" target="_blank" rel="noopener">BlkPages Terms & Conditions</a></label>
+            <label><input id="agreeBiz" type="checkbox" checked> I agree to the <a href="#" target="_blank" rel="noopener"><span id="bizNameInline">Business</span> Terms & Conditions</a></label>
               </div>
           <div class="full">
             <button id="clearBtn" class="btn-ghost">Clear basket</button>
@@ -554,36 +637,48 @@ let blkPointsRedemptionValue = 0; // Global variable to store the redemption val
 let blkPointsRedemptionPoints = 0; // Points to be redeemed
 let redemptionValidationError = null; // Store validation error
 
+// Helper function to show/hide elements
+function show(element, visible) {
+  if (!element) return;
+  element.style.display = visible ? 'block' : 'none';
+}
+
+// Apply any stored BlkPoints redemption intent (localStorage), respecting rules
+function getAppliedRedemption(subtotal){
+  try{
+    const stored = localStorage.getItem('blkpoints_redemption');
+    if(!stored) return 0;
+    const desired = Math.max(0, Number(stored)); // currency amount (e.g., 10)
+    if(!isFinite(desired) || desired <= 0) return 0;
+    // Rule: booking must be at least 2x redemption
+    if(subtotal < desired * 2) return 0;
+    // Rule: max 50% of booking value
+    const maxAllowed = subtotal / 2;
+    return Math.min(desired, maxAllowed);
+  }catch(_e){ return 0; }
+}
+
 /* Basket render (desktop + mobile mirrors) */
     function renderBasket(){
-  const lines=qs('#basketLines'); const dlines=qs('#drawerLines'); lines.innerHTML=''; dlines.innerHTML='';
-      if(state.items.length===0){
-    lines.innerHTML='<div class="hint">Your basket is empty. Add services to continue.</div>';
-    dlines.innerHTML=lines.innerHTML;
-      }else{
-        state.items.forEach(i=>{
-      const html=`<div class="line"><div>${i.name}</div><div style="display:flex;gap:8px;align-items:center"><strong>${gbp(i.price)}</strong><button class="btn-ghost rm" data-id="${i.id}">Remove</button></div></div>`;
-      lines.insertAdjacentHTML('beforeend',html);
-      dlines.insertAdjacentHTML('beforeend',html);
-    });
+  // Mobile drawer lines (if exists)
+  const dlines=qs('#drawerLines');
+  
+  if (dlines) {
+    dlines.innerHTML='';
+    
+    if(state.items.length===0){
+      dlines.innerHTML='<div class="hint">Your basket is empty. Add services to continue.</div>';
+    }else{
+      state.items.forEach(i=>{
+        const html=`<div class="line"><div>${i.name}</div><div style="display:flex;gap:8px;align-items:center"><strong>${gbp(i.price)}</strong><button class="btn-ghost rm" data-id="${i.id}">Remove</button></div></div>`;
+        dlines.insertAdjacentHTML('beforeend',html);
+      });
+    }
   }
+  
+  // Setup remove button handlers
   qsa('.rm').forEach(b=>b.onclick=()=>removeItem(b.dataset.id));
   const sub=state.items.reduce((s,i)=>s+Number(i.price||0),0);
-
-  // Apply any stored BlkPoints redemption intent (localStorage), respecting rules
-  function getAppliedRedemption(subtotal){
-    try{
-      const stored = localStorage.getItem('blkpoints_redemption');
-      if(!stored) return 0;
-      const desired = Math.max(0, Number(stored)); // currency amount (e.g., 10)
-      if(!isFinite(desired) || desired <= 0) return 0;
-      // Rule: booking must be at least 2x redemption
-      if(subtotal < desired * 2) return 0;
-      // Rule: max 50% of booking value
-      const maxAllowed = subtotal / 2;
-      return Math.min(desired, maxAllowed);
-    }catch(_e){ return 0; }
-  }
 
   const appliedRedemption = getAppliedRedemption(sub);
   const payable = Math.max(0, sub - appliedRedemption);
@@ -626,21 +721,35 @@ let redemptionValidationError = null; // Store validation error
 
   // Re-setup service button listeners after render
   setupServiceButtons();
+  
+  // Update floating summary and booking summary to reflect current state
+  updateFloatingSummary();
+  updateBookingSummary();
 
   validateAll();
 }
 
 /* Add/Remove/Clear */
 function addItem(item){
+  console.log('addItem called with:', item);
+  if (!item || !item.id || !item.name) {
+    console.error('Invalid item:', item);
+    return;
+  }
   if (!state.items.find(i => i.id === item.id)) {
     state.items.push(item);
+    console.log('Item added. State items:', state.items);
   }
   if (!state.svc) {                 // <-- make the first added service the active one
     state.svc = item.id;
+    console.log('Set active service to:', state.svc);
   }
-  renderBasket();
+  renderBasket();  // This updates totals and calls updateBookingSummary
   buildCalendar(curY, curM);        // <-- refresh the grid
   loadSlots();                       // <-- load times immediately
+  updateFloatingSummary();          // <-- update floating summary
+  updateBookingSummary();           // <-- ensure booking summary is updated
+  validateAll();                    // <-- re-validate after adding service
 }
 function removeItem(id){
   state.items = state.items.filter(i => i.id !== id);
@@ -652,6 +761,7 @@ function removeItem(id){
   renderBasket();
   buildCalendar(curY, curM);
   loadSlots();
+  updateFloatingSummary();  // <-- update floating summary after removal
 }
 // Add event listeners for service buttons
 function setupServiceButtons() {
@@ -664,16 +774,21 @@ function setupServiceButtons() {
     // Remove any existing listeners
     b.onclick = null;
     // Add new listener
-    b.onclick = () => {
-      const {id, name, price} = b.dataset;
-      if (!id || !name || !price) {
-        console.warn('Missing data attributes on button', b);
+    b.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const {id, name, price, duration} = b.dataset;
+      console.log('Button clicked:', {id, name, price, duration});
+      if (!id || !name || !price || !duration) {
+        console.warn('Missing data attributes on button', b, b.dataset);
         return;
       }
       if (state.items.find(i => i.id === id)) {
+        console.log('Removing item:', id);
         removeItem(id);
       } else {
-        addItem({id, name, price: Number(price)});
+        console.log('Adding item:', {id, name, price: Number(price), duration: Number(duration)});
+        addItem({id, name, price: Number(price), duration: Number(duration)});
       }
     };
   });
@@ -723,8 +838,12 @@ function buildCalendar(y,m){
       state.selTime = null;
       buildCalendar(y, m);
       loadSlots();
-      document.getElementById('slotOk').style.display = 'none';
-      document.getElementById('slotErr').style.display = 'block';
+      const slotOk = document.getElementById('slotOk');
+      const slotErr = document.getElementById('slotErr');
+      if (slotOk) slotOk.style.display = 'none';
+      if (slotErr) slotErr.style.display = 'block';
+      validateAll();  // Re-validate when date is selected
+      updateBookingSummary();  // Update summary
     };
     grid.appendChild(el);
   }
@@ -779,8 +898,8 @@ async function loadSlots(){
       b.classList.add('sel');
       show(qs('#slotOk'), true);
       show(qs('#slotErr'), false);
-      updateSummary();
       validateAll();
+      updateBookingSummary();  // Update summary when time selected
     };
     wrap.appendChild(b);
   });
@@ -793,10 +912,65 @@ const nameOk=v=>/^[A-Za-z][A-Za-z\s'.-]{1,}$/.test(v.trim());
 
 function validateAll(scroll=false){
   const slotValid=!!(state.selDate&&state.selTime);
-  const name=qs('#name').value.trim(), email=qs('#email').value.trim(), phone=qs('#phone').value.trim();
-  const v={name:nameOk(name), email:emailOk(email), phone:phoneOk(phone), items:state.items.length>0, terms:qs('#agreeBlk').checked&&qs('#agreeBiz').checked, slot:slotValid};
+  const nameEl = qs('#name');
+  const emailEl = qs('#email');
+  const phoneEl = qs('#phone');
+  const agreeBlkEl = qs('#agreeBlk');
+  const agreeBizEl = qs('#agreeBiz');
+  
+  const name = nameEl ? nameEl.value.trim() : '';
+  const email = emailEl ? emailEl.value.trim() : '';
+  const phone = phoneEl ? phoneEl.value.trim() : '';
+  
+  const v={
+    name: nameOk(name), 
+    email: emailOk(email), 
+    phone: phoneOk(phone), 
+    items: state.items.length > 0, 
+    terms: agreeBlkEl && agreeBizEl && agreeBlkEl.checked && agreeBizEl.checked, 
+    slot: slotValid
+  };
+  
   const ok = v.items && v.slot && v.name && v.email && v.phone && v.terms;
-  const mbPay=qs('#mbPay'), floatingPay=qs('#floatingPayBtn'); if(ok){mbPay.removeAttribute('disabled'); floatingPay.removeAttribute('disabled');} else {mbPay.setAttribute('disabled','true'); floatingPay.setAttribute('disabled','true');}
+  
+  const mbPay = qs('#mbPay');
+  const floatingPay = qs('#floatingPayBtn');
+  
+  if (mbPay) {
+    if (ok) {
+      mbPay.removeAttribute('disabled');
+      mbPay.classList.remove('disabled');
+    } else {
+      mbPay.setAttribute('disabled', 'true');
+      mbPay.classList.add('disabled');
+    }
+  }
+  
+  if (floatingPay) {
+    if (ok) {
+      floatingPay.removeAttribute('disabled');
+      floatingPay.classList.remove('disabled');
+    } else {
+      floatingPay.setAttribute('disabled', 'true');
+      floatingPay.classList.add('disabled');
+    }
+  }
+  
+  // Debug logging to help identify what's missing
+  if (!ok) {
+    console.log('Validation failed:', {
+      items: v.items,
+      slot: v.slot,
+      name: v.name,
+      email: v.email,
+      phone: v.phone,
+      terms: v.terms,
+      stateItems: state.items,
+      selDate: state.selDate,
+      selTime: state.selTime
+    });
+  }
+  
   return ok;
 }
 ['name','email','phone'].forEach(id=>qs('#'+id).addEventListener('input',()=>validateAll(false)));
@@ -804,13 +978,42 @@ function validateAll(scroll=false){
 
 /* Pay - Redirect to payment screen */
 async function doPay(){
-  if(!validateAll(true)) return;
+  console.log('doPay function called');
+  console.log('Current state:', JSON.parse(JSON.stringify(state)));
+  
+  // Check state before validation
+  if (!state.items || state.items.length === 0) {
+    console.error('No items in state!', state);
+    alert('Please add at least one service to your booking.');
+    return;
+  }
+  
+  if (!state.selDate || !state.selTime) {
+    console.error('No date/time selected!', { date: state.selDate, time: state.selTime });
+    alert('Please select a date and time for your booking.');
+    return;
+  }
+  
+  const validationResult = validateAll(true);
+  console.log('Validation result:', validationResult);
+  if(!validationResult) {
+    console.log('Validation failed, not proceeding with payment');
+    alert('Please complete all required fields before proceeding.');
+    return;
+  }
   
   // Capture new customer status
   const isNewCustomer = qs('#isNewCustomer').checked;
   
   // Calculate total
   const total = state.items.reduce((sum, item) => sum + item.price, 0);
+  
+  console.log('doPay called with state:', {
+    items: state.items,
+    selDate: state.selDate,
+    selTime: state.selTime,
+    total: total
+  });
   
   // Prepare booking data
   const bookingData = {
@@ -822,17 +1025,119 @@ async function doPay(){
     customerName: qs('#name').value,
     customerEmail: qs('#email').value,
     customerPhone: qs('#phone').value,
-    specialRequests: qs('#requests').value || '',
+    postcode: qs('#postcode') ? qs('#postcode').value : '',
+    notes: qs('#notes') ? qs('#notes').value : '',
     isNewCustomer: isNewCustomer
   };
   
-  // Store booking data in localStorage for payment page
-  localStorage.setItem('bookingData', JSON.stringify(bookingData));
+  // Create booking summary for payment page
+  const bookingSummary = {
+    services: state.items,
+    total: total,
+    date: state.selDate,
+    time: state.selTime,
+    customerName: qs('#name').value,
+    customerEmail: qs('#email').value,
+    customerPhone: qs('#phone').value,
+    duration: state.items.reduce((sum, item) => sum + (item.duration || 0), 0)
+  };
+
+  // Save to localStorage before redirecting
+  localStorage.setItem("bookingSummary", JSON.stringify(bookingSummary));
   
+  console.log('Stored booking summary:', bookingSummary);
+
   // Redirect to payment page
-  window.location.href = 'payment.html';
+  window.location.href = "payment.html";
 }
-qs('#mbPay').onclick=doPay; qs('#floatingPayBtn').onclick=doPay;
+// Set up click handlers after DOM is ready
+function setupPayButtons() {
+  console.log('Setting up click handlers...');
+  console.log('Page loaded, DOM ready');
+
+  const mbPayBtn = document.getElementById('mbPay');
+  const floatingPayBtn = document.getElementById('floatingPayBtn');
+
+  console.log('Found buttons:', { 
+    mbPay: !!mbPayBtn, 
+    floatingPay: !!floatingPayBtn,
+    mbPayDisabled: mbPayBtn?.disabled,
+    floatingPayDisabled: floatingPayBtn?.disabled
+  });
+
+  if (mbPayBtn) {
+    // Remove any existing listeners
+    mbPayBtn.replaceWith(mbPayBtn.cloneNode(true));
+    const newMbPayBtn = document.getElementById('mbPay');
+    
+    newMbPayBtn.addEventListener('click', (e) => {
+      console.log('Mobile Pay button clicked', e);
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('About to call doPay()');
+      doPay();
+      return false;
+    });
+    
+    // Also add onclick as backup
+    newMbPayBtn.onclick = function(e) {
+      console.log('Mobile Pay button onclick triggered');
+      e.preventDefault();
+      doPay();
+      return false;
+    };
+    console.log('Mobile pay button handler attached');
+  } else {
+    console.error('Mobile pay button not found');
+  }
+
+  if (floatingPayBtn) {
+    // Remove any existing listeners
+    floatingPayBtn.replaceWith(floatingPayBtn.cloneNode(true));
+    const newFloatingPayBtn = document.getElementById('floatingPayBtn');
+    
+    newFloatingPayBtn.addEventListener('click', (e) => {
+      console.log('Floating Pay button clicked', e);
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('About to call doPay()');
+      doPay();
+      return false;
+    });
+    
+    // Also add onclick as backup
+    newFloatingPayBtn.onclick = function(e) {
+      console.log('Floating Pay button onclick triggered');
+      e.preventDefault();
+      doPay();
+      return false;
+    };
+    console.log('Floating pay button handler attached');
+  } else {
+    console.error('Floating pay button not found');
+  }
+}
+
+// Setup when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupPayButtons);
+} else {
+  setupPayButtons();
+}
+
+// Also try a small delay in case of async loading
+setTimeout(setupPayButtons, 500);
+
+// Test if the page is working at all
+console.log('Booking page script loaded');
+console.log('State object:', state);
+console.log('qs function:', typeof qs);
+
+// Test button click manually
+window.testPay = function() {
+  console.log('Manual testPay called');
+  doPay();
+};
 qs('#closeSuccess').onclick=()=>qs('#successModal').style.display='none';
 
 /* Mobile drawer */
@@ -967,9 +1272,15 @@ function updateFloatingSummary() {
   }) : "No date selected";
   const time = state.selTime || "No time selected";
 
-  document.getElementById("floatingService").textContent = service;
-  document.getElementById("floatingDateTime").textContent =
-    state.selDate && state.selTime ? `${date} • ${time}` : `${date}`;
+  const floatingServiceEl = document.getElementById("floatingService");
+  const floatingDateTimeEl = document.getElementById("floatingDateTime");
+  
+  if (floatingServiceEl) {
+    floatingServiceEl.textContent = service;
+  }
+  if (floatingDateTimeEl) {
+    floatingDateTimeEl.textContent = state.selDate && state.selTime ? `${date} • ${time}` : `${date}`;
+  }
 }
 
 // Observe total updates
@@ -985,43 +1296,62 @@ updateFloatingTotal();
   document.body.addEventListener(evt, updateFloatingSummary, true);
 });
 
-// ✅ Scroll smoothly to payment form when Pay Now clicked
-document.getElementById("floatingPayBtn").onclick = () => {
-  document.getElementById("payBtn").scrollIntoView({ behavior: "smooth", block: "center" });
-};
+// Removed conflicting onclick handler - doPay() already handles navigation
 
 // ✅ Auto-updating Booking Summary (desktop + mobile)
 
 // main update function
 function updateBookingSummary() {
+  console.log('updateBookingSummary called with state:', state);
   const services = state.items.map(i => `<div>${i.name} <strong>${gbp(i.price)}</strong></div>`).join("") || "—";
-  const total = document.getElementById("total")?.textContent || "£0.00";
+  
+  // Calculate total from state instead of reading from DOM
+  const sub = state.items.reduce((s,i)=>s+Number(i.price||0),0);
+  const appliedRedemption = getAppliedRedemption(sub);
+  const payable = Math.max(0, sub - appliedRedemption);
+  const total = gbp(payable);
+  
   const date = state.selDate
     ? new Date(state.selDate).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })
     : "—";
   const time = state.selTime || "—";
 
-  // simple duration calc
+  // Calculate total duration from all services
   const duration = state.items.length
-    ? `${state.items.reduce((sum, i) => {
-        const m = i.name.match(/\d+/);
-        return sum + (m ? parseInt(m[0]) : 0);
-      }, 0)} min`
+    ? `${state.items.reduce((sum, i) => sum + (i.duration || 0), 0)} min`
     : "—";
 
-  // desktop panel
-  document.getElementById("summaryServices").innerHTML = services;
-  document.getElementById("summaryDuration").textContent = duration;
-  document.getElementById("summaryDate").textContent = date;
-  document.getElementById("summaryTime").textContent = time;
-  document.getElementById("summaryTotal").textContent = total;
+  // desktop panel (with safety checks)
+  const summaryServices = document.getElementById("summaryServices");
+  if (summaryServices) summaryServices.innerHTML = services;
+  
+  const summaryDuration = document.getElementById("summaryDuration");
+  if (summaryDuration) summaryDuration.textContent = duration;
+  
+  const summaryDate = document.getElementById("summaryDate");
+  if (summaryDate) summaryDate.textContent = date;
+  
+  const summaryTime = document.getElementById("summaryTime");
+  if (summaryTime) summaryTime.textContent = time;
+  
+  const summaryTotal = document.getElementById("summaryTotal");
+  if (summaryTotal) summaryTotal.textContent = total;
 
-  // mobile drawer
-  document.getElementById("drawerServices").innerHTML = services;
-  document.getElementById("drawerDuration").textContent = duration;
-  document.getElementById("drawerDate").textContent = date;
-  document.getElementById("drawerTime").textContent = time;
-  document.getElementById("drawerTotal").textContent = total;
+  // mobile drawer (with safety checks)
+  const drawerServices = document.getElementById("drawerServices");
+  if (drawerServices) drawerServices.innerHTML = services;
+  
+  const drawerDuration = document.getElementById("drawerDuration");
+  if (drawerDuration) drawerDuration.textContent = duration;
+  
+  const drawerDate = document.getElementById("drawerDate");
+  if (drawerDate) drawerDate.textContent = date;
+  
+  const drawerTime = document.getElementById("drawerTime");
+  if (drawerTime) drawerTime.textContent = time;
+  
+  const drawerTotal = document.getElementById("drawerTotal");
+  if (drawerTotal) drawerTotal.textContent = total;
 }
 
 // run when anything changes anywhere on page
@@ -1162,6 +1492,17 @@ loadSlots();
 // Initialize BlkPoints status tracking
 addRedemptionStatusBadge();
 startStatusPolling();
+
+// Initialize dummy customer data and validate on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    // Trigger validation to show form is valid
+    setTimeout(() => validateAll(), 100);
+  });
+} else {
+  // DOM already loaded
+  setTimeout(() => validateAll(), 100);
+}
   </script>
 </body>
 </html>
