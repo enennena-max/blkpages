@@ -494,12 +494,58 @@ const biz=slug.replace(/[-_]+/g,' ').replace(/\b\w/g,m=>m.toUpperCase());
 qs('#bizName').textContent=biz; qs('#bizNameInline').textContent=biz;
 qs('#backToProfile').href=`/profile.html?business=${encodeURIComponent(slug)}`;
 
-/* Simulated availability per service */
-const availabilityDB={
-  svc1:{"2025-10-22":["09:00","10:00","11:00","14:00","15:30"],"2025-10-23":["10:30","12:00","13:30","16:00"],"2025-10-24":[]},
-  svc2:{"2025-10-22":["11:00","12:00","13:00"],"2025-10-23":["09:30","11:30","15:00","17:00"],"2025-10-24":["10:00","14:00","16:00"]},
-  svc3:{"2025-10-22":["09:00","09:30","10:00","10:30","11:00","12:00","13:00","14:00","15:00","16:00"],"2025-10-23":["11:00","11:30","12:00","12:30","13:00","17:00"],"2025-10-24":["09:00","10:00","11:00"]}
+/* Simulated availability per service - Updated with current dates */
+function getAvailableDates() {
+  const dates = {};
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  // Generate availability for next 30 days
+  for (let i = 0; i < 30; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    const dateStr = date.toISOString().slice(0, 10);
+    
+    // Skip past dates
+    if (date < today) continue;
+    
+    // Different availability patterns for different days
+    const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
+    
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      // Weekend: Reduced hours
+      dates[dateStr] = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00"];
+    } else {
+      // Weekday: Full hours
+      dates[dateStr] = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+    }
+  }
+  
+  return dates;
+}
+
+const availabilityDB = {
+  svc1: getAvailableDates(), // Wash & Blow Dry
+  svc2: getAvailableDates(), // Cornrows
+  svc3: Object.fromEntries(
+    // Beard Trim has more frequent slots (every 30 min)
+    Object.entries(getAvailableDates()).map(([date, times]) => [
+      date,
+      times.flatMap(time => {
+        const [hours, mins] = time.split(':');
+        const hour = parseInt(hours);
+        if (hour >= 9 && hour < 17) {
+          return [`${hours}:00`, `${hours}:30`];
+        }
+        return [time];
+      }).filter(t => {
+        const [h] = t.split(':');
+        return parseInt(h) >= 9 && parseInt(h) < 17;
+      })
+    ])
+  )
 };
+
 function fetchAvailability(serviceId){return new Promise(r=>setTimeout(()=>r(availabilityDB[serviceId]||{}),120));}
 
 /* State */
@@ -578,6 +624,9 @@ let redemptionValidationError = null; // Store validation error
     else { b.textContent='Add'; b.classList.remove('btn-ghost'); }
   });
 
+  // Re-setup service button listeners after render
+  setupServiceButtons();
+
   validateAll();
 }
 
@@ -604,14 +653,56 @@ function removeItem(id){
   buildCalendar(curY, curM);
   loadSlots();
 }
-qsa('.add').forEach(b=>b.onclick=()=>{const {id,name,price}=b.dataset; state.items.find(i=>i.id===id)?removeItem(id):addItem({id,name,price:Number(price)})});
-qs('#clearBtn').onclick=()=>{state.items=[];state.selDate=null;state.selTime=null;state.svc=null;renderBasket();}
+// Add event listeners for service buttons
+function setupServiceButtons() {
+  const buttons = qsa('.add');
+  if (!buttons || buttons.length === 0) {
+    console.warn('No service buttons found');
+    return;
+  }
+  buttons.forEach(b => {
+    // Remove any existing listeners
+    b.onclick = null;
+    // Add new listener
+    b.onclick = () => {
+      const {id, name, price} = b.dataset;
+      if (!id || !name || !price) {
+        console.warn('Missing data attributes on button', b);
+        return;
+      }
+      if (state.items.find(i => i.id === id)) {
+        removeItem(id);
+      } else {
+        addItem({id, name, price: Number(price)});
+      }
+    };
+  });
+}
+
+// Initialize service buttons - wait for DOM
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    setupServiceButtons();
+    const clearBtn = qs('#clearBtn');
+    if (clearBtn) clearBtn.onclick = () => {state.items=[];state.selDate=null;state.selTime=null;state.svc=null;renderBasket();}
+  });
+} else {
+  setupServiceButtons();
+  const clearBtn = qs('#clearBtn');
+  if (clearBtn) clearBtn.onclick = () => {state.items=[];state.selDate=null;state.selTime=null;state.svc=null;renderBasket();}
+}
 
 /* Calendar */
 const grid=qs('#calGrid'); const title=qs('#calTitle');
-let today=new Date(); today.setHours(0,0,0,0); let curY=today.getFullYear(), curM=today.getMonth();
+let today=new Date(); today.setHours(0,0,0,0); 
+let curY=today.getFullYear(); 
+let curM=today.getMonth();
 function ymd(d){return d.toISOString().slice(0,10)}
 function buildCalendar(y,m){
+  if (!grid || !title) {
+    console.warn('Calendar elements not ready');
+    return;
+  }
   grid.innerHTML='';
   const first=new Date(y,m,1), start=(first.getDay()+6)%7, daysIn=new Date(y,m+1,0).getDate();
   const dows=['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; grid.innerHTML=dows.map(d=>`<div class="dow">${d}</div>`).join('');
@@ -622,8 +713,10 @@ function buildCalendar(y,m){
     const date=new Date(y,m,d); const dateStr=ymd(date);
     const el=document.createElement('button'); el.className='day'; el.textContent=d;
     if(ymd(date)===ymd(today)) el.classList.add('today');
-    const booked=(map[dateStr]||[]).length===0;
-    if(booked){el.classList.add('disabled'); el.disabled=true; el.title='Fully booked';}
+    const isPast=date<today;
+    const hasAvailability=(map[dateStr]||[]).length>0;
+    if(isPast){el.classList.add('disabled'); el.disabled=true; el.title='Past date';}
+    else if(!hasAvailability){el.classList.add('disabled'); el.disabled=true; el.title='Fully booked';}
     if(state.selDate===dateStr) el.classList.add('sel');
     el.onclick = () => {
       state.selDate = dateStr;
@@ -637,8 +730,39 @@ function buildCalendar(y,m){
   }
   title.textContent=new Date(y,m,1).toLocaleString('en-GB',{month:'long',year:'numeric'});
 }
-qs('#prevMonth').onclick=()=>{if(curM===0){curM=11;curY--;}else curM--; buildCalendar(curY,curM); loadSlots();}
-qs('#nextMonth').onclick=()=>{if(curM===11){curM=0;curY++;}else curM++; buildCalendar(curY,curM); loadSlots();}
+// Setup calendar navigation buttons
+const prevBtn = qs('#prevMonth');
+const nextBtn = qs('#nextMonth');
+if (prevBtn) {
+  prevBtn.onclick = () => {
+    if(curM===0){curM=11;curY--;}else curM--; 
+    buildCalendar(curY,curM); 
+    loadSlots();
+  };
+}
+if (nextBtn) {
+  nextBtn.onclick = () => {
+    if(curM===11){curM=0;curY++;}else curM++; 
+    buildCalendar(curY,curM); 
+    loadSlots();
+  };
+}
+
+// Initialize calendar on page load (after DOM is ready)
+function initCalendar() {
+  if (!grid || !title) {
+    console.warn('Calendar elements not found');
+    return;
+  }
+  buildCalendar(curY, curM);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCalendar);
+} else {
+  // DOM already loaded
+  initCalendar();
+}
 
 /* Timeslots */
 async function loadSlots(){
@@ -678,55 +802,35 @@ function validateAll(scroll=false){
 ['name','email','phone'].forEach(id=>qs('#'+id).addEventListener('input',()=>validateAll(false)));
 ['agreeBlk','agreeBiz'].forEach(id=>qs('#'+id).addEventListener('change',()=>validateAll(false)));
 
-/* Pay (demo) */
+/* Pay - Redirect to payment screen */
 async function doPay(){
   if(!validateAll(true)) return;
   
   // Capture new customer status
   const isNewCustomer = qs('#isNewCustomer').checked;
   
+  // Calculate total
+  const total = state.items.reduce((sum, item) => sum + item.price, 0);
+  
   // Prepare booking data
   const bookingData = {
     business: biz,
     services: state.items,
-    total: parseFloat(qs('#total').textContent.replace('£', '')),
+    total: total,
     date: state.selDate,
     time: state.selTime,
+    customerName: qs('#name').value,
     customerEmail: qs('#email').value,
+    customerPhone: qs('#phone').value,
+    specialRequests: qs('#requests').value || '',
     isNewCustomer: isNewCustomer
   };
   
-  try {
-    // Send to backend
-    const response = await fetch('https://api.blkpages.co.uk/bookings/new', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(bookingData)
-    });
-    
-    const result = await response.json();
-    
-    if (result.success) {
-      // Show success modal
-      const total=qs('#total').textContent;
-      const lines=state.items.map(i=>`<div class="row"><span>${i.name}</span><span>${gbp(i.price)}</span></div>`).join('');
-      qs('#mBody').innerHTML=`
-        <div>Thanks, your booking request has been sent to <strong>${biz}</strong>.</div>
-            <div class="divider"></div>
-            <div>${lines}</div>
-        <div class="row total" style="margin-top:8px"><span>Total</span><span>${total}</span></div>
-        <div class="hint" style="margin-top:10px">A confirmation will be emailed to ${qs('#email').value}.</div>`;
-      qs('#successModal').style.display='flex';
-    } else {
-      console.error('Booking failed:', result.error);
-      alert('Booking failed. Please try again.');
-    }
-  } catch (error) {
-    console.error('Network error:', error);
-    alert('Network error. Please check your connection and try again.');
-  }
+  // Store booking data in localStorage for payment page
+  localStorage.setItem('bookingData', JSON.stringify(bookingData));
+  
+  // Redirect to payment page
+  window.location.href = 'payment.html';
 }
 qs('#mbPay').onclick=doPay; qs('#floatingPayBtn').onclick=doPay;
 qs('#closeSuccess').onclick=()=>qs('#successModal').style.display='none';

@@ -832,6 +832,16 @@ app.get('/checkout-example', (req, res) => {
   res.sendFile(path.join(__dirname, 'checkout-blkpoints-example.html'));
 });
 
+// Serve payment page
+app.get('/payment', (req, res) => {
+  res.sendFile(path.join(__dirname, 'payment.html'));
+});
+
+// Serve booking page
+app.get('/booking', (req, res) => {
+  res.sendFile(path.join(__dirname, 'booking.html'));
+});
+
 // Serve admin referrals dashboard
 app.get('/admin/referrals', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin-referrals-dashboard.html'));
