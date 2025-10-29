@@ -847,6 +847,50 @@
       color: #f2c94c;
       font-weight: 600;
     }
+    
+    /* Status-specific styling for activity items */
+    .activity-item.pending .activity-icon {
+      color: #FFD700;
+      animation: pulse 1.5s infinite;
+    }
+    
+    .activity-item.confirmed .activity-icon {
+      color: #4CAF50;
+    }
+    
+    .activity-item.released .activity-icon {
+      color: #A0A0A0;
+    }
+    
+    .activity-item.pending .activity-text {
+      color: #FFD700;
+    }
+    
+    .activity-item.confirmed .activity-text {
+      color: #4CAF50;
+    }
+    
+    .activity-item.released .activity-text {
+      color: #A0A0A0;
+    }
+    
+    .activity-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+    
+    .activity-subtext {
+      font-size: 0.85rem;
+      color: #A0A0A0;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { opacity: 0.7; }
+    }
 
     /* ---------- Punch Cards Container ---------- */
     .punch-cards-container {
@@ -988,20 +1032,40 @@
       <div class="loyalty-card blkpoints-card">
         <h4>Activity</h4>
         <div class="activity-list">
-          <div class="activity-item">
-            <span class="activity-icon">✅</span>
-            <span class="activity-text">Booking at Glow Studio</span>
-            <span class="activity-points">+50</span>
+          <div class="activity-item pending">
+            <span class="activity-icon">⏳</span>
+            <div class="activity-content">
+              <span class="activity-text">Redeemed on booking #2871</span>
+              <span class="activity-subtext">Pending completion (booking on 29 Oct)</span>
+            </div>
+            <span class="activity-points">−1000</span>
           </div>
-          <div class="activity-item">
+          
+          <div class="activity-item confirmed">
+            <span class="activity-icon">✅</span>
+            <div class="activity-content">
+              <span class="activity-text">Earned from booking #2862</span>
+              <span class="activity-subtext">Confirmed 27 Oct</span>
+            </div>
+            <span class="activity-points">+1250</span>
+          </div>
+          
+          <div class="activity-item confirmed">
             <span class="activity-icon">⭐</span>
-            <span class="activity-text">Verified review</span>
+            <div class="activity-content">
+              <span class="activity-text">Verified review added</span>
+              <span class="activity-subtext">Confirmed 25 Oct</span>
+            </div>
             <span class="activity-points">+25</span>
           </div>
-          <div class="activity-item">
-            <span class="activity-icon">🎁</span>
-            <span class="activity-text">Referral reward</span>
-            <span class="activity-points">+100</span>
+          
+          <div class="activity-item released">
+            <span class="activity-icon">🔁</span>
+            <div class="activity-content">
+              <span class="activity-text">Redemption cancelled (booking #2858)</span>
+              <span class="activity-subtext">Points returned to your balance</span>
+            </div>
+            <span class="activity-points">−500</span>
           </div>
         </div>
       </div>
@@ -1013,31 +1077,31 @@
           <p class="guide-intro">BlkPoints are your BlkPages reward credits — you earn them automatically every time you book, refer a friend, or leave a verified review.</p>
           
           <div class="guide-section">
-            <h5 class="guide-title">🪙 Earning BlkPoints</h5>
+            <h5 class="guide-title">🪙 How You Earn BlkPoints</h5>
             <ul class="guide-list">
-              <li>+1 point for every £1 spent on a completed booking</li>
-              <li>+100 points when someone you refer completes their first booking</li>
-              <li>+25 points for each verified review (credited 24 hours after verification)</li>
-              <li>Points are added 24 hours after your appointment ends, once it's marked completed</li>
-              <li>Cancelled or refunded bookings won't earn points</li>
+              <li>You'll earn 1 BlkPoint for every £1 you spend on completed bookings</li>
+              <li>Points appear as pending for 24 hours after your appointment — this allows time for any cancellations or adjustments</li>
+              <li>After 24 hours, your points become confirmed and available to spend</li>
+              <li>You can also earn 25 BlkPoints for a verified review and 100 BlkPoints when a friend you refer completes their first booking</li>
+              <li>Points don't apply to cancelled or refunded bookings</li>
             </ul>
           </div>
 
           <div class="guide-section">
             <h5 class="guide-title">💰 Using BlkPoints</h5>
             <ul class="guide-list">
-              <li>100 points = £1 credit toward your next booking</li>
-              <li>Redeem from 500 points (£5), in £5 increments</li>
-              <li>You can use points to cover up to 50% of a booking</li>
-              <li>The booking must be worth at least 2× your redemption value<br>
-                  <small class="example-text">(e.g. to redeem £10 in BlkPoints, your booking must total £20 or more)</small></li>
-              <li>Points are applied automatically at checkout when you choose to use them</li>
+              <li>You can redeem BlkPoints in £5 increments (500 points = £5)</li>
+              <li>Your BlkPoints discount applies straight away at checkout</li>
+              <li>The points stay pending for 24 hours after your service is completed — this protects you in case a booking is cancelled or changed</li>
+              <li>Once that 24-hour period passes, your points are confirmed and permanently deducted</li>
+              <li>If your booking is cancelled or refunded before that time, your BlkPoints will automatically return to your balance</li>
             </ul>
           </div>
 
           <div class="guide-section">
             <h5 class="guide-title">⏳ Other Details</h5>
             <ul class="guide-list">
+              <li>You'll always see the status of your redemptions — Pending, Confirmed, or Released — in your dashboard</li>
               <li>Points expire after 12 months of inactivity</li>
               <li>BlkPoints have no cash value and can only be used on BlkPages bookings</li>
               <li>BlkPages may adjust or remove points for cancellations, refunds, or misuse</li>
@@ -1120,10 +1184,7 @@
         <div class="redemption-amount">
           <label>Select the amount you want to redeem:</label>
           <div class="amount-buttons" id="amountButtons">
-            <button class="amount-btn" data-amount="500" data-value="5">£5</button>
-            <button class="amount-btn" data-amount="1000" data-value="10">£10</button>
-            <button class="amount-btn" data-amount="1500" data-value="15">£15</button>
-            <button class="amount-btn" data-amount="2000" data-value="20">£20</button>
+            <!-- Dynamic redemption options will be generated here -->
           </div>
           <div class="amount-info">
             <small>Minimum £5, in £5 increments</small>
@@ -1163,6 +1224,32 @@
       }
     }
 
+    function generateRedemptionOptions() {
+      const pointValue = 0.01; // 1 BlkPoint = £0.01
+      const minRedemption = 500; // 500 pts = £5
+      const increment = 500; // £5 increments
+      
+      const amountButtons = document.getElementById('amountButtons');
+      amountButtons.innerHTML = '';
+      
+      // Generate valid redemption options
+      for (let pts = minRedemption; pts <= currentPoints; pts += increment) {
+        const value = pts * pointValue;
+        const button = document.createElement('button');
+        button.className = 'amount-btn';
+        button.dataset.amount = pts;
+        button.dataset.value = value;
+        button.textContent = `£${value.toFixed(0)}`;
+        button.onclick = () => selectRedemptionAmount(button);
+        amountButtons.appendChild(button);
+      }
+      
+      // If no valid options, show message
+      if (amountButtons.children.length === 0) {
+        amountButtons.innerHTML = '<div class="hint">You need at least 500 BlkPoints (£5) to redeem.</div>';
+      }
+    }
+
     function openRedeemModal() {
       // Check eligibility first
       if (currentPoints < 500) {
@@ -1175,10 +1262,8 @@
       document.getElementById('selectedAmount').style.display = 'none';
       document.getElementById('applyBtn').disabled = true;
       
-      // Remove any previous selections
-      document.querySelectorAll('.amount-btn').forEach(btn => {
-        btn.classList.remove('selected');
-      });
+      // Generate dynamic redemption options
+      generateRedemptionOptions();
       
       // Update current balance display
       document.getElementById('currentPoints').textContent = currentPoints.toLocaleString();
@@ -1219,35 +1304,58 @@
       }
 
       try {
-        // Store redemption intent (this would be a real API call)
-        const response = await fetch('/api/loyalty/redeem-intent', {
+        // Save intent locally as fallback
+        localStorage.setItem('blkpoints_redemption', String(selectedRedemption.value));
+
+        // Try to save redemption intent via API
+        const response = await fetch('/api/loyalty/redeem', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getAuthToken()}` // Get from your auth system
           },
           body: JSON.stringify({
-            userId: 'current-user-id', // This would be the actual user ID
-            pointsRedeemed: selectedRedemption.points,
-            valueRedeemed: selectedRedemption.value
+            booking_id: getCurrentBookingId(), // Get from booking context
+            redemption_value: selectedRedemption.value,
+            points: selectedRedemption.points
           })
         });
 
         if (response.ok) {
+          const result = await response.json();
+          
           // Close modal
           closeModal('redeemModal');
           
           // Show success message
-          alert(`Redemption intent saved! You will see a £${selectedRedemption.value} discount applied at checkout.`);
+          alert(`Redemption applied! You will see a £${selectedRedemption.value} discount applied at checkout.`);
           
           // Redirect to booking page
           window.location.href = 'booking.html';
         } else {
-          throw new Error('Failed to save redemption intent');
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to apply redemption');
         }
       } catch (error) {
         console.error('Error applying redemption:', error);
-        alert('There was an error processing your redemption. Please try again.');
+        
+        // Fallback: proceed with local intent only
+        closeModal('redeemModal');
+        alert(`We couldn't reach the server just now, but we've saved your £${selectedRedemption.value} redemption locally and will apply it at checkout.`);
+        window.location.href = 'booking.html';
       }
+    }
+
+    // Helper functions (implement based on your auth system)
+    function getAuthToken() {
+      // Return JWT token from localStorage or cookie
+      return localStorage.getItem('auth_token') || '';
+    }
+
+    function getCurrentBookingId() {
+      // Return current booking ID from URL params or state
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('booking_id') || null;
     }
 
     function openNotifications() {
@@ -1271,13 +1379,6 @@
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
       checkRedeemButton();
-      
-      // Add click handlers to amount buttons
-      document.querySelectorAll('.amount-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          selectRedemptionAmount(this);
-        });
-      });
     });
   </script>
 

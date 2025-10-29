@@ -201,6 +201,61 @@ aside .content{padding:18px}
 .sheet h3{margin:0 0 10px}
     .divider{height:1px;background:var(--border);margin:12px 0}
 .close{border:1px solid var(--border);background:#0e0e0e;color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer}
+
+/* BlkPoints Redemption Status Styles */
+.pending-note {
+  font-size: 0.8em;
+  color: #aaa;
+  font-weight: normal;
+}
+
+.redemption-status {
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+  display: inline-block;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: all 0.4s ease;
+}
+
+.redemption-status.pending {
+  background: rgba(255, 215, 0, 0.15);
+  color: gold;
+  animation: pulse 1.5s infinite;
+}
+
+.redemption-status.confirmed {
+  background: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+}
+
+.redemption-status.released {
+  background: rgba(255, 255, 255, 0.1);
+  color: #aaa;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+.points-progress {
+  background: #333;
+  border-radius: 4px;
+  height: 6px;
+  width: 200px;
+  margin-top: 8px;
+}
+
+.progress-fill {
+  height: 6px;
+  width: 0%;
+  background: gold;
+  border-radius: 4px;
+  transition: width 1s ease;
+}
   </style>
 </head>
 <body>
@@ -449,6 +504,9 @@ function fetchAvailability(serviceId){return new Promise(r=>setTimeout(()=>r(ava
 
 /* State */
 const state={items:[], selDate:null, selTime:null, svc:null};
+let blkPointsRedemptionValue = 0; // Global variable to store the redemption value
+let blkPointsRedemptionPoints = 0; // Points to be redeemed
+let redemptionValidationError = null; // Store validation error
 
 /* Basket render (desktop + mobile mirrors) */
     function renderBasket(){
@@ -465,9 +523,53 @@ const state={items:[], selDate:null, selTime:null, svc:null};
   }
   qsa('.rm').forEach(b=>b.onclick=()=>removeItem(b.dataset.id));
   const sub=state.items.reduce((s,i)=>s+Number(i.price||0),0);
-  qs('#subtotal').textContent=gbp(sub); qs('#total').textContent=gbp(sub);
-  qs('#dSubtotal').textContent=gbp(sub); qs('#dTotal').textContent=gbp(sub);
-  qs('#mbTotal').textContent=gbp(sub);
+
+  // Apply any stored BlkPoints redemption intent (localStorage), respecting rules
+  function getAppliedRedemption(subtotal){
+    try{
+      const stored = localStorage.getItem('blkpoints_redemption');
+      if(!stored) return 0;
+      const desired = Math.max(0, Number(stored)); // currency amount (e.g., 10)
+      if(!isFinite(desired) || desired <= 0) return 0;
+      // Rule: booking must be at least 2x redemption
+      if(subtotal < desired * 2) return 0;
+      // Rule: max 50% of booking value
+      const maxAllowed = subtotal / 2;
+      return Math.min(desired, maxAllowed);
+    }catch(_e){ return 0; }
+  }
+
+  const appliedRedemption = getAppliedRedemption(sub);
+  const payable = Math.max(0, sub - appliedRedemption);
+
+  // Update totals across UI (fallback where elements exist)
+  const setIf = (sel, val)=>{const el=qs(sel); if(el) el.textContent = gbp(val);} 
+  setIf('#subtotal', sub);
+  setIf('#total', payable);
+  setIf('#dSubtotal', sub);
+  setIf('#dTotal', payable);
+  setIf('#mbTotal', payable);
+
+  // Also update floating total immediately
+  const floating = qs('#floatingTotal'); if(floating) floating.textContent = gbp(payable);
+
+  // If there's a desktop summary reduction line, reflect it (optional, only if present)
+  const summaryPanel = qs('#summaryPanel');
+  if(summaryPanel){
+    let appliedLine = qs('#summaryAppliedLine');
+    if(appliedRedemption > 0){
+      if(!appliedLine){
+        appliedLine = document.createElement('div');
+        appliedLine.id = 'summaryAppliedLine';
+        appliedLine.className = 'line';
+        summaryPanel.insertBefore(appliedLine, summaryPanel.querySelector('.line:last-child'));
+      }
+      appliedLine.innerHTML = `<strong>BlkPoints applied</strong><span>-${gbp(appliedRedemption)} <span class="pending-note">(pending until booking completed)</span></span>`;
+    } else if(appliedLine){
+      appliedLine.remove();
+    }
+    const totalEl = qs('#summaryTotal'); if(totalEl) totalEl.textContent = gbp(payable);
+  }
 
   // toggle Add/Remove states
   qsa('.add').forEach(b=>{
@@ -872,11 +974,90 @@ if (totalNode2) totalObserver2.observe(totalNode2, { childList: true });
 
 updateSummaryBadge();
 
+// ──────────────────────────────
+//  BLKPOINTS STATUS TRACKING
+// ──────────────────────────────
+
+function updateRedemptionStatus(newStatus) {
+  const redemptionStatusEl = document.getElementById("redemptionStatus");
+  if (!redemptionStatusEl) return;
+
+  redemptionStatusEl.classList.remove("pending", "confirmed", "released");
+
+  if (newStatus === "completed") {
+    redemptionStatusEl.classList.add("confirmed");
+    redemptionStatusEl.innerHTML = "✅ BlkPoints discount confirmed — booking completed";
+    updateProgress("completed");
+  } 
+  else if (newStatus === "cancelled") {
+    redemptionStatusEl.classList.add("released");
+    redemptionStatusEl.innerHTML = "🔁 Booking cancelled — BlkPoints returned to your balance";
+    updateProgress("cancelled");
+  } 
+  else {
+    redemptionStatusEl.classList.add("pending");
+    redemptionStatusEl.innerHTML = "⏳ BlkPoints discount applied — pending until booking completed";
+    updateProgress("pending");
+  }
+}
+
+function updateProgress(status) {
+  const fill = document.getElementById("progressFill");
+  if (!fill) return;
+  
+  if (status === "pending") fill.style.width = "30%";
+  if (status === "completed") fill.style.width = "100%";
+  if (status === "cancelled") fill.style.width = "0%";
+}
+
+function addRedemptionStatusBadge() {
+  const appliedRedemption = getAppliedRedemption(state.items.reduce((s,i)=>s+Number(i.price||0),0));
+  
+  if (appliedRedemption > 0) {
+    // Add status badge to booking summary
+    const summaryPanel = qs('#summaryPanel');
+    if (summaryPanel && !qs('#redemptionStatusBadge')) {
+      const badge = document.createElement('div');
+      badge.id = 'redemptionStatusBadge';
+      badge.className = 'redemption-status pending';
+      badge.innerHTML = `⏳ £${appliedRedemption.toFixed(2)} BlkPoints discount (pending until booking completed)`;
+      
+      // Add progress bar
+      const progressContainer = document.createElement('div');
+      progressContainer.className = 'points-progress';
+      progressContainer.innerHTML = '<div class="progress-fill" id="progressFill"></div>';
+      
+      badge.appendChild(progressContainer);
+      summaryPanel.appendChild(badge);
+      
+      // Initialize progress
+      updateProgress("pending");
+    }
+  }
+}
+
+// Poll for booking status updates (simulate real-time updates)
+function startStatusPolling() {
+  const appliedRedemption = getAppliedRedemption(state.items.reduce((s,i)=>s+Number(i.price||0),0));
+  
+  if (appliedRedemption > 0) {
+    // Simulate status updates for demo (replace with real API polling)
+    setTimeout(() => {
+      // Simulate booking completion after 5 seconds
+      updateRedemptionStatus("completed");
+    }, 5000);
+  }
+}
+
 /* Init */
 let curDate=new Date(); curDate.setHours(0,0,0,0);
 buildCalendar(curDate.getFullYear(),curDate.getMonth());
 renderBasket();
 loadSlots();
+
+// Initialize BlkPoints status tracking
+addRedemptionStatusBadge();
+startStatusPolling();
   </script>
 </body>
 </html>
