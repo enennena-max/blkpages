@@ -489,8 +489,8 @@
 
   <script src="blkpoints-validation.js"></script>
     <script>
-    // Get booking data from localStorage (set by booking page)
-    const rawData = localStorage.getItem("bookingSummary");
+    // Get booking data (prefer sessionStorage for same-tab navigation)
+    const rawData = sessionStorage.getItem("bookingSummary") || localStorage.getItem("bookingSummary");
     
     console.log('Raw localStorage data:', rawData);
     
@@ -584,25 +584,20 @@
       
       // Check if we have services
       if (!bookingServices || bookingServices.length === 0) {
-        html = '<div class="summary-line" style="color: #999; padding: 20px; text-align: center;">No booking data found. Please start a new booking.</div>';
+        html = '<p>No booking data found. Please start a new booking.</p>';
         summaryDiv.innerHTML = html;
         return;
       }
       
       // Add services
       bookingServices.forEach(service => {
-        html += `<div class="summary-line">
-          <span>${service.name}</span>
-          <span>£${Number(service.price || 0).toFixed(2)}</span>
-        </div>`;
+        html += `<p>${service.name} - £${service.price.toFixed(2)}</p>`;
       });
       
       // Add booking details
       if (bookingDate !== '—' || bookingTime !== '—') {
-        html += `<div class="summary-line">
-          <span>Date & Time</span>
-          <span>${bookingDate} • ${bookingTime}</span>
-        </div>`;
+        html += `<p><strong>Date:</strong> ${bookingDate}</p>`;
+        html += `<p><strong>Time:</strong> ${bookingTime}</p>`;
       }
       
       if (bookingDuration > 0) {
@@ -615,22 +610,13 @@
       const subtotal = bookingTotal;
       const finalTotal = subtotal - blkPointsDiscount;
       
-      html += `<div class="summary-line">
-        <span>Subtotal</span>
-        <span>£${subtotal.toFixed(2)}</span>
-      </div>`;
+      html += `<p><strong>Subtotal:</strong> £${subtotal.toFixed(2)}</p>`;
       
       if (blkPointsDiscount > 0) {
-        html += `<div class="summary-line" style="color: #4caf50;">
-          <span>BlkPoints Discount (-${appliedPoints} pts)</span>
-          <span>-£${blkPointsDiscount.toFixed(2)}</span>
-        </div>`;
+        html += `<p style="color: #4caf50;"><strong>BlkPoints Discount:</strong> -£${blkPointsDiscount.toFixed(2)}</p>`;
       }
       
-      html += `<div class="summary-line" style="font-weight: 700; font-size: 1.1rem; padding-top: 12px; border-top: 1px solid rgba(255,215,0,0.3); margin-top: 8px;">
-        <span>Total Due</span>
-        <span>£${finalTotal.toFixed(2)}</span>
-      </div>`;
+      html += `<h4><strong>Total Due: £${finalTotal.toFixed(2)}</strong></h4>`;
       
       summaryDiv.innerHTML = html;
       document.getElementById('finalTotal').textContent = `£${finalTotal.toFixed(2)}`;

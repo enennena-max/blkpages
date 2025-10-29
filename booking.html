@@ -643,20 +643,20 @@ function show(element, visible) {
   element.style.display = visible ? 'block' : 'none';
 }
 
-// Apply any stored BlkPoints redemption intent (localStorage), respecting rules
-function getAppliedRedemption(subtotal){
-  try{
-    const stored = localStorage.getItem('blkpoints_redemption');
-    if(!stored) return 0;
-    const desired = Math.max(0, Number(stored)); // currency amount (e.g., 10)
-    if(!isFinite(desired) || desired <= 0) return 0;
-    // Rule: booking must be at least 2x redemption
-    if(subtotal < desired * 2) return 0;
-    // Rule: max 50% of booking value
-    const maxAllowed = subtotal / 2;
-    return Math.min(desired, maxAllowed);
-  }catch(_e){ return 0; }
-}
+  // Apply any stored BlkPoints redemption intent (localStorage), respecting rules
+  function getAppliedRedemption(subtotal){
+    try{
+      const stored = localStorage.getItem('blkpoints_redemption');
+      if(!stored) return 0;
+      const desired = Math.max(0, Number(stored)); // currency amount (e.g., 10)
+      if(!isFinite(desired) || desired <= 0) return 0;
+      // Rule: booking must be at least 2x redemption
+      if(subtotal < desired * 2) return 0;
+      // Rule: max 50% of booking value
+      const maxAllowed = subtotal / 2;
+      return Math.min(desired, maxAllowed);
+    }catch(_e){ return 0; }
+  }
 
 /* Basket render (desktop + mobile mirrors) */
     function renderBasket(){
@@ -739,6 +739,8 @@ function addItem(item){
   if (!state.items.find(i => i.id === item.id)) {
     state.items.push(item);
     console.log('Item added. State items:', state.items);
+    console.log('Total items in state:', state.items.length);
+    console.log('Total price should be:', state.items.reduce((sum, i) => sum + (i.price || 0), 0));
   }
   if (!state.svc) {                 // <-- make the first added service the active one
     state.svc = item.id;
@@ -932,6 +934,7 @@ function validateAll(scroll=false){
   };
   
   const ok = v.items && v.slot && v.name && v.email && v.phone && v.terms;
+  console.log('Overall validation result:', ok);
   
   const mbPay = qs('#mbPay');
   const floatingPay = qs('#floatingPayBtn');
@@ -981,45 +984,57 @@ async function doPay(){
   console.log('doPay function called');
   console.log('Current state:', JSON.parse(JSON.stringify(state)));
   
-  // Check state before validation
-  if (!state.items || state.items.length === 0) {
-    console.error('No items in state!', state);
-    alert('Please add at least one service to your booking.');
-    return;
-  }
-  
-  if (!state.selDate || !state.selTime) {
-    console.error('No date/time selected!', { date: state.selDate, time: state.selTime });
-    alert('Please select a date and time for your booking.');
-    return;
-  }
-  
-  const validationResult = validateAll(true);
-  console.log('Validation result:', validationResult);
-  if(!validationResult) {
-    console.log('Validation failed, not proceeding with payment');
-    alert('Please complete all required fields before proceeding.');
-    return;
-  }
+  try {
+    // Check state before validation
+    if (!state.items || state.items.length === 0) {
+      console.error('No items in state!', state);
+      alert('Please add at least one service to your booking.');
+      return;
+    }
+    
+    if (!state.selDate || !state.selTime) {
+      console.error('No date/time selected!', { date: state.selDate, time: state.selTime });
+      alert('Please select a date and time for your booking.');
+      return;
+    }
+    
+    const validationResult = validateAll(true);
+    console.log('Validation result:', validationResult);
+    if(!validationResult) {
+      console.log('Validation failed, not proceeding with payment');
+      alert('Please complete all required fields before proceeding.');
+      return;
+    }
   
   // Capture new customer status
   const isNewCustomer = qs('#isNewCustomer').checked;
   
-  // Calculate total
-  const total = state.items.reduce((sum, item) => sum + item.price, 0);
+  // Get dynamic data from the page state
+  const selectedServices = state.items.map(item => ({
+    name: item.name,
+    price: item.price,
+    duration: item.duration || 0
+  }));
+
+  // Calculate total dynamically from selected services
+  const bookingTotal = selectedServices.reduce((sum, s) => sum + s.price, 0);
+  const date = state.selDate || "";
+  const time = state.selTime || "";
+  const duration = selectedServices.reduce((sum, s) => sum + s.duration, 0);
   
   console.log('doPay called with state:', {
     items: state.items,
+    selectedServices: selectedServices,
     selDate: state.selDate,
     selTime: state.selTime,
-    total: total
+    bookingTotal: bookingTotal
   });
   
   // Prepare booking data
   const bookingData = {
     business: biz,
     services: state.items,
-    total: total,
+    total: bookingTotal,
     date: state.selDate,
     time: state.selTime,
     customerName: qs('#name').value,
@@ -1029,26 +1044,35 @@ async function doPay(){
     notes: qs('#notes') ? qs('#notes').value : '',
     isNewCustomer: isNewCustomer
   };
-  
-  // Create booking summary for payment page
+
+  // Save booking summary dynamically
   const bookingSummary = {
-    services: state.items,
-    total: total,
-    date: state.selDate,
-    time: state.selTime,
+    services: selectedServices,
+    total: bookingTotal,
+    date,
+    time,
+    duration,
     customerName: qs('#name').value,
     customerEmail: qs('#email').value,
-    customerPhone: qs('#phone').value,
-    duration: state.items.reduce((sum, item) => sum + (item.duration || 0), 0)
+    customerPhone: qs('#phone').value
   };
+  
+  console.log('Final booking summary:', bookingSummary);
 
-  // Save to localStorage before redirecting
+  // Save for same-tab navigation reliability (sessionStorage) and cross-tab (localStorage)
+  try {
+    sessionStorage.setItem("bookingSummary", JSON.stringify(bookingSummary));
+  } catch(_e) {}
   localStorage.setItem("bookingSummary", JSON.stringify(bookingSummary));
   
   console.log('Stored booking summary:', bookingSummary);
 
-  // Redirect to payment page
-  window.location.href = "payment.html";
+    // Redirect to payment page
+    window.location.href = "payment.html";
+  } catch (error) {
+    console.error('Error in doPay function:', error);
+    alert('Error processing payment: ' + error.message);
+  }
 }
 // Set up click handlers after DOM is ready
 function setupPayButtons() {
@@ -1075,7 +1099,12 @@ function setupPayButtons() {
       e.preventDefault();
       e.stopPropagation();
       console.log('About to call doPay()');
-      doPay();
+      try {
+        doPay();
+      } catch (error) {
+        console.error('Error in doPay:', error);
+        alert('Error: ' + error.message);
+      }
       return false;
     });
     
@@ -1087,7 +1116,7 @@ function setupPayButtons() {
       return false;
     };
     console.log('Mobile pay button handler attached');
-  } else {
+    } else {
     console.error('Mobile pay button not found');
   }
 
@@ -1101,7 +1130,12 @@ function setupPayButtons() {
       e.preventDefault();
       e.stopPropagation();
       console.log('About to call doPay()');
-      doPay();
+      try {
+        doPay();
+      } catch (error) {
+        console.error('Error in doPay:', error);
+        alert('Error: ' + error.message);
+      }
       return false;
     });
     
