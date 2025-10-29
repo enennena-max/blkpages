@@ -334,6 +334,31 @@
       gap: 0.8rem;
     }
 
+    /* ---------- Invite Box ---------- */
+    .invite-box { background: #111; border: 1px solid #333; border-radius: 10px; padding: 20px; }
+    .referral-field { display: flex; align-items: center; gap: 0.75rem; }
+    .referral-field input { flex: 1; padding: 12px; border: 1px solid #444; background: #222; color: #fff; border-radius: 6px; }
+    .toast {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s;
+      background: #f2c94c;
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 6px;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      z-index: 10000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .toast.show {
+      visibility: visible;
+      opacity: 1;
+    }
+    
     /* ---------- Referral Stats ---------- */
     .stat-item { text-align: center; }
     .stat-number { font-size: 1.5rem; font-weight: bold; color: #f2c94c; margin-bottom: 0.25rem; }
@@ -1237,31 +1262,41 @@
         </div>
       </div>
 
-      <!-- Referral Stats -->
-      <div class="loyalty-card blkpoints-card info-card" id="referralStats" style="display:none;">
-        <h4 style="margin-bottom:1rem;">🎁 Referral Rewards</h4>
-        <div class="referral-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem;margin-bottom:1rem;">
+      <!-- Invite & Earn Widget -->
+      <div class="invite-box loyalty-card blkpoints-card info-card" id="inviteWidget">
+        <h4 style="margin-bottom:0.5rem;color:#f2c94c;">🎁 Invite & Earn</h4>
+        <p class="section-description" style="margin-bottom:1.5rem;">Invite your friends to BlkPages and earn 100 BlkPoints when they complete their first booking.</p>
+
+        <div class="referral-field" style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+          <input type="text" id="referralLinkInput" readonly style="flex:1;padding:12px;background:#222;border:1px solid #444;color:#fff;border-radius:6px;font-size:0.9rem;">
+          <button class="btn gold" id="copyLinkBtn" style="padding:12px 20px;white-space:nowrap;">Copy Link</button>
+          <button class="btn secondary" id="shareBtn" style="padding:12px 20px;white-space:nowrap;">Share</button>
+        </div>
+
+        <p class="note" style="font-size:0.85rem;color:#999;margin:0;">✨ Your referral link never changes. Share it anywhere!</p>
+
+        <!-- Referral Stats (optional display) -->
+        <div class="referral-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1rem;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #333;">
           <div class="stat-item">
             <div class="stat-number" id="friendsJoined">0</div>
             <div class="stat-label">Friends Joined</div>
           </div>
           <div class="stat-item">
             <div class="stat-number" id="pendingRewards">0</div>
-            <div class="stat-label">Pending Rewards</div>
+            <div class="stat-label">Pending</div>
           </div>
           <div class="stat-item">
             <div class="stat-number" id="confirmedRewards">0</div>
-            <div class="stat-label">Confirmed Rewards</div>
+            <div class="stat-label">Confirmed</div>
           </div>
           <div class="stat-item">
             <div class="stat-number" id="totalEarned">0</div>
             <div class="stat-label">Total Earned</div>
           </div>
         </div>
-        <div class="referral-share" style="display:flex;align-items:center;gap:1rem;">
-          <input type="text" id="referralLink" readonly style="flex:1;padding:8px;background:#333;border:1px solid #555;color:#fff;border-radius:4px;">
-          <button class="btn gold" onclick="copyReferralLink()" style="padding:8px 16px;">Copy Link</button>
-        </div>
+
+        <!-- Toast Notification -->
+        <div id="copyToast" class="toast" style="display:none;">Copied!</div>
       </div>
 
       <!-- Marketing Emails Opt-in (GDPR) -->
@@ -1617,24 +1652,126 @@
 
     async function initReferralStats() {
       try {
-        // Get referral code
+        // Fetch permanent referral link
+        const linkRes = await fetch('/api/user/referral-link', {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        
+        if (linkRes.ok) {
+          const data = await linkRes.json();
+          referralStats.referralLink = data.referral_link;
+          const linkInput = document.getElementById('referralLinkInput');
+          if (linkInput) {
+            linkInput.value = data.referral_link;
+          }
+        }
+
+        // Get full referral code info
         const codeRes = await fetch('/api/user/referral-code', {
           headers: { 'Authorization': `Bearer ${getAuthToken()}` }
         });
         if (codeRes.ok) {
           const data = await codeRes.json();
           referralStats.referralCode = data.referral_code;
-          referralStats.referralLink = data.link;
-          document.getElementById('referralLink').value = data.link;
+
+          // Fallback: if link not set, construct from code
+          if (!referralStats.referralLink && referralStats.referralCode) {
+            const baseUrl = window.location.origin;
+            const constructed = `${baseUrl}/signup?ref=${referralStats.referralCode}`;
+            referralStats.referralLink = constructed;
+            const linkInput = document.getElementById('referralLinkInput');
+            if (linkInput) linkInput.value = constructed;
+          }
         }
+
+        // Setup copy & share buttons
+        setupReferralButtons();
 
         // Load referral stats
         await loadReferralStats();
         
-        // Show referral section
-        document.getElementById('referralStats').style.display = 'block';
+        // Show invite widget
+        const widget = document.getElementById('inviteWidget');
+        if (widget) {
+          widget.style.display = 'block';
+        }
       } catch (e) {
         console.error('Failed to init referral stats', e);
+      }
+    }
+
+    function setupReferralButtons() {
+      const copyBtn = document.getElementById('copyLinkBtn');
+      const shareBtn = document.getElementById('shareBtn');
+      const linkInput = document.getElementById('referralLinkInput');
+
+      if (copyBtn && linkInput) {
+        copyBtn.addEventListener('click', () => {
+          linkInput.select();
+          linkInput.setSelectionRange(0, 99999); // For mobile
+          try {
+            document.execCommand('copy');
+            showToast('Link copied to clipboard!');
+          } catch (err) {
+            // Fallback for modern browsers
+            if (navigator.clipboard) {
+              navigator.clipboard.writeText(linkInput.value).then(() => {
+                showToast('Link copied to clipboard!');
+              });
+            }
+          }
+        });
+      }
+
+      if (shareBtn && linkInput) {
+        shareBtn.addEventListener('click', async () => {
+          const link = linkInput.value;
+          const shareData = {
+            title: 'Join BlkPages',
+            text: 'Join BlkPages and earn BlkPoints! Use my referral link:',
+            url: link
+          };
+
+          if (navigator.share) {
+            try {
+              await navigator.share(shareData);
+              showToast('Shared!');
+            } catch (err) {
+              // User cancelled or error
+              if (err.name !== 'AbortError') {
+                console.error('Share failed:', err);
+                showToast('Link copied – paste it into WhatsApp, Instagram or email');
+              }
+            }
+          } else {
+            // Fallback: copy and show message
+            linkInput.select();
+            try {
+              document.execCommand('copy');
+              showToast('Link copied – paste it into WhatsApp, Instagram or email');
+            } catch (err) {
+              if (navigator.clipboard) {
+                navigator.clipboard.writeText(link);
+                showToast('Link copied – paste it into WhatsApp, Instagram or email');
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('copyToast');
+      if (toast) {
+        toast.textContent = message;
+        toast.style.display = 'block';
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => {
+            toast.style.display = 'none';
+          }, 300);
+        }, 2000);
       }
     }
 
@@ -1662,22 +1799,6 @@
       document.getElementById('totalEarned').textContent = stats.totalEarned;
     }
 
-    function copyReferralLink() {
-      const linkInput = document.getElementById('referralLink');
-      linkInput.select();
-      linkInput.setSelectionRange(0, 99999);
-      document.execCommand('copy');
-      
-      // Show feedback
-      const btn = event.target;
-      const originalText = btn.textContent;
-      btn.textContent = 'Copied!';
-      btn.style.background = '#4CAF50';
-      setTimeout(() => {
-        btn.textContent = originalText;
-        btn.style.background = '';
-      }, 2000);
-    }
 
     function initWebSocket() {
       try {
@@ -2269,8 +2390,13 @@
 
     // Helper functions (implement based on your auth system)
     function getAuthToken() {
-      // Return JWT token from localStorage or cookie
-      return localStorage.getItem('auth_token') || '';
+      // Return JWT token from localStorage or cookie (support multiple keys)
+      return (
+        localStorage.getItem('auth_token') ||
+        localStorage.getItem('authToken') ||
+        localStorage.getItem('token') ||
+        ''
+      );
     }
 
     function getCurrentBookingId() {

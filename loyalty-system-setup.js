@@ -87,19 +87,69 @@ function authenticateToken(req, res, next) {
 // 🧱 Referral Code & Link Capture Endpoints
 // =====================================================
 
+/**
+ * generateReferralCode() - Generates permanent referral code
+ * Format: BLK-XXXXXX (8 uppercase alphanumeric)
+ * Never regenerates unless explicitly reset by admin
+ */
 function generateReferralCode() {
-  return crypto.randomBytes(4).toString('hex').toUpperCase(); // 8 chars
+  const randomPart = crypto.randomBytes(4).toString('hex').toUpperCase();
+  return `BLK-${randomPart}`; // e.g., BLK-A1B2C3D4
 }
 
-// Generate or fetch existing referral code
-app.post('/api/user/referral-code', authenticateToken, async (req, res) => {
-  const userId = req.user.id;
-  const user = mockDb.users.get(userId) || { id: userId };
-  if (!user.referral_code) {
-    user.referral_code = generateReferralCode();
-    mockDb.users.set(userId, user);
+// Get referral code (never regenerates - permanent)
+app.get('/api/user/referral-code', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = mockDb.users.get(userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Never regenerate - code is permanent
+    if (!user.referral_code) {
+      // Only generate if truly missing (edge case for existing users)
+      user.referral_code = generateReferralCode();
+      mockDb.users.set(userId, user);
+    }
+    
+    const baseUrl = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`;
+    const referralLink = `${baseUrl}/signup?ref=${user.referral_code}`;
+    
+    res.json({ 
+      referral_code: user.referral_code,
+      referral_link: referralLink
+    });
+  } catch (error) {
+    console.error('Error fetching referral code:', error);
+    res.status(500).json({ error: 'Failed to fetch referral code' });
   }
-  res.json({ referral_code: user.referral_code, link: `${process.env.PUBLIC_BASE_URL || 'http://localhost:'+PORT}/ref/${user.referral_code}` });
+});
+
+// Get referral link only (for convenience)
+app.get('/api/user/referral-link', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = mockDb.users.get(userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    if (!user.referral_code) {
+      user.referral_code = generateReferralCode();
+      mockDb.users.set(userId, user);
+    }
+    
+    const baseUrl = process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`;
+    const referralLink = `${baseUrl}/signup?ref=${user.referral_code}`;
+    
+    res.json({ referral_link: referralLink });
+  } catch (error) {
+    console.error('Error fetching referral link:', error);
+    res.status(500).json({ error: 'Failed to fetch referral link' });
+  }
 });
 
 // Referral link click → set cookie then redirect to signup page
@@ -411,6 +461,10 @@ async function handleSignup(newUserData, deviceFingerprint, paymentHash, req, db
 
   // ---- CREATE NEW USER ----
   const newId = `user-${Date.now()}`;
+  
+  // Generate permanent referral code for new user (only once, never regenerated)
+  const permanentReferralCode = generateReferralCode();
+  
   const newUser = {
     id: newId,
     email,
@@ -419,17 +473,15 @@ async function handleSignup(newUserData, deviceFingerprint, paymentHash, req, db
     verified_at: null,
     blkpoints_balance: 0,
     referred_by: referrer ? referrer.id : null,
-    referral_code: null
+    referral_code: permanentReferralCode // Permanent code generated at signup
   };
   db.users.set(newId, newUser);
 
-  // Ensure referrer has a code; generate for new user too for sharing later
+  // Ensure referrer has a code (if they don't have one, generate it)
   if (referrer && !referrer.referral_code) {
     referrer.referral_code = generateReferralCode();
     db.users.set(referrer.id, referrer);
   }
-  newUser.referral_code = generateReferralCode();
-  db.users.set(newId, newUser);
 
   // ---- CREATE REFERRAL RECORD IF VALID ----
   if (referrer) {
@@ -762,9 +814,37 @@ app.get('/device-fingerprint.js', (req, res) => {
   res.sendFile(path.join(__dirname, 'device-fingerprint.js'));
 });
 
+// Serve admin referrals dashboard
+app.get('/admin/referrals', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin-referrals-dashboard.html'));
+});
+
 // =====================================================
 // 🔒 Admin Monitoring Endpoints
 // =====================================================
+
+// Get all user referral codes (admin dashboard)
+app.get('/api/admin/referrals', authenticateToken, async (req, res) => {
+  try {
+    const users = Array.from(mockDb.users.values()).map(u => ({
+      id: u.id,
+      email: u.email,
+      first_name: u.first_name || u.email?.split('@')[0] || 'N/A',
+      referral_code: u.referral_code || 'Not generated',
+      referral_link: u.referral_code 
+        ? `${process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`}/signup?ref=${u.referral_code}`
+        : null,
+      referred_by: u.referred_by || null,
+      blkpoints_balance: u.blkpoints_balance || 0,
+      is_verified: u.is_verified || false
+    }));
+    
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching admin referrals:', error);
+    res.status(500).json({ error: 'Failed to fetch referrals' });
+  }
+});
 
 // Get suspicious referrals (for admin monitoring)
 app.get('/api/admin/suspicious-referrals', authenticateToken, async (req, res) => {
@@ -874,7 +954,7 @@ async function startServer() {
       is_verified: true,
       verified_at: new Date(),
       blkpoints_balance: 1250,
-      referral_code: 'ABC123'
+      referral_code: generateReferralCode() // Permanent code generated
     });
     
     // Start server
