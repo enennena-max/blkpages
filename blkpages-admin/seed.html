@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seed Firestore • BlkPages Admin</title>
+    <style>
+      body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial; background:#0b0b0f; color:#eaeaea; padding:24px }
+      .card { background:#15151d; border:1px solid #2a2a35; border-radius:12px; padding:20px; max-width:560px }
+      .btn { background:#FFD700; color:#111; font-weight:700; border:none; padding:10px 14px; border-radius:8px; cursor:pointer }
+      .log { margin-top:12px; font-size:13px; color:#cfcfcf }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Seed Firestore</h2>
+      <p>This will insert sample users, businesses, transactions, and refunds into Firestore for the dashboard.</p>
+      <button id="run" class="btn">Run Seed</button>
+      <div id="log" class="log"></div>
+    </div>
+    <script type="module">
+      import './src/firebase/firebaseConfig.js'
+      import { runSeed } from './src/firebase/seedData.js'
+
+      const btn = document.getElementById('run')
+      const log = document.getElementById('log')
+      btn.addEventListener('click', async () => {
+        log.textContent = 'Seeding…'
+        btn.disabled = true
+        try {
+          await runSeed()
+          log.textContent = '✅ Seed complete. Check Firestore and reload the dashboard.'
+        } catch (e) {
+          log.textContent = '⚠️ Seed failed: ' + (e?.message || e)
+        } finally {
+          btn.disabled = false
+        }
+      })
+    </script>
+  </body>
+  </html>
+
+
