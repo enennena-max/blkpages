@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Alerts History | BlkPages</title>
+<style>
+  :root{
+    --bg:#0b0b0b; --panel:#0f0f10; --ink:#fff; --muted:#b8b8b8;
+    --gold:#FFD700; --gold-2:#ffdf33; --border:rgba(255,215,0,.25);
+  }
+  body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--ink); margin:0; }
+  a { color:var(--gold); text-decoration:none; }
+  a:hover{ color:var(--gold-2); text-decoration:underline; }
+
+  .wrap{ max-width:1200px; margin:0 auto; padding:24px; }
+  .header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .title{ display:flex; align-items:center; gap:10px; }
+  .title h2{ margin:0; font-size:1.4rem; }
+  .subtitle{ color:var(--muted); font-size:.95rem; }
+
+  .toolbar{ position:sticky; top:0; z-index:5; background:linear-gradient(180deg, rgba(11,11,11,.98), rgba(11,11,11,.9)); backdrop-filter: blur(6px); border-bottom:1px solid #1b1b1b; padding:12px 0; margin-bottom:12px; }
+  .filters { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .filters .group{ display:flex; gap:10px; align-items:center; }
+  input, select, button { padding:8px 12px; border-radius:8px; border:1px solid #2a2a2a; background:#121214; color:#fff; }
+  input:focus, select:focus{ outline:none; border-color:var(--gold); }
+  button{ background:var(--gold); color:#111; font-weight:700; cursor:pointer; }
+  button:hover{ background:var(--gold-2); }
+
+  .panel{ background:var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+  .table { width:100%; border-collapse:separate; border-spacing:0; font-size:14px; }
+  .table thead th{ position:sticky; top:56px; background:#111; color:#ddd; border-bottom:1px solid #222; padding:12px; font-weight:700; text-align:left; }
+  .table tbody td{ padding:12px; border-bottom:1px dashed rgba(255,215,0,.18); vertical-align:top; }
+  .table tbody tr:hover{ background:rgba(255,215,0,0.04); }
+  .when{ color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+  .type-tag { display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:12px; text-transform:capitalize; letter-spacing:.2px; }
+  .type-payments { background:#1b3320; color:#8CFF9E; border:1px solid #2d6a3a; }
+  .type-loyalty { background:#2b2608; color:#FFD700; border:1px solid #6d5d14; }
+  .type-support { background:#2b2b08; color:#FFF07A; border:1px solid #6d6d14; }
+  .type-fraud { background:#3a0f14; color:#FF9AA5; border:1px solid #6d1f2b; }
+  .type-reviews { background:#0f153a; color:#9ab0ff; border:1px solid #20326d; }
+  .type-businesses { background:#0f2b2b; color:#8CFFF2; border:1px solid #146d6d; }
+  .type-customers { background:#2b1f08; color:#FFC26A; border:1px solid #6d4a14; }
+
+  .legend{ display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 0; }
+  .legend .chip{ padding:4px 8px; border-radius:999px; background:#161616; border:1px solid #2a2a2a; color:#bbb; font-size:12px; }
+
+  .empty{ padding:24px; text-align:center; color:var(--muted); }
+</style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">
+        <h2>📋 All Alerts</h2>
+        <span class="subtitle">Searchable, filterable alert history for compliance</span>
+      </div>
+      <div><a href="admin/overview.html">← Back to Admin Overview</a></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="filters">
+    <select id="filterType">
+      <option value="">All Types</option>
+      <option value="payments">Payments</option>
+      <option value="reviews">Reviews</option>
+      <option value="loyalty">Loyalty</option>
+      <option value="support">Support</option>
+      <option value="fraud">Fraud</option>
+      <option value="businesses">Businesses</option>
+      <option value="customers">Customers</option>
+    </select>
+    <input type="date" id="startDate">
+    <input type="date" id="endDate">
+    <input type="text" id="keyword" placeholder="Search keyword...">
+        <label class="group" style="gap:6px"><input type="checkbox" id="onlyRead" checked> Only read</label>
+        <button id="applyFilters">Apply</button>
+      </div>
+      <div class="legend">
+        <span class="chip">Legend:</span>
+        <span class="chip">💳 Payments</span>
+        <span class="chip">🎁 Loyalty</span>
+        <span class="chip">⭐ Reviews</span>
+        <span class="chip">🏪 Businesses</span>
+        <span class="chip">👤 Customers</span>
+        <span class="chip">⚠️ Support</span>
+        <span class="chip">🚨 Fraud</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <table class="table">
+        <thead>
+          <tr><th>Type</th><th>Message</th><th>Time</th></tr>
+        </thead>
+        <tbody id="alertsTable"></tbody>
+      </table>
+      <div id="emptyState" class="empty" style="display:none">No results found</div>
+    </div>
+  </div>
+
+<script type="module">
+const tbody = document.getElementById('alertsTable');
+const applyBtn = document.getElementById('applyFilters');
+
+function escapeHtml(str){
+  return str.replace(/[&<>"]+/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));
+}
+
+const hasConfig = !!window.firebaseConfig && !!window.firebaseConfig.apiKey && window.firebaseConfig.apiKey !== 'your-api-key-here';
+
+if (!hasConfig) {
+  // Demo mode (file:// or no firebaseConfig) — render sample alerts so page isn't blank
+  const demo = [
+    { type:'payments', message:'💳 New payment of £45 from Jane Smith', when:new Date() },
+    { type:'loyalty', message:'🎁 100 BlkPoints released for CUST_293', when:new Date(Date.now()-3600_000) },
+    { type:'support', message:'⚠️ New support ticket from Royal Hair — “Payment not reflecting”', when:new Date(Date.now()-7200_000) }
+  ];
+  tbody.innerHTML = '';
+  demo.forEach(d => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="type-tag type-${d.type}">${d.type}</span></td>
+      <td>${escapeHtml(d.message)}</td>
+      <td class="when">${d.when.toLocaleString()}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  const empty = document.getElementById('emptyState'); if (empty) empty.style.display = 'none';
+  if (applyBtn) applyBtn.disabled = false;
+} else {
+  const [{ initializeApp }, { getFirestore, collection, query, orderBy, where, getDocs }] = await Promise.all([
+    import('https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js')
+  ]);
+  const app = initializeApp(window.firebaseConfig);
+  const db = getFirestore(app);
+
+  document.getElementById('applyFilters').addEventListener('click', fetchAlerts);
+
+  async function fetchAlerts(){
+    tbody.innerHTML = "<tr><td colspan='3'>Loading...</td></tr>";
+    let qRef = query(collection(db, 'adminAlerts'), orderBy('timestamp','desc'));
+
+    const typeVal = document.getElementById('filterType').value;
+    if (typeVal) qRef = query(qRef, where('type','==', typeVal));
+    const onlyRead = document.getElementById('onlyRead').checked;
+    if (onlyRead) qRef = query(qRef, where('read','==', true));
+
+    const snap = await getDocs(qRef);
+    tbody.innerHTML = '';
+
+    const start = document.getElementById('startDate').value;
+    const end = document.getElementById('endDate').value;
+    const keyword = (document.getElementById('keyword').value || '').toLowerCase();
+
+    snap.forEach(docSnap => {
+      const data = docSnap.data() || {};
+      const ts = data.timestamp?.toDate ? data.timestamp.toDate() : (data.timestamp ? new Date(data.timestamp) : new Date());
+      if (start && ts < new Date(start)) return;
+      if (end && ts > new Date(end + 'T23:59:59')) return;
+      if (keyword && !(String(data.message||'').toLowerCase().includes(keyword))) return;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="type-tag type-${data.type}">${data.type||''}</span></td>
+        <td>${escapeHtml(data.message||'')}</td>
+        <td class="when">${ts.toLocaleString()}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    const empty = document.getElementById('emptyState');
+    if (!tbody.children.length) { 
+      tbody.innerHTML = ""; 
+      if (empty) empty.style.display = 'block';
+    } else if (empty) { empty.style.display = 'none'; }
+  }
+
+  fetchAlerts();
+}
+</script>
+</body>
+</html>
+
+

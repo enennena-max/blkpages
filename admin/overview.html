@@ -3,6 +3,18 @@
 <title>BlkPages Admin — Overview</title>
 <link rel="stylesheet" href="./admin.css"/>
 <script defer src="./admin.js"></script>
+<script type="module" src="./live-dashboard.js"></script>
+<style>
+.alerts-panel{position:fixed;bottom:24px;right:24px;top:auto;width:340px;background:#111;color:#fff;border:1px solid #FFD700;border-radius:10px;padding:15px;box-shadow:0 0 15px rgba(255,215,0,0.3);z-index:9999;max-height:60vh;overflow-y:auto}
+.alerts-panel h3{margin:0 0 10px;color:#ffd700}
+.alerts-panel ul{list-style:none;padding:0;margin:0}
+.alerts-panel #filterControls{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:10px;font-size:13px}
+.alert-item{background:rgba(255,255,255,0.05);border-left:3px solid #FFD700;margin-bottom:10px;padding:10px;font-size:14px;border-radius:6px;animation:fadeIn .5s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media (max-width: 900px){
+  .alerts-panel{left:16px;right:16px;bottom:16px;width:auto;max-height:50vh}
+}
+</style>
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
   setActive("nav-overview");
@@ -23,6 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <a id="nav-referrals" href="./referrals.html">🎁 Referrals</a>
       <a id="nav-disputes" href="./disputes.html">⚖️ Disputes</a>
       <a id="nav-adjustments" href="./adjustments.html">💎 Adjust Points</a>
+        <a id="nav-alerts" href="../admin-alerts.html">🔔 Alerts</a>
     </nav>
   </aside>
   <div>
@@ -32,6 +45,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="card"><h3>Pending Reviews</h3><div class="stat" id="revCount">—</div></div>
         <div class="card"><h3>Pending Businesses</h3><div class="stat" id="bizCount">—</div></div>
         <div class="card"><h3>Disputes</h3><div class="stat" id="disputeCount">—</div></div>
+      </div>
+
+      <!-- Live Alerts Panel -->
+      <div id="adminAlerts" class="alerts-panel">
+        <h3>🔔 Live Alerts</h3>
+        <div id="filterControls">
+          <label><input type="checkbox" id="filterPayments" checked> Payments</label>
+          <label><input type="checkbox" id="filterCancellations" checked> Cancellations</label>
+          <label><input type="checkbox" id="filterReviews" checked> Reviews</label>
+          <label><input type="checkbox" id="filterLoyalty" checked> Loyalty</label>
+          <label><input type="checkbox" id="filterBusinesses" checked> Businesses</label>
+          <label><input type="checkbox" id="filterCustomers" checked> Customers</label>
+          <label><input type="checkbox" id="filterSupport" checked> Support</label>
+          <label><input type="checkbox" id="filterFraud" checked> Fraud</label>
+        </div>
+        <ul id="alertList"></ul>
+        <div style="text-align:right;margin-top:8px">
+          <a href="../admin-alerts.html" style="color:#FFD700;font-size:13px;">View All ➜</a>
+        </div>
       </div>
     </main>
   </div>
