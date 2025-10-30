@@ -89,6 +89,36 @@
       background: rgba(212,175,55,0.1);
       border: 1px solid rgba(212,175,55,0.5);
         }
+    .tab-active{color:#D4AF37;border-bottom:2px solid #D4AF37}
+    .tab{cursor:pointer;padding:0.75rem 1.25rem;font-size:0.9rem;font-weight:500;color:#aaa;white-space:nowrap}
+    .input{background:#1a1a1a;border:1px solid #333;border-radius:6px;padding:0.5rem 0.75rem;width:100%;color:white}
+    .input:focus{outline:none;border-color:#D4AF37}
+    .progress-container{background:#1a1a1a;border:1px solid #333;border-radius:8px;height:10px;width:100%;overflow:hidden}
+    .progress-bar{height:100%;background:#D4AF37;width:0%;transition:width .5s ease}
+    .toggle{appearance:none;width:40px;height:20px;background:#444;border-radius:10px;position:relative;cursor:pointer;transition:.3s}
+    .toggle:checked{background:#D4AF37}
+    .toggle:before{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;background:white;border-radius:50%;transition:.3s}
+    .toggle:checked:before{transform:translateX(20px)}
+    .disabled{opacity:.5;pointer-events:none}
+    /* Cinematic Gold Hover Animation */
+    .gold-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .gold-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(212,175,55,0.6), transparent);
+      transition: all 0.6s ease;
+    }
+    .gold-btn:hover::before {
+      left: 100%;
+    }
     </style>
 </head>
 
@@ -234,28 +264,35 @@
         <div class="card">
           <h2 class="text-xl font-semibold mb-3">Professional Overview</h2>
           <p class="text-sm text-[#D4AF37]/80 mb-4">Welcome back! Here's a quick overview of your activity.</p>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            <div class="card text-center">
-              <h3 class="text-sm text-[#D4AF37]/70">Total Reviews</h3>
-              <p class="text-2xl font-bold">127</p>
-              <p class="text-xs text-[#D4AF37]/60">4.9★ average</p>
+
+          <!-- ====== Professional Summary Widget (Cinematic + Timestamp Edition) ====== -->
+          <section id="proSummaryWidget" class="mt-8 grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="card p-4 text-center transition-opacity duration-700 opacity-0">
+              <p class="text-[11px] uppercase text-gray-400">Profile Views (Today)</p>
+              <h2 id="wViews" class="text-xl font-semibold mt-1 text-[#D4AF37]">0</h2>
             </div>
-            <div class="card text-center">
-              <h3 class="text-sm text-[#D4AF37]/70">Average Rating</h3>
-              <p class="text-2xl font-bold">4.9</p>
-              <p class="text-xs text-[#D4AF37]/60">Across all reviews</p>
+            <div class="card p-4 text-center transition-opacity duration-700 opacity-0">
+              <p class="text-[11px] uppercase text-gray-400">Revenue (Today)</p>
+              <h2 id="wRevenue" class="text-xl font-semibold mt-1 text-[#D4AF37]">£0</h2>
             </div>
-            <div class="card text-center">
-              <h3 class="text-sm text-[#D4AF37]/70">Profile Views</h3>
-              <p class="text-2xl font-bold">1,234</p>
-              <p class="text-xs text-[#D4AF37]/60">Last 30 days</p>
+            <div class="card p-4 text-center transition-opacity duration-700 opacity-0">
+              <p class="text-[11px] uppercase text-gray-400">Bookings (Today)</p>
+              <h2 id="wBookings" class="text-xl font-semibold mt-1 text-[#D4AF37]">0</h2>
             </div>
-            <div class="card text-center">
-              <h3 class="text-sm text-[#D4AF37]/70">Bookings This Month</h3>
-              <p class="text-2xl font-bold">89</p>
-              <p class="text-xs text-[#D4AF37]/60">Confirmed appointments</p>
+            <div class="card p-4 text-center transition-opacity duration-700 opacity-0">
+              <p class="text-[11px] uppercase text-gray-400">Average Rating</p>
+              <h2 id="wRating" class="text-xl font-semibold mt-1 text-[#D4AF37]">0★</h2>
             </div>
-          </div>
+            <div class="card p-4 text-center transition-opacity duration-700 opacity-0">
+              <p class="text-[11px] uppercase text-gray-400">Returning Customers</p>
+              <h2 id="wReturning" class="text-xl font-semibold mt-1 text-[#D4AF37]">0%</h2>
+            </div>
+          </section>
+
+          <!-- Timestamp -->
+          <p id="lastUpdated" class="text-[12px] text-gray-500 mt-2 text-center italic opacity-0 transition-opacity duration-700">
+            Last updated: —
+          </p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <div class="card">
@@ -1502,7 +1539,7 @@
               <button class="text-[12px] text-gray-300 hover:underline" onclick="cancelBookingPro(${i})">Cancel</button>
               <button class="text-[12px] text-gray-300 hover:underline" onclick="markPaidPro(${i})">Mark Paid</button>
               <button class="text-[12px] text-gray-500 hover:underline" onclick="syncSingleBookingPro(${i})">Sync</button>
-        </div>
+                </div>
           `;
         }
 
@@ -1599,7 +1636,7 @@
             <div>
                     <div class="text-white font-medium leading-tight text-[12px]">
                       £${p.amount.toFixed(2)}
-            </div>
+                    </div>
                     <div class="text-gray-400 leading-tight text-[11px]">
                       ${p.client} • ${p.service}
             </div>
@@ -1875,36 +1912,681 @@
           observerPro.observe(bookingsProSection, { attributes: true, attributeFilter: ['style'] });
         }
       </script>
+                    </div>
+                    
+    <div id="reviews" class="section hidden fade">
+      <!-- STARTER REVIEWS SECTION -->
+      <div id="starterReviewsSection" class="hidden">
+        <!-- HEADER BAR -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+            <h1 class="text-2xl font-semibold text-white tracking-tight flex items-center gap-2">
+              <span>Reviews</span>
+              <span class="text-[11px] font-medium bg-[#1a1a1a] border border-[#333] text-[#D4AF37] px-2 py-0.5 rounded-full leading-none uppercase" id="reviewsPlanBadge">
+                Starter
+              </span>
+            </h1>
+            <p class="text-sm text-gray-400 mt-1">
+              See what customers are saying about your business.
+            </p>
+            </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 sm:items-center">
+            <!-- Search -->
+            <div class="relative">
+              <input
+                id="reviewSearchInput"
+                type="text"
+                class="w-full sm:w-64 bg-[#1a1a1a] border border-[#333] text-white text-sm rounded-lg pl-9 pr-3 py-2.5 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#D4AF37] focus:border-[#D4AF37]"
+                placeholder="Search by customer or service..."
+              />
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs">
+                🔍
+              </span>
+            </div>
+            <!-- Export CSV (Professional only) -->
+            <button id="exportCsvBtn" class="hidden whitespace-nowrap inline-flex items-center justify-center rounded-lg text-sm font-medium bg-[#D4AF37] text-black px-4 py-2.5 hover:opacity-90 transition">⬇ Export CSV</button>
+                        </div>
+                    </div>
+                    
+        <!-- STATS ROW -->
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+          <!-- Average Rating -->
+          <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Average Rating</p>
+            <div class="mt-2 flex items-end justify-between">
+            <div>
+                <div class="flex items-center gap-1 text-[#D4AF37] text-lg font-semibold" id="avgStarsDisplay">
+                  <!-- Stars injected -->
+            </div>
+                <div class="text-[11px] text-gray-400 leading-none" id="avgScoreDisplay">
+                  <!-- e.g. 4.6 / 5 -->
+                </div>
+              </div>
+              <span class="text-[11px] text-[#D4AF37] bg-[#1a1a1a] border border-[#333] rounded px-2 py-0.5 leading-none">
+                Live
+              </span>
+            </div>
+                </div>
+
+          <!-- Total Reviews -->
+          <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Total Reviews</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="totalReviewsDisplay" class="text-2xl font-semibold text-white">0</span>
+              <span class="text-[11px] text-gray-400 leading-none">All time</span>
+                </div>
+            </div>
+
+          <!-- New This Month -->
+          <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">New This Month</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="newThisMonthDisplay" class="text-2xl font-semibold text-white">0</span>
+              <span class="text-[11px] text-gray-400 leading-none">Oct 2025</span>
+            </div>
         </div>
 
-    <div id="reviews" class="section hidden fade">
-      <div class="card">
-        <h2 class="text-xl font-semibold mb-3">Customer Reviews</h2>
-        <p class="text-sm text-[#D4AF37]/70">View and reply to customer feedback.</p>
+          <!-- Latest Review Date -->
+          <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Most Recent Review</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="latestReviewDateDisplay" class="text-xl font-semibold text-white leading-none">
+                —
+              </span>
+              <span class="text-[11px] text-gray-400 leading-none">Latest</span>
+        </div>
+          </div>
+
+          <!-- Response Rate (Professional only) -->
+          <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4" id="responseRateCard" style="display:none;">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Response Rate</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="responseRateDisplay" class="text-2xl font-semibold text-white">0%</span>
+            </div>
+          </div>
+
+          <!-- Trend (Professional only) -->
+          <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4" id="trendCard" style="display:none;">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Trend vs Last Month</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="trendDisplay" class="text-xl font-semibold text-[#D4AF37]">↑ Good</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- FILTER BAR -->
+        <div class="bg-[#111] border border-[#2a2a2a] rounded-xl p-4 mb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <div class="flex flex-col sm:flex-row gap-4 flex-1">
+            <!-- Rating filter -->
+            <div class="flex-1 min-w-[140px]">
+              <label class="text-[11px] text-gray-500 uppercase tracking-wide mb-1 block">Filter by rating</label>
+              <select
+                id="filterRating"
+                class="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+              >
+                <option value="all">All ratings</option>
+                <option value="5">5★ only</option>
+                <option value="4">4★ & up</option>
+                <option value="3">3★ & up</option>
+                <option value="2">2★ & up</option>
+                <option value="1">1★ & up</option>
+              </select>
+            </div>
+
+            <!-- Sort order -->
+            <div class="flex-1 min-w-[140px]">
+              <label class="text-[11px] text-gray-500 uppercase tracking-wide mb-1 block">Sort by</label>
+              <select
+                id="sortOrder"
+                class="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+              >
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="highest">Highest rating</option>
+                <option value="lowest">Lowest rating</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="text-[10px] text-gray-500 flex flex-wrap items-center gap-2">
+            <span class="hidden sm:inline text-gray-400">Legend:</span>
+            <span class="flex items-center gap-1">
+              <span class="text-[#D4AF37] text-[12px]">★</span>
+              <span>Rating</span>
+            </span>
+            <span class="flex items-center gap-1">
+              <span class="bg-[#D4AF37] text-black text-[10px] font-semibold rounded px-1.5 py-0.5 leading-none">NEW</span>
+              <span>New review</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- REVIEWS LIST CARD -->
+        <div class="bg-[#111] border border-[#2a2a2a] rounded-xl overflow-hidden">
+          <!-- header -->
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between p-4 border-b border-[#2a2a2a]">
+            <div>
+              <h2 class="text-sm font-medium text-white">Customer Reviews</h2>
+              <p class="text-[11px] text-gray-500">Newest reviews appear at the top.</p>
+            </div>
+            <div class="text-[11px] text-gray-500 mt-3 md:mt-0">
+              <span id="visibleCountDisplay">0</span> shown
+            </div>
+        </div>
+
+          <!-- list body -->
+          <div id="reviewsList" class="divide-y divide-[#1f1f1f]">
+            <!-- Reviews injected here -->
+        </div>
+        </div>
+
+        <!-- LOCKED RESPONSE NOTICE (Starter only) -->
+        <div id="reviewsUpgradeNotice" class="bg-[#1a1a1a] border border-[#333] text-[12px] text-gray-300 rounded-xl p-4 mt-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 hidden">
+          <div class="flex-1">
+            <div class="text-white font-medium text-[13px] flex items-center gap-2">
+              <span>Reply to Reviews</span>
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-full leading-none border border-[#333] bg-[#0F0F0F] text-[#D4AF37]">
+                Professional Only
+              </span>
+            </div>
+            <p class="text-[12px] text-gray-400 leading-snug mt-1">
+              On Starter, you can see all customer reviews. To reply publicly and build trust, upgrade to Professional.
+            </p>
+          </div>
+          <button
+            onclick="openUpgradeModal()"
+            class="text-[12px] font-medium bg-[#D4AF37] text-black rounded-lg px-4 py-2 hover:opacity-90 transition w-full sm:w-auto"
+          >
+            Upgrade →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reply Modal (Professional only) -->
+    <div id="replyModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
+      <div class="bg-[#0F0F0F] border border-[#2a2a2a] rounded-xl w-full max-w-md p-6">
+        <div class="flex justify-between mb-4">
+          <h2 class="text-white text-base font-semibold">Reply to Review</h2>
+          <button onclick="closeReplyModal()" class="text-gray-500 hover:text-white">✕</button>
+        </div>
+        <textarea id="replyText" rows="5" placeholder="Write your response here..." class="w-full bg-[#1a1a1a] border border-[#333] rounded-lg text-white text-sm p-3 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"></textarea>
+        <div class="flex gap-3 mt-4">
+          <button onclick="saveReply()" class="flex-1 bg-[#D4AF37] text-black rounded-lg py-2 font-medium hover:opacity-90">Send Reply</button>
+          <button onclick="closeReplyModal()" class="flex-1 bg-[#1a1a1a] border border-[#333] text-white rounded-lg py-2 font-medium hover:border-[#D4AF37] hover:text-[#D4AF37]">Cancel</button>
+        </div>
       </div>
     </div>
 
     <div id="insights" class="section hidden fade">
-      <div class="card">
-        <h2 class="text-xl font-semibold mb-3">Insights</h2>
-        <p class="text-sm text-[#D4AF37]/70">Track analytics, conversions, and performance trends.</p>
-      </div>
+      <section id="starterAnalyticsSection" class="hidden">
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+            <h1 class="text-2xl font-semibold tracking-tight flex items-center gap-2">
+              <span>Analytics</span>
+              <span class="text-[11px] font-medium bg-[#1a1a1a] border border-[#333] text-[#D4AF37] px-2 py-0.5 rounded-full leading-none uppercase" id="analyticsPlanBadge">Starter</span>
+            </h1>
+            <p class="text-sm text-gray-400 mt-1">Your business performance at a glance.</p>
+            </div>
+
+          <div class="flex gap-3 items-center">
+            <label class="text-[12px] text-gray-400">Date range</label>
+            <select id="rangeSelect"
+                    class="bg-[#1a1a1a] border border-[#333] text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]">
+              <option value="this_week">This Week</option>
+              <option value="this_month" selected>This Month</option>
+              <option value="last_month">Last Month</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="card p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Profile Views</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="viewsStat" class="text-2xl font-semibold">—</span>
+              <span id="viewsDelta" class="text-[11px] text-gray-400 leading-none">vs prev</span>
+            </div>
+          </div>
+
+          <div class="card p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Bookings This Period</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="bookingsStat" class="text-2xl font-semibold">—</span>
+              <span id="bookingsDelta" class="text-[11px] text-gray-400 leading-none">vs prev</span>
+            </div>
+          </div>
+
+          <div class="card p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Average Rating</p>
+            <div class="mt-2 flex items-end justify-between">
+            <div>
+                <div id="avgStars" class="flex gap-0.5"></div>
+                <div id="avgScore" class="text-[11px] text-gray-400 leading-none">—</div>
+            </div>
+              <span class="text-[11px] text-[#D4AF37] bg-[#1a1a1a] border border-[#333] rounded px-2 py-0.5 leading-none">Live</span>
+            </div>
+          </div>
+
+          <div class="card p-4">
+            <p class="text-[11px] uppercase text-gray-400 tracking-wide">Returning Customers</p>
+            <div class="flex items-end justify-between mt-2">
+              <span id="returningStat" class="text-2xl font-semibold">—</span>
+              <span id="returningDelta" class="text-[11px] text-gray-400 leading-none">vs prev</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+          <!-- Bookings Trend -->
+          <div class="card p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-medium">Bookings Trend</h3>
+              <span class="text-[11px] text-gray-500">Last periods</span>
+            </div>
+            <div class="bg-[#161616] rounded-lg p-3">
+              <canvas id="bookingsChart" height="140"></canvas>
+            </div>
+          </div>
+
+          <!-- Top Services -->
+          <div class="card p-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-medium">Top Services</h3>
+              <span class="text-[11px] text-gray-500">This period</span>
+            </div>
+            <div class="bg-[#161616] rounded-lg p-3">
+              <canvas id="servicesChart" height="140"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Insights -->
+        <div class="card p-4 mb-6">
+          <h3 class="text-sm font-medium mb-2">Insights</h3>
+          <ul id="insightsList" class="text-[13px] text-gray-300 space-y-1.5"></ul>
+        </div>
+
+        <!-- Upgrade teaser (Starter only) -->
+        <div id="analyticsUpgradeTeaser" class="bg-[#1a1a1a] border border-[#333] rounded-xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div>
+            <p class="text-[13px] text-white font-medium">Want deeper insights?</p>
+            <p class="text-[12px] text-gray-400">Upgrade to Professional for revenue tracking, demographics and detailed performance.</p>
+                </div>
+          <button data-upgrade
+                  class="text-[12px] font-medium bg-[#D4AF37] text-black rounded-lg px-4 py-2 hover:opacity-90 transition">
+            💎 Upgrade Now
+          </button>
+            </div>
+      </section>
+
+      <!-- Professional Analytics Section -->
+      <section id="proAnalyticsSection" class="hidden">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight flex items-center gap-2">
+              <span>Analytics</span>
+              <span class="text-[11px] font-medium bg-[#1a1a1a] border border-[#333] text-[#D4AF37] px-2 py-0.5 rounded-full leading-none uppercase">Professional</span>
+            </h1>
+            <p class="text-sm text-gray-400 mt-1">Track performance, revenue and audience insight.</p>
+        </div>
+          <div class="flex gap-3 items-center">
+            <label class="text-[12px] text-gray-400">Date range</label>
+            <select id="proRangeSelect" class="bg-[#1a1a1a] border border-[#333] text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#D4AF37]">
+              <option value="today">Today</option>
+              <option value="this_week">This Week</option>
+              <option value="this_month" selected>This Month</option>
+              <option value="last_month">Last Month</option>
+            </select>
+        </div>
+        </div>
+
+        <!-- KPI CARDS -->
+        <div class="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
+          <div class="card p-4"><p class="text-[11px] uppercase text-gray-400">Profile Views (Today)</p><div class="flex items-end justify-between mt-2"><span id="viewsToday" class="text-2xl font-semibold">—</span><span id="viewsTodayDelta" class="text-[11px] text-gray-400">vs prev</span></div></div>
+          <div class="card p-4"><p class="text-[11px] uppercase text-gray-400">Profile Views (All-Time)</p><div class="flex items-end justify-between mt-2"><span id="viewsAllTime" class="text-2xl font-semibold">—</span><span class="text-[11px] text-[#D4AF37] bg-[#1a1a1a] border border-[#333] rounded px-2 py-0.5 leading-none">Live</span></div></div>
+          <div class="card p-4"><p class="text-[11px] uppercase text-gray-400">Revenue (Today)</p><div class="flex items-end justify-between mt-2"><span id="revToday" class="text-2xl font-semibold">—</span><span id="revTodayDelta" class="text-[11px] text-gray-400">vs prev</span></div></div>
+          <div class="card p-4"><p class="text-[11px] uppercase text-gray-400">Revenue (This Month)</p><div class="flex items-end justify-between mt-2"><span id="revMonth" class="text-2xl font-semibold">—</span><span id="revMonthDelta" class="text-[11px] text-gray-400">vs last</span></div></div>
+          <div class="card p-4"><p class="text-[11px] uppercase text-gray-400">Conversion Rate</p><div class="flex items-end justify-between mt-2"><span id="convRate" class="text-2xl font-semibold">—</span><span id="convDelta" class="text-[11px] text-gray-400">vs prev</span></div></div>
+          <div class="card p-4"><p class="text-[11px] uppercase text-gray-400">Returning Customers</p><div class="flex items-end justify-between mt-2"><span id="returning" class="text-2xl font-semibold">—</span><span id="returningDelta" class="text-[11px] text-gray-400">vs prev</span></div></div>
+        </div>
+
+        <!-- CHARTS -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+          <div class="card p-4"><h3 class="text-sm font-medium mb-2">Daily Bookings (Last 30 days)</h3><canvas id="proBookingsChart" height="140"></canvas></div>
+          <div class="card p-4"><h3 class="text-sm font-medium mb-2">Daily Revenue (Last 30 days)</h3><canvas id="proRevenueChart" height="140"></canvas></div>
+          <div class="card p-4"><h3 class="text-sm font-medium mb-2">Profile Views (Daily)</h3><canvas id="proViewsChart" height="140"></canvas></div>
+          <div class="card p-4"><h3 class="text-sm font-medium mb-2">Top Services (This Period)</h3><canvas id="proServicesChart" height="140"></canvas></div>
+          <div class="card p-4"><h3 class="text-sm font-medium mb-2">Top Areas by Customers</h3><canvas id="proGeoChart" height="140"></canvas></div>
+          <div class="card p-4"><h3 class="text-sm font-medium mb-2">Insights</h3><ul id="proInsightsList" class="text-[13px] text-gray-300 space-y-1.5"></ul></div>
+        </div>
+
+      </section>
     </div>
 
     <div id="profile" class="section hidden fade">
-      <div class="card">
-        <h2 class="text-xl font-semibold mb-3">Profile & Listing</h2>
-        <p class="text-sm text-[#D4AF37]/70">Edit your business details and profile settings.</p>
+      <!-- Starter Profile Section -->
+      <div id="starterProfileSection" class="hidden">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-semibold flex items-center gap-2">
+              Business Profile
+              <span id="starterPlanBadge" class="text-xs bg-[#D4AF37] text-black px-2 py-1 rounded">Starter Plan</span>
+            </h2>
+            <p class="text-sm text-gray-400 mt-1">Edit your business details, update your services, and manage your gallery.</p>
+          </div>
+          <div class="mt-4 md:mt-0">
+            <a id="starterPreviewBtn"
+               href="#"
+               target="_blank"
+               class="border border-[#D4AF37] text-[#D4AF37] px-4 py-2 rounded hover:bg-[#D4AF37] hover:text-black transition">
+               Preview Public Profile →
+            </a>
+          </div>
+        </div>
+
+        <!-- Profile Completion Bar -->
+        <div class="mb-6">
+          <div class="flex justify-between text-xs text-gray-400 mb-1">
+            <span>Profile Completion</span><span id="starterProgressText">0%</span>
+          </div>
+          <div class="progress-container"><div id="starterProgressBar" class="progress-bar"></div></div>
+        </div>
+
+        <!-- Tabs -->
+        <div id="tabs" class="flex border-b border-[#222] mb-6 overflow-x-auto">
+          <div class="tab tab-active" data-tab="info">Business Info</div>
+          <div class="tab" data-tab="contact">Contact Info</div>
+          <div class="tab" data-tab="services">Services</div>
+          <div class="tab" data-tab="gallery">Gallery</div>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="tab-content">
+          <!-- Business Info -->
+          <div id="info" class="tab-panel">
+            <div class="space-y-4 card p-6">
+              <input class="input required" id="bizName" placeholder="Business Name" />
+              <select class="input required" id="category">
+                <option>Hair</option><option>Beauty</option><option>Wellness</option><option>Barber</option>
+              </select>
+              <textarea class="input" id="description" rows="3" placeholder="Describe your business..."></textarea>
+              <input class="input required" id="address" placeholder="Address" />
+              <select class="input" id="borough">
+                <option>Lewisham</option><option>Southwark</option><option>Bromley</option>
+                <option>Greenwich</option><option>Brixton</option><option>Clapham</option>
+              </select>
+              <input class="input" id="postcode" placeholder="Postcode" />
+              <textarea class="input" id="hours" rows="2" placeholder="Opening Hours e.g. Mon-Fri 09:00-18:00"></textarea>
+              <div class="flex justify-end pt-2"><button onclick="saveData()" class="gold-btn bg-[#D4AF37] text-black px-4 py-2 rounded font-semibold">Save Changes</button></div>
+            </div>
+          </div>
+
+          <!-- Contact Info -->
+          <div id="contact" class="tab-panel hidden">
+            <div class="space-y-4 card p-6">
+              <input class="input" id="email" placeholder="Email Address" />
+              <input class="input" id="phone" placeholder="Phone Number" />
+              <input class="input" id="website" placeholder="Website or Booking Link" />
+              <input class="input" id="instagram" placeholder="Instagram Handle" />
+              <input class="input" id="tiktok" placeholder="TikTok Handle" />
+              <input class="input" id="facebook" placeholder="Facebook Page" />
+              <div class="flex justify-end pt-2"><button onclick="saveData()" class="gold-btn bg-[#D4AF37] text-black px-4 py-2 rounded font-semibold">Save Changes</button></div>
+            </div>
+          </div>
+
+          <!-- Services -->
+          <div id="services" class="tab-panel hidden">
+            <div class="card p-6">
+              <table class="w-full text-sm mb-4">
+                <thead><tr class="text-gray-400 text-left"><th class="pb-2">Service</th><th>Duration (mins)</th><th>Price (£)</th><th></th></tr></thead>
+                <tbody id="serviceTable"></tbody>
+              </table>
+              <button onclick="addService()" class="bg-[#1a1a1a] border border-[#333] text-[#D4AF37] px-3 py-1 rounded">+ Add Service</button>
+              <div class="flex justify-end pt-4"><button onclick="saveData()" class="gold-btn bg-[#D4AF37] text-black px-4 py-2 rounded font-semibold">Save Changes</button></div>
+            </div>
+          </div>
+
+          <!-- Gallery -->
+          <div id="gallery" class="tab-panel hidden">
+            <div class="card p-6">
+              <p class="text-sm text-gray-400 mb-3">Upload up to <strong>3 images</strong>. Upgrade to Professional to upload 10.</p>
+              <input type="file" id="upload" accept="image/*" multiple class="mb-3" onchange="handleUpload(event)" />
+              <div id="galleryGrid" class="grid grid-cols-3 gap-3 mb-4"></div>
+              <div class="flex justify-end"><button onclick="saveData()" class="gold-btn bg-[#D4AF37] text-black px-4 py-2 rounded font-semibold">Save Changes</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Professional Profile Section -->
+      <div id="proProfileSection" class="hidden">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-semibold flex items-center gap-2">
+              Business Profile
+              <span id="proPlanBadge" class="text-xs bg-[#D4AF37] text-black px-2 py-1 rounded">Professional Plan</span>
+            </h2>
+            <p class="text-sm text-gray-400 mt-1">Manage your business details, services, and gallery.</p>
+          </div>
+          <div class="mt-4 md:mt-0">
+            <a id="proPreviewBtn"
+               href="#"
+               target="_blank"
+               class="border border-[#D4AF37] text-[#D4AF37] px-4 py-2 rounded hover:bg-[#D4AF37] hover:text-black transition">
+               Preview Public Profile →
+            </a>
+          </div>
+        </div>
+
+        <!-- Profile Completion Bar -->
+        <div class="mb-6">
+          <div class="flex justify-between text-xs text-gray-400 mb-1">
+            <span>Profile Completion</span><span id="proProgressText">0%</span>
+          </div>
+          <div class="progress-container"><div id="proProgressBar" class="progress-bar"></div></div>
+        </div>
+
+        <!-- Tabs -->
+        <div id="proTabs" class="flex border-b border-[#222] mb-6 overflow-x-auto">
+          <div class="tab tab-active" data-tab="proInfo">Business Info</div>
+          <div class="tab" data-tab="proContact">Contact Info</div>
+          <div class="tab" data-tab="proServices">Services</div>
+          <div class="tab" data-tab="proGallery">Gallery</div>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="proTabContent">
+          <!-- Business Info -->
+          <div id="proInfo" class="tab-panel">
+            <div class="space-y-4 card p-6">
+              <input class="input required" id="proBizName" placeholder="Business Name" />
+              <select class="input required" id="proCategory">
+                <option value="">Select Category</option>
+                <option>Hair</option><option>Beauty</option><option>Wellness</option><option>Barber</option>
+              </select>
+              <textarea class="input" id="proDescription" rows="3" placeholder="Describe your business..."></textarea>
+              <input class="input required" id="proAddress" placeholder="Address" />
+              <select class="input" id="proBorough">
+                <option>Lewisham</option><option>Southwark</option><option>Bromley</option>
+                <option>Greenwich</option><option>Brixton</option><option>Clapham</option>
+              </select>
+              <input class="input" id="proPostcode" placeholder="Postcode" />
+              <textarea class="input" id="proHours" rows="2" placeholder="Opening Hours e.g. Mon-Fri 09:00-18:00"></textarea>
+              <div class="flex justify-end pt-2"><button onclick="saveData()" class="gold-btn bg-[#D4AF37] text-black px-4 py-2 rounded font-semibold">Save Changes</button></div>
+            </div>
+          </div>
+
+          <!-- Contact Info -->
+          <div id="proContact" class="tab-panel hidden">
+            <div class="space-y-4 card p-6">
+              <input class="input required" id="proEmail" placeholder="Email Address" />
+              <input class="input" id="proPhone" placeholder="Phone Number" />
+              <input class="input" id="proWebsite" placeholder="Website or Booking Link" />
+              <input class="input" id="proInstagram" placeholder="Instagram Handle" />
+              <input class="input" id="proTiktok" placeholder="TikTok Handle" />
+              <input class="input" id="proFacebook" placeholder="Facebook Page" />
+              <div class="flex justify-end pt-2"><button onclick="saveData()" class="gold-btn bg-[#D4AF37] text-black px-4 py-2 rounded font-semibold">Save Changes</button></div>
+            </div>
+          </div>
+
+          <!-- Services -->
+          <div id="proServices" class="tab-panel hidden">
+            <div class="card p-6">
+              <table class="w-full text-sm mb-4">
+                <thead><tr class="text-gray-400 text-left"><th class="pb-2">Service</th><th>Duration (mins)</th><th>Price (£)</th><th>Description</th><th></th></tr></thead>
+                <tbody id="proServiceTable"></tbody>
+              </table>
+              <button onclick="addProService()" class="bg-[#1a1a1a] border border-[#333] text-[#D4AF37] px-3 py-1 rounded">+ Add Service</button>
+              <div class="flex justify-end pt-4"><button onclick="saveData()" class="gold-btn bg-[#D4AF37] text-black px-4 py-2 rounded font-semibold">Save Changes</button></div>
+            </div>
+          </div>
+
+          <!-- Gallery -->
+          <div id="proGallery" class="tab-panel hidden">
+            <div class="card p-6">
+              <p class="text-sm text-gray-400 mb-3">Upload up to <strong>10 images</strong>.</p>
+              <input type="file" id="proUpload" accept="image/*" multiple class="mb-3" onchange="handleProUpload(event)" />
+              <div id="proGalleryGrid" class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4"></div>
+              <div class="flex justify-end"><button onclick="saveData()" class="gold-btn bg-[#D4AF37] text-black px-4 py-2 rounded font-semibold">Save Changes</button></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div id="settings" class="section hidden fade">
-      <div class="card">
-        <h2 class="text-xl font-semibold mb-3">Settings</h2>
-        <p class="text-sm text-[#D4AF37]/70">Configure payment models, policies, and integrations.</p>
+      <!-- Settings Header -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <h1 class="text-2xl font-semibold flex items-center gap-2">
+          Settings
+          <span id="settingsPlanBadge" class="text-xs bg-[#D4AF37] text-black px-2 py-1 rounded">Plan</span>
+        </h1>
+        <p class="text-sm text-gray-400 mt-1">Manage your account, preferences, and integrations.</p>
+      </div>
+
+      <!-- Settings Tabs -->
+      <div id="settingsTabs" class="flex border-b border-[#222] mb-6 overflow-x-auto">
+        <div class="tab tab-active" data-tab="account">Account Settings</div>
+        <div class="tab" data-tab="notifications">Notifications</div>
+        <div class="tab" data-tab="subscription">Subscription</div>
+        <div class="tab" data-tab="integrations">Integrations</div>
+        <div class="tab" data-tab="security">Security</div>
+      </div>
+
+      <!-- Settings Content -->
+      <div id="settingsTabContent">
+
+        <!-- Account Settings -->
+        <div id="account" class="tab-panel">
+          <div class="card">
+            <h2 class="text-lg font-semibold mb-4 text-[#D4AF37]">Account Information</h2>
+            <div class="space-y-3">
+              <input class="w-full bg-[#1a1a1a] border border-[#333] rounded p-2" placeholder="Business Email">
+              <input class="w-full bg-[#1a1a1a] border border-[#333] rounded p-2" placeholder="Business Owner Name">
+              <button class="gold-btn mt-2">Change Password</button>
+              <div class="flex items-center justify-between mt-4">
+                <span>Two-Factor Authentication</span>
+                <input type="checkbox" id="twoFactor" class="toggle">
+              </div>
+              <div class="flex items-center justify-between mt-4">
+                <span>Language Preference</span>
+                <select id="language" class="bg-[#1a1a1a] border border-[#333] rounded p-2">
+                  <option>English</option>
+                  <option>Welsh</option>
+                </select>
+              </div>
+              <div class="flex items-center justify-between mt-4">
+                <span>Theme Mode</span>
+                <input type="checkbox" id="themeToggle" class="toggle">
+              </div>
+              <div class="mt-4">
+                <a href="/privacy" class="text-[#D4AF37] text-sm underline">View BlkPages Data Policy</a>
+              </div>
+              <button class="text-red-500 mt-4 underline">Delete Account</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notifications -->
+        <div id="notifications" class="tab-panel hidden">
+          <div class="card">
+            <h2 class="text-lg font-semibold mb-4 text-[#D4AF37]">Notification Preferences</h2>
+            <div class="space-y-3">
+              <div class="flex justify-between"><span>Email Alerts</span><input type="checkbox" class="toggle" checked></div>
+              <div class="flex justify-between"><span>Booking Confirmations</span><input type="checkbox" class="toggle" checked></div>
+              <div class="flex justify-between"><span>Marketing & Updates</span><input type="checkbox" class="toggle"></div>
+              <div id="smsRow" class="flex justify-between"><span>SMS Reminders</span><input type="checkbox" class="toggle"></div>
+              <div id="loyaltyRow" class="flex justify-between"><span>Loyalty Notifications</span><input type="checkbox" class="toggle"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subscription -->
+        <div id="subscription" class="tab-panel hidden">
+          <div class="card">
+            <h2 class="text-lg font-semibold mb-4 text-[#D4AF37]">Subscription Details</h2>
+            <p>Current Plan: <span id="currentPlan"></span></p>
+            <p>Renewal Date: <span class="text-gray-400">12/12/2025</span></p>
+            <p>Payment Method: •••• •••• •••• 1234</p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <button id="upgradeBtn" class="gold-btn">Upgrade to Professional</button>
+              <button id="cancelBtn" class="border border-red-500 text-red-400 px-4 py-2 rounded">Cancel Subscription</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Integrations -->
+        <div id="integrations" class="tab-panel hidden">
+          <div class="card">
+            <h2 class="text-lg font-semibold mb-4 text-[#D4AF37]">Integrations</h2>
+            <div id="integrationContent">
+              <div class="flex justify-between mb-3"><span>Stripe</span><button class="gold-btn">Connect</button></div>
+              <div class="flex justify-between mb-3"><span>Google Calendar</span><button class="gold-btn">Sync</button></div>
+              <div class="flex justify-between mb-3"><span>Meta / Instagram</span><button class="gold-btn">Connect</button></div>
+              <div class="flex justify-between"><span>Export Data (CSV)</span><button class="gold-btn">Download</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security -->
+        <div id="security" class="tab-panel hidden">
+          <div class="card">
+            <h2 class="text-lg font-semibold mb-4 text-[#D4AF37]">Security Settings</h2>
+            <button class="gold-btn mb-3">Change Password</button>
+            <div class="text-sm text-gray-400 mb-4">Recent Logins:</div>
+            <ul class="text-xs text-gray-500 space-y-1 mb-4">
+              <li>MacBook Pro – Today 10:23 AM</li>
+              <li>iPhone – Yesterday 8:47 PM</li>
+            </ul>
+            <button class="border border-[#D4AF37] text-[#D4AF37] px-3 py-2 rounded mb-3">Logout of All Devices</button>
+            <div class="flex justify-between items-center">
+              <span>Session Timeout</span>
+              <select class="bg-[#1a1a1a] border border-[#333] rounded p-2">
+                <option>15 minutes</option><option>30 minutes</option><option>1 hour</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Support Footer -->
+      <div class="text-center text-sm text-gray-400 mt-8">
+        Need help? <a href="/support" class="text-[#D4AF37] underline">Contact BlkPages Support</a>
       </div>
     </div>
   </main>
+
+  <!-- Toast notification -->
+  <div id="toast" class="fixed top-4 right-4 bg-[#D4AF37] text-black px-4 py-2 rounded-lg text-sm font-medium opacity-0 transition-opacity duration-400 ease-in-out z-50">Data Loaded ✅</div>
 
   <!-- Upgrade Modal -->
   <div id="upgradeModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
@@ -1924,6 +2606,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Chart.js for analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <!-- JavaScript for dynamic section switching and plan management -->
   <script>
@@ -1974,6 +2659,38 @@
             }
             // Free plan just shows the teaser, no initialization needed
           }
+
+          // Initialize profile sections if profile section is shown
+          if (target === 'profile') {
+            setTimeout(() => {
+              if (typeof initProfileSections === 'function') initProfileSections();
+            }, 100);
+          }
+          
+          // Initialize reviews UI if reviews section is shown
+          if (target === 'reviews') {
+            setTimeout(() => {
+              if (typeof initReviewsUI === 'function') initReviewsUI();
+            }, 100);
+          }
+
+          // Initialize analytics UI if insights section is shown
+          if (target === 'insights') {
+            setTimeout(() => {
+              if (currentPlan === 'pro') {
+                if (typeof initAnalyticsProUI === 'function') initAnalyticsProUI();
+              } else if (typeof initAnalyticsUI === 'function') {
+                initAnalyticsUI();
+              }
+            }, 100);
+          }
+
+          // Initialize settings UI if settings section is shown
+          if (target === 'settings') {
+            setTimeout(() => {
+              if (typeof initSettings === 'function') initSettings();
+            }, 100);
+          }
         });
       });
 
@@ -1993,6 +2710,7 @@
           planLabelEl.textContent = planLabelText[plan] || "Plan: —";
         }
 
+
         // Show/hide bookings sections based on plan
         const bookingsFree = document.getElementById('bookings-free');
         const bookingsStarter = document.getElementById('bookings-starter');
@@ -2008,12 +2726,84 @@
           bookingsPro.style.display = (plan === 'pro') ? 'block' : 'none';
         }
 
+        // Show/hide reviews section and update badge based on plan
+        const starterReviewsSection = document.getElementById('starterReviewsSection');
+        const reviewsPlanBadge = document.getElementById('reviewsPlanBadge');
+        const reviewsUpgradeNotice = document.getElementById('reviewsUpgradeNotice');
+        
+        if (starterReviewsSection) {
+          // Reviews available for starter and pro plans
+          if (plan === 'starter' || plan === 'pro') {
+            starterReviewsSection.classList.remove('hidden');
+            if (reviewsPlanBadge) {
+              reviewsPlanBadge.textContent = plan === 'pro' ? 'Professional' : 'Starter';
+            }
+            if (reviewsUpgradeNotice) {
+              // Show upgrade notice only for starter plan
+              reviewsUpgradeNotice.classList.toggle('hidden', plan !== 'starter');
+            }
+            
+            // Re-initialize reviews if reviews section is currently visible
+            const reviewsSection = document.getElementById('reviews');
+            if (reviewsSection && !reviewsSection.classList.contains('hidden')) {
+              setTimeout(() => {
+                if (typeof initReviewsUI === 'function') initReviewsUI();
+              }, 100);
+            }
+          } else {
+            starterReviewsSection.classList.add('hidden');
+          }
+        }
+
+        // Analytics plan-specific visibility
+        const analyticsStarter = document.getElementById('starterAnalyticsSection');
+        const analyticsPlanBadge = document.getElementById('analyticsPlanBadge');
+        const analyticsUpgradeTeaser = document.getElementById('analyticsUpgradeTeaser');
+        const analyticsPro = document.getElementById('proAnalyticsSection');
+        if (analyticsStarter || analyticsPro) {
+          if (plan === 'starter') {
+            if (analyticsStarter) analyticsStarter.classList.remove('hidden');
+            if (analyticsPro) analyticsPro.classList.add('hidden');
+            if (analyticsPlanBadge) analyticsPlanBadge.textContent = 'Starter';
+            if (analyticsUpgradeTeaser) analyticsUpgradeTeaser.style.display = '';
+          } else if (plan === 'pro') {
+            if (analyticsStarter) analyticsStarter.classList.add('hidden');
+            if (analyticsPro) analyticsPro.classList.remove('hidden');
+            if (analyticsUpgradeTeaser) analyticsUpgradeTeaser.style.display = 'none';
+          } else {
+            if (analyticsStarter) analyticsStarter.classList.add('hidden');
+            if (analyticsPro) analyticsPro.classList.add('hidden');
+          }
+
+          // Re-init analytics if visible
+          const insightsSection = document.getElementById('insights');
+          if (insightsSection && !insightsSection.classList.contains('hidden')) {
+            setTimeout(() => {
+              if (plan === 'pro') {
+                if (typeof initAnalyticsProUI === 'function') initAnalyticsProUI();
+              } else if (typeof initAnalyticsUI === 'function') {
+                initAnalyticsUI();
+              }
+            }, 100);
+          }
+        }
+
         // Show/hide dashboards
         Object.values(dashboards).forEach(dash => {
           if (dash) dash.style.display = "none";
         });
         if (dashboards[plan]) {
           dashboards[plan].style.display = "block";
+        }
+
+        // Update Professional Summary Widget
+        if (typeof initProSummaryWidget === 'function') {
+          initProSummaryWidget();
+        }
+
+        // Initialize profile sections
+        if (typeof initProfileSections === 'function') {
+          initProfileSections();
         }
 
         // Update locked elements
@@ -2120,7 +2910,1179 @@
           closeUpgradeModal();
         }
       });
+
+      // Make openUpgradeModal available globally
+      window.openUpgradeModal = openUpgradeModal;
     });
+
+    // =============================================
+    // REVIEWS SYSTEM
+    // =============================================
+    
+    // Simulated review data
+    let reviews = [
+      {
+        rating: 5,
+        customer: "Sarah Jones",
+        service: "Silk Press",
+        text: "Amazing service, honestly the best silk press I've had. My hair still looks fresh 4 days later.",
+        date: "2025-10-29T20:15:00Z",
+        isNew: true
+      },
+      {
+        rating: 4,
+        customer: "Amira Patel",
+        service: "Full Set Gel Nails",
+        text: "Loved my nails, shape was clean. Could've been a tiny bit quicker but overall I'm happy.",
+        date: "2025-10-28T15:30:00Z",
+        isNew: false
+      },
+      {
+        rating: 5,
+        customer: "Leah Mensah",
+        service: "Knotless Braids (Mid Back)",
+        text: "So gentle and neat. Didn't feel rushed. Definitely recommending to my girls.",
+        date: "2025-10-27T13:10:00Z",
+        isNew: false
+      },
+      {
+        rating: 2,
+        customer: "Michael K",
+        service: "Beard Trim",
+        text: "Fade was good but the beard line up was slightly uneven on the left side.",
+        date: "2025-10-26T09:05:00Z",
+        isNew: false
+      }
+    ];
+
+    // Helper: format date for display e.g. "29 Oct 2025"
+    function formatDate(isoString){
+      const d = new Date(isoString);
+      return d.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+
+    // Helper: convert rating number to stars HTML
+    function buildStars(rating) {
+      let out = "";
+      for (let i = 1; i <= 5; i++) {
+        out += i <= rating
+          ? '<span class="text-[#D4AF37] text-[14px] leading-none">★</span>'
+          : '<span class="text-gray-600 text-[14px] leading-none">★</span>';
+      }
+      return out;
+    }
+
+    // Helper: check if review is from current month
+    function isThisMonth(isoString){
+      const now = new Date();
+      const d = new Date(isoString);
+      return d.getUTCFullYear() === now.getUTCFullYear() &&
+             d.getUTCMonth() === now.getUTCMonth();
+    }
+
+    // Filter and sort reviews
+    function getFilteredAndSortedReviews(){
+      const searchInput = document.getElementById('reviewSearchInput');
+      const filterRating = document.getElementById('filterRating');
+      const sortOrder = document.getElementById('sortOrder');
+      
+      if (!searchInput || !filterRating || !sortOrder) {
+        return reviews;
+      }
+      
+      const searchVal = searchInput.value.toLowerCase().trim();
+      const ratingFilter = filterRating.value;
+
+      // 1. filter
+      let result = reviews.filter(r => {
+        // search match on customer or service
+        const matchesSearch =
+          r.customer.toLowerCase().includes(searchVal) ||
+          r.service.toLowerCase().includes(searchVal);
+
+        if(!matchesSearch) return false;
+
+        // rating filter
+        if (ratingFilter !== 'all') {
+          const min = parseInt(ratingFilter, 10);
+          if (r.rating < min) return false;
+        }
+
+        return true;
+      });
+
+      // 2. sort
+      const sortVal = sortOrder.value;
+      result.sort((a,b)=>{
+        if (sortVal === 'newest') {
+          return new Date(b.date) - new Date(a.date);
+        }
+        if (sortVal === 'oldest') {
+          return new Date(a.date) - new Date(b.date);
+        }
+        if (sortVal === 'highest') {
+          return b.rating - a.rating;
+        }
+        if (sortVal === 'lowest') {
+          return a.rating - b.rating;
+        }
+        return 0;
+      });
+
+      return result;
+    }
+
+    // Render reviews list
+    function renderReviewsList(){
+      const listEl = document.getElementById('reviewsList');
+      if (!listEl) return;
+
+      listEl.innerHTML = "";
+
+      const filtered = getFilteredAndSortedReviews();
+
+      filtered.forEach((r, idx) => {
+        const canReply = (typeof currentPlan !== 'undefined' && currentPlan === 'pro');
+        const replyControl = canReply
+          ? `<button onclick="openReplyModal(${idx})" class="text-[12px] text-[#D4AF37] hover:underline">${r.reply ? 'Edit Reply' : 'Reply'}</button>`
+          : '';
+
+        const repliedBadge = r.reply ? '<span class="text-[11px] text-[#D4AF37]">Replied ✅</span>' : '';
+
+        const rowHTML = `
+          <div class="p-4 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div class="flex-1 min-w-0">
+              <!-- rating + name/date -->
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                <div class="flex items-start gap-3">
+                  <div class="flex items-center gap-1">
+                    ${buildStars(r.rating)}
+                  </div>
+                  <div class="text-[12px] text-white font-medium leading-tight">
+                    ${r.customer}
+                    <div class="text-[11px] text-gray-500 font-normal leading-tight">
+                      ${formatDate(r.date)}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 text-[10px]">
+                  ${r.isNew ? `
+                    <span class="bg-[#D4AF37] text-black font-semibold rounded px-2 py-0.5 leading-none border border-[#D4AF37]">
+                      NEW
+                    </span>` : ``}
+                  <span class="text-[11px] text-gray-400 leading-none bg-[#1a1a1a] border border-[#333] rounded px-2 py-0.5">
+                    ${r.service}
+                  </span>
+                </div>
+              </div>
+
+              <!-- review text -->
+              <p class="text-[13px] text-gray-300 leading-relaxed">${r.text}</p>
+              ${r.reply ? `<div class=\"mt-2 text-[12px] text-gray-300\"><span class=\"text-gray-500\">Your reply:</span> ${r.reply}</div>` : ''}
+            </div>
+            <div class="flex items-center justify-between gap-3">
+              <span class="text-[11px] text-gray-400 bg-[#1a1a1a] border border-[#333] rounded px-2 py-0.5">${r.service}</span>
+              ${repliedBadge || replyControl}
+            </div>
+          </div>
+        `;
+        listEl.insertAdjacentHTML('beforeend', rowHTML);
+      });
+
+      // update visible count
+      const visibleCountDisplay = document.getElementById('visibleCountDisplay');
+      if (visibleCountDisplay) {
+        visibleCountDisplay.textContent = filtered.length;
+      }
+
+      // also refresh summary stats
+      updateSummaryStats();
+    }
+
+    // Update summary stats
+    function updateSummaryStats(){
+      if (reviews.length === 0) {
+        const avgStarsDisplay = document.getElementById('avgStarsDisplay');
+        const avgScoreDisplay = document.getElementById('avgScoreDisplay');
+        const totalReviewsDisplay = document.getElementById('totalReviewsDisplay');
+        const newThisMonthDisplay = document.getElementById('newThisMonthDisplay');
+        const latestReviewDateDisplay = document.getElementById('latestReviewDateDisplay');
+        
+        if (avgStarsDisplay) avgStarsDisplay.innerHTML = buildStars(0);
+        if (avgScoreDisplay) avgScoreDisplay.textContent = "0 / 5";
+        if (totalReviewsDisplay) totalReviewsDisplay.textContent = "0";
+        if (newThisMonthDisplay) newThisMonthDisplay.textContent = "0";
+        if (latestReviewDateDisplay) latestReviewDateDisplay.textContent = "—";
+        return;
+      }
+
+      // avg rating
+      const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+      const avgRounded = Math.round(avg * 10) / 10;
+
+      // new this month
+      const newThisMonthCount = reviews.filter(r => isThisMonth(r.date)).length;
+
+      // latest review date
+      const latest = reviews
+        .slice()
+        .sort((a,b)=> new Date(b.date)-new Date(a.date))[0];
+
+      // update DOM
+      const avgStarsDisplay = document.getElementById('avgStarsDisplay');
+      const avgScoreDisplay = document.getElementById('avgScoreDisplay');
+      const totalReviewsDisplay = document.getElementById('totalReviewsDisplay');
+      const newThisMonthDisplay = document.getElementById('newThisMonthDisplay');
+      const latestReviewDateDisplay = document.getElementById('latestReviewDateDisplay');
+      
+      if (avgStarsDisplay) avgStarsDisplay.innerHTML = buildStars(Math.round(avg));
+      if (avgScoreDisplay) avgScoreDisplay.textContent = avgRounded + " / 5";
+      if (totalReviewsDisplay) totalReviewsDisplay.textContent = reviews.length.toString();
+      if (newThisMonthDisplay) newThisMonthDisplay.textContent = newThisMonthCount.toString();
+      if (latestReviewDateDisplay) latestReviewDateDisplay.textContent = formatDate(latest.date);
+
+      // Professional-only metrics
+      const responseRateDisplay = document.getElementById('responseRateDisplay');
+      const trendDisplay = document.getElementById('trendDisplay');
+      const responseRateCard = document.getElementById('responseRateCard');
+      const trendCard = document.getElementById('trendCard');
+      if (typeof currentPlan !== 'undefined' && currentPlan === 'pro') {
+        if (responseRateCard) responseRateCard.style.display = '';
+        if (trendCard) trendCard.style.display = '';
+        const replies = reviews.filter(r => r.reply).length;
+        if (responseRateDisplay) responseRateDisplay.textContent = Math.round((replies / reviews.length) * 100) + '%';
+        if (trendDisplay) trendDisplay.textContent = (avgRounded >= 4 ? '↑ Good' : '↓ Watch');
+      } else {
+        if (responseRateCard) responseRateCard.style.display = 'none';
+        if (trendCard) trendCard.style.display = 'none';
+      }
+    }
+
+    // Live new reviews simulation
+    const possibleNames = ["Chanel R", "Dwayne P", "Ria A", "Olu F", "Sophie L", "Keziah B"];
+    const possibleServices = ["Silk Press", "Wash & Blowdry", "Classic Pedicure", "Shape Up", "Makeup (Soft Glam)"];
+    const possibleTexts = [
+      "Service was on point and very friendly. Will be back.",
+      "Quick, clean, and professional. 100% recommend.",
+      "Honestly 10/10. I felt really looked after.",
+      "They squeezed me in last minute and I appreciate that.",
+      "Good results overall, slightly pricey but worth it."
+    ];
+
+    let reviewsIntervalId = null;
+
+    function pushRandomReview(){
+      const name = possibleNames[Math.floor(Math.random()*possibleNames.length)];
+      const service = possibleServices[Math.floor(Math.random()*possibleServices.length)];
+      const text = possibleTexts[Math.floor(Math.random()*possibleTexts.length)];
+      const rating = Math.floor(Math.random()*2)+4; // 4 or 5 mostly
+
+      const now = new Date().toISOString();
+
+      // Add to start of array as "new"
+      reviews.unshift({
+        rating,
+        customer: name,
+        service,
+        text,
+        date: now,
+        isNew: true
+      });
+
+      renderReviewsList();
+    }
+
+    // Initialize reviews UI
+    function initReviewsUI(){
+      const starterReviewsSection = document.getElementById('starterReviewsSection');
+      if (!starterReviewsSection) return;
+
+      // Only show if starter or pro plan
+      if (currentPlan === 'starter' || currentPlan === 'pro') {
+        const reviewSearchInput = document.getElementById('reviewSearchInput');
+        const filterRating = document.getElementById('filterRating');
+        const sortOrder = document.getElementById('sortOrder');
+
+        // Listeners for filters/sort/search
+        if (reviewSearchInput) {
+          reviewSearchInput.addEventListener('input', renderReviewsList);
+        }
+        if (filterRating) {
+          filterRating.addEventListener('change', renderReviewsList);
+        }
+        if (sortOrder) {
+          sortOrder.addEventListener('change', renderReviewsList);
+        }
+
+        // Bind export (pro only)
+        const exportBtn = document.getElementById('exportCsvBtn');
+        if (exportBtn) {
+          exportBtn.classList.toggle('hidden', currentPlan !== 'pro');
+          exportBtn.onclick = () => exportCSV();
+        }
+
+        // First render
+        renderReviewsList();
+
+        // Clear any existing interval
+        if (reviewsIntervalId) {
+          clearInterval(reviewsIntervalId);
+        }
+
+        // Live incoming reviews (simulated) - every 30 seconds
+        reviewsIntervalId = setInterval(() => {
+          pushRandomReview();
+        }, 30000);
+      }
+    }
+
+    // Make initReviewsUI globally available
+    window.initReviewsUI = initReviewsUI;
+
+    // Reply modal + CSV (Professional plan)
+    let replyIndex = null;
+    function openReplyModal(index){
+      if (typeof currentPlan !== 'undefined' && currentPlan !== 'pro') return;
+      replyIndex = index;
+      const modal = document.getElementById('replyModal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+    function closeReplyModal(){
+      const modal = document.getElementById('replyModal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      const txt = document.getElementById('replyText');
+      if (txt) txt.value = '';
+    }
+    function saveReply(){
+      if (replyIndex === null) return;
+      const txt = document.getElementById('replyText');
+      const val = txt ? txt.value.trim() : '';
+      if (!val) { alert('Please write a reply.'); return; }
+      if (!reviews[replyIndex]) return;
+      reviews[replyIndex].reply = val;
+      reviews[replyIndex].isNew = false;
+      closeReplyModal();
+      renderReviewsList();
+      updateSummaryStats();
+    }
+    function exportCSV(){
+      const header = 'Customer,Service,Rating,Review,Reply,Date\n';
+      const rows = reviews.map(r => (
+        `"${r.customer}","${r.service}",${r.rating},"${(r.text||'').replace(/"/g,'\'')} ","${(r.reply||'').replace(/"/g,'\'')} ","${formatDate(r.date)}"`
+      ));
+      const csv = header + rows.join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'blkpages-reviews.csv';
+      a.click();
+    }
+
+    // Expose for onclick handlers
+    window.openReplyModal = openReplyModal;
+    window.closeReplyModal = closeReplyModal;
+    window.saveReply = saveReply;
+    window.exportCSV = exportCSV;
+
+    // =============================================
+    // ANALYTICS (Starter/Pro)
+    // =============================================
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    const gold = '#D4AF37';
+    const axisGrey = '#666';
+
+    let analyticsState = {
+      range: 'this_month',
+      bookingsSeries: [],
+      bookingsLabels: [],
+      previousBookingsSeries: [],
+      services: [],
+      views: 0,
+      prevViews: 0,
+      bookingsCount: 0,
+      prevBookingsCount: 0,
+      avgRating: 4.5,
+      prevAvgRating: 4.4,
+      returningPct: 0.38,
+      prevReturningPct: 0.34
+    };
+
+    function starsHTML(score) {
+      const full = Math.round(score);
+      let html = '';
+      for (let i = 1; i <= 5; i++) {
+        html += i <= full ? '<span class="text-[#D4AF37]">★</span>' : '<span class="text-gray-600">★</span>';
+      }
+      return html;
+    }
+
+    function genLabels(range) {
+      if (range === 'this_week') return ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      return ['Wk 1','Wk 2','Wk 3','Wk 4'];
+    }
+    function genSeries(len, base, variance = 4) {
+      return Array.from({length: len}, () => clamp(base + rand(-variance, variance), 0, 200));
+    }
+    function genServices() {
+      const pool = ['Silk Press','Wash & Blow Dry','Knotless Braids','Beard Trim','Gel Nails','Pedicure','Soft Glam'];
+      const shuffled = pool.sort(() => 0.5 - Math.random()).slice(0,5);
+      return shuffled.map((name, idx) => ({ name, count: clamp(30 - idx*3 + rand(-4, 8), 5, 60) }));
+    }
+
+    function regenerateAnalyticsData() {
+      const r = analyticsState.range;
+      const isWeek = r === 'this_week';
+      const len = isWeek ? 7 : 4;
+
+      const baseBookings = isWeek ? 8 : 24;
+      const prevBaseBookings = Math.max(5, baseBookings - rand(1,4));
+
+      analyticsState.bookingsLabels = genLabels(r);
+      analyticsState.bookingsSeries = genSeries(len, baseBookings, isWeek ? 3 : 6);
+      analyticsState.previousBookingsSeries = genSeries(len, prevBaseBookings, isWeek ? 3 : 6);
+
+      analyticsState.bookingsCount = analyticsState.bookingsSeries.reduce((a,b)=>a+b,0);
+      analyticsState.prevBookingsCount = analyticsState.previousBookingsSeries.reduce((a,b)=>a+b,0);
+
+      analyticsState.views = clamp(Math.round(analyticsState.bookingsCount * (isWeek ? 4 : 5.5) + rand(-20, 40)), 30, 2000);
+      analyticsState.prevViews = clamp(Math.round(analyticsState.prevBookingsCount * (isWeek ? 4 : 5.5) + rand(-20, 40)), 30, 2000);
+
+      analyticsState.prevAvgRating = clamp(analyticsState.avgRating + (Math.random() < 0.5 ? -0.1 : 0.1), 3.8, 4.9);
+      analyticsState.avgRating = clamp(analyticsState.prevAvgRating + (Math.random() < 0.5 ? -0.1 : 0.1), 3.8, 4.9);
+
+      analyticsState.prevReturningPct = clamp(analyticsState.returningPct + (Math.random() < 0.5 ? -0.05 : 0.05), 0.15, 0.7);
+      analyticsState.returningPct = clamp(analyticsState.prevReturningPct + (Math.random() < 0.5 ? -0.05 : 0.05), 0.15, 0.7);
+
+      analyticsState.services = genServices();
+    }
+
+    let bookingsChart = null, servicesChart = null;
+    function buildBookingsChart(ctx) {
+      if (!ctx || typeof Chart === 'undefined') return;
+      if (bookingsChart) bookingsChart.destroy();
+      bookingsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: analyticsState.bookingsLabels,
+          datasets: [{
+            label: 'Bookings',
+            data: analyticsState.bookingsSeries,
+            tension: 0.35,
+            borderWidth: 2,
+            pointRadius: 3,
+            borderColor: gold,
+            pointBackgroundColor: gold
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { ticks: { color: axisGrey }, grid: { color: '#222' } },
+            y: { ticks: { color: axisGrey, precision: 0 }, grid: { color: '#222' } }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+    function buildServicesChart(ctx) {
+      if (!ctx || typeof Chart === 'undefined') return;
+      if (servicesChart) servicesChart.destroy();
+      const labels = analyticsState.services.map(s => s.name);
+      const data = analyticsState.services.map(s => s.count);
+      servicesChart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Bookings', data, borderWidth: 1, borderColor: gold, backgroundColor: 'rgba(212,175,55,0.25)' }] },
+        options: { responsive: true, scales: { x: { ticks: { color: axisGrey }, grid: { display:false } }, y: { ticks: { color: axisGrey, precision: 0 }, grid: { color: '#222' } } }, plugins: { legend: { display: false } } }
+      });
+    }
+
+    function pctChange(curr, prev) {
+      if (prev === 0) return '—';
+      const pct = ((curr - prev) / prev) * 100;
+      const dir = pct >= 0 ? '↑' : '↓';
+      const col = pct >= 0 ? '#D4AF37' : '#f87171';
+      return `<span style="color:${col}">${dir} ${Math.abs(pct).toFixed(0)}%</span>`;
+    }
+    function updateAnalyticsCards() {
+      const viewsStat = document.getElementById('viewsStat');
+      const viewsDelta = document.getElementById('viewsDelta');
+      const bookingsStat = document.getElementById('bookingsStat');
+      const bookingsDelta = document.getElementById('bookingsDelta');
+      const avgStars = document.getElementById('avgStars');
+      const avgScore = document.getElementById('avgScore');
+      const returningStat = document.getElementById('returningStat');
+      const returningDelta = document.getElementById('returningDelta');
+      if (!viewsStat) return;
+      viewsStat.textContent = analyticsState.views.toString();
+      viewsDelta.innerHTML = `vs prev ${pctChange(analyticsState.views, analyticsState.prevViews)}`;
+      bookingsStat.textContent = analyticsState.bookingsCount.toString();
+      bookingsDelta.innerHTML = `vs prev ${pctChange(analyticsState.bookingsCount, analyticsState.prevBookingsCount)}`;
+      avgStars.innerHTML = starsHTML(analyticsState.avgRating);
+      avgScore.textContent = `${analyticsState.avgRating.toFixed(1)} / 5`;
+      const retPct = Math.round(analyticsState.returningPct * 100);
+      const retPrev = Math.round(analyticsState.prevReturningPct * 100);
+      returningStat.textContent = `${retPct}%`;
+      returningDelta.innerHTML = `vs prev ${pctChange(retPct, retPrev)}`;
+    }
+    function updateAnalyticsInsights() {
+      const list = document.getElementById('insightsList');
+      if (!list) return;
+      list.innerHTML = '';
+      const bookDelta = analyticsState.bookingsCount - analyticsState.prevBookingsCount;
+      const bookPct = analyticsState.prevBookingsCount ? Math.round((bookDelta / analyticsState.prevBookingsCount) * 100) : 0;
+      const trend = bookDelta >= 0 ? `↑ Bookings up ${bookPct}%` : `↓ Bookings down ${Math.abs(bookPct)}%`;
+      const top = analyticsState.services.slice().sort((a,b)=>b.count-a.count)[0];
+      const ratingTrend = (analyticsState.avgRating - analyticsState.prevAvgRating) >= 0 ? '↑ Rating improved slightly' : '↓ Rating dipped slightly';
+      const items = [
+        `${trend} this period vs previous.`,
+        `${top.name} is your top service (${top.count} bookings).`,
+        `${ratingTrend}.`,
+        `${Math.round(analyticsState.returningPct*100)}% of customers are returning (great for loyalty).`
+      ];
+      items.forEach(t=>{ const li = document.createElement('li'); li.textContent = t; list.appendChild(li); });
+    }
+
+    let analyticsRefreshTimer = null;
+    function refreshAllAnalytics() {
+      regenerateAnalyticsData();
+      updateAnalyticsCards();
+      const bc = document.getElementById('bookingsChart');
+      const sc = document.getElementById('servicesChart');
+      if (bc) buildBookingsChart(bc.getContext('2d'));
+      if (sc) buildServicesChart(sc.getContext('2d'));
+      updateAnalyticsInsights();
+    }
+    function startAnalyticsAutoRefresh() {
+      if (analyticsRefreshTimer) clearInterval(analyticsRefreshTimer);
+      analyticsRefreshTimer = setInterval(refreshAllAnalytics, 30000);
+    }
+
+    function initAnalyticsUI() {
+      const section = document.getElementById('starterAnalyticsSection');
+      if (!section) return;
+      if (currentPlan !== 'starter' && currentPlan !== 'pro') {
+        section.classList.add('hidden');
+        return;
+      }
+      section.classList.remove('hidden');
+
+      // initial data + render
+      regenerateAnalyticsData();
+      updateAnalyticsCards();
+      const bc = document.getElementById('bookingsChart');
+      const sc = document.getElementById('servicesChart');
+      if (bc) buildBookingsChart(bc.getContext('2d'));
+      if (sc) buildServicesChart(sc.getContext('2d'));
+      updateAnalyticsInsights();
+      startAnalyticsAutoRefresh();
+
+      const rangeSelect = document.getElementById('rangeSelect');
+      if (rangeSelect) {
+        rangeSelect.onchange = (e) => {
+          analyticsState.range = e.target.value;
+          refreshAllAnalytics();
+        };
+      }
+    }
+    window.initAnalyticsUI = initAnalyticsUI;
+
+    // =============================================
+    // PROFESSIONAL SUMMARY WIDGET (Cinematic Edition)
+    // =============================================
+    function initProSummaryWidget(){
+      const widget = document.getElementById('proSummaryWidget');
+      const lastUpdated = document.getElementById('lastUpdated');
+      if (!widget) return;
+      
+      if (currentPlan !== 'pro') {
+        widget.style.display = 'none';
+        if (lastUpdated) lastUpdated.style.display = 'none';
+        return;
+      }
+      
+      widget.style.display = 'grid';
+      if (lastUpdated) lastUpdated.style.display = 'block';
+      
+      const gold = '#D4AF37';
+      const rand = (a,b) => Math.floor(Math.random() * (b - a + 1)) + a;
+      const money = v => '£' + v.toFixed(2);
+      const cards = document.querySelectorAll('#proSummaryWidget .card');
+
+      // Smooth counter animation
+      function animateCount(el, start, end, duration, prefix='', suffix='') {
+        const startTime = performance.now();
+        function update(now) {
+          const progress = Math.min((now - startTime) / duration, 1);
+          const value = start + (end - start) * progress;
+          el.textContent = prefix + (suffix === '★' ? value.toFixed(1) : Math.round(value)) + suffix;
+          if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+      }
+
+      // Fade-in cinematic effect
+      function fadeInCards() {
+        cards.forEach((card, i) => {
+          setTimeout(() => card.classList.add('opacity-100'), i * 100);
+        });
+        setTimeout(() => lastUpdated.classList.add('opacity-100'), 800);
+      }
+
+      // Update widget data
+      function updateWidget(animated = true) {
+        const newViews = rand(80, 240);
+        const newRevenue = rand(120, 650);
+        const newBookings = rand(4, 14);
+        const newRating = (4 + Math.random()).toFixed(1);
+        const newReturning = rand(25, 75);
+
+        const elViews = document.getElementById('wViews');
+        const elRevenue = document.getElementById('wRevenue');
+        const elBookings = document.getElementById('wBookings');
+        const elRating = document.getElementById('wRating');
+        const elReturning = document.getElementById('wReturning');
+
+        if (animated) {
+          animateCount(elViews, 0, newViews, 1200);
+          animateCount(elBookings, 0, newBookings, 1200);
+          animateCount(elReturning, 0, newReturning, 1200, '', '%');
+          animateCount(elRating, 0, newRating, 1200, '', '★');
+          // Revenue count with £
+          const startTime = performance.now();
+          function revAnim(now){
+            const progress = Math.min((now - startTime)/1200, 1);
+            const value = (newRevenue * progress);
+            elRevenue.textContent = '£' + value.toFixed(2);
+            if(progress<1) requestAnimationFrame(revAnim);
+          }
+          requestAnimationFrame(revAnim);
+        } else {
+          elViews.textContent = newViews;
+          elRevenue.textContent = money(newRevenue);
+          elBookings.textContent = newBookings;
+          elRating.textContent = newRating + '★';
+          elReturning.textContent = newReturning + '%';
+        }
+
+        // Timestamp update
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        lastUpdated.textContent = `Last updated: ${timeString}`;
+      }
+
+      fadeInCards();            // cinematic reveal
+      updateWidget(true);       // first run with animation
+      setInterval(() => updateWidget(false), 30000); // refresh every 30s
+    }
+
+    // =============================================
+    // ANALYTICS PRO (Professional) - Simplified
+    // =============================================
+    let proModel = { days: 30, viewsAllTime: 3842, avgRating: 4.7 };
+    let proCharts = {};
+
+    function initAnalyticsProUI(){
+      const section = document.getElementById('proAnalyticsSection');
+      if (!section) return;
+      if (currentPlan !== 'pro') { section.classList.add('hidden'); return; }
+      section.classList.remove('hidden');
+
+      const gold = '#D4AF37', axis = '#666';
+      const rand = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+      const money = v => '£' + v.toFixed(2);
+      const pct = (c, p) => p ? ((c - p) / p * 100).toFixed(0) : 0;
+      const starsHTML = s => {
+        let h = ''; for (let i = 1; i <= 5; i++) h += i <= Math.round(s) ? '<span style="color:#D4AF37">★</span>' : '<span style="color:#555">★</span>'; return h;
+      };
+
+      const labels = Array.from({length: 30}, (_, i) => i + 1);
+      const gen = () => Array.from({length: 30}, () => rand(20, 120));
+
+      function updateAll(){
+        const bookings = gen(), revenue = gen().map(x => x * 15), views = gen();
+        proModel.viewsAllTime += views.reduce((a, b) => a + b, 0);
+        const revToday = revenue[29], revPrev = revenue[28];
+        const revMonth = revenue.reduce((a, b) => a + b, 0), revMonthPrev = revMonth - rand(300, 1200);
+        const viewsToday = views[29], viewsPrev = views[28];
+        const returning = rand(25, 65), conv = rand(20, 40);
+
+        // Update KPIs
+        document.getElementById('viewsToday').textContent = viewsToday;
+        document.getElementById('viewsTodayDelta').innerHTML = `vs prev <span style="color:${viewsToday > viewsPrev ? gold : '#f87171'}">${viewsToday > viewsPrev ? '↑' : '↓'} ${Math.abs(pct(viewsToday, viewsPrev))}%</span>`;
+        document.getElementById('viewsAllTime').textContent = proModel.viewsAllTime.toLocaleString();
+        document.getElementById('revToday').textContent = money(revToday);
+        document.getElementById('revTodayDelta').innerHTML = `vs prev <span style="color:${revToday > revPrev ? gold : '#f87171'}">${revToday > revPrev ? '↑' : '↓'} ${Math.abs(pct(revToday, revPrev))}%</span>`;
+        document.getElementById('revMonth').textContent = money(revMonth);
+        document.getElementById('revMonthDelta').innerHTML = `vs last <span style="color:${revMonth > revMonthPrev ? gold : '#f87171'}">${revMonth > revMonthPrev ? '↑' : '↓'} ${Math.abs(pct(revMonth, revMonthPrev))}%</span>`;
+        document.getElementById('convRate').textContent = conv + '%';
+        document.getElementById('returning').textContent = returning + '%';
+
+        // Charts
+        const ctxB = document.getElementById('proBookingsChart').getContext('2d');
+        if (proCharts.bookings) proCharts.bookings.destroy();
+        proCharts.bookings = new Chart(ctxB, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Bookings',
+              data: bookings,
+              borderColor: '#D4AF37',
+              backgroundColor: 'rgba(212,175,55,0.05)',
+              tension: 0.45,
+              borderWidth: 2,
+              pointRadius: 0,
+              fill: true,
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              x: { ticks: { color: '#777', font: { size: 11 } }, grid: { color: '#1a1a1a' } },
+              y: { ticks: { color: '#777', font: { size: 11 } }, grid: { color: '#1a1a1a' } }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: '#111',
+                titleColor: '#fff',
+                bodyColor: '#ccc',
+                borderColor: '#333',
+                borderWidth: 1
+              }
+            }
+          }
+        });
+
+        const ctxR = document.getElementById('proRevenueChart').getContext('2d');
+        if (proCharts.revenue) proCharts.revenue.destroy();
+        proCharts.revenue = new Chart(ctxR, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Revenue',
+              data: revenue,
+              borderColor: '#D4AF37',
+              backgroundColor: 'rgba(212,175,55,0.05)',
+              tension: 0.45,
+              borderWidth: 2,
+              pointRadius: 0,
+              fill: true,
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              x: { ticks: { color: '#777', font: { size: 11 } }, grid: { color: '#1a1a1a' } },
+              y: { ticks: { color: '#777', font: { size: 11 } }, grid: { color: '#1a1a1a' } }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: '#111',
+                titleColor: '#fff',
+                bodyColor: '#ccc',
+                borderColor: '#333',
+                borderWidth: 1
+              }
+            }
+          }
+        });
+
+        const ctxV = document.getElementById('proViewsChart').getContext('2d');
+        if (proCharts.views) proCharts.views.destroy();
+        proCharts.views = new Chart(ctxV, {type: 'bar', data: {labels, datasets: [{data: views, backgroundColor: 'rgba(212,175,55,0.25)', borderColor: gold}]}, options: {scales: {x: {ticks: {color: axis}}, y: {ticks: {color: axis}}}, plugins: {legend: {display: false}}}});
+
+        const ctxS = document.getElementById('proServicesChart').getContext('2d');
+        if (proCharts.services) proCharts.services.destroy();
+        const serv = ['Silk Press', 'Pedicure', 'Wash & Blow Dry', 'Beard Trim', 'Gel Nails'].sort(() => .5 - Math.random());
+        proCharts.services = new Chart(ctxS, {type: 'bar', data: {labels: serv, datasets: [{data: serv.map(() => rand(40, 120)), backgroundColor: 'rgba(212,175,55,0.25)', borderColor: gold}]}, options: {scales: {x: {ticks: {color: axis}}, y: {ticks: {color: axis}}}, plugins: {legend: {display: false}}}});
+
+        const ctxG = document.getElementById('proGeoChart').getContext('2d');
+        if (proCharts.geo) proCharts.geo.destroy();
+        const geo = ['Brixton', 'Lewisham', 'Peckham', 'Clapham', 'Greenwich'].sort(() => .5 - Math.random());
+        proCharts.geo = new Chart(ctxG, {type: 'bar', data: {labels: geo, datasets: [{data: geo.map(() => rand(10, 35)), backgroundColor: 'rgba(212,175,55,0.25)', borderColor: gold}]}, options: {scales: {x: {ticks: {color: axis}}, y: {ticks: {color: axis}}}, plugins: {legend: {display: false}}}});
+
+        // Insights
+        const iList = document.getElementById('proInsightsList');
+        iList.innerHTML = '';
+        const li = t => { const el = document.createElement('li'); el.textContent = t; iList.appendChild(el); }
+        li(`Revenue ${revToday > revPrev ? 'increased' : 'decreased'} by ${Math.abs(pct(revToday, revPrev))}% today.`);
+        li(`Bookings trend shows ${bookings[29] > bookings[28] ? 'growth' : 'decline'} week-on-week.`);
+        li(`${geo[0]} is leading your customer base.`);
+
+        // Toast animation
+        const toast = document.getElementById('toast');
+        if (toast) {
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+      }
+
+      updateAll();
+      setInterval(updateAll, 30000); // auto-refresh every 30s
+
+      // Range selector
+      const range = document.getElementById('proRangeSelect');
+      if (range) {
+        range.onchange = (e) => {
+          proModel.range = e.target.value;
+          updateAll();
+        };
+      }
+    }
+    window.initAnalyticsProUI = initAnalyticsProUI;
+    window.initProSummaryWidget = initProSummaryWidget;
+
+    // Initialize summary widget on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      initProSummaryWidget();
+    });
+
+    // =============================================
+    // PROFILE INTERFACE FUNCTIONS
+    // =============================================
+    
+    // Tab switching for Starter profile
+    function initStarterProfileTabs() {
+      const tabs = document.querySelectorAll('#tabs .tab');
+      const panels = document.querySelectorAll('#tab-content .tab-panel');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('tab-active'));
+          panels.forEach(p => p.classList.add('hidden'));
+          tab.classList.add('tab-active');
+          document.getElementById(tab.dataset.tab).classList.remove('hidden');
+        });
+      });
+    }
+
+    // Tab switching for Professional profile
+    function initProProfileTabs() {
+      const tabs = document.querySelectorAll('#proTabs .tab');
+      const panels = document.querySelectorAll('#proTabContent .tab-panel');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('tab-active'));
+          panels.forEach(p => p.classList.add('hidden'));
+          tab.classList.add('tab-active');
+          document.getElementById(tab.dataset.tab).classList.remove('hidden');
+        });
+      });
+    }
+
+    // Toast notification
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Save data function
+    function saveData() {
+      showToast();
+    }
+
+    // Add service for Starter
+    function addService() {
+      const table = document.getElementById('serviceTable');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input class="input required" placeholder="Name"/></td>
+        <td><input class="input" type="number" placeholder="30"/></td>
+        <td><input class="input" type="number" placeholder="25"/></td>
+        <td><button onclick="this.parentElement.parentElement.remove(); if (typeof window.updateStarterProgress==='function') window.updateStarterProgress();" class="text-red-400">✕</button></td>
+      `;
+      table.appendChild(row);
+      if (typeof window.updateStarterProgress === 'function') window.updateStarterProgress();
+    }
+
+    // Add service for Professional
+    function addProService() {
+      const table = document.getElementById('proServiceTable');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input class="input required" placeholder="Name"/></td>
+        <td><input class="input" type="number" placeholder="30"/></td>
+        <td><input class="input" type="number" placeholder="25"/></td>
+        <td><input class="input" placeholder="Short description"/></td>
+        <td><button onclick="this.parentElement.parentElement.remove(); if (typeof window.updateProProgress==='function') window.updateProProgress();" class="text-red-400">✕</button></td>
+      `;
+      table.appendChild(row);
+      if (typeof window.updateProProgress === 'function') window.updateProProgress();
+    }
+
+    // Handle upload for Starter (max 3 images)
+    function handleUpload(e) {
+      const files = [...e.target.files];
+      const grid = document.getElementById('galleryGrid');
+      const current = grid.children.length;
+      const maxGallery = 3;
+      const allowed = maxGallery - current;
+      
+      if (files.length > allowed) {
+        alert(`You can only upload ${maxGallery} images on the Starter plan.`);
+        return;
+      }
+      
+      files.slice(0, allowed).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const div = document.createElement('div');
+          div.className = 'relative';
+          div.innerHTML = `
+            <img src="${ev.target.result}" class="w-full h-28 object-cover rounded"/>
+            <button onclick="this.parentElement.remove(); if (typeof window.updateStarterProgress==='function') window.updateStarterProgress();" class="absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs px-1 rounded">✕</button>
+          `;
+          grid.appendChild(div);
+          if (typeof window.updateStarterProgress === 'function') window.updateStarterProgress();
+        };
+        reader.readAsDataURL(file);
+      });
+      e.target.value = '';
+    }
+
+    // Handle upload for Professional (max 10 images)
+    function handleProUpload(e) {
+      const files = [...e.target.files];
+      const grid = document.getElementById('proGalleryGrid');
+      const current = grid.children.length;
+      const maxGallery = 10;
+      const allowed = maxGallery - current;
+      
+      if (files.length > allowed) {
+        alert(`You can only upload ${maxGallery} images.`);
+        return;
+      }
+      
+      files.slice(0, allowed).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const div = document.createElement('div');
+          div.className = 'relative';
+          div.innerHTML = `
+            <img src="${ev.target.result}" class="w-full h-32 object-cover rounded"/>
+            <input class="input text-xs mt-1" placeholder="Add caption (optional)" />
+            <button onclick="this.parentElement.remove(); if (typeof window.updateProProgress==='function') window.updateProProgress();" class="absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs px-1 rounded">✕</button>
+          `;
+          grid.appendChild(div);
+          if (typeof window.updateProProgress === 'function') window.updateProProgress();
+        };
+        reader.readAsDataURL(file);
+      });
+      e.target.value = '';
+    }
+
+    // Initialize profile sections
+    function initProfileSections() {
+      if (currentPlan === 'starter') {
+        document.getElementById('starterProfileSection').classList.remove('hidden');
+        document.getElementById('proProfileSection').classList.add('hidden');
+        initStarterProfileTabs();
+        initStarterProfileFeatures();
+        if (typeof initStarterProgress === 'function') initStarterProgress();
+      } else if (currentPlan === 'pro') {
+        document.getElementById('starterProfileSection').classList.add('hidden');
+        document.getElementById('proProfileSection').classList.remove('hidden');
+        initProProfileTabs();
+        initProProfileFeatures();
+        if (typeof initProProgress === 'function') initProProgress();
+      } else {
+        document.getElementById('starterProfileSection').classList.add('hidden');
+        document.getElementById('proProfileSection').classList.add('hidden');
+      }
+    }
+
+    // Initialize Starter Profile specific features
+    function initStarterProfileFeatures() {
+      const previewBtn = document.getElementById('starterPreviewBtn');
+      const planBadge = document.getElementById('starterPlanBadge');
+      const businessNameField = document.getElementById('bizName');
+
+      if (previewBtn && businessNameField) {
+        previewBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const bizName = businessNameField.value.trim() || 'your-business';
+          const profileURL = `https://blkpages.co.uk/profile/${bizName.toLowerCase().replace(/\s+/g, '-')}`;
+          window.open(profileURL, '_blank');
+        });
+      }
+
+      if (planBadge) {
+        if (currentPlan === 'starter') {
+          planBadge.textContent = 'Starter Plan';
+        } else {
+          planBadge.textContent = 'Professional Plan';
+        }
+      }
+    }
+
+    // Starter progress bar logic
+    function initStarterProgress(){
+      const section = document.getElementById('starterProfileSection');
+      if (!section) return;
+      const requiredFields = section.querySelectorAll('.required');
+      const bar = document.getElementById('starterProgressBar');
+      const text = document.getElementById('starterProgressText');
+
+      function update(){
+        let filled = 0;
+        requiredFields.forEach(f => { if ((f.value||'').trim() !== '') filled++; });
+        const percent = requiredFields.length ? Math.round((filled/requiredFields.length)*100) : 0;
+        if (bar) bar.style.width = percent + '%';
+        if (text) text.textContent = percent + '%';
+      }
+      requiredFields.forEach(f => f.addEventListener('input', update));
+      window.updateStarterProgress = update;
+      update();
+    }
+
+    // Professional progress bar logic
+    function initProProgress(){
+      const section = document.getElementById('proProfileSection');
+      if (!section) return;
+      const requiredFields = section.querySelectorAll('.required');
+      const bar = document.getElementById('proProgressBar');
+      const text = document.getElementById('proProgressText');
+
+      function update(){
+        let filled = 0;
+        requiredFields.forEach(f => { if ((f.value||'').trim() !== '') filled++; });
+        const percent = requiredFields.length ? Math.round((filled/requiredFields.length)*100) : 0;
+        if (bar) bar.style.width = percent + '%';
+        if (text) text.textContent = percent + '%';
+        if (percent === 100) {
+          showToast("🎉 Profile Complete — Your business is now fully optimized on BlkPages");
+        }
+      }
+      requiredFields.forEach(f => f.addEventListener('input', update));
+      window.updateProProgress = update;
+      update();
+    }
+
+    // Initialize Professional Profile specific features
+    function initProProfileFeatures() {
+      const previewBtn = document.getElementById('proPreviewBtn');
+      const planBadge = document.getElementById('proPlanBadge');
+      const businessNameField = document.getElementById('proBizName');
+
+      if (previewBtn && businessNameField) {
+        previewBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const bizName = businessNameField.value.trim() || 'your-business';
+          const profileURL = `https://blkpages.co.uk/profile/${bizName.toLowerCase().replace(/\s+/g, '-')}`;
+          window.open(profileURL, '_blank');
+        });
+      }
+
+      if (planBadge) {
+        if (currentPlan === 'starter') {
+          planBadge.textContent = 'Starter Plan';
+        } else {
+          planBadge.textContent = 'Professional Plan';
+        }
+      }
+    }
+
+    // Initialize Settings functionality
+    function initSettings() {
+      // Update plan badge and current plan display
+      const settingsPlanBadge = document.getElementById('settingsPlanBadge');
+      const currentPlanDisplay = document.getElementById('currentPlan');
+      
+      if (settingsPlanBadge) {
+        settingsPlanBadge.textContent = currentPlan === 'pro' ? 'Professional Plan' : 'Starter Plan';
+      }
+      
+      if (currentPlanDisplay) {
+        currentPlanDisplay.textContent = currentPlan === 'pro' ? 'Professional (£28.99/mo)' : 'Starter (£14.99/mo)';
+      }
+
+      // Plan-specific restrictions
+      const smsRow = document.getElementById('smsRow');
+      const loyaltyRow = document.getElementById('loyaltyRow');
+      const integrationContent = document.getElementById('integrationContent');
+      
+      if (currentPlan === 'starter') {
+        if (smsRow) smsRow.classList.add('disabled');
+        if (loyaltyRow) loyaltyRow.classList.add('disabled');
+        if (integrationContent) {
+          integrationContent.innerHTML = '<p class="text-gray-400">Upgrade to Professional to unlock integrations.</p>';
+        }
+      }
+
+      // Settings tabs functionality
+      const settingsTabs = document.querySelectorAll('#settingsTabs .tab');
+      const settingsPanels = document.querySelectorAll('#settingsTabContent .tab-panel');
+      
+      settingsTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          settingsTabs.forEach(t => t.classList.remove('tab-active'));
+          settingsPanels.forEach(p => p.classList.add('hidden'));
+          tab.classList.add('tab-active');
+          document.getElementById(tab.dataset.tab).classList.remove('hidden');
+        });
+      });
+
+      // Theme toggle functionality
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('change', () => {
+          if (themeToggle.checked) {
+            document.body.classList.remove('bg-[#0A0A0A]', 'text-white');
+            document.body.classList.add('bg-white', 'text-black');
+          } else {
+            document.body.classList.remove('bg-white', 'text-black');
+            document.body.classList.add('bg-[#0A0A0A]', 'text-white');
+          }
+          showToast('Theme updated');
+        });
+      }
+
+      // Two Factor Authentication toggle
+      const twoFactor = document.getElementById('twoFactor');
+      if (twoFactor) {
+        if (currentPlan === 'starter') {
+          twoFactor.classList.add('disabled');
+        }
+        twoFactor.addEventListener('change', () => {
+          if (!twoFactor.classList.contains('disabled')) {
+            showToast(twoFactor.checked ? '2FA enabled' : '2FA disabled');
+          }
+        });
+      }
+
+      // Upgrade button functionality
+      const upgradeBtn = document.getElementById('upgradeBtn');
+      if (upgradeBtn && currentPlan === 'starter') {
+        upgradeBtn.addEventListener('click', () => {
+          showUpgradeModal();
+        });
+      } else if (upgradeBtn && currentPlan === 'pro') {
+        upgradeBtn.style.display = 'none';
+      }
+    }
+
+    // Make functions globally available
+    window.addService = addService;
+    window.addProService = addProService;
+    window.handleUpload = handleUpload;
+    window.handleProUpload = handleProUpload;
+    window.saveData = saveData;
+
   </script>
 </body>
 </html>
