@@ -117,6 +117,131 @@ if (emailUser && emailPass) {
     service: "gmail",
     auth: { user: emailUser, pass: emailPass }
   });
+
+// =====================
+// Monthly CSV Emails (Alerts + Performance for last 30 days)
+// =====================
+exports.sendMonthlyAlertsReport = functions.pubsub
+  .schedule("0 9 1 * *")
+  .timeZone("Etc/UTC")
+  .onRun(async () => {
+    if (!mailer) { console.log("Mailer not configured; skipping monthly alerts email."); return null; }
+    const now = new Date();
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999);
+    const start = new Date(end.getTime() - 29*24*60*60*1000);
+    const snap = await db.collection("adminAlerts").where("timestamp", ">=", start).where("timestamp", "<=", end).get();
+    const rows = snap.docs.map(d => {
+      const a = d.data() || {};
+      const time = a.timestamp && a.timestamp.toDate ? a.timestamp.toDate() : new Date(a.timestamp || Date.now());
+      return { Type: a.type || '', Message: a.message || '', Time: time.toISOString(), Status: a.read ? "Read" : "Unread" };
+    });
+    const csv = new Parser().parse(rows);
+    await mailer.sendMail({
+      from: `BlkPages Alerts <${emailUser}>`,
+      to: "admin@blkpages.com, finance@blkpages.com",
+      subject: `Monthly Alerts Report – ${now.toISOString().split("T")[0]}`,
+      text: "Attached: alerts from the last 30 days.",
+      attachments: [{ filename: `alerts_${now.toISOString().split("T")[0]}.csv`, content: csv }]
+    });
+    console.log("✅ Monthly Alerts CSV emailed.");
+    return null;
+  });
+
+exports.sendMonthlyPerformanceReport = functions.pubsub
+  .schedule("0 9 1 * *")
+  .timeZone("Etc/UTC")
+  .onRun(async () => {
+    if (!mailer) { console.log("Mailer not configured; skipping monthly performance email."); return null; }
+    const now = new Date();
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999);
+    const start = new Date(end.getTime() - 29*24*60*60*1000);
+    const snap = await db.collection("bookings").where("createdAt", ">=", start).where("createdAt", "<=", end).get();
+    const byDay = new Map();
+    snap.docs.forEach(d => {
+      const b = d.data() || {};
+      const ts = b.createdAt && b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt || Date.now());
+      const key = ts.toISOString().slice(0,10);
+      if (!byDay.has(key)) byDay.set(key, { Date: key, Bookings: 0, Revenue: 0 });
+      const row = byDay.get(key);
+      row.Bookings += 1;
+      row.Revenue = Math.round(((row.Revenue || 0) + Number(b.amountPaid || 0)) * 100) / 100;
+    });
+    const rows = Array.from(byDay.values()).sort((a,b)=> a.Date.localeCompare(b.Date));
+    const csv = new Parser().parse(rows);
+    await mailer.sendMail({
+      from: `BlkPages Reports <${emailUser}>`,
+      to: "admin@blkpages.com, finance@blkpages.com",
+      subject: `Monthly Performance (Bookings & Revenue) – ${now.toISOString().split("T")[0]}`,
+      text: "Attached: daily bookings & revenue for the last 30 days.",
+      attachments: [{ filename: `performance_${now.toISOString().split("T")[0]}.csv`, content: csv }]
+    });
+    console.log("✅ Monthly Performance CSV emailed.");
+    return null;
+  });
+
+// =====================
+// Callable: Send both reports now (last 30 days)
+// =====================
+exports.sendReportsNow = functions.https.onCall(async (data, context) => {
+  if (!mailer) {
+    throw new functions.https.HttpsError('failed-precondition', 'Mailer not configured');
+  }
+  try {
+    // --- Admin Auth Check ---
+    if (!context.auth || !context.auth.uid) {
+      throw new functions.https.HttpsError('unauthenticated', 'You must be signed in to call this function.');
+    }
+    const uid = context.auth.uid;
+    const adminDoc = await db.collection('admins').doc(uid).get();
+    if (!adminDoc.exists) {
+      throw new functions.https.HttpsError('permission-denied', 'You do not have permission to trigger reports.');
+    }
+    console.log(`Manual report triggered by admin UID: ${uid}`);
+
+    const now = new Date();
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999);
+    const start = new Date(end.getTime() - 29*24*60*60*1000);
+
+    // Alerts
+    const aSnap = await db.collection('adminAlerts').where('timestamp', '>=', start).where('timestamp', '<=', end).get();
+    const aRows = aSnap.docs.map(d => {
+      const a = d.data() || {};
+      const time = a.timestamp && a.timestamp.toDate ? a.timestamp.toDate() : new Date(a.timestamp || Date.now());
+      return { Type: a.type || '', Message: a.message || '', Time: time.toISOString(), Status: a.read ? 'Read' : 'Unread' };
+    });
+    const aCsv = new Parser().parse(aRows);
+
+    // Performance (bookings)
+    const bSnap = await db.collection('bookings').where('createdAt', '>=', start).where('createdAt', '<=', end).get();
+    const byDay = new Map();
+    bSnap.docs.forEach(d => {
+      const b = d.data() || {};
+      const ts = b.createdAt && b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt || Date.now());
+      const key = ts.toISOString().slice(0,10);
+      if (!byDay.has(key)) byDay.set(key, { Date: key, Bookings: 0, Revenue: 0 });
+      const row = byDay.get(key);
+      row.Bookings += 1;
+      row.Revenue = Math.round(((row.Revenue || 0) + Number(b.amountPaid || 0)) * 100) / 100;
+    });
+    const pRows = Array.from(byDay.values()).sort((a,b)=> a.Date.localeCompare(b.Date));
+    const pCsv = new Parser().parse(pRows);
+
+    await mailer.sendMail({
+      from: `BlkPages Reports <${emailUser}>`,
+      to: "admin@blkpages.com, finance@blkpages.com",
+      subject: `BlkPages Reports – Manual Trigger ${now.toISOString().split('T')[0]}`,
+      text: 'Attached: Alerts + Performance CSVs for the past 30 days.',
+      attachments: [
+        { filename: `alerts_${now.toISOString().split('T')[0]}.csv`, content: aCsv },
+        { filename: `performance_${now.toISOString().split('T')[0]}.csv`, content: pCsv }
+      ]
+    });
+    return { success: true, message: 'Reports sent successfully!' };
+  } catch (e) {
+    console.error('sendReportsNow error', e);
+    throw new functions.https.HttpsError('internal', 'Report generation failed');
+  }
+});
 }
 
 exports.sendWeeklyAlertsReport = functions.pubsub

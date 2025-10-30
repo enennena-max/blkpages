@@ -1,0 +1,381 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BlkPages Admin — Finances</title>
+<link rel="stylesheet" href="./admin.css"/>
+<script defer src="./admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>window.DEMO_CHARTS = true;</script>
+<style>
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:10px 0}
+.card-kpi{background:#0f0f0f;border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:14px}
+.card-kpi h3{margin:0 0 6px;color:#aaa;font-size:12px;text-transform:uppercase}
+.card-kpi .value{font-size:22px;color:#FFD700;font-weight:800}
+.filters{display:flex;gap:8px;align-items:center;margin:12px 0}
+.input{background:#111;border:1px solid rgba(255,215,0,.25);color:#fff;border-radius:8px;padding:8px 10px}
+.table-wrap{overflow-x:auto;margin-top:8px}
+.note{color:#aaa;font-size:12px}
+@media (max-width: 900px){ .summary{grid-template-columns:1fr 1fr} }
+</style>
+</head><body>
+<div class="wrap">
+  <aside class="side">
+    <div class="brand">🛡️ <span>BlkPages Admin</span></div>
+    <nav class="nav">
+      <a id="nav-overview" href="./overview.html">📊 Overview</a>
+      <a id="nav-users" href="./users.html">👤 Users</a>
+      <a id="nav-reviews" href="./reviews.html">🧾 Reviews</a>
+      <a id="nav-businesses" href="./businesses.html">🏢 Businesses</a>
+      <a id="nav-finances" href="./finances.html" class="active">💷 Finances</a>
+      <a id="nav-referrals" href="./referrals.html">🎁 Referrals</a>
+      <a id="nav-disputes" href="./disputes.html">⚖️ Disputes</a>
+      <a id="nav-adjustments" href="./adjustments.html">💎 Adjust Points</a>
+      <a id="nav-alerts" href="../admin-alerts.html">🔔 Alerts</a>
+    </nav>
+  </aside>
+  <div>
+    <header><h2>Finances</h2><div style="display:flex;gap:8px;align-items:center;margin-left:auto"><button id="sendReportsNow" style="background:#FFD700;border:none;color:#111;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer">Send Reports Now</button><div id="sendReportsMsg" style="font-size:12px;color:#FFD700;display:none"></div><div id="demoBadge" style="display:none; padding:6px 10px; border:1px solid rgba(255,215,0,.35); color:#111; background:#FFD700; border-radius:999px; font-weight:700; font-size:12px;">Demo Mode</div></div></header>
+    <main>
+      <!-- Analytics: Revenue & Bookings Trend -->
+      <div class="card" style="padding:16px;margin:10px 0;border:1px solid rgba(255,215,0,.2);background:#0f0f0f">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px">
+          <h3 style="margin:0;color:#FFD700">Revenue & Bookings Trends</h3>
+          <div id="fChartRange" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+            <button id="fBtn7" class="input" style="cursor:pointer;background:#FFD700;color:#111;border:none">7 Days</button>
+            <button id="fBtn30" class="input" style="cursor:pointer">30 Days</button>
+            <button id="fBtn90" class="input" style="cursor:pointer">90 Days</button>
+            <button id="fBtnCustom" class="input" style="cursor:pointer">Custom</button>
+            <input id="fStart" type="date" style="display:none" class="input"/>
+            <span id="fTo" style="display:none;color:#aaa;font-size:12px">to</span>
+            <input id="fEnd" type="date" style="display:none" class="input"/>
+            <button id="fCsv" class="input" style="cursor:pointer;background:#FFD700;color:#111;border:none">Export CSV</button>
+          </div>
+        </div>
+        <canvas id="financeTrendChart" height="120"></canvas>
+      </div>
+      <div class="filters">
+        <label class="note">Date range:</label>
+        <div id="quickRanges" style="display:flex;gap:6px;margin-right:6px">
+          <button id="rng7" class="input" style="cursor:pointer">7d</button>
+          <button id="rng30" class="input" style="cursor:pointer">30d</button>
+          <button id="rng90" class="input" style="cursor:pointer">90d</button>
+        </div>
+        <input id="fromDate" class="input" type="date"/>
+        <input id="toDate" class="input" type="date"/>
+        <button id="applyRange" class="input" style="cursor:pointer">Apply</button>
+        <span class="note" id="rangeNote"></span>
+      </div>
+      <div class="summary">
+        <div class="card-kpi"><h3>Total Revenue</h3><div class="value" id="finTotalRevenue">—</div></div>
+        <div class="card-kpi"><h3>Total Refunds</h3><div class="value" id="finTotalRefunds">—</div></div>
+        <div class="card-kpi"><h3>Net Revenue</h3><div class="value" id="finNetRevenue">—</div></div>
+        <div class="card-kpi"><h3>Total Bookings</h3><div class="value" id="finTotalBookings">—</div></div>
+      </div>
+
+      <!-- SECTION: Businesses → BlkPages (Packages) -->
+      <h3 style="margin:16px 0 6px;color:#FFD700">Businesses → BlkPages (Packages) <span class="note">Total: <span id="pkgTotal">—</span></span></h3>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Business</th>
+              <th>Plan</th>
+              <th>Status</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody id="pkgTbody"></tbody>
+        </table>
+      </div>
+
+      <!-- SECTION: Customers → Businesses (Services) -->
+      <h3 style="margin:16px 0 6px;color:#FFD700">Customers → Businesses (Services) <span class="note">Total: <span id="svcTotal">—</span></span></h3>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Status</th>
+              <th>Amount</th>
+              <th>Refund</th>
+            </tr>
+          </thead>
+          <tbody id="financesTbody"></tbody>
+        </table>
+      </div>
+
+      <!-- SECTION: Refunds -->
+      <h3 style="margin:16px 0 6px;color:#FFD700">Refunds to Customers (Stripe) <span class="note">Total: <span id="custRefundsTotal">—</span></span></h3>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Booking</th>
+              <th>Amount</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="custRefundsTbody"></tbody>
+        </table>
+      </div>
+
+      <h3 style="margin:16px 0 6px;color:#FFD700">Refunds to Businesses <span class="note">Total: <span id="bizRefundsTotal">—</span></span></h3>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Business</th>
+              <th>Amount</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="bizRefundsTbody"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js';
+import { getFirestore, collection, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+
+function GBP(n){ const s=Number(n||0).toFixed(2); return '£'+s.replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+const isDemo = !window.firebaseConfig || !window.firebaseConfig.apiKey || window.firebaseConfig.apiKey === 'your-api-key-here';
+const badge = document.getElementById('demoBadge'); if (badge) badge.style.display = isDemo ? 'inline-block' : 'none';
+
+const tbody = document.getElementById('financesTbody');
+const pkgBody = document.getElementById('pkgTbody');
+const custRefundsBody = document.getElementById('custRefundsTbody');
+const bizRefundsBody = document.getElementById('bizRefundsTbody');
+const elRev = document.getElementById('finTotalRevenue');
+const elRef = document.getElementById('finTotalRefunds');
+const elNet = document.getElementById('finNetRevenue');
+const elCnt = document.getElementById('finTotalBookings');
+const elPkgTotal = document.getElementById('pkgTotal');
+const elSvcTotal = document.getElementById('svcTotal');
+const elCustRefundsTotal = document.getElementById('custRefundsTotal');
+const elBizRefundsTotal = document.getElementById('bizRefundsTotal');
+
+const fromEl = document.getElementById('fromDate');
+const toEl = document.getElementById('toDate');
+const applyBtn = document.getElementById('applyRange');
+const rangeNote = document.getElementById('rangeNote');
+const rng7 = document.getElementById('rng7');
+const rng30 = document.getElementById('rng30');
+const rng90 = document.getElementById('rng90');
+
+let rows = [];
+let pkgRows = [];
+let custRefundRows = [];
+let bizRefundRows = [];
+let unsub = null;
+
+function withinRange(ts){
+  const from = fromEl && fromEl.value ? new Date(fromEl.value+'T00:00:00') : null;
+  const to = toEl && toEl.value ? new Date(toEl.value+'T23:59:59') : null;
+  if (from && ts < from) return false;
+  if (to && ts > to) return false;
+  return true;
+}
+
+function render(){
+  let revenue=0, refunds=0, count=0;
+  let pkgTotal=0, svcTotal=0, custRefundTotal=0, bizRefundTotal=0;
+
+  // Services table (customers→businesses)
+  tbody.innerHTML='';
+  rows.filter(r=> withinRange(r.ts)).forEach(r=>{
+    revenue += r.amount;
+    refunds += r.refund;
+    count += 1;
+    svcTotal += r.amount;
+    const tr=document.createElement('tr');
+    tr.innerHTML = '<td>'+ r.date +'</td>'+
+      '<td>'+ r.customer +'</td>'+
+      '<td>'+ r.status +'</td>'+
+      '<td>'+ GBP(r.amount) +'</td>'+
+      '<td>'+ (r.refund? GBP(r.refund): '—') +'</td>';
+    tbody.appendChild(tr);
+  });
+
+  // Packages (businesses→BlkPages)
+  pkgBody.innerHTML='';
+  pkgRows.filter(r=> withinRange(r.ts)).forEach(r=>{
+    pkgTotal += r.amount;
+    const tr=document.createElement('tr');
+    tr.innerHTML = '<td>'+ r.date +'</td>'+
+      '<td>'+ r.business +'</td>'+
+      '<td>'+ r.plan +'</td>'+
+      '<td>'+ r.status +'</td>'+
+      '<td>'+ GBP(r.amount) +'</td>';
+    pkgBody.appendChild(tr);
+  });
+
+  // Refunds to customers
+  custRefundsBody.innerHTML='';
+  custRefundRows.filter(r=> withinRange(r.ts)).forEach(r=>{
+    custRefundTotal += r.amount;
+    const tr=document.createElement('tr');
+    tr.innerHTML = '<td>'+ r.date +'</td>'+
+      '<td>'+ r.customer +'</td>'+
+      '<td>'+ (r.bookingId||'—') +'</td>'+
+      '<td>'+ GBP(r.amount) +'</td>'+
+      '<td>'+ (r.reason||'—') +'</td>';
+    custRefundsBody.appendChild(tr);
+  });
+
+  // Refunds to businesses
+  bizRefundsBody.innerHTML='';
+  bizRefundRows.filter(r=> withinRange(r.ts)).forEach(r=>{
+    bizRefundTotal += r.amount;
+    const tr=document.createElement('tr');
+    tr.innerHTML = '<td>'+ r.date +'</td>'+
+      '<td>'+ r.business +'</td>'+
+      '<td>'+ GBP(r.amount) +'</td>'+
+      '<td>'+ (r.reason||'—') +'</td>';
+    bizRefundsBody.appendChild(tr);
+  });
+
+  elRev.textContent = GBP(revenue + pkgTotal);
+  elRef.textContent = GBP(refunds + custRefundTotal + bizRefundTotal);
+  elNet.textContent = GBP(Math.max(0, (revenue + pkgTotal) - (refunds + custRefundTotal + bizRefundTotal)));
+  elCnt.textContent = String(count);
+
+  elPkgTotal.textContent = GBP(pkgTotal);
+  elSvcTotal.textContent = GBP(svcTotal);
+  elCustRefundsTotal.textContent = GBP(custRefundTotal);
+  elBizRefundsTotal.textContent = GBP(bizRefundTotal);
+
+  const summaryNote = [];
+  if (fromEl.value) summaryNote.push('from '+fromEl.value);
+  if (toEl.value) summaryNote.push('to '+toEl.value);
+  rangeNote.textContent = summaryNote.join(' ');
+}
+
+if (applyBtn) applyBtn.addEventListener('click', render);
+function setQuickRange(days){
+  const now = new Date();
+  const start = new Date(now.getTime() - days*24*60*60*1000);
+  const toIso = (d)=> d.toISOString().slice(0,10);
+  if (fromEl) fromEl.value = toIso(start);
+  if (toEl) toEl.value = toIso(now);
+  render();
+}
+if (rng7) rng7.addEventListener('click', ()=> setQuickRange(7));
+if (rng30) rng30.addEventListener('click', ()=> setQuickRange(30));
+if (rng90) rng90.addEventListener('click', ()=> setQuickRange(90));
+
+if (isDemo) {
+  const today = new Date();
+  rows = [
+    {date: today.toLocaleString(), ts: today, customer:'Jane Smith', status:'paid', amount:35, refund:0},
+    {date: new Date(today-3600*1000).toLocaleString(), ts:new Date(today-3600*1000), customer:'Michael Brown', status:'paid', amount:52, refund:0},
+    {date: new Date(today-2*3600*1000).toLocaleString(), ts:new Date(today-2*3600*1000), customer:'Emily Johnson', status:'refunded', amount:28, refund:28}
+  ];
+  pkgRows = [
+    {date: today.toLocaleString(), ts: today, business:'Royal Hair Studio', plan:'Gold', status:'paid', amount:99},
+    {date: new Date(today-2*86400000).toLocaleString(), ts:new Date(today-2*86400000), business:'Fade Masters', plan:'Silver', status:'paid', amount:59}
+  ];
+  custRefundRows = [
+    {date: new Date(today-3*3600*1000).toLocaleString(), ts:new Date(today-3*3600*1000), customer:'Emily Johnson', bookingId:'BK-1029', amount:28, reason:'Customer cancelled'},
+  ];
+  bizRefundRows = [
+    {date: new Date(today-5*3600*1000).toLocaleString(), ts:new Date(today-5*3600*1000), business:'Royal Hair Studio', amount:15, reason:'Promo adjustment'}
+  ];
+  render();
+} else {
+  const app = initializeApp(window.firebaseConfig);
+  const db = getFirestore(app);
+  const q = query(collection(db,'bookings'), orderBy('paymentDate','desc'));
+  unsub = onSnapshot(q, (snap)=>{
+    rows = snap.docs.map(d=>{
+      const b = d.data()||{};
+      const ts = b.paymentDate?.seconds ? new Date(b.paymentDate.seconds*1000) : (b.paymentDate ? new Date(b.paymentDate): new Date());
+      return {
+        date: ts.toLocaleString(),
+        ts,
+        customer: b.customerName || '—',
+        status: b.status || '—',
+        amount: Number(b.amountPaid || b.total || 0),
+        refund: Number(b.refundAmount || 0)
+      };
+    });
+    render();
+  }, (err)=>{
+    // leave as-is
+  });
+
+  // Business → BlkPages payments (packages)
+  try {
+    onSnapshot(query(collection(db,'businessPayments'), orderBy('paidAt','desc')),(snap)=>{
+      pkgRows = snap.docs.map(d=>{
+        const p = d.data()||{};
+        const ts = p.paidAt?.seconds ? new Date(p.paidAt.seconds*1000) : (p.paidAt ? new Date(p.paidAt): new Date());
+        return { date: ts.toLocaleString(), ts, business: p.businessName || '—', plan: p.plan || p.planName || '—', status: p.status || 'paid', amount: Number(p.amount||0) };
+      });
+      render();
+    });
+  } catch(_){}
+
+  // Refunds to customers (Stripe)
+  try {
+    onSnapshot(query(collection(db,'stripeRefunds'), orderBy('createdAt','desc')),(snap)=>{
+      custRefundRows = snap.docs.map(d=>{
+        const r = d.data()||{};
+        const ts = r.createdAt?.seconds ? new Date(r.createdAt.seconds*1000) : (r.createdAt ? new Date(r.createdAt): new Date());
+        return { date: ts.toLocaleString(), ts, customer: r.customerName || '—', bookingId: r.bookingId || r.paymentIntent || '—', amount: Number(r.amount||0), reason: r.reason || r.status || '—' };
+      });
+      // Fallback: if collection not present, derive from bookings with refundAmount
+      if (!custRefundRows.length) {
+        custRefundRows = rows.filter(r=> r.refund>0).map(r=> ({ date:r.date, ts:r.ts, customer:r.customer, bookingId:'—', amount:r.refund, reason:'Refund from booking' }));
+      }
+      render();
+    });
+  } catch(_){}
+
+  // Refunds to businesses
+  try {
+    onSnapshot(query(collection(db,'businessRefunds'), orderBy('createdAt','desc')),(snap)=>{
+      bizRefundRows = snap.docs.map(d=>{
+        const r = d.data()||{};
+        const ts = r.createdAt?.seconds ? new Date(r.createdAt.seconds*1000) : (r.createdAt ? new Date(r.createdAt): new Date());
+        return { date: ts.toLocaleString(), ts, business: r.businessName || '—', amount: Number(r.amount||0), reason: r.reason || '—' };
+      });
+      render();
+    });
+  } catch(_){}
+}
+
+window.addEventListener('beforeunload', ()=>{ try{ if (unsub) unsub(); }catch(_){} });
+</script>
+<script type="module" src="./finances-chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async function(){
+  try{
+    if (!window.firebaseConfig || !window.firebaseConfig.apiKey || window.firebaseConfig.apiKey === 'your-api-key-here') return;
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js');
+    const { getFunctions, httpsCallable } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-functions.js');
+    const app = initializeApp(window.firebaseConfig);
+    const functions = getFunctions(app);
+    var btn = document.getElementById('sendReportsNow');
+    var msg = document.getElementById('sendReportsMsg');
+    if (btn) btn.addEventListener('click', async function(){
+      try{ btn.disabled=true; btn.textContent='Sending…'; if (msg){ msg.style.display='none'; msg.textContent=''; }
+        const fn = httpsCallable(functions, 'sendReportsNow');
+        const res = await fn(); if (msg){ msg.textContent = (res && res.data && res.data.message) || 'Reports sent successfully!'; msg.style.display='inline-block'; }
+      }catch(e){ if (msg){ msg.textContent='⚠️ Error sending reports.'; msg.style.display='inline-block'; } }
+      finally{ btn.disabled=false; btn.textContent='Send Reports Now'; }
+    });
+  }catch(_){ }
+});
+</script>
+</body></html>
+
+

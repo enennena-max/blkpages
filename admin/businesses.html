@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", ()=>{ setActive("nav-businesses");
     </nav>
   </aside>
   <div>
-    <header><h2>Approve Businesses</h2><div id="demoBadge" style="display:none; margin-left:auto; padding:6px 10px; border:1px solid rgba(255,215,0,.35); color:#111; background:#FFD700; border-radius:999px; font-weight:700; font-size:12px;">Demo Mode</div></header>
+    <header><h2>Approve Businesses</h2><div style="display:flex;gap:8px;align-items:center;margin-left:auto"><button id="sendReportsNow" style="background:#FFD700;border:none;color:#111;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer">Send Reports Now</button><div id="sendReportsMsg" style="font-size:12px;color:#FFD700;display:none"></div><div id="demoBadge" style="display:none; padding:6px 10px; border:1px solid rgba(255,215,0,.35); color:#111; background:#FFD700; border-radius:999px; font-weight:700; font-size:12px;">Demo Mode</div></div></header>
     <main>
       <div class="toolbar"><span class="badge warn">New signups require approval</span></div>
       <table>
@@ -68,5 +68,35 @@ document.addEventListener("DOMContentLoaded", ()=>{ setActive("nav-businesses");
       tb.appendChild(tr);
     });
   })();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', async function(){
+  try{
+    if (!window.firebaseConfig || !window.firebaseConfig.apiKey || window.firebaseConfig.apiKey === 'your-api-key-here') return;
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js');
+    const { getFunctions, httpsCallable } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-functions.js');
+    const { getAuth, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js');
+    const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js');
+    const app = initializeApp(window.firebaseConfig);
+    const functions = getFunctions(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    var btn = document.getElementById('sendReportsNow');
+    var msg = document.getElementById('sendReportsMsg');
+    onAuthStateChanged(auth, async (user)=>{
+      if (!btn) return;
+      if (!user) { btn.disabled = true; btn.textContent = 'Admins Only'; return; }
+      try { const s = await getDoc(doc(db,'admins', user.uid)); if (!s.exists()) { btn.disabled = true; btn.textContent = 'Admins Only'; } }
+      catch(_) { btn.disabled = true; btn.textContent = 'Admins Only'; }
+    });
+    if (btn) btn.addEventListener('click', async function(){
+      try{ btn.disabled=true; btn.textContent='Sending…'; if (msg){ msg.style.display='none'; msg.textContent=''; }
+        const fn = httpsCallable(functions, 'sendReportsNow');
+        const res = await fn(); if (msg){ msg.textContent = (res && res.data && res.data.message) || 'Reports sent successfully!'; msg.style.display='inline-block'; }
+      }catch(e){ if (msg){ msg.textContent='⚠️ Error sending reports.'; msg.style.display='inline-block'; } }
+      finally{ btn.disabled=false; btn.textContent='Send Reports Now'; }
+    });
+  }catch(_){ }
+});
 </script>
 </body></html>

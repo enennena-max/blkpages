@@ -5,6 +5,8 @@
 <script defer src="./admin.js"></script>
 <script type="module" src="./live-dashboard.js"></script>
 <script type="module" src="./overview-live.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>window.DEMO_CHARTS = true;</script>
 <style>
 .alerts-panel{position:fixed;bottom:24px;right:24px;top:auto;width:340px;background:#111;color:#fff;border:1px solid #FFD700;border-radius:10px;padding:15px;box-shadow:0 0 15px rgba(255,215,0,0.3);z-index:9999;max-height:60vh;overflow-y:auto}
 .alerts-panel h3{margin:0 0 10px;color:#ffd700}
@@ -31,8 +33,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     <div class="brand">🛡️ <span>BlkPages Admin</span></div>
     <nav class="nav">
       <a id="nav-overview" href="./overview.html" class="active">📊 Overview</a>
+      <a id="nav-users" href="./users.html">👤 Users</a>
       <a id="nav-reviews" href="./reviews.html">🧾 Reviews</a>
       <a id="nav-businesses" href="./businesses.html">🏢 Businesses</a>
+      <a id="nav-finances" href="./finances.html">💷 Finances</a>
       <a id="nav-referrals" href="./referrals.html">🎁 Referrals</a>
       <a id="nav-disputes" href="./disputes.html">⚖️ Disputes</a>
       <a id="nav-adjustments" href="./adjustments.html">💎 Adjust Points</a>
@@ -40,12 +44,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     </nav>
   </aside>
   <div>
-    <header><h2>Overview</h2><div id="demoBadge" style="display:none; margin-left:auto; padding:6px 10px; border:1px solid rgba(255,215,0,.35); color:#111; background:#FFD700; border-radius:999px; font-weight:700; font-size:12px;">Demo Mode</div></header>
+    <header><h2>Overview</h2><div style="display:flex;gap:8px;align-items:center;margin-left:auto"><button id="sendReportsNow" style="background:#FFD700;border:none;color:#111;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer">Send Reports Now</button><div id="sendReportsMsg" style="font-size:12px;color:#FFD700;display:none"></div><div id="demoBadge" style="display:none; padding:6px 10px; border:1px solid rgba(255,215,0,.35); color:#111; background:#FFD700; border-radius:999px; font-weight:700; font-size:12px;">Demo Mode</div></div></header>
     <main>
+      <!-- Summary Metric Cards -->
+      <div class="cards" id="summaryCards" style="margin-top:10px">
+        <div class="card"><h3>Total Users</h3><div class="stat" id="usersTotal">—</div></div>
+        <div class="card"><h3>Total Businesses</h3><div class="stat" id="bizTotal">—</div></div>
+        <div class="card"><h3>Total Revenue</h3><div class="stat" id="revenueTotal">—</div></div>
+        <div class="card"><h3>Refunds</h3><div class="stat" id="refundsTotal">—</div></div>
+        <div class="card"><h3>Pending Reviews</h3><div class="stat" id="pendingReviewsTotal">—</div></div>
+        <div class="card"><h3>Open Disputes</h3><div class="stat" id="openDisputesTotal">—</div></div>
+        <div class="card"><h3>Unread Alerts</h3><div class="stat" id="unreadAlertsTotal">—</div></div>
+      </div>
+
       <div class="cards">
         <div class="card"><h3>Pending Reviews</h3><div class="stat" id="revCount">—</div></div>
         <div class="card"><h3>Pending Businesses</h3><div class="stat" id="bizCount">—</div></div>
         <div class="card"><h3>Disputes</h3><div class="stat" id="disputeCount">—</div></div>
+      </div>
+
+      <!-- Monthly Revenue (Current Month) -->
+      <div class="card" style="padding:16px;margin:10px 0;border:1px solid rgba(255,215,0,.2);background:#0f0f0f">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px">
+          <h3 style="margin:0;color:#FFD700">Monthly Revenue (Current Month)</h3>
+          <span class="note" id="ovMonthWindowNote" style="color:#aaa;font-size:12px"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr;gap:16px">
+          <div>
+            <h4 style="margin:0 0 6px;color:#cfcfcf;font-size:13px">Revenue to BlkPages (Packages)</h4>
+            <canvas id="ovBlkChart" height="110"></canvas>
+          </div>
+          <div>
+            <h4 style="margin:12px 0 6px;color:#cfcfcf;font-size:13px">Revenue to Businesses (Services)</h4>
+            <canvas id="ovBizChart" height="110"></canvas>
+          </div>
+        </div>
       </div>
 
       <!-- Live Alerts Panel -->
@@ -90,6 +123,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     var rev=document.getElementById('revCount'); if (rev) rev.textContent='7';
     var biz=document.getElementById('bizCount'); if (biz) biz.textContent='3';
     var dis=document.getElementById('disputeCount'); if (dis) dis.textContent='2';
+    // Summary cards demo
+    var uT=document.getElementById('usersTotal'); if (uT) uT.textContent='2,481';
+    var bT=document.getElementById('bizTotal'); if (bT) bT.textContent='684';
+    var rT=document.getElementById('revenueTotal'); if (rT) rT.textContent='£386,410';
+    var rfT=document.getElementById('refundsTotal'); if (rfT) rfT.textContent='£1,240';
+    var prT=document.getElementById('pendingReviewsTotal'); if (prT) prT.textContent='7';
+    var odT=document.getElementById('openDisputesTotal'); if (odT) odT.textContent='2';
+    var uaT=document.getElementById('unreadAlertsTotal'); if (uaT) uaT.textContent='5';
     var wrap=document.getElementById('recentBookings');
     if (wrap){
       wrap.innerHTML='';
@@ -106,6 +147,47 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   })();
   document.addEventListener('DOMContentLoaded', function(){
+    // Send Reports Now (callable function)
+    (async function(){
+      try {
+        if (!window.firebaseConfig || !window.firebaseConfig.apiKey || window.firebaseConfig.apiKey === 'your-api-key-here') {
+          var btnFallback = document.getElementById('sendReportsNow');
+          if (btnFallback) { btnFallback.disabled = true; btnFallback.textContent = 'Admins Only'; }
+          return;
+        }
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js');
+        const { getFunctions, httpsCallable } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-functions.js');
+        const { getAuth, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js');
+        const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js');
+        const app = initializeApp(window.firebaseConfig);
+        const functions = getFunctions(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        var btn = document.getElementById('sendReportsNow');
+        var msg = document.getElementById('sendReportsMsg');
+        // Role-check: only show enabled button for admins
+        onAuthStateChanged(auth, async (user)=>{
+          if (!btn) return;
+          if (!user) { btn.disabled = true; btn.textContent = 'Admins Only'; return; }
+          try {
+            const adminSnap = await getDoc(doc(db, 'admins', user.uid));
+            if (!adminSnap.exists()) { btn.disabled = true; btn.textContent = 'Admins Only'; }
+          } catch(_) { btn.disabled = true; btn.textContent = 'Admins Only'; }
+        });
+        if (btn) btn.addEventListener('click', async function(){
+          try {
+            btn.disabled = true; btn.textContent = 'Sending…'; if (msg) { msg.style.display='none'; msg.textContent=''; }
+            const fn = httpsCallable(functions, 'sendReportsNow');
+            const res = await fn();
+            if (msg) { msg.textContent = (res && res.data && res.data.message) || 'Reports sent successfully!'; msg.style.display='inline-block'; }
+          } catch (e) {
+            if (msg) { msg.textContent = '⚠️ Error sending reports.'; msg.style.display='inline-block'; }
+          } finally {
+            btn.disabled = false; btn.textContent = 'Send Reports Now';
+          }
+        });
+      } catch(_){}
+    })();
     // Fallback: define demo alert helper if module didn't load
     if (!window.sendDemoAdminAlert) {
       window.sendDemoAdminAlert = function(message, typeKey){
@@ -169,4 +251,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 </script>
+<script type="module" src="./overview-monthly-charts.js"></script>
 </body></html>

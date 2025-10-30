@@ -134,24 +134,69 @@ if (!hasConfig) {
     { type:'loyalty', message:'🎁 100 BlkPoints released for CUST_293', when:new Date(Date.now()-3600_000) },
     { type:'support', message:'⚠️ New support ticket from Royal Hair — “Payment not reflecting”', when:new Date(Date.now()-7200_000) }
   ];
-  tbody.innerHTML = '';
-  demo.forEach(d => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><input type="checkbox" data-id="demo-${d.when.getTime()}"></td>
-      <td><span class="type-tag type-${d.type}">${d.type}</span></td>
-      <td>${escapeHtml(d.message)}</td>
-      <td class="when">${d.when.toLocaleString()}</td>
-      <td>🟡 Unread</td>
-    `;
-    tbody.appendChild(tr);
-  });
-  const empty = document.getElementById('emptyState'); if (empty) empty.style.display = 'none';
-  if (applyBtn) applyBtn.disabled = false;
+  const demoRead = new Set();
+
+  function renderDemo(list){
+    tbody.innerHTML = '';
+    list.forEach(d => {
+      const id = `demo-${d.when.getTime()}`;
+      const isRead = demoRead.has(id);
+      const tr = document.createElement('tr');
+      if (isRead) tr.classList.add('readRow');
+      tr.innerHTML = `
+        <td><input type="checkbox" data-id="${id}"></td>
+        <td><span class="type-tag type-${d.type}">${d.type}</span></td>
+        <td>${escapeHtml(d.message)}</td>
+        <td class="when">${d.when.toLocaleString()}</td>
+        <td>${isRead? '✅ Read':'🟡 Unread'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    const empty = document.getElementById('emptyState');
+    if (!list.length) { if (empty) empty.style.display='block'; }
+    else { if (empty) empty.style.display='none'; }
+  }
+
+  function applyDemoFilters(){
+    try {
+      const typeVal = document.getElementById('filterType').value;
+      const start = document.getElementById('startDate').value;
+      const end = document.getElementById('endDate').value;
+      const keyword = (document.getElementById('keyword').value || '').toLowerCase();
+      const onlyReadEl = document.getElementById('onlyRead');
+      const onlyRead = onlyReadEl ? !!onlyReadEl.checked : false;
+      const startDate = start ? new Date(start) : null;
+      const endDate = end ? new Date(end + 'T23:59:59') : null;
+
+      const filtered = demo.filter(d => {
+        if (typeVal && d.type !== typeVal) return false;
+        if (startDate && d.when < startDate) return false;
+        if (endDate && d.when > endDate) return false;
+        if (keyword && !d.message.toLowerCase().includes(keyword)) return false;
+        const id = `demo-${d.when.getTime()}`;
+        if (onlyRead && !demoRead.has(id)) return false;
+        return true;
+      });
+      renderDemo(filtered);
+    } catch (e) {
+      console.warn('Demo apply failed:', e);
+    }
+  }
+
+  renderDemo(demo);
+  if (applyBtn) { applyBtn.disabled = false; applyBtn.addEventListener('click', applyDemoFilters); }
   const exportBtn=document.getElementById('exportCSVBtn');
   const markReadBtn=document.getElementById('markReadBtn');
   const markUnreadBtn=document.getElementById('markUnreadBtn');
-  if (exportBtn) exportBtn.onclick = () => {
+  if (exportBtn) exportBtn.onclick = () => exportCSVLocal();
+  if (markReadBtn) markReadBtn.onclick = () => toggleReadLocal(true);
+  if (markUnreadBtn) markUnreadBtn.onclick = () => toggleReadLocal(false);
+
+  // Also apply on Enter in keyword box for convenience
+  const keywordInput = document.getElementById('keyword');
+  if (keywordInput) keywordInput.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') { e.preventDefault(); applyDemoFilters(); }});
+
+  function exportCSVLocal(){
     const rows=[["Type","Message","Time","Status"]];
     [...tbody.querySelectorAll('tr')].forEach(tr=>{
       const tds=[...tr.querySelectorAll('td')]; if(tds.length<5) return;
@@ -164,8 +209,8 @@ if (!hasConfig) {
     const csv=rows.map(r=>r.join(',')).join('\n');
     const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob);
     const a=document.createElement('a'); a.href=url; a.download=`BlkPages_Alerts_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(url);
-  };
-  function toggleDemo(read){
+  }
+  function toggleReadLocal(read){
     const selected=[...tbody.querySelectorAll('input[type="checkbox"]:checked')];
     if(!selected.length){ alert('Please select at least one alert to update.'); return; }
     selected.forEach(cb=>{
@@ -173,10 +218,10 @@ if (!hasConfig) {
       const statusCell=row.querySelectorAll('td')[4];
       statusCell.textContent=read? '✅ Read':'🟡 Unread';
       if (read) row.classList.add('readRow'); else row.classList.remove('readRow');
+      const id = cb.getAttribute('data-id');
+      if (read) demoRead.add(id); else demoRead.delete(id);
     });
   }
-  if (markReadBtn) markReadBtn.onclick=()=>toggleDemo(true);
-  if (markUnreadBtn) markUnreadBtn.onclick=()=>toggleDemo(false);
 } else {
   const [{ initializeApp }, { getFirestore, collection, query, orderBy, where, getDocs, updateDoc, doc, limit, startAfter }] = await Promise.all([
     import('https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js'),

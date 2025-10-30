@@ -1,0 +1,243 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>BlkPages Admin — Users</title>
+<link rel="stylesheet" href="./admin.css"/>
+<script defer src="./admin.js"></script>
+<style>
+.drawer{position:fixed;top:0;right:-420px;width:420px;height:100vh;background:#0f0f0f;color:#fff;border-left:1px solid #FFD700;box-shadow:0 0 15px rgba(255,215,0,.15);transition:right .28s ease;z-index:10000;display:flex;flex-direction:column}
+.drawer.open{right:0}
+.drawer header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,215,0,.2)}
+.drawer header h3{margin:0;color:#FFD700}
+.drawer .content{padding:14px 16px;overflow:auto}
+.tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid rgba(255,215,0,.3)}
+.table-wrap{overflow-x:auto}
+.search{background:#111;border:1px solid rgba(255,215,0,.25);color:#fff;border-radius:8px;padding:10px 12px;width:100%;max-width:360px}
+.btn-close{background:#1a1a1a;border:1px solid #333;color:#ddd;padding:6px 10px;border-radius:8px;cursor:pointer}
+</style>
+</head><body>
+<div class="wrap">
+  <aside class="side">
+    <div class="brand">🛡️ <span>BlkPages Admin</span></div>
+    <nav class="nav">
+      <a id="nav-overview" href="./overview.html">📊 Overview</a>
+      <a id="nav-users" href="./users.html" class="active">👤 Users</a>
+      <a id="nav-reviews" href="./reviews.html">🧾 Reviews</a>
+      <a id="nav-businesses" href="./businesses.html">🏢 Businesses</a>
+      <a id="nav-finances" href="./finances.html">💷 Finances</a>
+      <a id="nav-referrals" href="./referrals.html">🎁 Referrals</a>
+      <a id="nav-disputes" href="./disputes.html">⚖️ Disputes</a>
+      <a id="nav-adjustments" href="./adjustments.html">💎 Adjust Points</a>
+      <a id="nav-alerts" href="../admin-alerts.html">🔔 Alerts</a>
+    </nav>
+  </aside>
+  <div>
+    <header><h2>Customers</h2><div style="display:flex;gap:8px;align-items:center;margin-left:auto"><button id="sendReportsNow" style="background:#FFD700;border:none;color:#111;padding:6px 10px;border-radius:8px;font-weight:700;cursor:pointer">Send Reports Now</button><div id="sendReportsMsg" style="font-size:12px;color:#FFD700;display:none"></div><div id="demoBadge" style="display:none; padding:6px 10px; border:1px solid rgba(255,215,0,.35); color:#111; background:#FFD700; border-radius:999px; font-weight:700; font-size:12px;">Demo Mode</div></div></header>
+    <main>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
+        <input id="search" class="search" type="text" placeholder="Search name or email..."/>
+        <div style="color:#aaa;font-size:13px">Total Users: <span id="totalUsers" style="color:#FFD700;font-weight:700">0</span></div>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>BlkPoints</th>
+              <th>Joined</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="usersTbody"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Detail Drawer -->
+<div id="userDrawer" class="drawer" aria-hidden="true">
+  <header>
+    <h3 id="drawerTitle">Customer</h3>
+    <button id="drawerClose" class="btn-close">Close</button>
+  </header>
+  <div class="content">
+    <div style="margin-bottom:10px"><span class="tag" id="drawerStatus">Active</span></div>
+    <div style="display:grid;grid-template-columns:1fr;gap:8px">
+      <div><div style="color:#aaa;font-size:12px">Name</div><div id="dName" style="font-weight:700"></div></div>
+      <div><div style="color:#aaa;font-size:12px">Email</div><div id="dEmail"></div></div>
+      <div><div style="color:#aaa;font-size:12px">Phone Verified</div><div id="dPhone"></div></div>
+      <div><div style="color:#aaa;font-size:12px">BlkPoints</div><div id="dPoints" style="color:#FFD700;font-weight:700"></div></div>
+      <div><div style="color:#aaa;font-size:12px">Joined</div><div id="dJoined"></div></div>
+      <div><div style="color:#aaa;font-size:12px">Bookings</div><div id="dBookings"></div></div>
+      <div><div style="color:#aaa;font-size:12px">UID</div><div id="dUid" style="font-family:monospace"></div></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js';
+import { getFirestore, collection, onSnapshot, query, orderBy, doc, getDoc, where } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
+
+function GBP(n){ return '£'+Number(n||0).toFixed(2); }
+
+const isDemo = !window.firebaseConfig || !window.firebaseConfig.apiKey || window.firebaseConfig.apiKey === 'your-api-key-here';
+const badge = document.getElementById('demoBadge'); if (badge) badge.style.display = isDemo ? 'inline-block' : 'none';
+
+const tbody = document.getElementById('usersTbody');
+const totalUsersEl = document.getElementById('totalUsers');
+const searchEl = document.getElementById('search');
+
+const drawer = document.getElementById('userDrawer');
+const drawerClose = document.getElementById('drawerClose');
+
+const dName = document.getElementById('dName');
+const dEmail = document.getElementById('dEmail');
+const dPhone = document.getElementById('dPhone');
+const dPoints = document.getElementById('dPoints');
+const dJoined = document.getElementById('dJoined');
+const dBookings = document.getElementById('dBookings');
+const dUid = document.getElementById('dUid');
+const dStatus = document.getElementById('drawerStatus');
+const dTitle = document.getElementById('drawerTitle');
+
+let allUsers = [];
+let unsub = null;
+
+function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); }
+function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+
+function render(list){
+  tbody.innerHTML = '';
+  list.forEach(u=>{
+    const tr = document.createElement('tr');
+    tr.style.cursor = 'pointer';
+    tr.innerHTML = '<td>'+ (u.name||'—') +'</td>'+
+      '<td>'+ (u.email||'—') +'</td>'+
+      '<td style="color:#FFD700">'+ Number(u.points||0).toLocaleString() +'</td>'+
+      '<td>'+ (u.joined||'—') +'</td>'+
+      '<td><span class="tag">'+ (u.status||'Active') +'</span></td>';
+    tr.addEventListener('click', ()=> showDetails(u.id));
+    tbody.appendChild(tr);
+  });
+  totalUsersEl.textContent = String(list.length);
+}
+
+async function showDetails(uid){
+  try {
+    dTitle.textContent = 'Customer';
+    dName.textContent = '…'; dEmail.textContent = '…'; dPhone.textContent='…'; dPoints.textContent='…'; dJoined.textContent='…'; dBookings.textContent='…'; dUid.textContent = uid;
+    dStatus.textContent = '—';
+    openDrawer();
+    if (isDemo) {
+      // Demo details
+      dName.textContent = 'Demo User';
+      dEmail.textContent = 'demo@example.com';
+      dPhone.textContent = 'true';
+      dPoints.textContent = '2,400';
+      dJoined.textContent = new Date().toLocaleDateString();
+      dBookings.textContent = '5';
+      dStatus.textContent = 'Active';
+      dTitle.textContent = 'Customer — Demo User';
+      return;
+    }
+    const app = initializeApp(window.firebaseConfig);
+    const db = getFirestore(app);
+    const snap = await getDoc(doc(db, 'users', uid));
+    const data = snap.exists()? snap.data(): {};
+    dName.textContent = data.name || '—';
+    dEmail.textContent = data.email || '—';
+    dPhone.textContent = (data.phoneVerified===true?'true':'false');
+    dPoints.textContent = Number(data.blkPoints || data.points || 0).toLocaleString();
+    dJoined.textContent = data.createdAt && data.createdAt.seconds ? new Date(data.createdAt.seconds*1000).toLocaleDateString() : '—';
+    dStatus.textContent = data.status || 'Active';
+    dTitle.textContent = 'Customer — ' + (data.name || '—');
+    // bookings count
+    try {
+      let count = 0;
+      await new Promise((resolve)=>{
+        onSnapshot(query(collection(db,'bookings'), where('uid','==', uid)), (snap)=>{ count = snap.size; dBookings.textContent = String(count); resolve(); });
+        setTimeout(resolve, 800);
+      });
+    } catch(_){ dBookings.textContent = '—'; }
+  } catch(_) {
+    // keep drawer but show minimal
+  }
+}
+
+function applyFilter(){
+  const q = (searchEl.value||'').toLowerCase();
+  const filtered = !q ? allUsers : allUsers.filter(u=> (u.name||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q));
+  render(filtered);
+}
+if (searchEl) searchEl.addEventListener('input', applyFilter);
+
+// Live load
+if (isDemo) {
+  allUsers = [
+    {id:'DEMO1', name:'Aisha Johnson', email:'aisha.johnson@example.com', points:2400, joined:new Date().toLocaleDateString(), status:'Active'},
+    {id:'DEMO2', name:'Michael Brown', email:'michael.brown@example.com', points:120, joined:new Date(Date.now()-86400000).toLocaleDateString(), status:'Active'},
+    {id:'DEMO3', name:'Emily Davis', email:'emily.davis@example.com', points:0, joined:new Date(Date.now()-6*86400000).toLocaleDateString(), status:'Inactive'}
+  ];
+  render(allUsers);
+} else {
+  const app = initializeApp(window.firebaseConfig);
+  const db = getFirestore(app);
+  const q = query(collection(db,'users'), orderBy('createdAt','desc'));
+  unsub = onSnapshot(q, (snap)=>{
+    allUsers = snap.docs.map(d=>{
+      const u = d.data()||{};
+      return {
+        id: d.id,
+        name: u.name || '—',
+        email: u.email || '—',
+        points: Number(u.blkPoints || u.points || 0),
+        joined: u.createdAt && u.createdAt.seconds ? new Date(u.createdAt.seconds*1000).toLocaleDateString() : '—',
+        status: u.status || 'Active'
+      };
+    });
+    applyFilter();
+  }, (err)=>{
+    // graceful fallback
+  });
+}
+
+// Cleanup on unload
+window.addEventListener('beforeunload', ()=>{ try{ if (unsub) unsub(); }catch(_){} });
+</script>
+<script>
+// Bind Send Reports Now (reuses callable function)
+document.addEventListener('DOMContentLoaded', async function(){
+  try{
+    if (!window.firebaseConfig || !window.firebaseConfig.apiKey || window.firebaseConfig.apiKey === 'your-api-key-here') return;
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js');
+    const { getFunctions, httpsCallable } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-functions.js');
+    const { getAuth, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js');
+    const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js');
+    const app = initializeApp(window.firebaseConfig);
+    const functions = getFunctions(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    var btn = document.getElementById('sendReportsNow');
+    var msg = document.getElementById('sendReportsMsg');
+    onAuthStateChanged(auth, async (user)=>{
+      if (!btn) return;
+      if (!user) { btn.disabled = true; btn.textContent = 'Admins Only'; return; }
+      try { const s = await getDoc(doc(db,'admins', user.uid)); if (!s.exists()) { btn.disabled = true; btn.textContent = 'Admins Only'; } }
+      catch(_) { btn.disabled = true; btn.textContent = 'Admins Only'; }
+    });
+    if (btn) btn.addEventListener('click', async function(){
+      try{ btn.disabled=true; btn.textContent='Sending…'; if (msg){ msg.style.display='none'; msg.textContent=''; }
+        const fn = httpsCallable(functions, 'sendReportsNow');
+        const res = await fn(); if (msg){ msg.textContent = (res && res.data && res.data.message) || 'Reports sent successfully!'; msg.style.display='inline-block'; }
+      }catch(e){ if (msg){ msg.textContent='⚠️ Error sending reports.'; msg.style.display='inline-block'; } }
+      finally{ btn.disabled=false; btn.textContent='Send Reports Now'; }
+    });
+  }catch(_){ }
+});
+</script>
+</body></html>
+
+

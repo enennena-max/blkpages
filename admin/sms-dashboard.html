@@ -171,6 +171,9 @@
 
                 <!-- Action Buttons -->
                 <div class="hidden md:flex items-center gap-4">
+                    <!-- Send Reports Now button -->
+                    <button id="sendReportsNow" class="px-3 py-2 rounded-md font-semibold gold-gradient-button gold-gradient-button-hover text-black" style="border:1px solid rgba(212,175,55,0.5)">Send Reports Now</button>
+                    <span id="sendReportsMsg" class="text-xs text-[#D4AF37] hidden"></span>
                     <!-- Basket Icon -->
                     <div class="basket-icon" id="basketIcon" onclick="scrollToBooking()" style="position: relative; cursor: pointer; padding: 0.5rem; border-radius: 50%; background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.3); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
                         <i class="fas fa-shopping-basket" style="color: #0D9488; font-size: 1.2rem;"></i>
@@ -284,4 +287,45 @@
         </div>
     </footer>
 </body>
+</html>
+<script type="module">
+// Secure admin-only callable trigger for Send Reports Now
+try {
+  if (window.firebaseConfig && window.firebaseConfig.apiKey && window.firebaseConfig.apiKey !== 'your-api-key-here') {
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js');
+    const { getFunctions, httpsCallable } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-functions.js');
+    const { getAuth, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js');
+    const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js');
+
+    const app = initializeApp(window.firebaseConfig);
+    const functions = getFunctions(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const btn = document.getElementById('sendReportsNow');
+    const msg = document.getElementById('sendReportsMsg');
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!btn) return;
+      if (!user) { btn.disabled = true; btn.textContent = 'Admins Only'; return; }
+      try {
+        const s = await getDoc(doc(db, 'admins', user.uid));
+        if (!s.exists()) { btn.disabled = true; btn.textContent = 'Admins Only'; }
+      } catch (_) { btn.disabled = true; btn.textContent = 'Admins Only'; }
+    });
+
+    if (btn) btn.addEventListener('click', async () => {
+      try {
+        btn.disabled = true; btn.textContent = 'Sending…'; if (msg) { msg.classList.add('hidden'); msg.textContent = ''; }
+        const fn = httpsCallable(functions, 'sendReportsNow');
+        const res = await fn(); if (msg) { msg.textContent = (res?.data?.message) || 'Reports sent successfully!'; msg.classList.remove('hidden'); }
+      } catch (e) {
+        if (msg) { msg.textContent = '⚠️ Error sending reports.'; msg.classList.remove('hidden'); }
+      } finally {
+        btn.disabled = false; btn.textContent = 'Send Reports Now';
+      }
+    });
+  }
+} catch (_) {}
+</script>
 </html>
