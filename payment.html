@@ -426,16 +426,19 @@
       <!-- Stripe Payment Element -->
       <div class="panel">
         <h3>Payment Details</h3>
+        <div style="border:1px dashed var(--gold);border-radius:10px;padding:14px;margin-bottom:15px;color:var(--gold);background:#222;">
+          <div style="font-weight:700;letter-spacing:0.5px;margin-bottom:4px;">Demo Test Card (Stripe test mode)</div>
+          <div style="font-size:1rem">Card: <b>4242 4242 4242 4242</b> &nbsp; Exp: <b>12/27</b> &nbsp; CVC: <b>123</b></div>
+          <div>Name: Demo User &nbsp; Address: 221B Baker Street, London NW1 6XE</div>
+          <div style="font-size:0.93em; color:#ffd700a6;">* Use for test payments only. Real payments are Stripe PCI secure below.</div>
+        </div>
         <div class="card-icons" aria-hidden="true">💳 💠 🏦</div>
-
         <!-- Stripe mounts here -->
         <div id="payment-element"></div>
-
         <!-- Billing extras you still want to collect -->
         <input id="billingName" placeholder="Cardholder Name" autocomplete="name" />
         <input id="billingLine1" placeholder="Billing Address" autocomplete="address-line1" />
         <input id="billingPost" placeholder="Postcode" autocomplete="postal-code" />
-
         <button id="completePayment" disabled>💸 Complete Secure Payment</button>
         <p class="secure-msg">🔒 All payments are encrypted and processed securely by Stripe.</p>
         <div class="trust-badges" aria-label="Accepted payment methods">
@@ -444,7 +447,7 @@
           <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo_%282018%29.svg" alt="American Express" />
           <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" />
         </div>
-                </div>
+      </div>
 
       <div class="loading" id="processing">
         <div class="spinner"></div>
@@ -559,46 +562,35 @@
   <!-- Firebase + Stripe Integration (gated) -->
   <script type="module" src="payment-stripe-firebase.js"></script>
   <script>
-    // Get booking data (prefer sessionStorage for same-tab navigation)
+    // Improved: Robust summary/data loading
+    let bookingServices = [], bookingTotal = 0, bookingDate = '—', bookingTime = '—', bookingDuration = 0;
     const rawData = sessionStorage.getItem("bookingSummary") || localStorage.getItem("bookingSummary");
     
     console.log('Raw localStorage data:', rawData);
     
-    // Initialize booking variables
-    let bookingTotal = 0;
-    let bookingServices = [];
-    let bookingDate = '—';
-    let bookingTime = '—';
-    let bookingDuration = 0;
-    
-    if (!rawData) {
-      console.log('No booking data found. Using sample data for testing.');
-      // Use sample data for testing
-      bookingServices = [
-        { name: "Beard Trim", price: 35, duration: 45 }
-      ];
+    if (rawData) {
+      try {
+        const summary = JSON.parse(rawData);
+        console.log('Loaded summary:', summary);
+        bookingServices = summary.services || [];
+        bookingTotal = summary.total || 0;
+        // Use formatted fields if present
+        bookingDate = summary.dateFormatted || summary.date || '—';
+        bookingTime = summary.timeFormatted || summary.time || '—';
+        bookingDuration = summary.duration || 0;
+      } catch(err) {
+        console.warn('Could not parse summary:', err);
+      }
+    }
+    if (!bookingServices.length || !bookingTotal) {
+      // fallback/demo
+      bookingServices = [ { name: "Beard Trim", price: 35, duration: 45 } ];
       bookingTotal = 35;
       bookingDate = "Wed 15 Jan";
       bookingTime = "14:00";
       bookingDuration = 45;
-    } else {
-      const booking = JSON.parse(rawData);
-      console.log('Parsed booking data:', booking);
-      
-      bookingServices = booking.services || [];
-      bookingTotal = booking.total || 0;
-      bookingDate = booking.date || '—';
-      bookingTime = booking.time || '—';
-      bookingDuration = booking.duration || 0;
     }
-    
-    console.log('Initialized payment page with:', {
-      bookingTotal,
-      bookingServices,
-      bookingDate,
-      bookingTime,
-      bookingDuration
-    });
+    console.log('Final booking summary used:', { bookingServices, bookingTotal, bookingDate, bookingTime, bookingDuration });
     let blkPointsDiscount = 0;
     let appliedPoints = 0;
     let userPoints = 2400; // Mock - would come from API
@@ -963,6 +955,42 @@
         updateSummary();
       }
     });
+
+    // Demo fallback: if Stripe isn't loaded or running locally, enable button and fake payment
+    function isStripeDemoMode() {
+      const isLocal = window.location.protocol === 'file:';
+      const stripeScriptMissing = typeof Stripe === 'undefined';
+      return isLocal || stripeScriptMissing;
+    }
+    function setupDemoCompletePayment() {
+      const btn = document.getElementById('completePayment');
+      if (!btn) return;
+      btn.disabled = false;
+      btn.onclick = function(e) {
+        e.preventDefault();
+        btn.disabled = true;
+        btn.textContent = 'Processing...';
+        // Persist a minimal summary for the success page to render
+        try {
+          const summary = {
+            services: (typeof bookingServices !== 'undefined' ? bookingServices : []),
+            total: (typeof bookingTotal !== 'undefined' ? bookingTotal : 0),
+            dateFormatted: (typeof bookingDate !== 'undefined' ? bookingDate : ''),
+            timeFormatted: (typeof bookingTime !== 'undefined' ? bookingTime : ''),
+            duration: (typeof bookingDuration !== 'undefined' ? bookingDuration : 0),
+            blkPointsDiscount: (typeof blkPointsDiscount !== 'undefined' ? blkPointsDiscount : 0),
+            customerEmail: (localStorage.getItem('bookingData') ? (JSON.parse(localStorage.getItem('bookingData')).customerEmail || '') : '')
+          };
+          sessionStorage.setItem('bookingSummary', JSON.stringify(summary));
+        } catch(_e) {}
+        setTimeout(() => {
+          window.location.href = 'payment-success.html?session_id=demo';
+        }, 1200);
+      };
+    }
+    if (isStripeDemoMode()) {
+      window.addEventListener('DOMContentLoaded', setupDemoCompletePayment);
+    }
   </script>
   <style>
   /* New optional styles for simplified section */

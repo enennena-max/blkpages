@@ -189,10 +189,21 @@
                 gap: 4px;
             }
         }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="wrap">
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner" style="display: none; text-align:center; padding: 30px 0;">
+            <div style="border: 4px solid rgba(255, 215, 0, 0.25); border-top: 4px solid var(--gold); border-radius: 50%; width: 48px; height: 48px; margin: 0 auto; animation: spin 1s linear infinite;"></div>
+            <p style="margin-top:12px; color: var(--muted);">Confirming your payment…</p>
+        </div>
+
         <!-- Progress Steps -->
         <div class="progress-steps">
             <div class="step completed">
@@ -213,6 +224,7 @@
             <div class="success-icon">✅</div>
             <h1 class="success-title">Payment Successful!</h1>
             <p class="success-message">Your booking has been confirmed.</p>
+          <p class="success-message" id="redirectMsg">This page will redirect to your dashboard automatically in <strong id="redirectCountdown">30</strong> seconds.</p>
             <p class="email-message">
                 A confirmation email has been sent to <strong id="successEmail">demo@blkpages.com</strong>
             </p>
@@ -252,38 +264,131 @@
     </div>
 
     <script>
-        // Load booking data and populate success page
-        document.addEventListener('DOMContentLoaded', function() {
-            const bookingData = JSON.parse(sessionStorage.getItem('bookingSummary') || localStorage.getItem('bookingSummary') || '{}');
-            
-            if (bookingData && Object.keys(bookingData).length > 0) {
-                // Populate booking details
-                document.getElementById('bookingId').textContent = bookingData.id || 'BLK-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-                document.getElementById('services').textContent = bookingData.services || 'Beard Trim, Haircut';
-                document.getElementById('dateTime').textContent = `${bookingData.dateFormatted || '30 Oct 2025'}, ${bookingData.timeFormatted || '2:30 PM'}`;
-                document.getElementById('duration').textContent = `${bookingData.duration || 45} minutes`;
-                
-                // Calculate amount paid (total - BlkPoints discount)
-                const total = bookingData.total || 100;
-                const blkPointsDiscount = bookingData.blkPointsDiscount || 0;
-                const amountPaid = total - blkPointsDiscount;
-                document.getElementById('amountPaid').textContent = `£${amountPaid.toFixed(2)}`;
-                
-                // Show BlkPoints if used
-                if (blkPointsDiscount > 0) {
-                    document.getElementById('blkpointsRow').style.display = 'flex';
-                    document.getElementById('blkpointsUsed').textContent = `${Math.round(blkPointsDiscount / 0.01)} points (£${blkPointsDiscount.toFixed(2)})`;
+        // Dynamic success population with Stripe session (if available), else fallback to local data
+        document.addEventListener('DOMContentLoaded', async function() {
+            const qs = (s) => document.querySelector(s);
+            const set = (sel, val) => { const el = qs(sel); if (el) el.textContent = val; };
+
+            // show loading spinner initially
+            const spinner = document.getElementById('loadingSpinner');
+            if (spinner) spinner.style.display = 'block';
+
+            // Step 1: Try Stripe session_id from URL
+            const params = new URLSearchParams(window.location.search);
+            const sessionId = params.get('session_id');
+
+            async function populateFromStripeSession(id) {
+                try {
+                    const res = await fetch(`/api/verify-payment?session_id=${encodeURIComponent(id)}`);
+                    if (!res.ok) throw new Error(`Verify API ${res.status}`);
+                    const data = await res.json();
+
+                    if (data.payment_status === 'paid') {
+                        // Step 3: Fill page dynamically
+                        set('#bookingId', data.bookingId || data.id || '—');
+                        set('#amountPaid', `£${((data.amount_total || 0) / 100).toFixed(2)}`);
+                        const now = new Date();
+                        set('#dateTime', `${now.toLocaleDateString()} ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
+
+                        // Step 4: Optional Firestore update (gated on window.firebaseConfig)
+                        if (window.firebaseConfig) {
+                            try {
+                                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js');
+                                const { getFirestore, doc, setDoc, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js');
+                                const app = initializeApp(window.firebaseConfig);
+                                const db = getFirestore(app);
+                                const bookingRef = doc(db, 'bookings', String(data.bookingId || data.id));
+                                await setDoc(bookingRef, {
+                                    status: 'paid',
+                                    paymentConfirmed: true,
+                                    amountPaid: (data.amount_total || 0) / 100,
+                                    stripeSessionId: data.id,
+                                    paymentDate: new Date().toISOString()
+                                }, { merge: true });
+                            } catch (e) {
+                                console.warn('Firestore update skipped:', e.message);
+                            }
+                        }
+
+                        // Step 5: Optional rewards trigger
+                        if (data.customerId && data.bookingId) {
+                            try {
+                                await fetch('/api/rewards/apply', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        customerId: data.customerId,
+                                        bookingId: data.bookingId,
+                                        amount: (data.amount_total || 0) / 100
+                                    })
+                                });
+                            } catch (_e) { /* non-blocking */ }
+                        }
+                        // Reveal success UI and schedule redirect
+                        if (spinner) spinner.style.display = 'none';
+                        const wrap = document.querySelector('.wrap');
+                        if (wrap) wrap.style.display = 'block';
+                        startRedirectCountdown(30);
+                        return true;
+                    }
+                } catch (err) {
+                    console.warn('Stripe verify failed:', err.message);
                 }
-                
-                // Set email if available
-                if (bookingData.customerEmail) {
-                    document.getElementById('successEmail').textContent = bookingData.customerEmail;
-                }
+                return false;
             }
-            
-            // Clear booking data after showing success
-            sessionStorage.removeItem('bookingSummary');
-            localStorage.removeItem('bookingSummary');
+
+            // Fallback: local stored booking summary
+            function populateFromLocal() {
+                const bookingData = JSON.parse(sessionStorage.getItem('bookingSummary') || localStorage.getItem('bookingSummary') || '{}');
+                if (!bookingData || Object.keys(bookingData).length === 0) return false;
+
+                set('#bookingId', bookingData.id || 'BLK-' + Math.random().toString(36).substr(2, 6).toUpperCase());
+                set('#services', bookingData.services || 'Beard Trim, Haircut');
+                set('#dateTime', `${bookingData.dateFormatted || bookingData.date || '—'}${bookingData.timeFormatted || bookingData.time ? ', ' + (bookingData.timeFormatted || bookingData.time) : ''}`);
+                set('#duration', `${bookingData.duration || 45} minutes`);
+
+                const total = Number(bookingData.total || 100);
+                const blkPointsDiscount = Number(bookingData.blkPointsDiscount || 0);
+                const amountPaid = total - blkPointsDiscount;
+                set('#amountPaid', `£${amountPaid.toFixed(2)}`);
+
+                if (blkPointsDiscount > 0) {
+                    qs('#blkpointsRow').style.display = 'flex';
+                    set('#blkpointsUsed', `${Math.round(blkPointsDiscount / 0.01)} points (£${blkPointsDiscount.toFixed(2)})`);
+                }
+                if (bookingData.customerEmail) set('#successEmail', bookingData.customerEmail);
+                // Reveal success UI and schedule redirect
+                if (spinner) spinner.style.display = 'none';
+                const wrap = document.querySelector('.wrap');
+                if (wrap) wrap.style.display = 'block';
+                startRedirectCountdown(30);
+                return true;
+            }
+
+            // Orchestrate
+            let ok = false;
+            if (sessionId) ok = await populateFromStripeSession(sessionId);
+            if (!ok) ok = populateFromLocal();
+
+            // Clean up stored summary after showing success (non-blocking)
+            try { sessionStorage.removeItem('bookingSummary'); } catch(_e) {}
+            try { localStorage.removeItem('bookingSummary'); } catch(_e) {}
+
+            function startRedirectCountdown(seconds) {
+              const countdownEl = document.getElementById('redirectCountdown');
+              const msgEl = document.getElementById('redirectMsg');
+              let remaining = Number(seconds) || 30;
+              if (countdownEl) countdownEl.textContent = remaining.toString();
+              if (msgEl) msgEl.style.display = 'block';
+              const timer = setInterval(() => {
+                remaining -= 1;
+                if (countdownEl) countdownEl.textContent = Math.max(0, remaining).toString();
+                if (remaining <= 0) {
+                  clearInterval(timer);
+                  window.location.href = 'customer-dashboard.html';
+                }
+              }, 1000);
+            }
         });
     </script>
 </body>
