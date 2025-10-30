@@ -46,14 +46,33 @@ document.addEventListener("DOMContentLoaded",()=>{setActive("nav-disputes");load
     <a href="./referrals.html">🎁 Referrals</a>
     <a id="nav-disputes" class="active" href="./disputes.html">⚖️ Disputes</a>
     <a href="./adjustments.html">💎 Adjust Points</a>
+    <a id="nav-alerts" href="../admin-alerts.html">🔔 Alerts</a>
   </nav>
 </aside>
 <div>
-<header><h2>Disputes</h2></header>
+<header><h2>Disputes</h2><div id="demoBadge" style="display:none; margin-left:auto; padding:6px 10px; border:1px solid rgba(255,215,0,.35); color:#111; background:#FFD700; border-radius:999px; font-weight:700; font-size:12px;">Demo Mode</div></header>
 <main>
   <table><thead>
     <tr><th>ID</th><th>Customer</th><th>Business</th><th>Amount</th><th>Status</th><th>Actions</th></tr>
   </thead><tbody></tbody></table>
 </main>
 </div></div>
+<script>
+  (function(){
+    var isDemo = !window.firebaseConfig || !window.firebaseConfig.apiKey || window.firebaseConfig.apiKey === 'your-api-key-here';
+    var badge = document.getElementById('demoBadge'); if (badge) badge.style.display = isDemo ? 'inline-block':'none';
+    if (!isDemo) return;
+    var tb=document.querySelector('tbody'); if (!tb) return; tb.innerHTML='';
+    var rows=[
+      {id:'#DSP-2003', customer:'jane@ex.com', biz:'Glow Spa', amount:'45.00', status:'open'},
+      {id:'#DSP-2002', customer:'mike@ex.com', biz:'Royal Hair', amount:'29.00', status:'open'}
+    ];
+    rows.forEach(function(d){
+      var tr=document.createElement('tr');
+      tr.innerHTML = '<td>'+d.id+'</td><td>'+d.customer+'</td><td>'+d.biz+'</td><td>£'+d.amount+'</td><td>'+d.status+'</td>'+
+                     '<td><button class="btn gold" disabled>Resolve</button> <button class="btn danger" disabled>Refund</button></td>';
+      tb.appendChild(tr);
+    });
+  })();
+</script>
 </body></html>

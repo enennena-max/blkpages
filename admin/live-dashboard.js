@@ -1,7 +1,7 @@
 // admin/live-dashboard.js
 // Real-time admin auto-refresh using Firestore listeners
 
-import { getFirestore, collection, doc, onSnapshot, query, orderBy, where, limit, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import { getFirestore, collection, doc, onSnapshot, query, orderBy, where, limit, addDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 
 // Guard: only run if Firebase config is present
@@ -148,12 +148,19 @@ if (window.firebaseConfig) {
       }catch(_e){}
     }
 
-    function showAlert(message, typeKey, data){
+    async function showAlert(message, typeKey, data){
       if (!alertList) return;
       if (typeKey && filters[typeKey] === false) return;
       const li = document.createElement('li');
       li.className = 'alert-item';
-      li.innerHTML = message;
+      li.innerHTML = `
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
+          <div style="flex:1;min-width:0">${message}</div>
+          <div style="display:flex;gap:6px;white-space:nowrap">
+            <button class="mark-read-btn" title="Mark as read" style="background:#2a2a2a;border:1px solid #3a3a3a;color:#ddd;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:12px">Read</button>
+          </div>
+        </div>
+      `;
       // Priority placement
       if (["fraud","support","cancellations"].includes(typeKey||'')) alertList.prepend(li); else alertList.appendChild(li);
       // Sound per type (fallback to generic)
@@ -162,9 +169,16 @@ if (window.firebaseConfig) {
         const sound = new Audio(src);
         sound.volume = 0.3; sound.play();
       } catch(_e){}
-      setTimeout(()=> li.remove(), 60000);
-      // Log to Firestore for audit
-      logAlertToFirestore(message, typeKey, data);
+      // Persist to Firestore and attach id for read
+      let alertId = null;
+      try { alertId = await logAlertToFirestore(message, typeKey, data); } catch(_e){}
+      const markBtn = li.querySelector('.mark-read-btn');
+      const removeLi = () => { try { li.remove(); } catch(_e){} };
+      if (markBtn) markBtn.onclick = async () => {
+        try { if (db && alertId) await updateDoc(doc(db,'adminAlerts', alertId), { read: true }); } catch(_e){}
+        removeLi();
+      };
+      setTimeout(removeLi, 60000);
     }
 
     // Bookings: payments + cancellations
@@ -252,6 +266,78 @@ if (window.firebaseConfig) {
   });
 } else {
   console.log('Admin live-dashboard: firebaseConfig not present; realtime not enabled.');
+}
+
+// Demo helper: allow sending a demo alert even without Firebase configured
+window.sendDemoAdminAlert = function(message, typeKey = 'payments'){
+  // Respect current filter checkboxes if present
+  try {
+    const map = {
+      payments: 'filterPayments',
+      cancellations: 'filterCancellations',
+      reviews: 'filterReviews',
+      loyalty: 'filterLoyalty',
+      businesses: 'filterBusinesses',
+      customers: 'filterCustomers',
+      support: 'filterSupport',
+      fraud: 'filterFraud'
+    };
+    const cbId = map[typeKey] || '';
+    if (cbId) {
+      const cb = document.getElementById(cbId);
+      if (cb && cb.checked === false) {
+        return; // filtered out by admin preference
+      }
+    }
+  } catch(_e){}
+  const panelId = 'adminAlerts';
+  const listId = 'alertList';
+  let panel = document.getElementById(panelId);
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = panelId;
+    panel.className = 'alerts-panel';
+    panel.style.position = 'fixed';
+    panel.style.bottom = '24px';
+    panel.style.right = '24px';
+    panel.style.width = '340px';
+    panel.style.background = '#111';
+    panel.style.color = '#fff';
+    panel.style.border = '1px solid #FFD700';
+    panel.style.borderRadius = '10px';
+    panel.style.padding = '15px';
+    panel.style.boxShadow = '0 0 15px rgba(255,215,0,0.3)';
+    panel.style.zIndex = '9999';
+    panel.innerHTML = '<h3 style="margin:0 0 10px;color:#ffd700">🔔 Live Alerts</h3><ul id="'+listId+'" style="list-style:none;padding:0;margin:0"></ul>';
+    document.body.appendChild(panel);
+  }
+  const ul = document.getElementById(listId);
+  if (!ul) return;
+  const li = document.createElement('li');
+  li.className = 'alert-item';
+  li.style.background = 'rgba(255,255,255,0.05)';
+  li.style.borderLeft = '3px solid #FFD700';
+  li.style.marginBottom = '10px';
+  li.style.padding = '10px';
+  li.style.fontSize = '14px';
+  li.style.borderRadius = '6px';
+  li.innerHTML = `
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
+      <div style="flex:1;min-width:0">${message || 'Demo alert'}</div>
+      <div style="display:flex;gap:6px;white-space:nowrap">
+        <button class="mark-read-btn" title="Mark as read" style="background:#2a2a2a;border:1px solid #3a3a3a;color:#ddd;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:12px">✓</button>
+        <button class="dismiss-btn" title="Dismiss" style="background:#2a2a2a;border:1px solid #3a3a3a;color:#ddd;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:12px">✕</button>
+      </div>
+    </div>
+  `;
+  ul.prepend(li);
+  try { const sound = new Audio('/assets/alert.mp3'); sound.volume = 0.3; sound.play(); } catch(_e){}
+  const removeLi = () => { try { li.remove(); } catch(_e){} };
+  const markBtn = li.querySelector('.mark-read-btn');
+  const dismissBtn = li.querySelector('.dismiss-btn');
+  if (markBtn) markBtn.onclick = removeLi;
+  if (dismissBtn) dismissBtn.onclick = removeLi;
+  setTimeout(removeLi, 60000);
 }
 
 

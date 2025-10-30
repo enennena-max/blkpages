@@ -38,10 +38,11 @@ document.addEventListener("DOMContentLoaded", ()=>{ setActive("nav-businesses");
       <a id="nav-referrals" href="./referrals.html">🎁 Referrals</a>
       <a id="nav-disputes" href="./disputes.html">⚖️ Disputes</a>
       <a id="nav-adjustments" href="./adjustments.html">💎 Adjust Points</a>
+      <a id="nav-alerts" href="../admin-alerts.html">🔔 Alerts</a>
     </nav>
   </aside>
   <div>
-    <header><h2>Approve Businesses</h2></header>
+    <header><h2>Approve Businesses</h2><div id="demoBadge" style="display:none; margin-left:auto; padding:6px 10px; border:1px solid rgba(255,215,0,.35); color:#111; background:#FFD700; border-radius:999px; font-weight:700; font-size:12px;">Demo Mode</div></header>
     <main>
       <div class="toolbar"><span class="badge warn">New signups require approval</span></div>
       <table>
@@ -51,4 +52,21 @@ document.addEventListener("DOMContentLoaded", ()=>{ setActive("nav-businesses");
     </main>
   </div>
 </div>
+<script>
+  (function(){
+    var isDemo = !window.firebaseConfig || !window.firebaseConfig.apiKey || window.firebaseConfig.apiKey === 'your-api-key-here';
+    var badge = document.getElementById('demoBadge'); if (badge) badge.style.display = isDemo ? 'inline-block':'none';
+    if (!isDemo) return;
+    var tb=document.querySelector('tbody'); if (!tb) return; tb.innerHTML='';
+    var rows=[
+      {id:'#B-901', name:'Royal Hair Studio', owner:'owner@royalhair.com', date:new Date().toLocaleDateString()},
+      {id:'#B-900', name:'Glow Spa', owner:'admin@glowspa.com', date:new Date(Date.now()-86400000).toLocaleDateString()}
+    ];
+    rows.forEach(function(r){
+      var tr=document.createElement('tr');
+      tr.innerHTML = '<td>'+r.id+'</td><td>'+r.name+'</td><td>'+r.owner+'</td><td>'+r.date+'</td><td><button class="btn gold" disabled>Approve</button></td>';
+      tb.appendChild(tr);
+    });
+  })();
+</script>
 </body></html>

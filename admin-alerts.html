@@ -27,9 +27,10 @@
   button{ background:var(--gold); color:#111; font-weight:700; cursor:pointer; }
   button:hover{ background:var(--gold-2); }
 
-  .panel{ background:var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+  .panel{ background:var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow: 0 8px 24px rgba(0,0,0,.35); margin-top:12px; }
   .table { width:100%; border-collapse:separate; border-spacing:0; font-size:14px; }
-  .table thead th{ position:sticky; top:56px; background:#111; color:#ddd; border-bottom:1px solid #222; padding:12px; font-weight:700; text-align:left; }
+  /* Make header non-sticky to avoid overlapping content on some browsers */
+  .table thead th{ position:static; background:#111; color:#ddd; border-bottom:1px solid #222; padding:12px; font-weight:700; text-align:left; }
   .table tbody td{ padding:12px; border-bottom:1px dashed rgba(255,215,0,.18); vertical-align:top; }
   .table tbody tr:hover{ background:rgba(255,215,0,0.04); }
   .when{ color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
@@ -47,6 +48,12 @@
   .legend .chip{ padding:4px 8px; border-radius:999px; background:#161616; border:1px solid #2a2a2a; color:#bbb; font-size:12px; }
 
   .empty{ padding:24px; text-align:center; color:var(--muted); }
+
+  .topBar { display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; }
+  .topActions button { background: var(--gold); border: none; color: #000; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-left: 5px; font-weight: 600; }
+  .topActions button:hover { background: var(--gold-2); }
+  .table td input[type="checkbox"] { transform: scale(1.2); }
+  .readRow { opacity: 0.55; }
 </style>
 </head>
 
@@ -58,6 +65,15 @@
         <span class="subtitle">Searchable, filterable alert history for compliance</span>
       </div>
       <div><a href="admin/overview.html">← Back to Admin Overview</a></div>
+    </div>
+
+    <div class="topBar">
+      <div></div>
+      <div class="topActions">
+        <button id="markReadBtn">Mark as Read</button>
+        <button id="markUnreadBtn">Mark as Unread</button>
+        <button id="exportCSVBtn">⬇ Export CSV</button>
+      </div>
     </div>
 
     <div class="toolbar">
@@ -93,7 +109,7 @@
     <div class="panel">
       <table class="table">
         <thead>
-          <tr><th>Type</th><th>Message</th><th>Time</th></tr>
+          <tr><th></th><th>Type</th><th>Message</th><th>Time</th><th>Status</th></tr>
         </thead>
         <tbody id="alertsTable"></tbody>
       </table>
@@ -122,16 +138,47 @@ if (!hasConfig) {
   demo.forEach(d => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
+      <td><input type="checkbox" data-id="demo-${d.when.getTime()}"></td>
       <td><span class="type-tag type-${d.type}">${d.type}</span></td>
       <td>${escapeHtml(d.message)}</td>
       <td class="when">${d.when.toLocaleString()}</td>
+      <td>🟡 Unread</td>
     `;
     tbody.appendChild(tr);
   });
   const empty = document.getElementById('emptyState'); if (empty) empty.style.display = 'none';
   if (applyBtn) applyBtn.disabled = false;
+  const exportBtn=document.getElementById('exportCSVBtn');
+  const markReadBtn=document.getElementById('markReadBtn');
+  const markUnreadBtn=document.getElementById('markUnreadBtn');
+  if (exportBtn) exportBtn.onclick = () => {
+    const rows=[["Type","Message","Time","Status"]];
+    [...tbody.querySelectorAll('tr')].forEach(tr=>{
+      const tds=[...tr.querySelectorAll('td')]; if(tds.length<5) return;
+      const type=tds[1].innerText.trim();
+      const msg=tds[2].innerText.trim().replace(/,/g,' ');
+      const when=tds[3].innerText.trim();
+      const status=tds[4].innerText.trim();
+      rows.push([type,msg,when,status]);
+    });
+    const csv=rows.map(r=>r.join(',')).join('\n');
+    const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=`BlkPages_Alerts_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(url);
+  };
+  function toggleDemo(read){
+    const selected=[...tbody.querySelectorAll('input[type="checkbox"]:checked')];
+    if(!selected.length){ alert('Please select at least one alert to update.'); return; }
+    selected.forEach(cb=>{
+      const row=cb.closest('tr');
+      const statusCell=row.querySelectorAll('td')[4];
+      statusCell.textContent=read? '✅ Read':'🟡 Unread';
+      if (read) row.classList.add('readRow'); else row.classList.remove('readRow');
+    });
+  }
+  if (markReadBtn) markReadBtn.onclick=()=>toggleDemo(true);
+  if (markUnreadBtn) markUnreadBtn.onclick=()=>toggleDemo(false);
 } else {
-  const [{ initializeApp }, { getFirestore, collection, query, orderBy, where, getDocs }] = await Promise.all([
+  const [{ initializeApp }, { getFirestore, collection, query, orderBy, where, getDocs, updateDoc, doc, limit, startAfter }] = await Promise.all([
     import('https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js'),
     import('https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js')
   ]);
@@ -139,10 +186,28 @@ if (!hasConfig) {
   const db = getFirestore(app);
 
   document.getElementById('applyFilters').addEventListener('click', fetchAlerts);
+  const exportBtn=document.getElementById('exportCSVBtn');
+  const markReadBtn=document.getElementById('markReadBtn');
+  const markUnreadBtn=document.getElementById('markUnreadBtn');
+  if (exportBtn) exportBtn.onclick = () => exportToCSV();
+  if (markReadBtn) markReadBtn.onclick = () => updateAlertStatus(true);
+  if (markUnreadBtn) markUnreadBtn.onclick = () => updateAlertStatus(false);
+
+  const pageSize = 50; let lastVisible = null; const prevStack = [];
+  document.getElementById('nextPageBtn').onclick = () => loadPage('next');
+  document.getElementById('prevPageBtn').onclick = () => loadPage('prev');
 
   async function fetchAlerts(){
-    tbody.innerHTML = "<tr><td colspan='3'>Loading...</td></tr>";
-    let qRef = query(collection(db, 'adminAlerts'), orderBy('timestamp','desc'));
+    lastVisible = null; prevStack.length = 0;
+    await loadPage('reset');
+
+    return;
+  }
+
+  async function loadPage(direction='next'){
+    tbody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
+    let qRef = query(collection(db, 'adminAlerts'), orderBy('timestamp','desc'), limit(pageSize));
+    if (direction==='next' && lastVisible) qRef = query(qRef, startAfter(lastVisible));
 
     const typeVal = document.getElementById('filterType').value;
     if (typeVal) qRef = query(qRef, where('type','==', typeVal));
@@ -150,36 +215,74 @@ if (!hasConfig) {
     if (onlyRead) qRef = query(qRef, where('read','==', true));
 
     const snap = await getDocs(qRef);
-    tbody.innerHTML = '';
+    let allAlerts = [];
+    const docs = snap.docs;
+    if (!docs.length){ const empty = document.getElementById('emptyState'); if (empty) empty.style.display='block'; tbody.innerHTML=''; return; }
+    if (direction==='next') { if (lastVisible) prevStack.push(lastVisible); lastVisible = docs[docs.length-1]; }
+    if (direction==='prev') { lastVisible = prevStack.pop() || null; }
 
     const start = document.getElementById('startDate').value;
     const end = document.getElementById('endDate').value;
     const keyword = (document.getElementById('keyword').value || '').toLowerCase();
 
-    snap.forEach(docSnap => {
+    docs.forEach(docSnap => {
       const data = docSnap.data() || {};
       const ts = data.timestamp?.toDate ? data.timestamp.toDate() : (data.timestamp ? new Date(data.timestamp) : new Date());
       if (start && ts < new Date(start)) return;
       if (end && ts > new Date(end + 'T23:59:59')) return;
       if (keyword && !(String(data.message||'').toLowerCase().includes(keyword))) return;
-
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><span class="type-tag type-${data.type}">${data.type||''}</span></td>
-        <td>${escapeHtml(data.message||'')}</td>
-        <td class="when">${ts.toLocaleString()}</td>
-      `;
-      tbody.appendChild(tr);
+      allAlerts.push({ id: docSnap.id, type:data.type||'', message:String(data.message||''), time: ts, read: !!data.read });
     });
-
-    const empty = document.getElementById('emptyState');
-    if (!tbody.children.length) { 
-      tbody.innerHTML = ""; 
-      if (empty) empty.style.display = 'block';
-    } else if (empty) { empty.style.display = 'none'; }
+    renderTable(allAlerts);
   }
 
   fetchAlerts();
+
+  function renderTable(allAlerts){
+    tbody.innerHTML='';
+    const empty = document.getElementById('emptyState');
+    if (!allAlerts.length){ if (empty) empty.style.display='block'; return; }
+    if (empty) empty.style.display='none';
+    allAlerts.forEach(a=>{
+      const row=document.createElement('tr');
+      if (a.read) row.classList.add('readRow');
+      row.innerHTML=`
+        <td><input type="checkbox" data-id="${a.id}"></td>
+        <td><span class="type-tag type-${a.type}">${a.type}</span></td>
+        <td>${escapeHtml(a.message)}</td>
+        <td class="when">${a.time.toLocaleString()}</td>
+        <td>${a.read? '✅ Read':'🟡 Unread'}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  async function updateAlertStatus(readStatus){
+    const selected=[...tbody.querySelectorAll('input[type="checkbox"]:checked')];
+    if (!selected.length){ alert('Please select at least one alert to update.'); return; }
+    for (const cb of selected){
+      const id=cb.getAttribute('data-id');
+      await updateDoc(doc(db,'adminAlerts',id),{ read: readStatus });
+    }
+    alert(`✅ ${selected.length} alert(s) marked as ${readStatus? 'read':'unread'}.`);
+    fetchAlerts();
+  }
+
+  function exportToCSV(){
+    const rows=[[ 'Type','Message','Time','Status' ]];
+    [...tbody.querySelectorAll('tr')].forEach(tr=>{
+      const tds=[...tr.querySelectorAll('td')]; if (tds.length<5) return;
+      const type=tds[1].innerText.trim();
+      const msg=tds[2].innerText.trim().replace(/,/g,' ');
+      const when=tds[3].innerText.trim();
+      const status=tds[4].innerText.trim();
+      rows.push([type,msg,when,status]);
+    });
+    if (rows.length===1){ alert('No alerts to export.'); return; }
+    const csv=rows.map(r=>r.join(',')).join('\n');
+    const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=`BlkPages_Alerts_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(url);
+  }
 }
 </script>
 </body>

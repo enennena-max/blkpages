@@ -14,9 +14,21 @@
 
 body{
   margin:0;
-  background:var(--bg);
+  background:radial-gradient(1200px 800px at 10% 0%, rgba(212,175,55,0.06), transparent 60%),
+             radial-gradient(1200px 800px at 90% 0%, rgba(212,175,55,0.04), transparent 60%),
+             var(--bg);
   color:var(--text);
   font:14px/1.5 Inter,system-ui,Segoe UI,Roboto,sans-serif;
+  position:relative;
+}
+
+/* subtle grid texture */
+body::before{
+  content:"";
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px;
 }
 
 .wrap{
@@ -26,9 +38,10 @@ body{
 }
 
 .side{
-  background:#0b0b0c;
+  background:linear-gradient(180deg, rgba(21,21,23,0.95), rgba(11,11,12,0.98));
   border-right:1px solid var(--line);
   padding:20px;
+  backdrop-filter:saturate(120%) blur(4px);
 }
 
 .brand{
@@ -47,12 +60,15 @@ body{
   border-radius:8px;
   text-decoration:none;
   margin-bottom:6px;
+  transition:background .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
 }
 
 .nav a.active,.nav a:hover{
-  background:var(--panel);
+  background:linear-gradient(180deg, rgba(212,175,55,0.16), rgba(21,21,23,0.6));
   color:var(--text);
-  border:1px solid var(--line);
+  border:1px solid rgba(212,175,55,0.35);
+  box-shadow: 0 6px 18px rgba(212,175,55,0.12);
+  transform: translateY(-1px);
 }
 
 header{
@@ -61,7 +77,9 @@ header{
   align-items:center;
   padding:16px 20px;
   border-bottom:1px solid var(--line);
-  background:#0f0f10;
+  background:rgba(15,15,16,0.7);
+  backdrop-filter:saturate(110%) blur(6px);
+  position:sticky; top:0; z-index:10;
 }
 
 main{
@@ -71,15 +89,19 @@ main{
 .cards{
   display:grid;
   grid-template-columns:repeat(3, minmax(0,1fr));
-  gap:12px;
+  gap:16px;
   margin:16px 0;
 }
+@media (max-width: 1100px){ .cards{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
+@media (max-width: 720px){ .cards{ grid-template-columns:1fr; } }
 
 .card{
   background:var(--panel);
   border:1px solid var(--line);
   border-radius:12px;
   padding:16px;
+  position:relative; overflow:hidden;
+  transition: box-shadow .25s ease, border-color .25s ease, transform .25s ease;
 }
 
 .card h3{
@@ -91,7 +113,16 @@ main{
 .stat{
   font-size:28px;
   font-weight:700;
+  letter-spacing:.2px;
 }
+
+.card::after{
+  content:""; position:absolute; inset:-1px; border-radius:12px;
+  background: radial-gradient(600px 300px at 0% 0%, rgba(212,175,55,0.12), transparent 40%);
+  pointer-events:none; opacity:0; transition:opacity .25s ease;
+}
+.card:hover{ box-shadow:0 12px 30px rgba(0,0,0,0.45), 0 8px 24px rgba(212,175,55,0.12); border-color: rgba(212,175,55,0.35); transform: translateY(-1px); }
+.card:hover::after{ opacity:1; }
 
 table{
   width:100%;
@@ -100,6 +131,7 @@ table{
   border:1px solid var(--line);
   border-radius:12px;
   overflow:hidden;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.35);
 }
 
 th,td{
@@ -115,7 +147,7 @@ th{
 }
 
 tr:hover td{
-  background:#121216;
+  background:linear-gradient(180deg, rgba(212,175,55,0.08), rgba(21,21,23,0.2));
 }
 
 .btn{
@@ -125,18 +157,23 @@ tr:hover td{
   background:#1b1b1f;
   color:#fff;
   cursor:pointer;
+  transition: box-shadow .2s ease, transform .2s ease, background .2s ease;
 }
 
 .btn.gold{
   background:var(--gold);
   color:#000;
   border:none;
+  box-shadow: 0 8px 18px rgba(212,175,55,0.15);
 }
 
 .btn.danger{
   background:var(--danger);
   border:none;
 }
+
+.btn:hover{ transform: translateY(-1px); box-shadow: 0 8px 22px rgba(0,0,0,0.35); }
+.btn.gold:hover{ box-shadow: 0 12px 30px rgba(212,175,55,0.25); }
 
 .badge{
   padding:4px 8px;

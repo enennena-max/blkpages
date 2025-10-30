@@ -27,10 +27,11 @@ document.addEventListener("DOMContentLoaded",()=>{setActive("nav-adjustments");}
     <a href="./referrals.html">🎁 Referrals</a>
     <a href="./disputes.html">⚖️ Disputes</a>
     <a id="nav-adjustments" class="active" href="./adjustments.html">💎 Adjust Points</a>
+    <a id="nav-alerts" href="../admin-alerts.html">🔔 Alerts</a>
   </nav>
 </aside>
 <div>
-<header><h2>Points Adjustments</h2></header>
+<header><h2>Points Adjustments</h2><div id="demoBadge" style="display:none; margin-left:auto; padding:6px 10px; border:1px solid rgba(255,215,0,.35); color:#111; background:#FFD700; border-radius:999px; font-weight:700; font-size:12px;">Demo Mode</div></header>
 <main>
 <form onsubmit="submitForm(event)" style="max-width:480px">
   <label>User ID or Email<br/><input id="uid" required style="width:100%;padding:8px;border-radius:6px;border:1px solid #333;background:#111;color:#fff"/></label><br/>
@@ -40,4 +41,15 @@ document.addEventListener("DOMContentLoaded",()=>{setActive("nav-adjustments");}
 </form>
 </main>
 </div></div>
+<script>
+  (function(){
+    var isDemo = !window.firebaseConfig || !window.firebaseConfig.apiKey || window.firebaseConfig.apiKey === 'your-api-key-here';
+    var badge = document.getElementById('demoBadge'); if (badge) badge.style.display = isDemo ? 'inline-block':'none';
+    if (!isDemo) return;
+    // Prefill form with demo values
+    var uid=document.getElementById('uid'); if (uid) uid.value='demo.user@blkpages.com';
+    var amt=document.getElementById('amt'); if (amt) amt.value='100';
+    var reason=document.getElementById('reason'); if (reason) reason.value='Demo manual adjustment for testing.';
+  })();
+</script>
 </body></html>

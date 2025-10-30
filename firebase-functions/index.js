@@ -5,6 +5,8 @@ const Stripe = require("stripe");
 admin.initializeApp();
 const db = admin.firestore();
 const stripe = new Stripe(functions.config().stripe.secret, { apiVersion: "2024-06-20" });
+const nodemailer = require("nodemailer");
+const { Parser } = require("json2csv");
 
 /**
  * Create a PaymentIntent for the amount AFTER points.
@@ -103,3 +105,53 @@ exports.verifyPhone = functions.https.onCall(async (data, context) => {
 
   return { success: true, message: "Phone number verified successfully" };
 });
+
+// =====================
+// Weekly Alerts CSV Email
+// =====================
+const emailUser = (functions.config().email && functions.config().email.user) || null;
+const emailPass = (functions.config().email && functions.config().email.pass) || null;
+let mailer = null;
+if (emailUser && emailPass) {
+  mailer = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: emailUser, pass: emailPass }
+  });
+}
+
+exports.sendWeeklyAlertsReport = functions.pubsub
+  .schedule("every monday 09:00")
+  .timeZone("Etc/UTC")
+  .onRun(async () => {
+    if (!mailer) {
+      console.log("Mailer not configured; skipping weekly alerts email.");
+      return null;
+    }
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const snap = await db.collection("adminAlerts").where("timestamp", ">=", oneWeekAgo).get();
+    const rows = snap.docs.map(d => {
+      const a = d.data() || {};
+      const time = a.timestamp && a.timestamp.toDate ? a.timestamp.toDate() : new Date(a.timestamp || Date.now());
+      return {
+        Type: a.type || '',
+        Message: a.message || '',
+        Time: time.toISOString(),
+        Status: a.read ? "Read" : "Unread"
+      };
+    });
+    if (!rows.length) {
+      console.log("No alerts this week – skipping email.");
+      return null;
+    }
+    const csv = new Parser().parse(rows);
+    await mailer.sendMail({
+      from: `BlkPages Alerts <${emailUser}>`,
+      to: "admin@blkpages.com",
+      subject: `BlkPages Weekly Alerts – ${now.toISOString().split("T")[0]}`,
+      text: "Attached is your weekly alert summary.",
+      attachments: [{ filename: `BlkPages_Alerts_${now.toISOString().split("T")[0]}.csv`, content: csv }]
+    });
+    console.log("✅ Weekly CSV email sent.");
+    return null;
+  });

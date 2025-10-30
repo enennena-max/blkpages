@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="./admin.css"/>
 <script defer src="./admin.js"></script>
 <script type="module" src="./live-dashboard.js"></script>
+<script type="module" src="./overview-live.js"></script>
 <style>
 .alerts-panel{position:fixed;bottom:24px;right:24px;top:auto;width:340px;background:#111;color:#fff;border:1px solid #FFD700;border-radius:10px;padding:15px;box-shadow:0 0 15px rgba(255,215,0,0.3);z-index:9999;max-height:60vh;overflow-y:auto}
 .alerts-panel h3{margin:0 0 10px;color:#ffd700}
@@ -39,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     </nav>
   </aside>
   <div>
-    <header><h2>Overview</h2></header>
+    <header><h2>Overview</h2><div id="demoBadge" style="display:none; margin-left:auto; padding:6px 10px; border:1px solid rgba(255,215,0,.35); color:#111; background:#FFD700; border-radius:999px; font-weight:700; font-size:12px;">Demo Mode</div></header>
     <main>
       <div class="cards">
         <div class="card"><h3>Pending Reviews</h3><div class="stat" id="revCount">—</div></div>
@@ -61,11 +62,111 @@ document.addEventListener("DOMContentLoaded", async () => {
           <label><input type="checkbox" id="filterFraud" checked> Fraud</label>
         </div>
         <ul id="alertList"></ul>
-        <div style="text-align:right;margin-top:8px">
+        <div style="display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:8px">
           <a href="../admin-alerts.html" style="color:#FFD700;font-size:13px;">View All ➜</a>
+          <select id="sendDemoType" style="background:#111;color:#fff;border:1px solid #FFD700;border-radius:6px;padding:6px 8px">
+            <option value="payments">Payments</option>
+            <option value="cancellations">Cancellations</option>
+            <option value="reviews">Reviews</option>
+            <option value="loyalty">Loyalty</option>
+            <option value="businesses">Businesses</option>
+            <option value="customers">Customers</option>
+            <option value="support">Support</option>
+            <option value="fraud">Fraud</option>
+          </select>
+          <button id="sendDemoAlertBtn" style="background:#FFD700;border:none;color:#111;padding:6px 10px;border-radius:6px;font-weight:700;cursor:pointer;">Send Demo Alert</button>
         </div>
       </div>
     </main>
   </div>
 </div>
+<script>
+  // Demo mode banner and filler data
+  (function(){
+    var isDemo = !window.firebaseConfig || !window.firebaseConfig.apiKey || window.firebaseConfig.apiKey === 'your-api-key-here';
+    var badge = document.getElementById('demoBadge');
+    if (badge) badge.style.display = isDemo ? 'inline-block' : 'none';
+    if (!isDemo) return;
+    var rev=document.getElementById('revCount'); if (rev) rev.textContent='7';
+    var biz=document.getElementById('bizCount'); if (biz) biz.textContent='3';
+    var dis=document.getElementById('disputeCount'); if (dis) dis.textContent='2';
+    var wrap=document.getElementById('recentBookings');
+    if (wrap){
+      wrap.innerHTML='';
+      var demoRows=[
+        {c:'Jane Smith', a:'35.00', s:'paid', t:new Date()},
+        {c:'Michael Brown', a:'52.00', s:'paid', t:new Date(Date.now()-3600*1000)},
+        {c:'Emily Johnson', a:'28.00', s:'cancelled', t:new Date(Date.now()-2*3600*1000)}
+      ];
+      demoRows.forEach(function(r){
+        var row=document.createElement('div'); row.className='booking-row';
+        row.innerHTML='<div><strong>'+r.c+'</strong></div><div>£'+r.a+'</div><div>'+r.s+'</div><div>'+r.t.toLocaleString()+'</div>';
+        wrap.appendChild(row);
+      });
+    }
+  })();
+  document.addEventListener('DOMContentLoaded', function(){
+    // Fallback: define demo alert helper if module didn't load
+    if (!window.sendDemoAdminAlert) {
+      window.sendDemoAdminAlert = function(message, typeKey){
+        try{
+          var map={payments:'filterPayments',cancellations:'filterCancellations',reviews:'filterReviews',loyalty:'filterLoyalty',businesses:'filterBusinesses',customers:'filterCustomers',support:'filterSupport',fraud:'filterFraud'};
+          var cbId=map[typeKey]||''; if(cbId){ var cb=document.getElementById(cbId); if(cb && cb.checked===false){ return; } }
+        }catch(_e){}
+        var panel = document.getElementById('adminAlerts');
+        if (!panel) {
+          panel = document.createElement('div');
+          panel.id = 'adminAlerts';
+          panel.className = 'alerts-panel';
+          panel.style.position = 'fixed';
+          panel.style.bottom = '24px';
+          panel.style.right = '24px';
+          panel.style.width = '340px';
+          panel.style.background = '#111';
+          panel.style.color = '#fff';
+          panel.style.border = '1px solid #FFD700';
+          panel.style.borderRadius = '10px';
+          panel.style.padding = '15px';
+          panel.style.boxShadow = '0 0 15px rgba(255,215,0,0.3)';
+          panel.style.zIndex = '9999';
+          panel.innerHTML = '<h3 style="margin:0 0 10px;color:#ffd700">🔔 Live Alerts</h3><ul id="alertList" style="list-style:none;padding:0;margin:0"></ul>';
+          document.body.appendChild(panel);
+        }
+        var ul = document.getElementById('alertList');
+        var li = document.createElement('li');
+        li.className = 'alert-item';
+        li.style.background = 'rgba(255,255,255,0.05)';
+        li.style.borderLeft = '3px solid #FFD700';
+        li.style.marginBottom = '10px';
+        li.style.padding = '10px';
+        li.style.fontSize = '14px';
+        li.style.borderRadius = '6px';
+        li.innerHTML = '<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div style="flex:1;min-width:0">'+(message||'Demo alert')+'</div><div style="display:flex;gap:6px;white-space:nowrap"><button class="mark-read-btn" title="Mark as read" style="background:#2a2a2a;border:1px solid #3a3a3a;color:#ddd;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:12px">Read</button></div></div>';
+        ul.prepend(li);
+        var removeLi=function(){ try{ li.remove(); }catch(e){} };
+        var m=li.querySelector('.mark-read-btn');
+        if(m) m.onclick=removeLi;
+        setTimeout(removeLi, 60000);
+      }
+    }
+    const btn = document.getElementById('sendDemoAlertBtn');
+    const typeSel = document.getElementById('sendDemoType');
+    if (btn) {
+      btn.addEventListener('click', function(){
+        var type = (typeSel && typeSel.value) || 'payments';
+        var templates={
+          payments:'💳 Demo payment of £12.00 from Test User',
+          cancellations:'❌ Demo booking cancelled by Royal Hair',
+          reviews:'⭐ Demo 5★ review from Aisha',
+          loyalty:'🎁 100 BlkPoints released for CUST_293',
+          businesses:'🏪 New business registered: Royal Hair Studio',
+          customers:'👤 New customer joined: Sarah T.',
+          support:'⚠️ New support ticket from Royal Hair — “Payment not reflecting”',
+          fraud:'🚨 Fraud flag: Possible duplicate referral activity detected'
+        };
+        window.sendDemoAdminAlert(templates[type]||'Demo alert', type);
+      });
+    }
+  });
+</script>
 </body></html>

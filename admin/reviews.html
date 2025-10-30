@@ -39,10 +39,11 @@ document.addEventListener("DOMContentLoaded", ()=>{ setActive("nav-reviews"); lo
       <a id="nav-referrals" href="./referrals.html">🎁 Referrals</a>
       <a id="nav-disputes" href="./disputes.html">⚖️ Disputes</a>
       <a id="nav-adjustments" href="./adjustments.html">💎 Adjust Points</a>
+      <a id="nav-alerts" href="../admin-alerts.html">🔔 Alerts</a>
     </nav>
   </aside>
   <div>
-    <header><h2>Verify Reviews</h2></header>
+    <header><h2>Verify Reviews</h2><div id="demoBadge" style="display:none; margin-left:auto; padding:6px 10px; border:1px solid rgba(255,215,0,.35); color:#111; background:#FFD700; border-radius:999px; font-weight:700; font-size:12px;">Demo Mode</div></header>
     <main>
       <div class="toolbar"><span class="badge muted">Unverified reviews listed below</span></div>
       <table>
@@ -52,4 +53,21 @@ document.addEventListener("DOMContentLoaded", ()=>{ setActive("nav-reviews"); lo
     </main>
   </div>
 </div>
+<script>
+  (function(){
+    var isDemo = !window.firebaseConfig || !window.firebaseConfig.apiKey || window.firebaseConfig.apiKey === 'your-api-key-here';
+    var badge = document.getElementById('demoBadge'); if (badge) badge.style.display = isDemo ? 'inline-block':'none';
+    if (!isDemo) return;
+    var tb=document.querySelector('tbody'); if (!tb) return; tb.innerHTML='';
+    var rows=[
+      {id:'#R-1023', biz:'Royal Hair', user:'aisha.j@example.com', rating:5, text:'Amazing service, will return!'},
+      {id:'#R-1022', biz:'Glow Spa', user:'mike.b@example.com', rating:4, text:'Great ambience and staff.'}
+    ];
+    rows.forEach(function(r){
+      var tr=document.createElement('tr');
+      tr.innerHTML = '<td>'+r.id+'</td><td>'+r.biz+'</td><td>'+r.user+'</td><td>⭐ '+r.rating+'</td><td>'+r.text+'</td><td><button class="btn gold" disabled>Verify</button></td>';
+      tb.appendChild(tr);
+    });
+  })();
+</script>
 </body></html>
