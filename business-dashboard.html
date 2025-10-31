@@ -100,6 +100,10 @@
     .toggle:before{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;background:white;border-radius:50%;transition:.3s}
     .toggle:checked:before{transform:translateX(20px)}
     .disabled{opacity:.5;pointer-events:none}
+    /* Sticky save bar */
+    .save-bar{position:fixed;bottom:0;left:0;width:100%;background:#111;border-top:1px solid #222;display:none;justify-content:flex-end;align-items:center;padding:1rem 1.5rem;z-index:50}
+    .save-bar button{background:#D4AF37;color:black;font-weight:600;padding:10px 20px;border-radius:8px;transition:background .3s}
+    .save-bar button:hover{background:#c7a436}
     /* Cinematic Gold Hover Animation */
     .gold-btn {
       position: relative;
@@ -2099,11 +2103,11 @@
             class="text-[12px] font-medium bg-[#D4AF37] text-black rounded-lg px-4 py-2 hover:opacity-90 transition w-full sm:w-auto"
           >
             Upgrade →
-          </button>
+                        </button>
         </div>
       </div>
-    </div>
-
+                    </div>
+                    
     <!-- Reply Modal (Professional only) -->
     <div id="replyModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
       <div class="bg-[#0F0F0F] border border-[#2a2a2a] rounded-xl w-full max-w-md p-6">
@@ -2221,7 +2225,7 @@
           <button data-upgrade
                   class="text-[12px] font-medium bg-[#D4AF37] text-black rounded-lg px-4 py-2 hover:opacity-90 transition">
             💎 Upgrade Now
-          </button>
+                        </button>
             </div>
       </section>
 
@@ -2383,17 +2387,17 @@
                target="_blank"
                class="border border-[#D4AF37] text-[#D4AF37] px-4 py-2 rounded hover:bg-[#D4AF37] hover:text-black transition">
                Preview Public Profile →
-            </a>
-          </div>
-        </div>
-
+                            </a>
+                        </div>
+                    </div>
+                    
         <!-- Profile Completion Bar -->
         <div class="mb-6">
           <div class="flex justify-between text-xs text-gray-400 mb-1">
             <span>Profile Completion</span><span id="proProgressText">0%</span>
           </div>
           <div class="progress-container"><div id="proProgressBar" class="progress-bar"></div></div>
-        </div>
+                </div>
 
         <!-- Tabs -->
         <div id="proTabs" class="flex border-b border-[#222] mb-6 overflow-x-auto">
@@ -2490,9 +2494,9 @@
           <div class="card">
             <h2 class="text-lg font-semibold mb-4 text-[#D4AF37]">Account Information</h2>
             <div class="space-y-3">
-              <input class="w-full bg-[#1a1a1a] border border-[#333] rounded p-2" placeholder="Business Email">
-              <input class="w-full bg-[#1a1a1a] border border-[#333] rounded p-2" placeholder="Business Owner Name">
-              <button class="gold-btn mt-2">Change Password</button>
+              <input id="businessEmail" type="email" class="w-full bg-[#1a1a1a] border border-[#333] rounded p-2" placeholder="Business Email">
+              <input id="businessOwner" type="text" class="w-full bg-[#1a1a1a] border border-[#333] rounded p-2" placeholder="Business Owner Name">
+              <button id="changePasswordBtn" class="gold-btn mt-2">Change Password</button>
               <div class="flex items-center justify-between mt-4">
                 <span>Two-Factor Authentication</span>
                 <input type="checkbox" id="twoFactor" class="toggle">
@@ -2511,7 +2515,7 @@
               <div class="mt-4">
                 <a href="/privacy" class="text-[#D4AF37] text-sm underline">View BlkPages Data Policy</a>
               </div>
-              <button class="text-red-500 mt-4 underline">Delete Account</button>
+              <button id="deleteAccountBtn" class="text-red-500 mt-4 underline">Delete Account</button>
             </div>
           </div>
         </div>
@@ -2521,25 +2525,96 @@
           <div class="card">
             <h2 class="text-lg font-semibold mb-4 text-[#D4AF37]">Notification Preferences</h2>
             <div class="space-y-3">
-              <div class="flex justify-between"><span>Email Alerts</span><input type="checkbox" class="toggle" checked></div>
-              <div class="flex justify-between"><span>Booking Confirmations</span><input type="checkbox" class="toggle" checked></div>
-              <div class="flex justify-between"><span>Marketing & Updates</span><input type="checkbox" class="toggle"></div>
-              <div id="smsRow" class="flex justify-between"><span>SMS Reminders</span><input type="checkbox" class="toggle"></div>
-              <div id="loyaltyRow" class="flex justify-between"><span>Loyalty Notifications</span><input type="checkbox" class="toggle"></div>
+              <div class="flex justify-between border-b border-[#D4AF37]/20 pb-2"><span>Email Alerts</span><input type="checkbox" id="emailAlerts" class="toggle notification-toggle" data-key="emailAlerts" checked></div>
+              <div class="flex justify-between border-b border-[#D4AF37]/20 pb-2"><span>Booking Confirmations</span><input type="checkbox" id="bookingConfirmations" class="toggle notification-toggle" data-key="bookingConfirmations" checked></div>
+              <div class="flex justify-between border-b border-[#D4AF37]/20 pb-2"><span>Marketing & Updates</span><input type="checkbox" id="marketingUpdates" class="toggle notification-toggle" data-key="marketingUpdates"></div>
+              <div id="smsRow" class="flex justify-between border-b border-[#D4AF37]/20 pb-2"><span>SMS Reminders</span><input type="checkbox" id="smsReminders" class="toggle notification-toggle" data-key="smsReminders"></div>
+              <div id="loyaltyRow" class="flex justify-between border-b border-[#D4AF37]/20 pb-2"><span>Loyalty Notifications</span><input type="checkbox" id="loyaltyNotifications" class="toggle notification-toggle" data-key="loyaltyNotifications"></div>
             </div>
-          </div>
-        </div>
+            <div class="mt-6 text-sm text-gray-400">
+              Need help? <button
+                id="contactSupportBtn"
+                class="text-[#D4AF37] underline hover:text-yellow-300 cursor-pointer"
+              >
+                Contact BlkPages Support
+                    </button>
+                </div>
+            </div>
+            </div>
 
         <!-- Subscription -->
         <div id="subscription" class="tab-panel hidden">
           <div class="card">
             <h2 class="text-lg font-semibold mb-4 text-[#D4AF37]">Subscription Details</h2>
-            <p>Current Plan: <span id="currentPlan"></span></p>
-            <p>Renewal Date: <span class="text-gray-400">12/12/2025</span></p>
-            <p>Payment Method: •••• •••• •••• 1234</p>
-            <div class="mt-4 flex flex-wrap gap-2">
-              <button id="upgradeBtn" class="gold-btn">Upgrade to Professional</button>
-              <button id="cancelBtn" class="border border-red-500 text-red-400 px-4 py-2 rounded">Cancel Subscription</button>
+            <div class="space-y-4">
+              <div class="flex justify-between border-b border-[#D4AF37]/20 pb-2">
+                <span>Current Plan:</span>
+                <span class="font-semibold" id="subscriptionPlanName"></span>
+        </div>
+              <div class="flex justify-between border-b border-[#D4AF37]/20 pb-2">
+                <span>Price:</span>
+                <span id="subscriptionPrice"></span>
+              </div>
+              <div class="flex justify-between border-b border-[#D4AF37]/20 pb-2">
+                <span>Renewal Date:</span>
+                <span>12/12/2025</span>
+              </div>
+              <div class="flex justify-between items-center border-b border-[#D4AF37]/20 pb-2">
+                <span>Payment Method:</span>
+                <div class="flex items-center space-x-3">
+                  <span id="paymentMethodDisplay">**** **** **** 1234</span>
+                  <button
+                    id="changePaymentBtn"
+                    class="text-sm text-[#D4AF37] underline hover:text-yellow-300 cursor-pointer"
+                  >
+                    Change
+                  </button>
+                </div>
+              </div>
+
+              <!-- Billing cycle toggle -->
+              <div class="flex justify-between items-center mt-4 border-t border-[#D4AF37]/30 pt-3">
+                <span>Billing Cycle:</span>
+                <select
+                  id="billingCycleSelect"
+                  class="bg-black border border-[#D4AF37]/60 text-white px-2 py-1 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                >
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="flex flex-wrap gap-3 pt-4">
+                <button
+                  id="downgradeBtn"
+                  class="bg-[#D4AF37] hover:bg-yellow-400 text-black font-semibold py-2 px-4 rounded transition-all"
+                >
+                  Downgrade to Starter
+                </button>
+                <button
+                  id="cancelSubscriptionBtn"
+                  class="bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded transition-all"
+                >
+                  Cancel Subscription
+                </button>
+                <button
+                  id="upgradeBtn"
+                  class="gold-btn hidden"
+                >
+                  Upgrade to Professional
+                </button>
+              </div>
+            </div>
+
+            <!-- Support -->
+            <div class="mt-6 text-sm text-gray-400">
+              Need help? <button
+                id="subscriptionSupportBtn"
+                class="text-[#D4AF37] underline hover:text-yellow-300 cursor-pointer"
+              >
+                Contact BlkPages Support
+              </button>
             </div>
           </div>
         </div>
@@ -2548,11 +2623,41 @@
         <div id="integrations" class="tab-panel hidden">
           <div class="card">
             <h2 class="text-lg font-semibold mb-4 text-[#D4AF37]">Integrations</h2>
-            <div id="integrationContent">
-              <div class="flex justify-between mb-3"><span>Stripe</span><button class="gold-btn">Connect</button></div>
-              <div class="flex justify-between mb-3"><span>Google Calendar</span><button class="gold-btn">Sync</button></div>
-              <div class="flex justify-between mb-3"><span>Meta / Instagram</span><button class="gold-btn">Connect</button></div>
-              <div class="flex justify-between"><span>Export Data (CSV)</span><button class="gold-btn">Download</button></div>
+            <div id="integrationContent" class="space-y-3">
+              <div class="flex justify-between border-b border-[#D4AF37]/20 pb-2">
+                <span>Stripe</span>
+                <button id="connectStripeBtn" class="text-sm bg-[#D4AF37] hover:bg-yellow-400 text-black font-semibold py-1 px-3 rounded transition">
+                  Connect
+                </button>
+              </div>
+              <div class="flex justify-between border-b border-[#D4AF37]/20 pb-2">
+                <span>Google Calendar</span>
+                <button id="syncCalendarBtn" class="text-sm bg-[#D4AF37] hover:bg-yellow-400 text-black font-semibold py-1 px-3 rounded transition">
+                  Sync
+                </button>
+              </div>
+              <div class="flex justify-between border-b border-[#D4AF37]/20 pb-2">
+                <span>Meta / Instagram</span>
+                <button id="connectMetaBtn" class="text-sm bg-[#D4AF37] hover:bg-yellow-400 text-black font-semibold py-1 px-3 rounded transition">
+                  Connect
+                </button>
+              </div>
+              <div class="flex justify-between">
+                <span>Export Data (CSV)</span>
+                <button id="exportDataBtn" class="text-sm bg-[#D4AF37] hover:bg-yellow-400 text-black font-semibold py-1 px-3 rounded transition">
+                  Download
+                </button>
+              </div>
+            </div>
+
+            <!-- Support -->
+            <div class="mt-6 text-sm text-gray-400">
+              Need help? <button
+                id="integrationsSupportBtn"
+                class="text-[#D4AF37] underline hover:text-yellow-300 cursor-pointer"
+              >
+                Contact BlkPages Support
+              </button>
             </div>
           </div>
         </div>
@@ -2561,30 +2666,75 @@
         <div id="security" class="tab-panel hidden">
           <div class="card">
             <h2 class="text-lg font-semibold mb-4 text-[#D4AF37]">Security Settings</h2>
-            <button class="gold-btn mb-3">Change Password</button>
-            <div class="text-sm text-gray-400 mb-4">Recent Logins:</div>
-            <ul class="text-xs text-gray-500 space-y-1 mb-4">
-              <li>MacBook Pro – Today 10:23 AM</li>
-              <li>iPhone – Yesterday 8:47 PM</li>
-            </ul>
-            <button class="border border-[#D4AF37] text-[#D4AF37] px-3 py-2 rounded mb-3">Logout of All Devices</button>
-            <div class="flex justify-between items-center">
-              <span>Session Timeout</span>
-              <select class="bg-[#1a1a1a] border border-[#333] rounded p-2">
-                <option>15 minutes</option><option>30 minutes</option><option>1 hour</option>
-              </select>
+            <div class="space-y-5 relative">
+              <!-- Change Password -->
+              <div>
+                <button
+                  id="changePasswordBtnSecurity"
+                  class="text-[#D4AF37] underline hover:text-yellow-300 cursor-pointer"
+                >
+                  Change Password
+                </button>
+                <p id="lastPasswordUpdate" class="text-xs text-gray-400 mt-1 italic"></p>
+              </div>
+
+              <!-- Recent Logins -->
+              <div>
+                <h3 class="text-sm font-semibold text-gray-400 mb-2">
+                  Recent Logins
+                </h3>
+                <ul id="recentLoginsList" class="space-y-1">
+                  <li class="flex justify-between text-sm">
+                    <span>MacBook Pro</span>
+                    <span class="text-gray-400">Today 10:23 AM</span>
+                  </li>
+                  <li class="flex justify-between text-sm">
+                    <span>iPhone</span>
+                    <span class="text-gray-400">Yesterday 8:47 PM</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Logout All Devices -->
+              <div class="pt-3">
+                <button
+                  id="logoutAllDevicesBtn"
+                  class="bg-transparent border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black font-semibold py-2 px-4 rounded transition-all"
+                >
+                  Logout of All Devices
+                </button>
+              </div>
+
+              <!-- Session Timeout -->
+              <div class="flex justify-between items-center pt-3 border-t border-[#D4AF37]/30">
+                <span>Session Timeout</span>
+                <select
+                  id="sessionTimeoutSelect"
+                  class="bg-black border border-[#D4AF37]/60 text-white px-2 py-1 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+                >
+                  <option value="5 minutes">5 minutes</option>
+                  <option value="15 minutes" selected>15 minutes</option>
+                  <option value="30 minutes">30 minutes</option>
+                  <option value="1 hour">1 hour</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Support Footer -->
-      <div class="text-center text-sm text-gray-400 mt-8">
-        Need help? <a href="/support" class="text-[#D4AF37] underline">Contact BlkPages Support</a>
+      <div id="settingsSupportFooter" class="text-center text-sm text-gray-400 mt-8 mb-20">
+        Need help? <button id="settingsSupportFooterBtn" class="text-[#D4AF37] underline hover:text-yellow-300 cursor-pointer">Contact BlkPages Support</button>
       </div>
-    </div>
-  </main>
 
+      <!-- Sticky Save Bar -->
+      <div class="save-bar">
+        <button id="saveAllBtn">💾 Save All Changes</button>
+      </div>
+        </div>
+    </main>
+    
   <!-- Toast notification -->
   <div id="toast" class="fixed top-4 right-4 bg-[#D4AF37] text-black px-4 py-2 rounded-lg text-sm font-medium opacity-0 transition-opacity duration-400 ease-in-out z-50">Data Loaded ✅</div>
 
@@ -2603,9 +2753,380 @@
         <button id="closeModalBtn" class="text-[#D4AF37]/70 hover:text-[#D4AF37] font-semibold">
           Not now
         </button>
+            </div>
+            </div>
+            </div>
+
+  <!-- Password Change Modal -->
+  <div id="passwordModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#111] border border-[#D4AF37]/40 rounded-lg p-6 max-w-md w-full mx-4">
+      <h2 class="text-xl font-bold text-[#D4AF37] mb-4">Change Password</h2>
+      <input
+        id="newPasswordInput"
+        type="password"
+        placeholder="Enter new password"
+        class="w-full bg-[#1a1a1a] border border-[#333] rounded p-2 mb-3 text-white"
+      />
+      <div class="flex justify-end space-x-3">
+        <button id="cancelPasswordBtn" class="text-gray-400 hover:text-white px-4 py-2">
+          Cancel
+        </button>
+        <button id="confirmPasswordBtn" class="bg-[#D4AF37] text-black px-4 py-2 rounded hover:bg-yellow-500 transition font-semibold">
+          Update
+        </button>
+                </div>
+            </div>
+        </div>
+
+  <!-- Delete Account Modal -->
+  <div id="deleteAccountModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#111] border border-red-600/40 rounded-lg p-6 max-w-md w-full mx-4">
+      <h2 class="text-xl font-bold text-red-400 mb-3">Delete Account?</h2>
+      <p class="text-gray-400 mb-4">
+        This action cannot be undone. All business data will be permanently removed.
+      </p>
+      <div class="flex justify-end space-x-3">
+        <button id="cancelDeleteBtn" class="text-gray-400 hover:text-white px-4 py-2">
+          Cancel
+        </button>
+        <button id="confirmDeleteBtn" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-500 transition font-semibold">
+          Confirm Delete
+        </button>
       </div>
     </div>
   </div>
+
+  <!-- Support Modal -->
+  <div id="supportModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#111] border border-[#D4AF37]/60 rounded-lg p-6 w-96 mx-4">
+      <h3 class="text-xl font-semibold mb-4 text-[#D4AF37]">
+        Contact BlkPages Support
+      </h3>
+
+      <form id="supportForm" class="space-y-3">
+            <div>
+          <label class="block text-sm mb-1 text-gray-300">Business Name</label>
+          <input
+            type="text"
+            id="supportBusinessName"
+            required
+            class="w-full px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+          />
+            </div>
+
+            <div>
+          <label class="block text-sm mb-1 text-gray-300">Business Email</label>
+          <input
+            type="email"
+            id="supportBusinessEmail"
+            required
+            class="w-full px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+          />
+            </div>
+
+            <div>
+          <label class="block text-sm mb-1 text-gray-300">Subject</label>
+          <input
+            type="text"
+            id="supportSubject"
+            placeholder="e.g. Issue with bookings"
+            required
+            class="w-full px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+          />
+            </div>
+
+            <div>
+          <label class="block text-sm mb-1 text-gray-300">Message</label>
+          <textarea
+            id="supportMessage"
+            rows="4"
+            required
+            class="w-full px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded resize-none focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+          ></textarea>
+                </div>
+
+        <div class="flex justify-end space-x-3 pt-2">
+          <button
+            type="button"
+            id="cancelSupportBtn"
+            class="text-gray-400 hover:text-white px-4 py-2"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="bg-[#D4AF37] text-black px-4 py-2 rounded hover:bg-yellow-400 font-semibold transition"
+          >
+            Submit
+          </button>
+            </div>
+      </form>
+        </div>
+        </div>
+
+  <!-- Downgrade Modal -->
+  <div id="downgradeModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#111] border border-[#D4AF37]/60 rounded-lg p-6 w-96 mx-4">
+      <h3 class="text-xl font-semibold mb-3 text-[#D4AF37]">
+        Downgrade to Starter?
+      </h3>
+      <p class="text-gray-400 mb-4">
+        You will lose access to Professional features but retain your account and bookings.
+      </p>
+      <div class="flex justify-end space-x-3">
+        <button
+          id="cancelDowngradeBtn"
+          class="text-gray-400 hover:text-white px-4 py-2"
+        >
+          Cancel
+        </button>
+        <button
+          id="confirmDowngradeBtn"
+          class="bg-[#D4AF37] text-black px-4 py-2 rounded hover:bg-yellow-400 font-semibold transition"
+        >
+          Confirm Downgrade
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cancel Subscription Modal -->
+  <div id="cancelSubscriptionModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#111] border border-red-600/40 rounded-lg p-6 w-96 mx-4">
+      <h3 class="text-xl font-semibold mb-3 text-red-400">
+        Cancel Subscription?
+      </h3>
+      <p class="text-gray-400 mb-4">
+        This will remove your subscription and access to premium features.
+      </p>
+      <div class="flex justify-end space-x-3">
+        <button
+          id="keepSubscriptionBtn"
+          class="text-gray-400 hover:text-white px-4 py-2"
+        >
+          Keep Subscription
+        </button>
+        <button
+          id="confirmCancelSubscriptionBtn"
+          class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-500 transition font-semibold"
+        >
+          Confirm Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Integration Connect Modal -->
+  <div id="integrationConnectModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#111] border border-[#D4AF37]/60 rounded-lg p-6 w-96 mx-4">
+      <h3 class="text-xl font-semibold mb-3 text-[#D4AF37]">
+        Connect <span id="integrationTypeDisplay"></span>
+      </h3>
+      <form id="integrationConnectForm">
+        <input
+          type="text"
+          id="integrationInput"
+          required
+          class="w-full mb-4 px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+        />
+        <div class="flex justify-end space-x-3">
+          <button
+            type="button"
+            id="cancelIntegrationBtn"
+            class="text-gray-400 hover:text-white px-4 py-2"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="bg-[#D4AF37] text-black px-4 py-2 rounded hover:bg-yellow-400 font-semibold transition"
+          >
+            Connect
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Payment Update Modal -->
+  <div id="paymentModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#111] border border-[#D4AF37]/60 rounded-lg p-6 w-96 mx-4">
+      <h3 class="text-xl font-semibold mb-3 text-[#D4AF37]">
+        Update Payment Method
+      </h3>
+      <form id="paymentForm" class="space-y-3">
+        <div>
+          <label class="text-sm text-gray-300 block mb-1">Cardholder Name</label>
+          <input
+            type="text"
+            id="cardNameInput"
+            required
+            class="w-full px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+          />
+        </div>
+
+        <div>
+          <label class="text-sm text-gray-300 block mb-1">Card Number</label>
+          <input
+            type="text"
+            id="cardNumberInput"
+            placeholder="1234 5678 9012 3456"
+            maxlength="16"
+            required
+            class="w-full px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+          />
+        </div>
+
+        <div class="flex space-x-2">
+          <div class="w-1/2">
+            <label class="text-sm text-gray-300 block mb-1">Expiry (MM/YY)</label>
+            <input
+              type="text"
+              id="expiryInput"
+              placeholder="MM/YY"
+              maxlength="5"
+              required
+              class="w-full px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+            />
+          </div>
+          <div class="w-1/2">
+            <label class="text-sm text-gray-300 block mb-1">CVV</label>
+            <input
+              type="password"
+              id="cvvInput"
+              maxlength="3"
+              required
+              class="w-full px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+            />
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-3 pt-3">
+          <button
+            type="button"
+            id="cancelPaymentBtn"
+            class="text-gray-400 hover:text-white px-4 py-2"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="bg-[#D4AF37] text-black px-4 py-2 rounded hover:bg-yellow-400 font-semibold transition"
+          >
+            Update
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Logout All Devices Modal -->
+  <div id="logoutAllModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#111] border border-[#D4AF37]/60 rounded-lg p-6 w-96 mx-4">
+      <h3 class="text-xl font-semibold mb-3 text-[#D4AF37]">
+        Logout of All Devices?
+      </h3>
+      <p class="text-gray-400 mb-4">
+        This will sign you out from all active sessions across devices.
+      </p>
+      <div class="flex justify-end space-x-3">
+        <button
+          id="cancelLogoutAllBtn"
+          class="text-gray-400 hover:text-white px-4 py-2"
+        >
+          Cancel
+        </button>
+        <button
+          id="confirmLogoutAllBtn"
+          class="bg-[#D4AF37] text-black px-4 py-2 rounded hover:bg-yellow-400 font-semibold transition"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save Confirmation Modal (Universal) -->
+  <div id="saveConfirmationModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#111] border border-[#D4AF37]/60 rounded-lg p-6 w-96 mx-4 text-center">
+      <h3 class="text-xl font-semibold mb-3 text-[#D4AF37]">
+        ✅ Changes Saved
+      </h3>
+      <p class="text-gray-400 mb-4">
+        All your recent updates to <b id="saveConfirmationSectionName"></b> have been saved successfully.
+      </p>
+      <button
+        id="closeSaveConfirmationBtn"
+        class="bg-[#D4AF37] text-black px-4 py-2 rounded hover:bg-yellow-400 font-semibold transition"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+
+  <!-- Security Support Modal (Simplified) -->
+  <div id="securitySupportModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#111] border border-[#D4AF37]/60 rounded-lg p-6 w-96 mx-4">
+      <h3 class="text-xl font-semibold mb-3 text-[#D4AF37]">
+        Contact BlkPages Support
+      </h3>
+      <form id="securitySupportForm" class="space-y-3">
+        <input
+          type="text"
+          id="securitySupportBusinessName"
+          placeholder="Business Name"
+          required
+          class="w-full px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+        />
+        <input
+          type="email"
+          id="securitySupportEmail"
+          placeholder="Email Address"
+          required
+          class="w-full px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+        />
+        <textarea
+          id="securitySupportMessage"
+          placeholder="Enter your message"
+          rows="4"
+          required
+          class="w-full px-3 py-2 bg-black text-white border border-[#D4AF37]/60 rounded resize-none focus:outline-none focus:ring-1 focus:ring-[#D4AF37]"
+        ></textarea>
+        <div class="flex justify-end space-x-3 pt-2">
+          <button
+            type="button"
+            id="cancelSecuritySupportBtn"
+            class="text-gray-400 hover:text-white px-4 py-2"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="bg-[#D4AF37] text-black px-4 py-2 rounded hover:bg-yellow-400 font-semibold transition"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    // Firebase config - Replace with your actual config
+    const firebaseConfig = {
+      // Add your Firebase config here
+      // apiKey: "your-api-key",
+      // authDomain: "your-auth-domain",
+      // projectId: "your-project-id",
+      // storageBucket: "your-storage-bucket",
+      // messagingSenderId: "your-sender-id",
+      // appId: "your-app-id"
+    };
+
+    // Make Firebase available globally (optional - if you want to use Firebase elsewhere)
+    window.firebaseConfig = firebaseConfig;
+  </script>
 
   <!-- Chart.js for analytics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -2690,6 +3211,13 @@
             setTimeout(() => {
               if (typeof initSettings === 'function') initSettings();
             }, 100);
+            // Show sticky save bar
+            const saveBar = document.querySelector('.save-bar');
+            if (saveBar) saveBar.style.display = 'flex';
+          } else {
+            // Hide sticky save bar when not on settings
+            const saveBar = document.querySelector('.save-bar');
+            if (saveBar) saveBar.style.display = 'none';
           }
         });
       });
@@ -3997,6 +4525,312 @@
       }
     }
 
+    // Initialize Notification Preferences
+    function initNotificationPreferences() {
+      // Default preferences
+      const defaultPreferences = {
+        emailAlerts: true,
+        bookingConfirmations: true,
+        marketingUpdates: false,
+        smsReminders: false,
+        loyaltyNotifications: false
+      };
+
+      // Load from localStorage or use defaults
+      const savedPrefs = localStorage.getItem('blkpages_notification_prefs');
+      const preferences = savedPrefs ? JSON.parse(savedPrefs) : defaultPreferences;
+
+      // Format label helper
+      function formatLabel(key) {
+        const labels = {
+          emailAlerts: 'Email Alerts',
+          bookingConfirmations: 'Booking Confirmations',
+          marketingUpdates: 'Marketing & Updates',
+          smsReminders: 'SMS Reminders',
+          loyaltyNotifications: 'Loyalty Notifications'
+        };
+        return labels[key] || key;
+      }
+
+      // Initialize toggle states
+      Object.keys(preferences).forEach(key => {
+        const toggle = document.getElementById(key);
+        if (toggle) {
+          toggle.checked = preferences[key];
+        }
+      });
+
+      // Set up toggle handlers
+      const notificationToggles = document.querySelectorAll('.notification-toggle');
+      notificationToggles.forEach(toggle => {
+        toggle.addEventListener('change', async () => {
+          const key = toggle.getAttribute('data-key');
+          const newValue = toggle.checked;
+          
+          // Get current preferences from localStorage
+          const currentPrefs = JSON.parse(localStorage.getItem('blkpages_notification_prefs') || JSON.stringify(defaultPreferences));
+          
+          // Update preferences object
+          currentPrefs[key] = newValue;
+          
+          // Save to localStorage
+          localStorage.setItem('blkpages_notification_prefs', JSON.stringify(currentPrefs));
+          
+          // Simulated backend update (for now)
+          console.log(`Simulated update: ${key} set to ${newValue}`);
+          
+          // TODO: Future Firebase backend update (uncomment when ready)
+          /*
+          const auth = getAuth();
+          const user = auth.currentUser;
+          if (user) {
+            const docRef = doc(db, "businesses", user.uid);
+            await updateDoc(docRef, {
+              [`notifications.${key}`]: newValue,
+            });
+          }
+          */
+          
+          // Show toast notification
+          const label = formatLabel(key);
+          showToast(`${label} ${newValue ? 'enabled 💛' : 'disabled 🔕'}`);
+        });
+      });
+    }
+
+    // Initialize Subscription Settings
+    function initSubscriptionSettings() {
+      // Plan pricing
+      const plans = {
+        Starter: { monthly: 14.99, yearly: 164.89 },
+        Professional: { monthly: 28.99, yearly: 318.89 }
+      };
+
+      // Get subscription elements
+      const subscriptionPlanName = document.getElementById('subscriptionPlanName');
+      const subscriptionPrice = document.getElementById('subscriptionPrice');
+      const paymentMethodDisplay = document.getElementById('paymentMethodDisplay');
+      const billingCycleSelect = document.getElementById('billingCycleSelect');
+      const downgradeBtn = document.getElementById('downgradeBtn');
+      const cancelSubscriptionBtn = document.getElementById('cancelSubscriptionBtn');
+      const upgradeBtn = document.getElementById('upgradeBtn');
+
+      // Update subscription display
+      function updateSubscriptionDisplay() {
+        const planName = currentPlan === 'pro' ? 'Professional' : 'Starter';
+        const billingCycle = billingCycleSelect?.value || 'monthly';
+        const price = billingCycle === 'monthly' 
+          ? plans[planName].monthly 
+          : plans[planName].yearly;
+        const cycle = billingCycle === 'monthly' ? 'mo' : 'yr';
+
+        if (subscriptionPlanName) {
+          subscriptionPlanName.textContent = planName;
+        }
+        if (subscriptionPrice) {
+          subscriptionPrice.textContent = `£${price.toFixed(2)}/${cycle}`;
+        }
+
+        // Show/hide buttons based on plan
+        if (downgradeBtn) {
+          downgradeBtn.style.display = currentPlan === 'pro' ? 'block' : 'none';
+        }
+        if (cancelSubscriptionBtn) {
+          cancelSubscriptionBtn.style.display = 'block';
+        }
+        if (upgradeBtn) {
+          upgradeBtn.style.display = currentPlan === 'starter' ? 'block' : 'none';
+        }
+      }
+
+      // Initialize display
+      updateSubscriptionDisplay();
+
+      // Billing cycle change handler
+      if (billingCycleSelect) {
+        billingCycleSelect.addEventListener('change', () => {
+          updateSubscriptionDisplay();
+        });
+      }
+
+      // Downgrade Modal
+      const downgradeModal = document.getElementById('downgradeModal');
+      const cancelDowngradeBtn = document.getElementById('cancelDowngradeBtn');
+      const confirmDowngradeBtn = document.getElementById('confirmDowngradeBtn');
+
+      if (downgradeBtn && downgradeModal) {
+        downgradeBtn.addEventListener('click', () => {
+          downgradeModal.classList.remove('hidden');
+          downgradeModal.classList.add('flex');
+        });
+      }
+
+      if (cancelDowngradeBtn && downgradeModal) {
+        cancelDowngradeBtn.addEventListener('click', () => {
+          downgradeModal.classList.add('hidden');
+          downgradeModal.classList.remove('flex');
+        });
+      }
+
+      if (confirmDowngradeBtn && downgradeModal) {
+        confirmDowngradeBtn.addEventListener('click', async () => {
+          console.log('Simulated: downgraded to Starter');
+          
+          // Firebase version (commented for now)
+          /*
+          const auth = getAuth();
+          const user = auth.currentUser;
+          if (user) {
+            const docRef = doc(db, "businesses", user.uid);
+            await updateDoc(docRef, { plan: "Starter" });
+          }
+          */
+
+          // Update current plan (simulated)
+          // currentPlan = 'starter'; // Uncomment if you want to simulate plan change
+          
+          showToast('⬇️ Subscription downgraded to Starter!');
+          downgradeModal.classList.add('hidden');
+          downgradeModal.classList.remove('flex');
+          updateSubscriptionDisplay();
+        });
+      }
+
+      // Cancel Subscription Modal
+      const cancelSubscriptionModal = document.getElementById('cancelSubscriptionModal');
+      const keepSubscriptionBtn = document.getElementById('keepSubscriptionBtn');
+      const confirmCancelSubscriptionBtn = document.getElementById('confirmCancelSubscriptionBtn');
+
+      if (cancelSubscriptionBtn && cancelSubscriptionModal) {
+        cancelSubscriptionBtn.addEventListener('click', () => {
+          cancelSubscriptionModal.classList.remove('hidden');
+          cancelSubscriptionModal.classList.add('flex');
+        });
+      }
+
+      if (keepSubscriptionBtn && cancelSubscriptionModal) {
+        keepSubscriptionBtn.addEventListener('click', () => {
+          cancelSubscriptionModal.classList.add('hidden');
+          cancelSubscriptionModal.classList.remove('flex');
+        });
+      }
+
+      if (confirmCancelSubscriptionBtn && cancelSubscriptionModal) {
+        confirmCancelSubscriptionBtn.addEventListener('click', async () => {
+          console.log('Simulated: subscription cancelled');
+          
+          // Firebase version (commented for now)
+          /*
+          const auth = getAuth();
+          const user = auth.currentUser;
+          if (user) {
+            const docRef = doc(db, "businesses", user.uid);
+            await updateDoc(docRef, { plan: "Cancelled" });
+          }
+          */
+
+          showToast('❌ Subscription cancelled.');
+          cancelSubscriptionModal.classList.add('hidden');
+          cancelSubscriptionModal.classList.remove('flex');
+          // Note: In a real app, you might want to update the UI or redirect
+        });
+      }
+
+      // Payment Update Modal
+      const paymentModal = document.getElementById('paymentModal');
+      const changePaymentBtn = document.getElementById('changePaymentBtn');
+      const cancelPaymentBtn = document.getElementById('cancelPaymentBtn');
+      const paymentForm = document.getElementById('paymentForm');
+      const cardNameInput = document.getElementById('cardNameInput');
+      const cardNumberInput = document.getElementById('cardNumberInput');
+      const expiryInput = document.getElementById('expiryInput');
+      const cvvInput = document.getElementById('cvvInput');
+
+      if (changePaymentBtn && paymentModal) {
+        changePaymentBtn.addEventListener('click', () => {
+          paymentModal.classList.remove('hidden');
+          paymentModal.classList.add('flex');
+          // Clear form
+          if (cardNameInput) cardNameInput.value = '';
+          if (cardNumberInput) cardNumberInput.value = '';
+          if (expiryInput) expiryInput.value = '';
+          if (cvvInput) cvvInput.value = '';
+        });
+      }
+
+      // Format card number input (digits only)
+      if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', (e) => {
+          e.target.value = e.target.value.replace(/\D/g, '');
+        });
+      }
+
+      // Format expiry input (MM/YY)
+      if (expiryInput) {
+        expiryInput.addEventListener('input', (e) => {
+          let value = e.target.value.replace(/\D/g, '');
+          if (value.length >= 2) {
+            value = value.slice(0, 2) + '/' + value.slice(2, 4);
+          }
+          e.target.value = value;
+        });
+      }
+
+      if (cancelPaymentBtn && paymentModal) {
+        cancelPaymentBtn.addEventListener('click', () => {
+          paymentModal.classList.add('hidden');
+          paymentModal.classList.remove('flex');
+          // Clear form
+          if (paymentForm) paymentForm.reset();
+        });
+      }
+
+      if (paymentForm && paymentModal) {
+        paymentForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const cardName = cardNameInput?.value || '';
+          const cardNumber = cardNumberInput?.value || '';
+          const expiry = expiryInput?.value || '';
+          const cvv = cvvInput?.value || '';
+
+          // Validate all fields
+          if (!cardName || cardNumber.length !== 16 || cvv.length !== 3 || !expiry) {
+            showToast('⚠️ Please complete all fields correctly.');
+            return;
+          }
+
+          // Update payment method display
+          const last4 = cardNumber.slice(-4);
+          if (paymentMethodDisplay) {
+            paymentMethodDisplay.textContent = `**** **** **** ${last4}`;
+          }
+
+          // Firebase version (commented for now)
+          /*
+          const auth = getAuth();
+          const user = auth.currentUser;
+          if (user) {
+            const docRef = doc(db, "businesses", user.uid);
+            await updateDoc(docRef, { paymentLast4: last4 });
+          }
+          */
+
+          showToast('💳 Payment method updated successfully!');
+          paymentModal.classList.add('hidden');
+          paymentModal.classList.remove('flex');
+          if (paymentForm) paymentForm.reset();
+        });
+      }
+
+      // Upgrade button (for Starter users)
+      if (upgradeBtn && currentPlan === 'starter') {
+        upgradeBtn.addEventListener('click', () => {
+          showUpgradeModal();
+        });
+      }
+    }
+
     // Initialize Settings functionality
     function initSettings() {
       // Update plan badge and current plan display
@@ -4009,6 +4843,19 @@
       
       if (currentPlanDisplay) {
         currentPlanDisplay.textContent = currentPlan === 'pro' ? 'Professional (£28.99/mo)' : 'Starter (£14.99/mo)';
+      }
+
+      // Initialize Subscription Settings
+      initSubscriptionSettings();
+
+      // Initialize account fields with default values (or load from Firebase later)
+      const businessEmail = document.getElementById('businessEmail');
+      const businessOwner = document.getElementById('businessOwner');
+      if (businessEmail && !businessEmail.value) {
+        businessEmail.value = 'example@blkpages.com';
+      }
+      if (businessOwner && !businessOwner.value) {
+        businessOwner.value = 'Business Owner';
       }
 
       // Plan-specific restrictions
@@ -4024,9 +4871,14 @@
         }
       }
 
+      // Initialize Notification Preferences with localStorage
+      initNotificationPreferences();
+
       // Settings tabs functionality
       const settingsTabs = document.querySelectorAll('#settingsTabs .tab');
       const settingsPanels = document.querySelectorAll('#settingsTabContent .tab-panel');
+      const saveBar = document.querySelector('.save-bar');
+      const supportFooter = document.getElementById('settingsSupportFooter');
       
       settingsTabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -4034,6 +4886,10 @@
           settingsPanels.forEach(p => p.classList.add('hidden'));
           tab.classList.add('tab-active');
           document.getElementById(tab.dataset.tab).classList.remove('hidden');
+          
+          // Show sticky save bar and support footer on all tabs including Security
+          if (saveBar) saveBar.style.display = 'flex';
+          if (supportFooter) supportFooter.style.display = 'block';
         });
       });
 
@@ -4065,14 +4921,526 @@
         });
       }
 
-      // Upgrade button functionality
-      const upgradeBtn = document.getElementById('upgradeBtn');
-      if (upgradeBtn && currentPlan === 'starter') {
-        upgradeBtn.addEventListener('click', () => {
-          showUpgradeModal();
+      // Subscription support button (opens support modal)
+      const subscriptionSupportBtn = document.getElementById('subscriptionSupportBtn');
+      if (subscriptionSupportBtn) {
+        subscriptionSupportBtn.addEventListener('click', () => {
+          const supportModal = document.getElementById('supportModal');
+          if (supportModal) {
+            supportModal.classList.remove('hidden');
+            supportModal.classList.add('flex');
+          }
         });
-      } else if (upgradeBtn && currentPlan === 'pro') {
-        upgradeBtn.style.display = 'none';
+      }
+
+      // Settings Support Footer button (opens support modal on all tabs)
+      const settingsSupportFooterBtn = document.getElementById('settingsSupportFooterBtn');
+      if (settingsSupportFooterBtn) {
+        settingsSupportFooterBtn.addEventListener('click', () => {
+          const supportModal = document.getElementById('supportModal');
+          if (supportModal) {
+            supportModal.classList.remove('hidden');
+            supportModal.classList.add('flex');
+          }
+        });
+      }
+
+      // Sticky Save Bar functionality - set up handler
+      const saveAllBtn = document.getElementById('saveAllBtn');
+      if (saveAllBtn) {
+        // Remove any existing listener to avoid duplicates
+        const newSaveBtn = saveAllBtn.cloneNode(true);
+        saveAllBtn.parentNode.replaceChild(newSaveBtn, saveAllBtn);
+        document.getElementById('saveAllBtn').addEventListener('click', handleSaveAll);
+      }
+
+      // Password Change Modal
+      const changePasswordBtn = document.getElementById('changePasswordBtn');
+      const passwordModal = document.getElementById('passwordModal');
+      const cancelPasswordBtn = document.getElementById('cancelPasswordBtn');
+      const confirmPasswordBtn = document.getElementById('confirmPasswordBtn');
+      const newPasswordInput = document.getElementById('newPasswordInput');
+
+      if (changePasswordBtn && passwordModal) {
+        changePasswordBtn.addEventListener('click', () => {
+          passwordModal.classList.remove('hidden');
+          passwordModal.classList.add('flex');
+        });
+      }
+
+      if (cancelPasswordBtn && passwordModal) {
+        cancelPasswordBtn.addEventListener('click', () => {
+          passwordModal.classList.add('hidden');
+          passwordModal.classList.remove('flex');
+          if (newPasswordInput) newPasswordInput.value = '';
+        });
+      }
+
+      if (confirmPasswordBtn && passwordModal) {
+        confirmPasswordBtn.addEventListener('click', async () => {
+          const newPassword = newPasswordInput?.value;
+          if (!newPassword) {
+            showToast('❌ Enter a new password.');
+            return;
+          }
+          if (newPassword.length < 6) {
+            showToast('❌ Password must be at least 6 characters');
+            return;
+          }
+
+          try {
+            // Save timestamp
+            const timestamp = new Date().toLocaleString();
+            localStorage.setItem('blkpages_last_pw_update', timestamp);
+            
+            // Update display if on Security tab
+            const lastPasswordUpdateEl = document.getElementById('lastPasswordUpdate');
+            if (lastPasswordUpdateEl) {
+              lastPasswordUpdateEl.textContent = `Last changed: ${timestamp}`;
+            }
+
+            // Simulated password change - replace with Firebase later
+            // TODO: Add Firebase password update logic here
+            /*
+            const auth = getAuth();
+            const user = auth.currentUser;
+            await updatePassword(user, newPassword);
+            const docRef = doc(db, "businesses", user.uid);
+            await updateDoc(docRef, { lastPasswordUpdate: timestamp });
+            */
+
+            console.log('Simulated: Password changed successfully at', timestamp);
+            showToast('🔒 Password updated successfully!');
+            passwordModal.classList.add('hidden');
+            passwordModal.classList.remove('flex');
+            if (newPasswordInput) newPasswordInput.value = '';
+          } catch (error) {
+            showToast('❌ Error updating password: ' + error.message);
+          }
+        });
+      }
+
+      // Delete Account Modal
+      const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+      const deleteAccountModal = document.getElementById('deleteAccountModal');
+      const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+      const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+      if (deleteAccountBtn && deleteAccountModal) {
+        deleteAccountBtn.addEventListener('click', () => {
+          deleteAccountModal.classList.remove('hidden');
+          deleteAccountModal.classList.add('flex');
+        });
+      }
+
+      if (cancelDeleteBtn && deleteAccountModal) {
+        cancelDeleteBtn.addEventListener('click', () => {
+          deleteAccountModal.classList.add('hidden');
+          deleteAccountModal.classList.remove('flex');
+        });
+      }
+
+      if (confirmDeleteBtn && deleteAccountModal) {
+        confirmDeleteBtn.addEventListener('click', async () => {
+          try {
+            // Simulated account deletion - replace with Firebase later
+            // TODO: Add Firebase account deletion logic here
+            // const user = firebase.auth().currentUser;
+            // if (user) {
+            //   // Delete Firestore data first
+            //   await firebase.firestore().collection('businesses').doc(user.uid).delete();
+            //   // Then delete auth account
+            //   await user.delete();
+            // }
+            showToast('🗑️ Account deleted successfully!');
+            deleteAccountModal.classList.add('hidden');
+            deleteAccountModal.classList.remove('flex');
+            // Redirect simulation (uncomment when ready)
+            // setTimeout(() => {
+            //   window.location.href = '/';
+            // }, 1500);
+          } catch (error) {
+            showToast('❌ Error deleting account: ' + error.message);
+          }
+        });
+      }
+
+      // Support Modal
+      const contactSupportBtn = document.getElementById('contactSupportBtn');
+      const supportModal = document.getElementById('supportModal');
+      const cancelSupportBtn = document.getElementById('cancelSupportBtn');
+      const supportForm = document.getElementById('supportForm');
+      const supportBusinessName = document.getElementById('supportBusinessName');
+      const supportBusinessEmail = document.getElementById('supportBusinessEmail');
+      const supportSubject = document.getElementById('supportSubject');
+      const supportMessage = document.getElementById('supportMessage');
+
+      if (contactSupportBtn && supportModal) {
+        contactSupportBtn.addEventListener('click', () => {
+          supportModal.classList.remove('hidden');
+          supportModal.classList.add('flex');
+        });
+      }
+
+      if (cancelSupportBtn && supportModal) {
+        cancelSupportBtn.addEventListener('click', () => {
+          supportModal.classList.add('hidden');
+          supportModal.classList.remove('flex');
+          // Clear form
+          if (supportForm) supportForm.reset();
+        });
+      }
+
+      if (supportForm && supportModal) {
+        supportForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const ticket = {
+            businessName: supportBusinessName?.value || '',
+            businessEmail: supportBusinessEmail?.value || '',
+            subject: supportSubject?.value || '',
+            message: supportMessage?.value || '',
+            date: new Date().toISOString()
+          };
+
+          // Log locally for now
+          console.log('Simulated Support Ticket:', ticket);
+
+          // Firebase submission (for later)
+          /*
+          // Uncomment when Firebase is ready
+          const auth = getAuth();
+          const user = auth.currentUser;
+          if (user) {
+            await addDoc(collection(db, "support_tickets"), {
+              ...ticket,
+              status: "Open",
+              userId: user.uid
+            });
+          }
+          */
+
+          showToast('💛 Support ticket submitted!');
+          supportModal.classList.add('hidden');
+          supportModal.classList.remove('flex');
+          supportForm.reset();
+        });
+      }
+
+      // Initialize Integrations functionality
+      initIntegrations();
+
+      // Initialize Security Settings functionality
+      initSecuritySettings();
+    }
+
+    // Handle Save All Changes button click (called from sticky save bar)
+    function handleSaveAll() {
+      try {
+        // Check which tab is active - try multiple selectors
+        let activeTabEl = document.querySelector('#settingsTabs .tab-active');
+        let activeTab = 'account'; // default fallback
+        
+        if (activeTabEl && activeTabEl.dataset && activeTabEl.dataset.tab) {
+          activeTab = activeTabEl.dataset.tab;
+        } else {
+          // Fallback: check which panel is visible
+          const visiblePanel = document.querySelector('#settingsTabContent .tab-panel:not(.hidden)');
+          if (visiblePanel) {
+            activeTab = visiblePanel.id;
+          }
+        }
+        
+        // Map tab IDs to friendly section names
+        const sectionNames = {
+          'account': 'Account Settings',
+          'notifications': 'Notification Preferences',
+          'subscription': 'Subscription Settings',
+          'integrations': 'Integration Settings',
+          'security': 'Security Settings'
+        };
+        
+        const sectionName = sectionNames[activeTab] || 'Settings';
+        
+        console.log(`Simulated save for ${sectionName}`); // Debug log
+        
+        // Tab-specific save logic
+        if (activeTab === 'security') {
+          // Save Security settings
+          const sessionTimeoutSelect = document.getElementById('sessionTimeoutSelect');
+          const sessionTimeout = sessionTimeoutSelect?.value || '15 minutes';
+          localStorage.setItem('blkpages_session_timeout', sessionTimeout);
+        } else if (activeTab === 'account') {
+          // Save Account settings
+          const businessEmail = document.getElementById('businessEmail');
+          const businessOwner = document.getElementById('businessOwner');
+          
+          if (!businessEmail || !businessOwner) {
+            showToast('Please fill in all required fields');
+            return;
+          }
+          
+          const emailValue = businessEmail.value;
+          const ownerValue = businessOwner.value;
+          
+          // Validate inputs
+          if (!emailValue || !ownerValue) {
+            showToast('Please fill in all required fields');
+            return;
+          }
+
+          // Simulated save - replace with Firebase later
+          // TODO: Add Firebase save logic here
+          // const user = firebase.auth().currentUser;
+          // if (user) {
+          //   await firebase.firestore().collection('businesses').doc(user.uid).update({
+          //     email: emailValue,
+          //     ownerName: ownerValue
+          //   });
+          //   await user.updateEmail(emailValue);
+          // }
+        }
+        // Other tabs (notifications, subscription, integrations) save on change
+        
+        // Firebase logic example:
+        /*
+        const userId = getAuth().currentUser.uid;
+        const docRef = doc(db, "businesses", userId);
+        await updateDoc(docRef, { 
+          lastSavedSection: sectionName, 
+          updatedAt: new Date().toISOString() 
+        });
+        */
+        
+        // Show confirmation modal with section name
+        const saveConfirmationModal = document.getElementById('saveConfirmationModal');
+        const saveConfirmationSectionName = document.getElementById('saveConfirmationSectionName');
+        
+        if (saveConfirmationSectionName) {
+          saveConfirmationSectionName.textContent = sectionName;
+        }
+        
+        if (saveConfirmationModal) {
+          saveConfirmationModal.classList.remove('hidden');
+          saveConfirmationModal.classList.add('flex');
+        }
+        
+        // Show toast notification
+        showToast(`✅ All ${sectionName} changes saved successfully!`);
+        
+      } catch (error) {
+        console.error('Save error:', error);
+        showToast('❌ Error saving settings: ' + error.message);
+      }
+    }
+
+    // Initialize Security Settings
+    function initSecuritySettings() {
+      // Load last password update timestamp from localStorage
+      const lastPasswordUpdate = document.getElementById('lastPasswordUpdate');
+      const storedTimestamp = localStorage.getItem('blkpages_last_pw_update');
+      if (lastPasswordUpdate && storedTimestamp) {
+        lastPasswordUpdate.textContent = `Last changed: ${storedTimestamp}`;
+      }
+
+      // Load session timeout from localStorage
+      const sessionTimeoutSelect = document.getElementById('sessionTimeoutSelect');
+      const storedTimeout = localStorage.getItem('blkpages_session_timeout');
+      if (sessionTimeoutSelect && storedTimeout) {
+        sessionTimeoutSelect.value = storedTimeout;
+      }
+
+      // Change Password Button (Security tab)
+      const changePasswordBtnSecurity = document.getElementById('changePasswordBtnSecurity');
+      const passwordModal = document.getElementById('passwordModal');
+      
+      if (changePasswordBtnSecurity && passwordModal) {
+        changePasswordBtnSecurity.addEventListener('click', () => {
+          passwordModal.classList.remove('hidden');
+          passwordModal.classList.add('flex');
+          const newPasswordInput = document.getElementById('newPasswordInput');
+          if (newPasswordInput) newPasswordInput.value = '';
+        });
+      }
+
+      // Logout All Devices
+      const logoutAllDevicesBtn = document.getElementById('logoutAllDevicesBtn');
+      const logoutAllModal = document.getElementById('logoutAllModal');
+      const cancelLogoutAllBtn = document.getElementById('cancelLogoutAllBtn');
+      const confirmLogoutAllBtn = document.getElementById('confirmLogoutAllBtn');
+
+      if (logoutAllDevicesBtn && logoutAllModal) {
+        logoutAllDevicesBtn.addEventListener('click', () => {
+          logoutAllModal.classList.remove('hidden');
+          logoutAllModal.classList.add('flex');
+        });
+      }
+
+      if (cancelLogoutAllBtn && logoutAllModal) {
+        cancelLogoutAllBtn.addEventListener('click', () => {
+          logoutAllModal.classList.add('hidden');
+          logoutAllModal.classList.remove('flex');
+        });
+      }
+
+      if (confirmLogoutAllBtn && logoutAllModal) {
+        confirmLogoutAllBtn.addEventListener('click', async () => {
+          console.log('Simulated: Logout of all devices successful');
+          
+          // Firebase logic (commented for now)
+          /*
+          const auth = getAuth();
+          await signOut(auth);
+          */
+          
+          showToast('🚪 Logged out of all devices');
+          logoutAllModal.classList.add('hidden');
+          logoutAllModal.classList.remove('flex');
+          
+          // Note: In a real app, you would redirect to login page
+          // window.location.href = '/login';
+        });
+      }
+
+      // Session Timeout Select
+      if (sessionTimeoutSelect) {
+        sessionTimeoutSelect.addEventListener('change', (e) => {
+          // Will be saved when user clicks "Save All Changes" from sticky bar
+          // Value is stored in select element, will be saved on button click
+        });
+      }
+
+      // Close Save Confirmation Modal handler (used by sticky save bar on Security tab)
+      const saveConfirmationModal = document.getElementById('saveConfirmationModal');
+      const closeSaveConfirmationBtn = document.getElementById('closeSaveConfirmationBtn');
+      
+      if (closeSaveConfirmationBtn && saveConfirmationModal) {
+        closeSaveConfirmationBtn.addEventListener('click', () => {
+          saveConfirmationModal.classList.add('hidden');
+          saveConfirmationModal.classList.remove('flex');
+        });
+      }
+    }
+
+    // Initialize Integrations Settings
+    function initIntegrations() {
+      // Check if plan restrictions apply
+      const integrationContent = document.getElementById('integrationContent');
+      if (currentPlan === 'starter' && integrationContent) {
+        // Starter plan restrictions - can be customized if needed
+      }
+
+      // Integration Connect Modal
+      let currentIntegrationType = '';
+      const integrationConnectModal = document.getElementById('integrationConnectModal');
+      const integrationTypeDisplay = document.getElementById('integrationTypeDisplay');
+      const integrationConnectForm = document.getElementById('integrationConnectForm');
+      const integrationInput = document.getElementById('integrationInput');
+      const cancelIntegrationBtn = document.getElementById('cancelIntegrationBtn');
+
+      // Connect Stripe
+      const connectStripeBtn = document.getElementById('connectStripeBtn');
+      if (connectStripeBtn && integrationConnectModal) {
+        connectStripeBtn.addEventListener('click', () => {
+          currentIntegrationType = 'Stripe';
+          if (integrationTypeDisplay) {
+            integrationTypeDisplay.textContent = 'Stripe';
+          }
+          if (integrationInput) {
+            integrationInput.placeholder = 'Enter Stripe API Key';
+            integrationInput.value = '';
+          }
+          integrationConnectModal.classList.remove('hidden');
+          integrationConnectModal.classList.add('flex');
+        });
+      }
+
+      // Connect Meta/Instagram
+      const connectMetaBtn = document.getElementById('connectMetaBtn');
+      if (connectMetaBtn && integrationConnectModal) {
+        connectMetaBtn.addEventListener('click', () => {
+          currentIntegrationType = 'Meta / Instagram';
+          if (integrationTypeDisplay) {
+            integrationTypeDisplay.textContent = 'Meta / Instagram';
+          }
+          if (integrationInput) {
+            integrationInput.placeholder = 'Enter Instagram Username';
+            integrationInput.value = '';
+          }
+          integrationConnectModal.classList.remove('hidden');
+          integrationConnectModal.classList.add('flex');
+        });
+      }
+
+      // Sync Google Calendar
+      const syncCalendarBtn = document.getElementById('syncCalendarBtn');
+      if (syncCalendarBtn) {
+        syncCalendarBtn.addEventListener('click', () => {
+          console.log('Simulated: Google Calendar sync');
+          showToast('🔄 Google Calendar synced successfully!');
+        });
+      }
+
+      // Export Data
+      const exportDataBtn = document.getElementById('exportDataBtn');
+      if (exportDataBtn) {
+        exportDataBtn.addEventListener('click', () => {
+          console.log('Simulated: Data export (CSV)');
+          showToast('📁 Data exported successfully (CSV)!');
+        });
+      }
+
+      // Cancel Integration Connect Modal
+      if (cancelIntegrationBtn && integrationConnectModal) {
+        cancelIntegrationBtn.addEventListener('click', () => {
+          integrationConnectModal.classList.add('hidden');
+          integrationConnectModal.classList.remove('flex');
+          if (integrationInput) integrationInput.value = '';
+        });
+      }
+
+      // Submit Integration Connect Form
+      if (integrationConnectForm && integrationConnectModal) {
+        integrationConnectForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const inputValue = integrationInput?.value || '';
+          if (!inputValue.trim()) {
+            showToast('❌ Please enter a value');
+            return;
+          }
+
+          console.log(`Simulated connection: ${currentIntegrationType} → ${inputValue}`);
+
+          // Firebase version (commented for now)
+          /*
+          const auth = getAuth();
+          const user = auth.currentUser;
+          if (user) {
+            const docRef = doc(db, "businesses", user.uid);
+            await updateDoc(docRef, { 
+              [`integrations.${currentIntegrationType.toLowerCase()}`]: inputValue 
+            });
+          }
+          */
+
+          showToast(`${currentIntegrationType} connected successfully 💛`);
+          integrationConnectModal.classList.add('hidden');
+          integrationConnectModal.classList.remove('flex');
+          if (integrationInput) integrationInput.value = '';
+        });
+      }
+
+      // Integrations support button (opens support modal)
+      const integrationsSupportBtn = document.getElementById('integrationsSupportBtn');
+      if (integrationsSupportBtn) {
+        integrationsSupportBtn.addEventListener('click', () => {
+          const supportModal = document.getElementById('supportModal');
+          if (supportModal) {
+            supportModal.classList.remove('hidden');
+            supportModal.classList.add('flex');
+          }
+        });
       }
     }
 
